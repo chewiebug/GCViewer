@@ -1,0 +1,652 @@
+GC: initial heap(KB) 98304; maximum heap(KB) 240000000; virtual machine identifier D4296F9F28002C80;  heap identifier D4296F9F28002C80.
+GC 1: starting collection, threshold allocation reached.
+GC 1: collection starting 14/02/08 05:10:58
+GC 1: live objects 50214; collected objects 513598; collected(KB) 87448.
+GC 1: queued for finalization 0; total soft references 26; cleared soft references 0.
+GC 1: current heap(KB) 106048; current threshold(KB) 98304.
+GC 1: collect (milliseconds) 313.
+GC 1: current cycle allocation(KB) 8613; previous cycle allocation(KB) 98332.
+GC 1: total weak references 9; cleared weak references 0.
+GC 1: total final references 610; cleared final references 4.
+GC 1: total phantom references 0; cleared phantom references 0.
+GC 1: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 1: collection ending 14/02/08 05:10:59
+GC 2: starting collection, threshold allocation reached.
+GC 2: collection starting 14/02/08 05:11:01
+GC 2: live objects 114196; collected objects 553784; collected(KB) 100990.
+GC 2: queued for finalization 0; total soft references 26; cleared soft references 0.
+GC 2: current heap(KB) 146432; current threshold(KB) 98304.
+GC 2: collect (milliseconds) 1493.
+GC 2: current cycle allocation(KB) 27174; previous cycle allocation(KB) 98331.
+GC 2: total weak references 9; cleared weak references 0.
+GC 2: total final references 606; cleared final references 0.
+GC 2: total phantom references 0; cleared phantom references 0.
+GC 2: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 2: collection ending 14/02/08 05:11:03
+GC 3: starting collection, threshold allocation reached.
+GC 3: collection starting 14/02/08 05:11:08
+GC 3: live objects 103945; collected objects 602551; collected(KB) 92743.
+GC 3: queued for finalization 0; total soft references 153; cleared soft references 0.
+GC 3: current heap(KB) 154976; current threshold(KB) 98304.
+GC 3: collect (milliseconds) 912.
+GC 3: current cycle allocation(KB) 13721; previous cycle allocation(KB) 98308.
+GC 3: total weak references 70; cleared weak references 0.
+GC 3: total final references 713; cleared final references 55.
+GC 3: total phantom references 0; cleared phantom references 0.
+GC 3: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 3: collection ending 14/02/08 05:11:09
+GC 4: starting collection, threshold allocation reached.
+GC 4: collection starting 14/02/08 05:11:17
+GC 4: live objects 130955; collected objects 634811; collected(KB) 95564.
+GC 4: queued for finalization 0; total soft references 252; cleared soft references 0.
+GC 4: current heap(KB) 172288; current threshold(KB) 98304.
+GC 4: collect (milliseconds) 3513.
+GC 4: current cycle allocation(KB) 24170; previous cycle allocation(KB) 98329.
+GC 4: total weak references 86; cleared weak references 0.
+GC 4: total final references 702; cleared final references 24.
+GC 4: total phantom references 0; cleared phantom references 0.
+GC 4: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 4: collection ending 14/02/08 05:11:21
+GC 5: starting collection, threshold allocation reached.
+GC 5: collection starting 14/02/08 05:12:38
+GC 5: live objects 234254; collected objects 638891; collected(KB) 88960.
+GC 5: queued for finalization 0; total soft references 313; cleared soft references 0.
+GC 5: current heap(KB) 179072; current threshold(KB) 98304.
+GC 5: collect (milliseconds) 1953.
+GC 5: current cycle allocation(KB) 8311; previous cycle allocation(KB) 98306.
+GC 5: total weak references 100; cleared weak references 0.
+GC 5: total final references 722; cleared final references 28.
+GC 5: total phantom references 0; cleared phantom references 0.
+GC 5: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 5: collection ending 14/02/08 05:12:40
+GC 6: starting collection, threshold allocation reached.
+GC 6: collection starting 14/02/08 05:12:48
+GC 6: live objects 208368; collected objects 755456; collected(KB) 97799.
+GC 6: queued for finalization 0; total soft references 458; cleared soft references 0.
+GC 6: current heap(KB) 186560; current threshold(KB) 98304.
+GC 6: collect (milliseconds) 770.
+GC 6: current cycle allocation(KB) 5417; previous cycle allocation(KB) 98323.
+GC 6: total weak references 168; cleared weak references 2.
+GC 6: total final references 734; cleared final references 27.
+GC 6: total phantom references 0; cleared phantom references 0.
+GC 6: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 6: collection ending 14/02/08 05:12:49
+GC 7: starting collection, threshold allocation reached.
+GC 7: collection starting 14/02/08 05:13:02
+GC 7: live objects 182706; collected objects 833097; collected(KB) 95964.
+GC 7: queued for finalization 0; total soft references 470; cleared soft references 0.
+GC 7: current heap(KB) 173152; current threshold(KB) 98304.
+GC 7: collect (milliseconds) 266.
+GC 7: current cycle allocation(KB) 636; previous cycle allocation(KB) 98348.
+GC 7: total weak references 182; cleared weak references 1.
+GC 7: total final references 719; cleared final references 12.
+GC 7: total phantom references 4; cleared phantom references 0.
+GC 7: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 7: collection ending 14/02/08 05:13:02
+GC 8: starting collection, threshold allocation reached.
+GC 8: collection starting 14/02/08 05:13:11
+GC 8: live objects 382522; collected objects 803309; collected(KB) 101076.
+GC 8: queued for finalization 0; total soft references 546; cleared soft references 0.
+GC 8: current heap(KB) 183232; current threshold(KB) 98304.
+GC 8: collect (milliseconds) 2521.
+GC 8: current cycle allocation(KB) 28826; previous cycle allocation(KB) 98339.
+GC 8: total weak references 195; cleared weak references 1.
+GC 8: total final references 758; cleared final references 42.
+GC 8: total phantom references 4; cleared phantom references 0.
+GC 8: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 8: collection ending 14/02/08 05:13:13
+GC 9: starting collection, threshold allocation reached.
+GC 9: collection starting 14/02/08 05:13:20
+GC 9: live objects 339543; collected objects 619585; collected(KB) 81146.
+GC 9: queued for finalization 0; total soft references 551; cleared soft references 0.
+GC 9: current heap(KB) 193216; current threshold(KB) 98304.
+GC 9: collect (milliseconds) 415.
+GC 9: current cycle allocation(KB) 7757; previous cycle allocation(KB) 98304.
+GC 9: total weak references 216; cleared weak references 10.
+GC 9: total final references 774; cleared final references 41.
+GC 9: total phantom references 4; cleared phantom references 0.
+GC 9: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 9: collection ending 14/02/08 05:13:20
+GC 10: starting collection, threshold allocation reached.
+GC 10: collection starting 14/02/08 05:13:25
+GC 10: live objects 408915; collected objects 778656; collected(KB) 102246.
+GC 10: queued for finalization 0; total soft references 749; cleared soft references 0.
+GC 10: current heap(KB) 202720; current threshold(KB) 98304.
+GC 10: collect (milliseconds) 757.
+GC 10: current cycle allocation(KB) 23190; previous cycle allocation(KB) 98313.
+GC 10: total weak references 339; cleared weak references 0.
+GC 10: total final references 1015; cleared final references 216.
+GC 10: total phantom references 4; cleared phantom references 0.
+GC 10: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 10: collection ending 14/02/08 05:13:26
+GC 11: starting collection, threshold allocation reached.
+GC 11: collection starting 14/02/08 05:13:29
+GC 11: live objects 558714; collected objects 607817; collected(KB) 83950.
+GC 11: queued for finalization 0; total soft references 993; cleared soft references 0.
+GC 11: current heap(KB) 205664; current threshold(KB) 98304.
+GC 11: collect (milliseconds) 2469.
+GC 11: current cycle allocation(KB) 20331; previous cycle allocation(KB) 98315.
+GC 11: total weak references 476; cleared weak references 1.
+GC 11: total final references 1143; cleared final references 270.
+GC 11: total phantom references 4; cleared phantom references 0.
+GC 11: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 11: collection ending 14/02/08 05:13:32
+GC 12: starting collection, threshold allocation reached.
+GC 12: collection starting 14/02/08 05:13:34
+GC 12: live objects 691169; collected objects 696079; collected(KB) 98858.
+GC 12: queued for finalization 0; total soft references 1105; cleared soft references 0.
+GC 12: current heap(KB) 256864; current threshold(KB) 98304.
+GC 12: collect (milliseconds) 2244.
+GC 12: current cycle allocation(KB) 74533; previous cycle allocation(KB) 98322.
+GC 12: total weak references 476; cleared weak references 0.
+GC 12: total final references 1421; cleared final references 475.
+GC 12: total phantom references 4; cleared phantom references 0.
+GC 12: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 12: collection ending 14/02/08 05:13:37
+GC 13: starting collection, threshold allocation reached.
+GC 13: collection starting 14/02/08 05:13:37
+GC 13: collected class com/ibm/ws/Transaction/JTA/XARecUtil.
+GC 13: live objects 901560; collected objects 623320; collected(KB) 95718.
+GC 13: queued for finalization 0; total soft references 1297; cleared soft references 0.
+GC 13: current heap(KB) 269056; current threshold(KB) 98304.
+GC 13: collect (milliseconds) 2727.
+GC 13: current cycle allocation(KB) 82259; previous cycle allocation(KB) 98341.
+GC 13: total weak references 502; cleared weak references 1.
+GC 13: total final references 1416; cleared final references 490.
+GC 13: total phantom references 4; cleared phantom references 0.
+GC 13: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 13: collection ending 14/02/08 05:13:40
+GC 14: starting collection, threshold allocation reached.
+GC 14: collection starting 14/02/08 05:13:41
+GC 14: live objects 894773; collected objects 643094; collected(KB) 96847.
+GC 14: queued for finalization 0; total soft references 1417; cleared soft references 0.
+GC 14: current heap(KB) 270784; current threshold(KB) 98304.
+GC 14: collect (milliseconds) 2117.
+GC 14: current cycle allocation(KB) 71809; previous cycle allocation(KB) 98358.
+GC 14: total weak references 511; cleared weak references 1.
+GC 14: total final references 1280; cleared final references 392.
+GC 14: total phantom references 4; cleared phantom references 0.
+GC 14: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 14: collection ending 14/02/08 05:13:43
+GC 15: starting collection, threshold allocation reached.
+GC 15: collection starting 14/02/08 05:13:43
+GC 15: live objects 696010; collected objects 659832; collected(KB) 99111.
+GC 15: queued for finalization 0; total soft references 1537; cleared soft references 0.
+GC 15: current heap(KB) 270464; current threshold(KB) 98304.
+GC 15: collect (milliseconds) 2850.
+GC 15: current cycle allocation(KB) 44762; previous cycle allocation(KB) 98445.
+GC 15: total weak references 511; cleared weak references 1.
+GC 15: total final references 1430; cleared final references 483.
+GC 15: total phantom references 4; cleared phantom references 0.
+GC 15: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 15: collection ending 14/02/08 05:13:46
+GC 16: starting collection, threshold allocation reached.
+GC 16: collection starting 14/02/08 05:13:48
+GC 17: starting collection, threshold allocation reached.
+GC 16: live objects 1038019; collected objects 570183; collected(KB) 96144.
+GC 16: queued for finalization 0; total soft references 1709; cleared soft references 0.
+GC 16: current heap(KB) 293248; current threshold(KB) 98304.
+GC 16: collect (milliseconds) 4276.
+GC 16: current cycle allocation(KB) 8677; previous cycle allocation(KB) 196679.
+GC 16: total weak references 543; cleared weak references 0.
+GC 16: total final references 1370; cleared final references 439.
+GC 16: total phantom references 4; cleared phantom references 0.
+GC 16: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 16: collection ending 14/02/08 05:13:52
+GC 17: collection starting 14/02/08 05:13:52
+GC 17: live objects 504780; collected objects 663269; collected(KB) 102414.
+GC 17: queued for finalization 0; total soft references 1890; cleared soft references 0.
+GC 17: current heap(KB) 289920; current threshold(KB) 98304.
+GC 17: collect (milliseconds) 322.
+GC 17: current cycle allocation(KB) 11438; previous cycle allocation(KB) 0.
+GC 17: total weak references 598; cleared weak references 2.
+GC 17: total final references 1347; cleared final references 483.
+GC 17: total phantom references 4; cleared phantom references 0.
+GC 17: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 17: collection ending 14/02/08 05:13:52
+GC 18: starting collection, threshold allocation reached.
+GC 18: collection starting 14/02/08 05:13:55
+GC 18: live objects 1028612; collected objects 646971; collected(KB) 94543.
+GC 18: queued for finalization 0; total soft references 1996; cleared soft references 0.
+GC 18: current heap(KB) 295968; current threshold(KB) 98304.
+GC 18: collect (milliseconds) 2593.
+GC 18: current cycle allocation(KB) 94004; previous cycle allocation(KB) 98314.
+GC 18: total weak references 598; cleared weak references 0.
+GC 18: total final references 1409; cleared final references 405.
+GC 18: total phantom references 4; cleared phantom references 0.
+GC 18: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 18: collection ending 14/02/08 05:13:57
+GC 19: starting collection, threshold allocation reached.
+GC 19: collection starting 14/02/08 05:13:57
+GC 20: starting collection, threshold allocation reached.
+GC 19: live objects 1162623; collected objects 656018; collected(KB) 96282.
+GC 19: queued for finalization 0; total soft references 2120; cleared soft references 0.
+GC 19: current heap(KB) 327360; current threshold(KB) 98304.
+GC 19: collect (milliseconds) 4269.
+GC 19: current cycle allocation(KB) 47285; previous cycle allocation(KB) 196701.
+GC 19: total weak references 598; cleared weak references 0.
+GC 19: total final references 1602; cleared final references 513.
+GC 19: total phantom references 4; cleared phantom references 0.
+GC 19: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 19: collection ending 14/02/08 05:14:02
+GC 20: collection starting 14/02/08 05:14:02
+GC 21: starting collection, threshold allocation reached.
+GC 20: collected class com/ibm/ws/Transaction/JTA/XARecUtil.
+GC 20: live objects 907110; collected objects 829612; collected(KB) 139537.
+GC 20: queued for finalization 0; total soft references 2320; cleared soft references 0.
+GC 20: current heap(KB) 316480; current threshold(KB) 98304.
+GC 20: collect (milliseconds) 2162.
+GC 20: current cycle allocation(KB) 25162; previous cycle allocation(KB) 98355.
+GC 20: total weak references 651; cleared weak references 0.
+GC 20: total final references 1752; cleared final references 726.
+GC 20: total phantom references 4; cleared phantom references 0.
+GC 20: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 20: collection ending 14/02/08 05:14:04
+GC 21: collection starting 14/02/08 05:14:04
+GC 21: live objects 949875; collected objects 401775; collected(KB) 74596.
+GC 21: queued for finalization 0; total soft references 2502; cleared soft references 0.
+GC 21: current heap(KB) 310208; current threshold(KB) 98304.
+GC 21: collect (milliseconds) 2811.
+GC 21: current cycle allocation(KB) 70879; previous cycle allocation(KB) 0.
+GC 21: total weak references 718; cleared weak references 2.
+GC 21: total final references 1321; cleared final references 371.
+GC 21: total phantom references 4; cleared phantom references 0.
+GC 21: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 21: collection ending 14/02/08 05:14:07
+GC 22: starting collection, threshold allocation reached.
+GC 22: collection starting 14/02/08 05:14:11
+GC 22: live objects 792699; collected objects 639260; collected(KB) 71280.
+GC 22: queued for finalization 0; total soft references 2503; cleared soft references 0.
+GC 22: current heap(KB) 313312; current threshold(KB) 98304.
+GC 22: collect (milliseconds) 3075.
+GC 22: current cycle allocation(KB) 40909; previous cycle allocation(KB) 98343.
+GC 22: total weak references 726; cleared weak references 0.
+GC 22: total final references 975; cleared final references 62.
+GC 22: total phantom references 4; cleared phantom references 0.
+GC 22: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 22: collection ending 14/02/08 05:14:14
+GC 23: starting collection, threshold allocation reached.
+GC 23: collection starting 14/02/08 05:14:22
+GC 23: live objects 619533; collected objects 646635; collected(KB) 100159.
+GC 23: queued for finalization 0; total soft references 2589; cleared soft references 0.
+GC 23: current heap(KB) 312832; current threshold(KB) 98304.
+GC 23: collect (milliseconds) 3116.
+GC 23: current cycle allocation(KB) 18803; previous cycle allocation(KB) 98511.
+GC 23: total weak references 750; cleared weak references 3.
+GC 23: total final references 1190; cleared final references 221.
+GC 23: total phantom references 4; cleared phantom references 0.
+GC 23: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 23: collection ending 14/02/08 05:14:25
+GC 24: starting collection, threshold allocation reached.
+GC 24: collection starting 14/02/08 05:14:42
+GC 24: live objects 623926; collected objects 388275; collected(KB) 91545.
+GC 24: queued for finalization 0; total soft references 2778; cleared soft references 0.
+GC 24: current heap(KB) 313856; current threshold(KB) 98304.
+GC 24: collect (milliseconds) 1328.
+GC 24: current cycle allocation(KB) 8931; previous cycle allocation(KB) 98304.
+GC 24: total weak references 867; cleared weak references 2.
+GC 24: total final references 1269; cleared final references 297.
+GC 24: total phantom references 4; cleared phantom references 0.
+GC 24: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 24: collection ending 14/02/08 05:14:43
+GC 25: starting collection, threshold allocation reached.
+GC 25: collection starting 14/02/08 05:15:00
+GC 25: live objects 620767; collected objects 832146; collected(KB) 97234.
+GC 25: queued for finalization 0; total soft references 2834; cleared soft references 0.
+GC 25: current heap(KB) 304128; current threshold(KB) 98304.
+GC 25: collect (milliseconds) 925.
+GC 25: current cycle allocation(KB) 5354; previous cycle allocation(KB) 98326.
+GC 25: total weak references 923; cleared weak references 2.
+GC 25: total final references 1022; cleared final references 42.
+GC 25: total phantom references 4; cleared phantom references 0.
+GC 25: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 25: collection ending 14/02/08 05:15:01
+GC 26: starting collection, threshold allocation reached.
+GC 26: collection starting 14/02/08 05:15:15
+GC 26: live objects 623505; collected objects 934820; collected(KB) 98402.
+GC 26: queued for finalization 0; total soft references 2835; cleared soft references 0.
+GC 26: current heap(KB) 308224; current threshold(KB) 98304.
+GC 26: collect (milliseconds) 1425.
+GC 26: current cycle allocation(KB) 7433; previous cycle allocation(KB) 98357.
+GC 26: total weak references 1070; cleared weak references 0.
+GC 26: total final references 988; cleared final references 7.
+GC 26: total phantom references 4; cleared phantom references 0.
+GC 26: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 26: collection ending 14/02/08 05:15:17
+GC 27: starting collection, threshold allocation reached.
+GC 27: collection starting 14/02/08 05:15:30
+GC 27: live objects 692525; collected objects 938061; collected(KB) 97575.
+GC 27: queued for finalization 0; total soft references 2835; cleared soft references 0.
+GC 27: current heap(KB) 321856; current threshold(KB) 98304.
+GC 27: collect (milliseconds) 2584.
+GC 27: current cycle allocation(KB) 19937; previous cycle allocation(KB) 98355.
+GC 27: total weak references 1085; cleared weak references 0.
+GC 27: total final references 987; cleared final references 6.
+GC 27: total phantom references 4; cleared phantom references 0.
+GC 27: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 27: collection ending 14/02/08 05:15:32
+GC 28: starting collection, threshold allocation reached.
+GC 28: collection starting 14/02/08 05:15:42
+GC 28: live objects 742804; collected objects 975299; collected(KB) 100210.
+GC 28: queued for finalization 0; total soft references 2835; cleared soft references 0.
+GC 28: current heap(KB) 323712; current threshold(KB) 98304.
+GC 28: collect (milliseconds) 2742.
+GC 28: current cycle allocation(KB) 23615; previous cycle allocation(KB) 98335.
+GC 28: total weak references 1772; cleared weak references 0.
+GC 28: total final references 987; cleared final references 4.
+GC 28: total phantom references 4; cleared phantom references 0.
+GC 28: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 28: collection ending 14/02/08 05:15:45
+GC 29: starting collection, threshold allocation reached.
+GC 29: collection starting 14/02/08 05:15:52
+GC 29: live objects 729166; collected objects 934617; collected(KB) 97476.
+GC 29: queued for finalization 0; total soft references 2835; cleared soft references 0.
+GC 29: current heap(KB) 322272; current threshold(KB) 98304.
+GC 29: collect (milliseconds) 2097.
+GC 29: current cycle allocation(KB) 18983; previous cycle allocation(KB) 98311.
+GC 29: total weak references 1737; cleared weak references 0.
+GC 29: total final references 985; cleared final references 4.
+GC 29: total phantom references 4; cleared phantom references 0.
+GC 29: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 29: collection ending 14/02/08 05:15:54
+GC 30: starting collection, threshold allocation reached.
+GC 30: collection starting 14/02/08 05:16:01
+GC 30: live objects 695868; collected objects 926497; collected(KB) 97094.
+GC 30: queued for finalization 0; total soft references 2835; cleared soft references 0.
+GC 30: current heap(KB) 319232; current threshold(KB) 98304.
+GC 30: collect (milliseconds) 1575.
+GC 30: current cycle allocation(KB) 13925; previous cycle allocation(KB) 98341.
+GC 30: total weak references 1582; cleared weak references 0.
+GC 30: total final references 985; cleared final references 4.
+GC 30: total phantom references 4; cleared phantom references 0.
+GC 30: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 30: collection ending 14/02/08 05:16:03
+GC 31: starting collection, threshold allocation reached.
+GC 31: collection starting 14/02/08 05:16:13
+GC 31: live objects 730921; collected objects 846152; collected(KB) 106776.
+GC 31: queued for finalization 0; total soft references 3482; cleared soft references 0.
+GC 31: current heap(KB) 320160; current threshold(KB) 98304.
+GC 31: collect (milliseconds) 2368.
+GC 31: current cycle allocation(KB) 29513; previous cycle allocation(KB) 98318.
+GC 31: total weak references 1828; cleared weak references 8.
+GC 31: total final references 1083; cleared final references 39.
+GC 31: total phantom references 4; cleared phantom references 0.
+GC 31: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 31: collection ending 14/02/08 05:16:15
+GC 32: starting collection, threshold allocation reached.
+GC 32: collection starting 14/02/08 05:16:22
+GC 32: live objects 720574; collected objects 791479; collected(KB) 86541.
+GC 32: queued for finalization 0; total soft references 3211; cleared soft references 0.
+GC 32: current heap(KB) 319008; current threshold(KB) 98304.
+GC 32: collect (milliseconds) 1695.
+GC 32: current cycle allocation(KB) 12634; previous cycle allocation(KB) 98351.
+GC 32: total weak references 1508; cleared weak references 0.
+GC 32: total final references 1062; cleared final references 54.
+GC 32: total phantom references 4; cleared phantom references 0.
+GC 32: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 32: collection ending 14/02/08 05:16:24
+GC 33: starting collection, threshold allocation reached.
+GC 33: collection starting 14/02/08 05:16:33
+GC 33: live objects 649807; collected objects 930594; collected(KB) 97091.
+GC 33: queued for finalization 0; total soft references 3211; cleared soft references 12.
+GC 33: current heap(KB) 319008; current threshold(KB) 98304.
+GC 33: collect (milliseconds) 430.
+GC 33: current cycle allocation(KB) 4048; previous cycle allocation(KB) 98330.
+GC 33: total weak references 1288; cleared weak references 0.
+GC 33: total final references 1012; cleared final references 4.
+GC 33: total phantom references 4; cleared phantom references 0.
+GC 33: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 33: collection ending 14/02/08 05:16:34
+GC 34: starting collection, threshold allocation reached.
+GC 34: collection starting 14/02/08 05:16:44
+GC 34: live objects 623747; collected objects 937130; collected(KB) 97780.
+GC 34: queued for finalization 0; total soft references 3211; cleared soft references 0.
+GC 34: current heap(KB) 318848; current threshold(KB) 98304.
+GC 34: collect (milliseconds) 386.
+GC 34: current cycle allocation(KB) 1213; previous cycle allocation(KB) 98314.
+GC 34: total weak references 1269; cleared weak references 0.
+GC 34: total final references 1012; cleared final references 4.
+GC 34: total phantom references 4; cleared phantom references 0.
+GC 34: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 34: collection ending 14/02/08 05:16:44
+GC 35: starting collection, threshold allocation reached.
+GC 35: collection starting 14/02/08 05:16:53
+GC 35: live objects 637284; collected objects 955440; collected(KB) 98064.
+GC 35: queued for finalization 0; total soft references 3211; cleared soft references 65.
+GC 35: current heap(KB) 318848; current threshold(KB) 98304.
+GC 35: collect (milliseconds) 404.
+GC 35: current cycle allocation(KB) 2264; previous cycle allocation(KB) 98308.
+GC 35: total weak references 1269; cleared weak references 0.
+GC 35: total final references 1012; cleared final references 4.
+GC 35: total phantom references 4; cleared phantom references 0.
+GC 35: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 35: collection ending 14/02/08 05:16:54
+GC 36: starting collection, threshold allocation reached.
+GC 36: collection starting 14/02/08 05:17:04
+GC 36: live objects 719341; collected objects 1000330; collected(KB) 101610.
+GC 36: queued for finalization 0; total soft references 3210; cleared soft references 78.
+GC 36: current heap(KB) 319136; current threshold(KB) 98304.
+GC 36: collect (milliseconds) 2025.
+GC 36: current cycle allocation(KB) 16839; previous cycle allocation(KB) 98339.
+GC 36: total weak references 1688; cleared weak references 0.
+GC 36: total final references 1014; cleared final references 4.
+GC 36: total phantom references 4; cleared phantom references 0.
+GC 36: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 36: collection ending 14/02/08 05:17:06
+GC 37: starting collection, threshold allocation reached.
+GC 37: collection starting 14/02/08 05:17:14
+GC 37: collected class sun/reflect/GeneratedConstructorAccessor1556976265.
+GC 37: live objects 641001; collected objects 894016; collected(KB) 95083.
+GC 37: queued for finalization 0; total soft references 3210; cleared soft references 55.
+GC 37: current heap(KB) 318432; current threshold(KB) 98304.
+GC 37: collect (milliseconds) 566.
+GC 37: current cycle allocation(KB) 3028; previous cycle allocation(KB) 98336.
+GC 37: total weak references 1379; cleared weak references 0.
+GC 37: total final references 1016; cleared final references 5.
+GC 37: total phantom references 4; cleared phantom references 0.
+GC 37: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 37: collection ending 14/02/08 05:17:14
+GC 38: starting collection, threshold allocation reached.
+GC 38: collection starting 14/02/08 05:17:24
+GC 38: live objects 643740; collected objects 942762; collected(KB) 98237.
+GC 38: queued for finalization 0; total soft references 3210; cleared soft references 90.
+GC 38: current heap(KB) 318336; current threshold(KB) 98304.
+GC 38: collect (milliseconds) 501.
+GC 38: current cycle allocation(KB) 2818; previous cycle allocation(KB) 98313.
+GC 38: total weak references 1379; cleared weak references 0.
+GC 38: total final references 1013; cleared final references 4.
+GC 38: total phantom references 4; cleared phantom references 0.
+GC 38: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 38: collection ending 14/02/08 05:17:24
+GC 39: starting collection, threshold allocation reached.
+GC 39: collection starting 14/02/08 05:17:32
+GC 39: live objects 661939; collected objects 937187; collected(KB) 97763.
+GC 39: queued for finalization 0; total soft references 3210; cleared soft references 12.
+GC 39: current heap(KB) 317280; current threshold(KB) 98304.
+GC 39: collect (milliseconds) 451.
+GC 39: current cycle allocation(KB) 4337; previous cycle allocation(KB) 98307.
+GC 39: total weak references 1273; cleared weak references 0.
+GC 39: total final references 1013; cleared final references 4.
+GC 39: total phantom references 4; cleared phantom references 0.
+GC 39: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 39: collection ending 14/02/08 05:17:33
+GC 40: starting collection, threshold allocation reached.
+GC 40: collection starting 14/02/08 05:17:41
+GC 40: live objects 661862; collected objects 949386; collected(KB) 98580.
+GC 40: queued for finalization 0; total soft references 3205; cleared soft references 54.
+GC 40: current heap(KB) 317280; current threshold(KB) 98304.
+GC 40: collect (milliseconds) 480.
+GC 40: current cycle allocation(KB) 5058; previous cycle allocation(KB) 98308.
+GC 40: total weak references 1273; cleared weak references 2.
+GC 40: total final references 1013; cleared final references 4.
+GC 40: total phantom references 4; cleared phantom references 0.
+GC 40: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 40: collection ending 14/02/08 05:17:42
+GC 41: starting collection, threshold allocation reached.
+GC 41: collection starting 14/02/08 05:17:50
+GC 41: collected class sun/reflect/GeneratedSerializationConstructorAccessor1400432693.
+GC 41: collected class sun/reflect/GeneratedConstructorAccessor1177669627.
+GC 41: collected class sun/reflect/GeneratedConstructorAccessor1038605321.
+GC 41: collected class sun/reflect/GeneratedConstructorAccessor3962137197.
+GC 41: collected class sun/reflect/GeneratedSerializationConstructorAccessor1308504411.
+GC 41: live objects 632823; collected objects 949147; collected(KB) 98149.
+GC 41: queued for finalization 0; total soft references 3203; cleared soft references 5.
+GC 41: current heap(KB) 317280; current threshold(KB) 98304.
+GC 41: collect (milliseconds) 389.
+GC 41: current cycle allocation(KB) 1525; previous cycle allocation(KB) 98311.
+GC 41: total weak references 1271; cleared weak references 0.
+GC 41: total final references 1013; cleared final references 4.
+GC 41: total phantom references 4; cleared phantom references 0.
+GC 41: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 41: collection ending 14/02/08 05:17:50
+GC 42: starting collection, threshold allocation reached.
+GC 42: collection starting 14/02/08 05:17:58
+GC 42: live objects 659166; collected objects 949182; collected(KB) 98051.
+GC 42: queued for finalization 0; total soft references 3197; cleared soft references 54.
+GC 42: current heap(KB) 317280; current threshold(KB) 98304.
+GC 42: collect (milliseconds) 468.
+GC 42: current cycle allocation(KB) 4404; previous cycle allocation(KB) 98327.
+GC 42: total weak references 1270; cleared weak references 0.
+GC 42: total final references 1011; cleared final references 2.
+GC 42: total phantom references 4; cleared phantom references 0.
+GC 42: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 42: collection ending 14/02/08 05:17:59
+GC 43: starting collection, threshold allocation reached.
+GC 43: collection starting 14/02/08 05:18:09
+GC 43: collected class sun/reflect/GeneratedMethodAccessor2690559122.
+GC 43: collected class sun/reflect/GeneratedMethodAccessor2323114249.
+GC 43: collected class sun/reflect/GeneratedMethodAccessor2323114253.
+GC 43: collected class sun/reflect/GeneratedMethodAccessor1420869816.
+GC 43: collected class sun/reflect/GeneratedMethodAccessor2323114257.
+GC 43: collected class sun/reflect/GeneratedMethodAccessor482103373.
+GC 43: live objects 667814; collected objects 935638; collected(KB) 98243.
+GC 43: queued for finalization 0; total soft references 3209; cleared soft references 112.
+GC 43: current heap(KB) 316896; current threshold(KB) 98304.
+GC 43: collect (milliseconds) 476.
+GC 43: current cycle allocation(KB) 5576; previous cycle allocation(KB) 98345.
+GC 43: total weak references 1273; cleared weak references 0.
+GC 43: total final references 1014; cleared final references 5.
+GC 43: total phantom references 4; cleared phantom references 0.
+GC 43: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 43: collection ending 14/02/08 05:18:09
+GC 44: starting collection, threshold allocation reached.
+GC 44: collection starting 14/02/08 05:18:17
+GC 44: collected class sun/reflect/GeneratedMethodAccessor4202247747.
+GC 44: collected class sun/reflect/GeneratedMethodAccessor3509067423.
+GC 44: collected class sun/reflect/GeneratedMethodAccessor753814101.
+GC 44: collected class sun/reflect/GeneratedMethodAccessor1765580076.
+GC 44: live objects 661225; collected objects 943005; collected(KB) 98395.
+GC 44: queued for finalization 0; total soft references 3209; cleared soft references 107.
+GC 44: current heap(KB) 316896; current threshold(KB) 98304.
+GC 44: collect (milliseconds) 431.
+GC 44: current cycle allocation(KB) 4517; previous cycle allocation(KB) 98306.
+GC 44: total weak references 1270; cleared weak references 0.
+GC 44: total final references 1013; cleared final references 4.
+GC 44: total phantom references 4; cleared phantom references 0.
+GC 44: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 44: collection ending 14/02/08 05:18:18
+GC 45: starting collection, threshold allocation reached.
+GC 45: collection starting 14/02/08 05:18:25
+GC 45: live objects 653789; collected objects 941995; collected(KB) 98335.
+GC 45: queued for finalization 0; total soft references 3254; cleared soft references 169.
+GC 45: current heap(KB) 316896; current threshold(KB) 98304.
+GC 45: collect (milliseconds) 454.
+GC 45: current cycle allocation(KB) 3146; previous cycle allocation(KB) 98318.
+GC 45: total weak references 1273; cleared weak references 0.
+GC 45: total final references 1013; cleared final references 4.
+GC 45: total phantom references 4; cleared phantom references 0.
+GC 45: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 45: collection ending 14/02/08 05:18:26
+GC 46: starting collection, threshold allocation reached.
+GC 46: collection starting 14/02/08 05:18:35
+GC 46: live objects 657700; collected objects 943539; collected(KB) 98385.
+GC 46: queued for finalization 0; total soft references 3271; cleared soft references 151.
+GC 46: current heap(KB) 316832; current threshold(KB) 98304.
+GC 46: collect (milliseconds) 425.
+GC 46: current cycle allocation(KB) 4067; previous cycle allocation(KB) 98339.
+GC 46: total weak references 1270; cleared weak references 0.
+GC 46: total final references 1013; cleared final references 4.
+GC 46: total phantom references 4; cleared phantom references 0.
+GC 46: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 46: collection ending 14/02/08 05:18:35
+GC 47: starting collection, threshold allocation reached.
+GC 47: collection starting 14/02/08 05:18:44
+GC 47: live objects 676083; collected objects 918514; collected(KB) 98668.
+GC 47: queued for finalization 0; total soft references 3280; cleared soft references 112.
+GC 47: current heap(KB) 316832; current threshold(KB) 98304.
+GC 47: collect (milliseconds) 467.
+GC 47: current cycle allocation(KB) 9228; previous cycle allocation(KB) 98329.
+GC 47: total weak references 1282; cleared weak references 0.
+GC 47: total final references 1014; cleared final references 2.
+GC 47: total phantom references 4; cleared phantom references 0.
+GC 47: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 47: collection ending 14/02/08 05:18:44
+GC 48: starting collection, threshold allocation reached.
+GC 48: collection starting 14/02/08 05:18:49
+GC 48: live objects 809801; collected objects 916230; collected(KB) 99475.
+GC 48: queued for finalization 0; total soft references 3290; cleared soft references 138.
+GC 48: current heap(KB) 317280; current threshold(KB) 98304.
+GC 48: collect (milliseconds) 2165.
+GC 48: current cycle allocation(KB) 26199; previous cycle allocation(KB) 98334.
+GC 48: total weak references 2342; cleared weak references 0.
+GC 48: total final references 1057; cleared final references 41.
+GC 48: total phantom references 4; cleared phantom references 0.
+GC 48: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 48: collection ending 14/02/08 05:18:51
+GC 49: starting collection, threshold allocation reached.
+GC 49: collection starting 14/02/08 05:18:57
+GC 49: live objects 684411; collected objects 871594; collected(KB) 93603.
+GC 49: queued for finalization 0; total soft references 3290; cleared soft references 231.
+GC 49: current heap(KB) 317024; current threshold(KB) 98304.
+GC 49: collect (milliseconds) 435.
+GC 49: current cycle allocation(KB) 5434; previous cycle allocation(KB) 98322.
+GC 49: total weak references 1288; cleared weak references 0.
+GC 49: total final references 1018; cleared final references 5.
+GC 49: total phantom references 4; cleared phantom references 0.
+GC 49: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 49: collection ending 14/02/08 05:18:57
+GC 50: starting collection, threshold allocation reached.
+GC 50: collection starting 14/02/08 05:19:05
+GC 50: live objects 658300; collected objects 914225; collected(KB) 95402.
+GC 50: queued for finalization 0; total soft references 3290; cleared soft references 76.
+GC 50: current heap(KB) 317376; current threshold(KB) 98304.
+GC 50: collect (milliseconds) 421.
+GC 50: current cycle allocation(KB) 754; previous cycle allocation(KB) 98329.
+GC 50: total weak references 1289; cleared weak references 0.
+GC 50: total final references 1017; cleared final references 4.
+GC 50: total phantom references 4; cleared phantom references 0.
+GC 50: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 50: collection ending 14/02/08 05:19:05
+GC 51: starting collection, threshold allocation reached.
+GC 51: collection starting 14/02/08 05:19:12
+GC 51: live objects 1097387; collected objects 777081; collected(KB) 100113.
+GC 51: queued for finalization 0; total soft references 3343; cleared soft references 125.
+GC 51: current heap(KB) 320064; current threshold(KB) 98304.
+GC 51: collect (milliseconds) 3799.
+GC 51: current cycle allocation(KB) 54778; previous cycle allocation(KB) 98305.
+GC 51: total weak references 1486; cleared weak references 3.
+GC 51: total final references 1242; cleared final references 152.
+GC 51: total phantom references 4; cleared phantom references 0.
+GC 51: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 51: collection ending 14/02/08 05:19:15
+GC 52: starting collection, threshold allocation reached.
+GC 52: collection starting 14/02/08 05:19:19
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor2950450536.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor4268363267.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor2696541530.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor4113233645.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor4026861571.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor1073259451.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor2324268468.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor3338641192.
+GC 52: collected class sun/reflect/GeneratedSerializationConstructorAccessor2421305909.
+GC 52: live objects 692446; collected objects 884508; collected(KB) 96962.
+GC 52: queued for finalization 0; total soft references 3345; cleared soft references 216.
+GC 52: current heap(KB) 317376; current threshold(KB) 98304.
+GC 52: collect (milliseconds) 460.
+GC 52: current cycle allocation(KB) 4819; previous cycle allocation(KB) 98318.
+GC 52: total weak references 1343; cleared weak references 0.
+GC 52: total final references 1125; cleared final references 70.
+GC 52: total phantom references 4; cleared phantom references 0.
+GC 52: total JNI global weak references 0; cleared JNI global weak references 0.
+GC 52: collection ending 14/02/08 05:19:19

@@ -1,0 +1,153 @@
+<GC[0]: Expanded System Heap by 65536 bytes
+<GC[0]: Expanded System Heap by 65536 bytes
+<GC[0]: Expanded System Heap by 65536 bytes
+<GC(1): GC cycle started Thu Sep 25 15:57:30 2003
+<GC(1): freed 56558264 bytes, 94% free (63714696/67107328), in 1077 ms>
+  <GC(1): mark: 605 ms, sweep: 44 ms, compact: 428 ms>
+  <GC(1): refs: soft 0 (age >= 32), weak 0, final 583, phantom 0>
+  <GC(1): moved 60528 objects, 3011600 bytes, reason=7, used 56 more bytes>
+<GC(2): GC cycle started Thu Sep 25 15:58:31 2003
+<GC(2): freed 25105112 bytes, 93% free (62610592/67107328), in 355 ms>
+  <GC(2): mark: 77 ms, sweep: 33 ms, compact: 245 ms>
+  <GC(2): refs: soft 0 (age >= 32), weak 0, final 17, phantom 3>
+  <GC(2): moved 63661 objects, 3666736 bytes, reason=7, used 104 more bytes>
+<GC(3): GC cycle started Thu Sep 25 15:59:31 2003
+<GC(3): freed 5659576 bytes, 92% free (62237128/67107328), in 273 ms>
+  <GC(3): mark: 73 ms, sweep: 23 ms, compact: 177 ms>
+  <GC(3): refs: soft 0 (age >= 32), weak 0, final 27, phantom 2>
+  <GC(3): moved 38004 objects, 2279240 bytes, reason=7, used 48 more bytes>
+<GC(4): GC cycle started Thu Sep 25 16:01:58 2003
+<GC(4): freed 4978632 bytes, 93% free (62572176/67107328), in 228 ms>
+  <GC(4): mark: 61 ms, sweep: 14 ms, compact: 153 ms>
+  <GC(4): refs: soft 0 (age >= 32), weak 0, final 57, phantom 0>
+  <GC(4): moved 12428 objects, 742952 bytes, reason=7>
+<GC(5): GC cycle started Thu Sep 25 16:02:59 2003
+<GC(5): freed 14717032 bytes, 93% free (62671912/67107328), in 264 ms>
+  <GC(5): mark: 71 ms, sweep: 17 ms, compact: 176 ms>
+  <GC(5): refs: soft 0 (age >= 32), weak 0, final 40, phantom 5>
+  <GC(5): moved 28721 objects, 1682096 bytes, reason=7, used 24 more bytes>
+<GC(6): GC cycle started Thu Sep 25 16:18:24 2003
+<GC(6): freed 26667280 bytes, 93% free (62850816/67107328), in 4211 ms>
+  <GC(6): mark: 3518 ms, sweep: 281 ms, compact: 412 ms>
+  <GC(6): refs: soft 0 (age >= 32), weak 0, final 339, phantom 0>
+  <GC(6): moved 25206 objects, 1364240 bytes, reason=7>
+
+<AF[1]: Allocation Failure. need 16777232 bytes, 0 ms since last AF>
+<AF[1]: managing allocation failure, action=1 (32989304/63961600) (3145728/3145728)>
+<GC(7): GC cycle started Thu Sep 25 16:18:50 2003
+<GC(7): freed 18732840 bytes, 81% free (54867872/67107328), in 232 ms>
+  <GC(7): mark: 46 ms, sweep: 11 ms, compact: 175 ms>
+  <GC(7): refs: soft 0 (age >= 32), weak 0, final 1, phantom 1>
+  <GC(7): moved 28719 objects, 1465736 bytes, reason=7, used 16 more bytes>
+<AF[1]: managing allocation failure, action=3 (54867872/67107328)>
+<GC(7): need to expand mark bits for 76741120-byte heap>
+<GC(7): expanded mark bits by 151552 to 1200128 bytes>
+<GC(7): need to expand alloc bits for 76741120-byte heap>
+<GC(7): expanded alloc bits by 151552 to 1200128 bytes>
+<GC(7): expanded heap by 9633792 to 76741120 bytes, 84% free>
+<AF[1]: completed in 251 ms>
+
+<AF[2]: Allocation Failure. need 19515264 bytes, 7167 ms since last AF>
+<AF[2]: managing allocation failure, action=1 (36292672/72904064) (30304/3837056)>
+<GC(8): GC cycle started Thu Sep 25 16:18:57 2003
+<GC(8): freed 10039472 bytes, 60% free (46362448/76741120), in 254 ms>
+  <GC(8): mark: 58 ms, sweep: 15 ms, compact: 181 ms>
+  <GC(8): refs: soft 0 (age >= 6), weak 0, final 1, phantom 0>
+  <GC(8): moved 25873 objects, 1329240 bytes, reason=7>
+<AF[2]: managing allocation failure, action=3 (46362448/76741120)>
+<GC(8): need to expand mark bits for 96270848-byte heap>
+<GC(8): expanded mark bits by 307200 to 1507328 bytes>
+<GC(8): need to expand alloc bits for 96270848-byte heap>
+<GC(8): expanded alloc bits by 307200 to 1507328 bytes>
+<GC(8): expanded heap by 19529728 to 96270848 bytes, 68% free>
+<AF[2]: completed in 276 ms>
+
+<AF[3]: Allocation Failure. need 19515264 bytes, 4469 ms since last AF>
+<AF[3]: managing allocation failure, action=2 (46374848/96270848)>
+<GC(9): GC cycle started Thu Sep 25 16:19:02 2003
+<GC(9): freed 16789816 bytes, 65% free (63164664/96270848), in 226 ms>
+  <GC(9): mark: 63 ms, sweep: 19 ms, compact: 144 ms>
+  <GC(9): refs: soft 3 (age >= 4), weak 0, final 0, phantom 0>
+  <GC(9): moved 23771 objects, 1113536 bytes, reason=7>
+<AF[3]: managing allocation failure, action=3 (63164664/96270848)>
+<GC(9): need to expand mark bits for 115800576-byte heap>
+<GC(9): expanded mark bits by 303104 to 1810432 bytes>
+<GC(9): need to expand alloc bits for 115800576-byte heap>
+<GC(9): expanded alloc bits by 303104 to 1810432 bytes>
+<GC(9): expanded heap by 19529728 to 115800576 bytes, 71% free>
+<AF[3]: completed in 247 ms>
+
+<AF[4]: Allocation Failure. need 81808 bytes, 14159 ms since last AF>
+<AF[4]: managing allocation failure, action=1 (0/110010544) (59232/5790032)>
+<GC(10): GC cycle started Thu Sep 25 16:19:17 2003
+<GC(10): freed 69293384 bytes, 59% free (69352616/115800576), in 493 ms>
+  <GC(10): mark: 61 ms, sweep: 17 ms, compact: 415 ms>
+  <GC(10): refs: soft 0 (age >= 2), weak 0, final 1, phantom 1>
+  <GC(10): moved 54171 objects, 24172984 bytes, reason=7>
+<AF[4]: completed in 495 ms>
+
+<AF[5]: Allocation Failure. need 121744 bytes, 1385 ms since last AF>
+<AF[5]: managing allocation failure, action=1 (4185088/112654848) (59232/3145728)>
+<GC(11): GC cycle started Thu Sep 25 16:19:19 2003
+<GC(11): freed 63718632 bytes, 58% free (67962952/115800576), in 581 ms>
+  <GC(11): mark: 81 ms, sweep: 21 ms, compact: 479 ms>
+  <GC(11): refs: soft 0 (age >= 2), weak 0, final 0, phantom 0>
+  <GC(11): moved 44901 objects, 23246440 bytes, reason=7>
+<AF[5]: completed in 583 ms>
+
+<AF[6]: Allocation Failure. need 150480 bytes, 1320 ms since last AF>
+<AF[6]: managing allocation failure, action=1 (5518456/112654848) (59232/3145728)>
+<GC(12): GC cycle started Thu Sep 25 16:19:21 2003
+<GC(12): freed 61372240 bytes, 57% free (66949928/115800576), in 551 ms>
+  <GC(12): mark: 65 ms, sweep: 16 ms, compact: 470 ms>
+  <GC(12): refs: soft 0 (age >= 4), weak 0, final 0, phantom 0>
+  <GC(12): moved 25925 objects, 21748040 bytes, reason=7>
+<AF[6]: completed in 553 ms>
+
+<AF[7]: Allocation Failure. need 174160 bytes, 1490 ms since last AF>
+<AF[7]: managing allocation failure, action=1 (5910744/112654848) (59232/3145728)>
+<GC(13): GC cycle started Thu Sep 25 16:19:23 2003
+<GC(13): freed 60182536 bytes, 57% free (66152512/115800576), in 429 ms>
+  <GC(13): mark: 120 ms, sweep: 23 ms, compact: 286 ms>
+  <GC(13): refs: soft 0 (age >= 6), weak 0, final 1, phantom 0>
+  <GC(13): moved 59300 objects, 4205936 bytes, reason=7>
+<AF[7]: managing allocation failure, action=3 (66152512/115800576)>
+<GC(13): need to expand mark bits for 124123648-byte heap>
+<GC(13): expanded mark bits by 131072 to 1941504 bytes>
+<GC(13): need to expand alloc bits for 124123648-byte heap>
+<GC(13): expanded alloc bits by 131072 to 1941504 bytes>
+<GC(13): expanded heap by 8323072 to 124123648 bytes, 60% free, ratio:0.373>
+<AF[7]: completed in 463 ms>
+
+<AF[8]: Allocation Failure. need 196368 bytes, 1962 ms since last AF>
+<AF[8]: managing allocation failure, action=1 (5969664/120977920) (3145728/3145728)>
+<GC(14): GC cycle started Thu Sep 25 16:19:25 2003
+<GC(14): freed 64573896 bytes, 59% free (73689288/124123648), in 362 ms>
+  <GC(14): mark: 83 ms, sweep: 18 ms, compact: 261 ms>
+  <GC(14): refs: soft 0 (age >= 6), weak 0, final 0, phantom 0>
+  <GC(14): moved 32191 objects, 2868528 bytes, reason=7>
+<AF[8]: completed in 364 ms>
+
+<AF[9]: Allocation Failure. need 215824 bytes, 1320 ms since last AF>
+<AF[9]: managing allocation failure, action=1 (7113920/120977920) (3145728/3145728)>
+<GC(15): GC cycle started Thu Sep 25 16:19:27 2003
+<GC(15): freed 62761184 bytes, 58% free (73020832/124123648), in 346 ms>
+  <GC(15): mark: 79 ms, sweep: 18 ms, compact: 249 ms>
+  <GC(15): refs: soft 0 (age >= 6), weak 0, final 0, phantom 0>
+  <GC(15): moved 13194 objects, 1273432 bytes, reason=7>
+<AF[9]: completed in 348 ms>
+
+<AF[10]: Allocation Failure. need 233424 bytes, 1269 ms since last AF>
+<AF[10]: managing allocation failure, action=1 (7145432/120977920) (3145728/3145728)>
+<GC(16): GC cycle started Thu Sep 25 16:19:28 2003
+<GC(16): freed 62153896 bytes, 58% free (72445056/124123648), in 382 ms>
+  <GC(16): mark: 76 ms, sweep: 17 ms, compact: 289 ms>
+  <GC(16): refs: soft 12 (age >= 6), weak 0, final 0, phantom 0>
+  <GC(16): moved 43186 objects, 4149104 bytes, reason=7>
+<AF[10]: managing allocation failure, action=3 (72445056/124123648)>
+<GC(16): need to expand mark bits for 129235456-byte heap>
+<GC(16): expanded mark bits by 77824 to 2019328 bytes>
+<GC(16): need to expand alloc bits for 129235456-byte heap>
+<GC(16): expanded alloc bits by 77824 to 2019328 bytes>
+<GC(16): expanded heap by 5111808 to 129235456 bytes, 60% free, ratio:0.241>
+<AF[10]: completed in 421 ms>

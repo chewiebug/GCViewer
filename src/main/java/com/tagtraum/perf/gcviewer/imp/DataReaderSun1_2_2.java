@@ -1,0 +1,119 @@
+package com.tagtraum.perf.gcviewer.imp;
+
+import com.tagtraum.perf.gcviewer.DataReader;
+import com.tagtraum.perf.gcviewer.GCEvent;
+import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * Parses -verbose:gc output from Sun JDK 1.2.2.
+ *
+ * Date: Jan 30, 2002
+ * Time: 5:15:44 PM
+ * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
+ * @version $Id: $
+ */
+public class DataReaderSun1_2_2 implements DataReader {
+
+    private static Logger LOG = Logger.getLogger(DataReaderSun1_2_2.class.getName());
+
+    private BufferedReader in;
+
+    public DataReaderSun1_2_2(InputStream in) {
+        this.in = new BufferedReader(new InputStreamReader(in));
+    }
+
+    public GCModel read() throws IOException {
+        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.2.2 format...");
+        try {
+            GCModel model = new GCModel(true);
+            model.setFormat(GCModel.Format.SUN_1_2_2VERBOSE_GC);
+            String line = null;
+            boolean timeline = false;
+            AbstractGCEvent lastEvent = new GCEvent();
+            GCEvent event = null;
+            while ((line = in.readLine()) != null) {
+                if (!timeline) {
+                    if (line.endsWith("milliseconds since last GC>")) {
+                        timeline = true;
+                        double time = Integer.parseInt(line.substring(5, line.indexOf(' ', 5)));
+                        event = new GCEvent();
+                        event.setTimestamp(lastEvent.getTimestamp() + (time/1000.0d));
+                    }
+                } else {
+                    timeline = false;
+                    // we have a time, so now we expect a either expansion or freed objects
+                    if (line.indexOf("expanded object space by") != -1) {
+                        // expansion
+                        int endIndex = line.indexOf(' ', "<GC: expanded object space by ".length());
+                        //int incBy = Integer.parseInt(line.substring("<GC: expanded object space by ".length(), endIndex));
+                        int beginIndex = endIndex + " to ".length();
+                        int incTo = Integer.parseInt(line.substring(beginIndex, line.indexOf(' ', beginIndex)));
+                        int percentUsed = Integer.parseInt(line.substring(line.length() - "XX% free>".length(), line.length() - "% free>".length()));
+                        event.setPostUsed((int)((incTo * percentUsed / 1024L / 100l)));
+                        event.setPreUsed(event.getPostUsed());
+                        event.setTotal((int)(incTo / 1024L));
+                        event.setType(GCEvent.Type.GC);
+                        event.setPause(0);
+                        model.add(event);
+                        lastEvent = event;
+                    } else if (line.indexOf(" freed ") != -1 && line.indexOf(" objects, ") != -1) {
+                        // freed objects
+                        int startIndex = line.indexOf(',') + 2;
+                        int endIndex = line.indexOf(' ', startIndex);
+                        int freed = Integer.parseInt(line.substring(startIndex, endIndex));
+                        startIndex = line.indexOf("in ") + 3;
+                        endIndex = line.indexOf(' ', startIndex);
+                        int pause = Integer.parseInt(line.substring(startIndex, endIndex));
+                        startIndex = line.indexOf('(') + 1;
+                        endIndex = line.indexOf('/', startIndex);
+                        int postFree = Integer.parseInt(line.substring(startIndex, endIndex));
+                        startIndex = line.indexOf('/') + 1;
+                        endIndex = line.indexOf(')', startIndex);
+                        int total = Integer.parseInt(line.substring(startIndex, endIndex));
+
+                        event.setPostUsed((total - postFree) / 1024);
+                        event.setPreUsed((total - postFree + freed) / 1024);
+                        //event.setPostUsed(event.getPreUsed());
+                        event.setTotal(total / 1024);
+                        event.setType(GCEvent.Type.GC);
+                        event.setPause(((double)pause) / 1000.0d);
+                        model.add(event);
+                        lastEvent = event;
+                        /*
+                        event = new GCEvent();
+                        event.setTimestamp(lastEvent.getTimestamp() + lastEvent.getPause());
+                        event.setPostUsed((total - postFree) / 1024L);
+                        event.setPreUsed(lastEvent.getPostUsed());
+                        event.setTotal(total / 1024L);
+                        event.setType(GCEvent.Type.GC);
+                        event.setPause(0);
+                        model.add(event);
+                        lastEvent = event;
+                        */
+                    } else {
+                        // hm. what now...?
+                    }
+                }
+            }
+
+            return model;
+        } finally {
+            if (in != null)
+                try {
+                    in.close();
+                } catch (IOException ioe) {
+                }
+            if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
+        }
+    }
+
+
+}

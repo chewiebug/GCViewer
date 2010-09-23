@@ -1,0 +1,134 @@
+[memory ] GC strategy: gencon
+[memory ] heap size: 1048576K, maximal heap size: 1048576K, nursery size: 524288K
+[memory ] <s>-<end>: GC <before>K-><after>K (<heap>K), <pause> ms
+[memory ] <s/start> - start time of collection (seconds since jvm start)
+[memory ] <end>     - end time of collection (seconds since jvm start)
+[memory ] <before>  - memory used by objects before collection (KB)
+[memory ] <after>   - memory used by objects after collection (KB)
+[memory ] <heap>    - size of heap after collection (KB)
+[memory ] <pause>   - total pause time during collection (milliseconds)
+[INFO] Deserialization Total time: 18 ms
+[memory ] 77.737: Nursery GC 630435K->183741K (1048576K), 566.158 ms
+[memory ] 112.082: Nursery GC 736701K->216027K (1048576K), 89.822 ms
+[memory ] 136.254: Nursery GC 772570K->252730K (1048576K), 94.653 ms
+[memory ] 157.119: Nursery GC 809274K->289452K (1048576K), 95.592 ms
+[memory ] 174.904: Nursery GC 849579K->330714K (1048576K), 101.742 ms
+[memory ] 189.315: Nursery GC 887257K->368063K (1048576K), 98.818 ms
+[memory ] 204.546: Nursery GC 935359K->417219K (1048576K), 106.254 ms
+[memory ] 218.340: Nursery GC 980930K->463218K (1048576K), 108.726 ms
+[memory ] 218.453-219.334: GC 463218K->106254K (1048576K), 147.386 ms
+[memory ] 231.111: Nursery GC 669477K->151361K (1048576K), 110.168 ms
+[memory ] 242.116: Nursery GC 718319K->200006K (1048576K), 105.818 ms
+[memory ] 253.925: Nursery GC 762178K->243686K (1048576K), 105.415 ms
+[memory ] 263.845: Nursery GC 808160K->290062K (1048576K), 107.300 ms
+[memory ] 274.286: Nursery GC 855064K->337281K (1048576K), 110.347 ms
+[memory ] 283.751: Nursery GC 902053K->384823K (1048576K), 112.683 ms
+[memory ] 292.927: Nursery GC 953032K->435658K (1048576K), 177.960 ms
+[memory ] 298.203-299.218: GC 773499K->121817K (1048576K), 200.937 ms
+[memory ] 307.838: Nursery GC 683890K->166301K (1048576K), 115.148 ms
+[memory ] 316.204: Nursery GC 734173K->216765K (1048576K), 117.123 ms
+[memory ] 325.716: Nursery GC 788795K->271901K (1048576K), 116.999 ms
+[memory ] 333.843: Nursery GC 838402K->321112K (1048576K), 113.977 ms
+[memory ] 342.089: Nursery GC 891654K->374633K (1048576K), 116.681 ms
+[memory ] 349.410: Nursery GC 938878K->421724K (1048576K), 113.639 ms
+[memory ] 356.143-357.157: GC 892866K->129594K (1048576K), 225.790 ms
+[memory ] 364.331: Nursery GC 694981K->177769K (1048576K), 111.049 ms
+[memory ] 371.459: Nursery GC 748156K->231099K (1048576K), 111.504 ms
+[memory ] 378.442: Nursery GC 797640K->280134K (1048576K), 108.015 ms
+[memory ] 386.188: Nursery GC 852435K->335680K (1048576K), 114.166 ms
+[memory ] 393.129: Nursery GC 905602K->389383K (1048576K), 117.730 ms
+[memory ] 399.549: Nursery GC 959002K->442390K (1048576K), 117.043 ms
+[memory ] 401.713-404.708: GC 647616K->139716K (1048576K), 1984.015 ms
+[memory ] 409.293: Nursery GC 702674K->186018K (1048576K), 496.579 ms
+[memory ] 416.537: Nursery GC 760018K->243851K (1048576K), 119.492 ms
+[memory ] 422.740: Nursery GC 813514K->297015K (1048576K), 118.074 ms
+[memory ] 428.866: Nursery GC 869481K->352648K (1048576K), 116.092 ms
+[memory ] 435.984: Nursery GC 926876K->411411K (1048576K), 126.590 ms
+[memory ] 441.494: Nursery GC 980096K->463862K (1048576K), 119.594 ms
+[memory ] 441.621-443.150: GC 464300K->161925K (1048576K), 413.914 ms
+[memory ] 448.876: Nursery GC 706983K->190996K (1048576K), 139.329 ms
+[memory ] 454.981: Nursery GC 758003K->241027K (1048576K), 111.882 ms
+[memory ] 460.283: Nursery GC 806150K->289159K (1048576K), 113.168 ms
+[memory ] 466.469: Nursery GC 855149K->338247K (1048576K), 112.903 ms
+[memory ] 472.577: Nursery GC 914235K->398711K (1048576K), 122.597 ms
+[memory ] 478.155: Nursery GC 964664K->447429K (1048576K), 112.594 ms
+[memory ] 479.824-481.512: GC 636243K->187024K (1048576K), 426.589 ms
+[memory ] 486.192: Nursery GC 707006K->190283K (1048576K), 112.522 ms
+[memory ] 491.141: Nursery GC 757527K->240778K (1048576K), 115.021 ms
+[memory ] 496.888: Nursery GC 807429K->290898K (1048576K), 112.810 ms
+[memory ] 502.037: Nursery GC 861006K->345405K (1048576K), 129.115 ms
+[memory ] 507.366: Nursery GC 914300K->398078K (1048576K), 117.202 ms
+[memory ] 512.324: Nursery GC 966987K->450744K (1048576K), 115.912 ms
+[memory ] 513.754-515.381: GC 608002K->153042K (1048576K), 521.318 ms
+[memory ] 519.527: Nursery GC 716990K->199664K (1048576K), 132.302 ms
+[memory ] 524.648: Nursery GC 768183K->251657K (1048576K), 115.255 ms
+[memory ] 530.711: Nursery GC 831772K->317119K (1048576K), 129.506 ms
+[memory ] 535.561: Nursery GC 887526K->371482K (1048576K), 119.710 ms
+[memory ] 540.125: Nursery GC 946645K->431557K (1048576K), 125.426 ms
+[memory ] 542.973-544.183: GC 761154K->160895K (1048576K), 203.397 ms
+[memory ] 549.093: Nursery GC 725152K->208771K (1048576K), 127.286 ms
+[memory ] 553.522: Nursery GC 775478K->259775K (1048576K), 118.310 ms
+[memory ] 558.158: Nursery GC 833307K->317833K (1048576K), 119.592 ms
+[memory ] 562.084: Nursery GC 883376K->366450K (1048576K), 109.454 ms
+[memory ] 566.913: Nursery GC 941746K->426401K (1048576K), 119.346 ms
+[memory ] 570.243-571.854: GC 821241K->178312K (1048576K), 236.531 ms
+[memory ] 576.619: Nursery GC 729838K->214045K (1048576K), 118.199 ms
+[memory ] 581.486: Nursery GC 787320K->272298K (1048576K), 121.344 ms
+[memory ] 585.611: Nursery GC 841741K->325350K (1048576K), 112.142 ms
+[memory ] 589.543: Nursery GC 890819K->373740K (1048576K), 108.578 ms
+[memory ] 593.577: Nursery GC 948049K->432614K (1048576K), 117.674 ms
+[memory ] 597.184-598.856: GC 798564K->179934K (1048576K), 334.547 ms
+[memory ] 602.918: Nursery GC 732153K->215962K (1048576K), 152.096 ms
+[memory ] 607.244: Nursery GC 790019K->274442K (1048576K), 120.868 ms
+[memory ] 611.545: Nursery GC 844958K->328838K (1048576K), 119.379 ms
+[memory ] 615.864: Nursery GC 903451K->388205K (1048576K), 121.301 ms
+[memory ] 619.934: Nursery GC 959497K->443720K (1048576K), 121.538 ms
+[memory ] 621.533-623.123: GC 657444K->167768K (1048576K), 191.059 ms
+[memory ] 627.422: Nursery GC 734559K->219746K (1048576K), 134.860 ms
+[memory ] 631.698: Nursery GC 789437K->275165K (1048576K), 121.040 ms
+[memory ] 636.295: Nursery GC 844856K->330376K (1048576K), 124.636 ms
+[memory ] 639.914: Nursery GC 898453K->382907K (1048576K), 113.536 ms
+[memory ] 643.907: Nursery GC 951439K->436166K (1048576K), 112.750 ms
+[memory ] 646.423-648.641: GC 738372K->203966K (1048576K), 287.674 ms
+[memory ] 652.367: Nursery GC 735343K->219163K (1048576K), 143.507 ms
+[memory ] 657.082: Nursery GC 793882K->278884K (1048576K), 120.365 ms
+[memory ] 661.121: Nursery GC 845889K->330117K (1048576K), 116.699 ms
+[memory ] 664.979: Nursery GC 902867K->387770K (1048576K), 122.975 ms
+[memory ] 668.724: Nursery GC 959439K->443817K (1048576K), 116.748 ms
+[memory ] 670.394-672.182: GC 664464K->172176K (1048576K), 302.458 ms
+[memory ] 676.065: Nursery GC 743254K->228213K (1048576K), 132.117 ms
+[memory ] 680.107: Nursery GC 796899K->280969K (1048576K), 115.134 ms
+[memory ] 683.713: Nursery GC 850912K->334977K (1048576K), 114.345 ms
+[memory ] 687.510: Nursery GC 910003K->395525K (1048576K), 124.606 ms
+[memory ] 691.675: Nursery GC 973853K->458393K (1048576K), 119.249 ms
+[memory ] 692.213-695.391: GC 520852K->230812K (1048576K), 943.799 ms
+[memory ] 697.983: Nursery GC 740520K->224587K (1048576K), 180.901 ms
+[memory ] 701.267: Nursery GC 794078K->277337K (1048576K), 118.242 ms
+[memory ] 705.062: Nursery GC 846202K->329600K (1048576K), 119.367 ms
+[memory ] 708.665: Nursery GC 903108K->386766K (1048576K), 123.203 ms
+[memory ] 712.427: Nursery GC 957645K->441524K (1048576K), 121.672 ms
+[memory ] 714.023-715.507: GC 690752K->196042K (1048576K), 192.908 ms
+[memory ] 718.325: Nursery GC 744246K->227766K (1048576K), 115.740 ms
+[memory ] 722.179: Nursery GC 802719K->287368K (1048576K), 122.586 ms
+[memory ] 726.107: Nursery GC 858478K->342392K (1048576K), 118.328 ms
+[memory ] 729.306: Nursery GC 912508K->397160K (1048576K), 123.087 ms
+[memory ] 732.713: Nursery GC 967636K->451183K (1048576K), 117.315 ms
+[memory ] 733.793-735.421: GC 597961K->176538K (1048576K), 266.502 ms
+[memory ] 738.832: Nursery GC 750194K->235069K (1048576K), 165.889 ms
+[memory ] 742.777: Nursery GC 810773K->295114K (1048576K), 122.276 ms
+[memory ] 746.118: Nursery GC 864326K->347818K (1048576K), 116.700 ms
+[memory ] 749.356: Nursery GC 920726K->404566K (1048576K), 119.420 ms
+[memory ] 753.122: Nursery GC 977200K->460930K (1048576K), 119.156 ms
+[memory ] 753.496-755.634: GC 495497K->210501K (1048576K), 263.067 ms
+[memory ] 758.957: Nursery GC 748990K->232350K (1048576K), 119.298 ms
+[memory ] 762.342: Nursery GC 802106K->285649K (1048576K), 117.654 ms
+[memory ] 765.539: Nursery GC 851516K->334389K (1048576K), 114.426 ms
+2005-10-27 17:10:52,324 : ThreadPool.logFull : All threads (60) are currently busy, waiting. Increase maxThreads (60) or check the servlet status
+[memory ] 768.946: Nursery GC 909899K->394417K (1048576K), 140.554 ms
+[memory ] 772.748: Nursery GC 969960K->453550K (1048576K), 130.538 ms
+[memory ] 773.514-777.874: GC 576171K->181324K (1048576K), 2755.993 ms
+[memory ] 780.291: Nursery GC 753149K->240488K (1048576K), 288.415 ms
+[memory ] 783.225: Nursery GC 814951K->299795K (1048576K), 130.681 ms
+[memory ] 795.846: Nursery GC 867639K->350722K (1048576K), 116.572 ms
+[memory ] 826.986: Nursery GC 921601K->406328K (1048576K), 124.771 ms
+[memory ] 887.122: Nursery GC 583773K->425801K (1048576K), 84.572 ms

@@ -1,0 +1,86 @@
+package com.tagtraum.perf.gcviewer.math;
+
+import java.io.Serializable;
+
+/**
+ *
+ * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
+ * Date: May 20, 2005
+ * Time: 5:08:33 PM
+ *
+ */
+public class IntData implements Serializable  {
+
+    private int n;
+    private long sum;
+    private long sumSquares;
+    private int min = Integer.MAX_VALUE;
+    private int max = Integer.MIN_VALUE;
+
+    public void add(int x) {
+        sum += x;
+        sumSquares += ((long)x)*((long)x);
+        n++;
+        min = Math.min(min, x);
+        max = Math.max(max, x);
+    }
+
+    public void add(int x, int weight) {
+        sum += x * weight;
+        n += weight;
+        sumSquares += ((long)x)*((long)x)*((long)weight);
+        min = Math.min(min, x);
+        max = Math.max(max, x);
+    }
+
+    public int getN() {
+        return n;
+    }
+
+    public long getSum() {
+        return sum;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public double average() {
+        if (n == 0) throw new IllegalStateException("n == 0");
+        return ((double)sum) / ((double)n);
+    }
+
+    public double standardDeviation() {
+        if (n == 0) throw new IllegalStateException("n == 0");
+        if (n==1) return 0;
+        return Math.sqrt(variance());
+    }
+
+    public double variance() {
+        if (n == 0) throw new IllegalStateException("n == 0");
+        if (n==1) return 0;
+        final double dsum = sum;
+        final double dn = n;
+        return (sumSquares - dsum*dsum/dn)/(dn-1);
+    }
+
+    public void reset() {
+        sum = 0;
+        sumSquares = 0;
+        n = 0;
+    }
+
+    public static long weightedAverage(long[] n, int[] weight) {
+        long sum = 0;
+        int m = 0;
+        for (int i=0; i<n.length; i++) {
+            sum += n[i]*weight[i];
+            m += weight[i];
+        }
+        return sum / m;
+    }
+}

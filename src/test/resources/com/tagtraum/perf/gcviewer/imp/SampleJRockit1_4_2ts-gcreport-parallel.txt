@@ -1,0 +1,53 @@
+[Wed Nov 16 15:02:13 2005][28637][memory ] GC strategy: parallel
+[Wed Nov 16 15:02:13 2005][28637][memory ] heap size: 32768K, maximal heap size: 65536K
+[Wed Nov 16 15:02:13 2005][28637][memory ] <s>-<end>: GC <before>K-><after>K (<heap>K), <pause> ms
+[Wed Nov 16 15:02:13 2005][28637][memory ] <s/start> - start time of collection (seconds since jvm start)
+[Wed Nov 16 15:02:13 2005][28637][memory ] <end>     - end time of collection (seconds since jvm start)
+[Wed Nov 16 15:02:13 2005][28637][memory ] <before>  - memory used by objects before collection (KB)
+[Wed Nov 16 15:02:13 2005][28637][memory ] <after>   - memory used by objects after collection (KB)
+[Wed Nov 16 15:02:13 2005][28637][memory ] <heap>    - size of heap after collection (KB)
+[Wed Nov 16 15:02:13 2005][28637][memory ] <pause>   - total pause time during collection (milliseconds)
+[Wed Nov 16 15:02:34 2005][28637][memory ] 20.547-20.619: GC 32768K->5552K (32768K), 72.000 ms
+[Wed Nov 16 15:02:41 2005][28637][memory ] 27.612-27.694: GC 32768K->7411K (32768K), 81.913 ms
+[Wed Nov 16 15:02:45 2005][28637][memory ] 31.548-31.641: GC 32768K->9948K (32768K), 93.000 ms
+[Wed Nov 16 15:02:47 2005][28637][memory ] 33.728-33.839: GC 32768K->12048K (32768K), 110.253 ms
+[Wed Nov 16 15:02:50 2005][28637][memory ] 37.234-37.364: GC 32768K->14019K (32768K), 129.870 ms
+[Wed Nov 16 15:02:55 2005][28637][memory ] 41.383-41.637: GC 32768K->15813K (32768K), 253.820 ms
+[Wed Nov 16 15:02:57 2005][28637][memory ] 43.829-43.989: GC 32768K->17262K (32768K), 160.000 ms
+[Wed Nov 16 15:02:59 2005][28637][memory ] 45.815-46.084: GC 32768K->18664K (32768K), 269.000 ms
+[Wed Nov 16 15:03:00 2005][28637][memory ] 47.238-47.425: GC 32768K->19430K (32768K), 187.000 ms
+[Wed Nov 16 15:03:02 2005][28637][memory ] 48.839-49.064: GC 32768K->21845K (32768K), 225.000 ms
+[Wed Nov 16 15:03:03 2005][28637][memory ] 49.696-49.920: GC 32768K->24147K (32768K), 223.982 ms
+[Wed Nov 16 15:03:03 2005][28637][memory ] 50.294-50.510: GC 32768K->24414K (32768K), 215.496 ms
+[Wed Nov 16 15:03:04 2005][28637][memory ] 50.934-51.260: GC 32768K->25684K (38340K), 326.000 ms
+[Wed Nov 16 15:03:06 2005][28637][memory ] 52.416-53.204: GC 38340K->24252K (38340K), 787.557 ms
+[Wed Nov 16 15:04:04 2005][28637][memory ] 110.875-111.128: GC 38340K->22921K (38340K), 253.000 ms
+[Wed Nov 16 15:05:02 2005][28637][memory ] 168.747-169.020: GC 38340K->24261K (38340K), 272.723 ms
+[Wed Nov 16 15:05:03 2005][28637][memory ] 170.229-170.493: GC 38340K->23301K (38340K), 264.000 ms
+[Wed Nov 16 15:05:04 2005][28637][memory ] 170.975-171.223: GC 38340K->21901K (38340K), 247.646 ms
+[Wed Nov 16 15:05:05 2005][28637][memory ] 171.595-171.854: GC 38340K->21280K (38340K), 258.943 ms
+[Wed Nov 16 15:05:18 2005][28637][memory ] 185.019-185.320: GC 38340K->22099K (38340K), 301.000 ms
+[Wed Nov 16 15:05:19 2005][28637][memory ] 185.646-185.907: GC 38340K->19623K (38340K), 261.000 ms
+[Wed Nov 16 15:05:19 2005][28637][memory ] 186.231-186.478: GC 38340K->19261K (38340K), 247.000 ms
+[Wed Nov 16 15:05:37 2005][28637][memory ] 203.388-203.651: GC 38340K->20299K (38340K), 263.000 ms
+[Wed Nov 16 15:06:05 2005][28637][memory ] 232.256-232.502: GC 35849K->21381K (38340K), 245.933 ms
+[Wed Nov 16 15:07:06 2005][28637][memory ] 292.568-293.140: GC 36013K->20152K (38340K), 572.000 ms
+[Wed Nov 16 15:07:07 2005][28637][memory ] 293.732-294.039: GC 23280K->19545K (38340K), 306.411 ms
+[Wed Nov 16 15:07:07 2005][28637][memory ] 294.099-294.397: GC 22643K->18908K (38340K), 297.752 ms
+[Wed Nov 16 15:07:09 2005][28637][memory ] 296.015-296.242: GC 31407K->15665K (38340K), 226.214 ms
+[Wed Nov 16 15:07:10 2005][28637][memory ] 296.300-296.515: GC 19039K->15003K (38340K), 214.740 ms
+[Wed Nov 16 15:07:10 2005][28637][memory ] 296.938-297.158: GC 18557K->14680K (38340K), 219.550 ms
+[Wed Nov 16 15:07:10 2005][28637][memory ] 297.243-297.441: GC 18211K->14523K (38340K), 198.000 ms
+[Wed Nov 16 15:07:11 2005][28637][memory ] 
+[Wed Nov 16 15:07:11 2005][28637][memory ] Memory usage report
+[Wed Nov 16 15:07:11 2005][28637][memory ] 
+[Wed Nov 16 15:07:11 2005][28637][memory ] old collections
+[Wed Nov 16 15:07:11 2005][28637][memory ]     number of collections = 31
+[Wed Nov 16 15:07:11 2005][28637][memory ]     total promoted =        0 (size 0)
+[Wed Nov 16 15:07:11 2005][28637][memory ]     max promoted =          0 (size 0)
+[Wed Nov 16 15:07:11 2005][28637][memory ]     total GC time =         7.789 s (pause 7.789 s)
+[Wed Nov 16 15:07:11 2005][28637][memory ]     mean GC time =          251.258 ms (pause 251.257 ms)
+[Wed Nov 16 15:07:11 2005][28637][memory ]     maximum GC Pauses =      326.701 , 572.220, 787.557 ms
+[Wed Nov 16 15:07:11 2005][28637][memory ] 
+[Wed Nov 16 15:07:11 2005][28637][memory ]     number of parallel mark phases    = 31
+[Wed Nov 16 15:07:11 2005][28637][memory ]     number of parallel sweep phases   = 31

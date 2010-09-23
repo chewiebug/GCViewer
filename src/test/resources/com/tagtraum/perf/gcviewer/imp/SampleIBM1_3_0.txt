@@ -1,0 +1,23 @@
+<AF: Allocation Failure. need 64 bytes, 11818158 ms since last AF>
+<AF: managing allocation failure, action=1 (0/265223160) (3145728/3145728)>
+<GC: Tue May 28 21:35:05 2002
+<GC(2): freed 228826936 bytes in 280 ms, 86% free (231972664/268368888)>
+  <GC(2): mark: 187 ms, sweep: 93 ms, compact: 0 ms>
+  <GC(2): refs: soft 0 (age >= 32), weak 94, final 719, phantom 0>
+<AF: completed in 282 ms>
+
+<AF: Allocation Failure. need 528 bytes, 20236628 ms since last AF>
+<AF: managing allocation failure, action=1 (0/265223160) (3145728/3145728)>
+<GC: Wed May 29 03:12:22 2002
+<GC(3): freed 229007952 bytes in 2303 ms, 86% free (232153680/268368888)>
+  <GC(3): mark: 2083 ms, sweep: 220 ms, compact: 0 ms>
+  <GC(3): refs: soft 0 (age >= 32), weak 0, final 10, phantom 0>
+<AF: completed in 2357 ms>
+
+<AF: Allocation Failure. need 528 bytes, 20231638 ms since last AF>
+<AF: managing allocation failure, action=1 (480/265223160) (3145728/3145728)>
+<GC: Wed May 29 08:49:36 2002
+<GC(4): freed 229023616 bytes in 275 ms, 86% free (232169824/268368888)>
+  <GC(4): mark: 182 ms, sweep: 93 ms, compact: 0 ms>
+  <GC(4): refs: soft 0 (age >= 32), weak 0, final 0, phantom 0>
+<AF: completed in 276 ms>

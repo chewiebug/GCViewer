@@ -1,0 +1,323 @@
+<AF[1]: Allocation Failure. need 1048592 bytes, 0 ms since last AF>
+<AF[1]: managing allocation failure, action=1 (879696/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:41:35 2002
+<GC: freeing class java.text.ParseException(6001e368)>
+<GC: freeing class java.io.StringReader(6001dea8)>
+<GC: freeing class java.lang.IllegalAccessException(6001ad60)>
+<GC: freeing class java.lang.InstantiationException(6001acc8)>
+<GC: freeing class java.io.CharArrayReader(6001a770)>
+<GC: freeing class java.rmi.NoSuchObjectException(60017628)>
+<GC: freeing class org.omg.CORBA.Bounds(60015a40)>
+<GC: freeing class org.omg.CORBA.TypeCodePackage.Bounds(600159a8)>
+<GC: freeing class org.omg.CORBA.OBJ_ADAPTER(600157e0)>
+<GC: freeing class org.omg.CORBA.portable.RemarshalException(60013868)>
+<GC: freeing class sun.security.provider.SHA(6000e250)>
+<GC: freeing class java.rmi.ServerError(6000d540)>
+<GC: freeing class java.rmi.ServerException(6000d4a8)>
+<GC: freeing class java.rmi.ServerRuntimeException(6000d410)>
+<GC: freeing class java.rmi.UnexpectedException(6000d378)>
+<GC: freeing class java.rmi.MarshalException(6000d248)>
+<GC: freeing class java.rmi.AccessException(6000d1b0)>
+<GC: freeing class java.rmi.server.ExportException(6000c408)>
+<GC: freeing class org.omg.CORBA.NO_RESPONSE(60008778)>
+<GC: freeing class java.io.InterruptedIOException(60007f28)>
+<GC: freeing class java.security.DigestException(60006898)>
+<GC: freeing class org.omg.CosNaming.NamingContextPackage.NotFound(60032880)>
+<GC: freeing class org.omg.CosNaming.NamingContextPackage.CannotProceed(600327e8)>
+<GC: freeing class org.omg.CosNaming.NamingContextPackage.InvalidName(60032750)>
+<GC: freeing class org.omg.CosNaming.NamingContextPackage.NotEmpty(60032588)>
+<GC: freeing class org.omg.CORBA.IMP_LIMIT(60031ca0)>
+<GC: freeing class java.util.zip.GZIPOutputStream(613dfcc0)>
+<GC: freeing class java.util.zip.DeflaterOutputStream(613dfc28)>
+<GC: freeing class java.util.zip.GZIPInputStream(613dfaf8)>
+<GC: freeing class java.sql.BatchUpdateException(62072468)>
+<GC: freeing class java.sql.Timestamp(620720d8)>
+<GC: freeing class java.sql.Time(62072040)>
+<GC: freeing class java.sql.Date(62071fa8)>
+<GC: freeing class java.math.BigDecimal(62071e78)>
+<GC: freeing class java.sql.Blob(6209ba00)>
+<GC: freeing class java.sql.Clob(620dc980)>
+<GC: freeing class java.io.FileWriter(620dc390)>
+<GC: freeing class sun.io.CharToByteCp500(6242f8c0)>
+<GC: freeing class sun.io.CharToByteSingleByte(6242f828)>
+<GC: unloaded and freed 39 classes>
+<GC(1): freed 244795872 bytes in 105 ms, 92% free (248821296/268435448)>
+  <GC(1): mark: 69 ms, sweep: 36 ms, compact: 0 ms>
+  <GC(1): refs: soft 0 (age >= 32), weak 1, final 1395, phantom 0>
+<AF[1]: completed in 120 ms>
+
+<AF[2]: Allocation Failure. need 1048592 bytes, 10574 ms since last AF>
+<AF[2]: managing allocation failure, action=1 (31746128/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:41:45 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(2): freed 215129976 bytes in 101 ms, 93% free (250021832/268435448)>
+  <GC(2): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(2): refs: soft 0 (age >= 32), weak 0, final 651, phantom 0>
+<AF[2]: completed in 104 ms>
+
+<AF[3]: Allocation Failure. need 1048640 bytes, 10644 ms since last AF>
+<AF[3]: managing allocation failure, action=1 (31518208/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:41:56 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(3): freed 215317296 bytes in 101 ms, 93% free (249981232/268435448)>
+  <GC(3): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(3): refs: soft 0 (age >= 32), weak 0, final 662, phantom 0>
+<AF[3]: completed in 105 ms>
+
+<AF[4]: Allocation Failure. need 1048592 bytes, 10600 ms since last AF>
+<AF[4]: managing allocation failure, action=1 (32062032/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:42:07 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(4): freed 215805080 bytes in 101 ms, 93% free (251012840/268435448)>
+  <GC(4): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(4): refs: soft 0 (age >= 32), weak 0, final 652, phantom 0>
+<AF[4]: completed in 105 ms>
+
+<AF[5]: Allocation Failure. need 1048592 bytes, 10964 ms since last AF>
+<AF[5]: managing allocation failure, action=1 (30381096/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:42:18 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(5): freed 217452720 bytes in 101 ms, 93% free (250979544/268435448)>
+  <GC(5): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(5): refs: soft 0 (age >= 32), weak 0, final 663, phantom 0>
+<AF[5]: completed in 105 ms>
+
+<AF[6]: Allocation Failure. need 1048592 bytes, 10677 ms since last AF>
+<AF[6]: managing allocation failure, action=1 (30968296/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:42:29 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(6): freed 216858480 bytes in 102 ms, 93% free (250972504/268435448)>
+  <GC(6): mark: 67 ms, sweep: 34 ms, compact: 1 ms>
+  <GC(6): refs: soft 0 (age >= 32), weak 0, final 663, phantom 0>
+<AF[6]: completed in 104 ms>
+
+<AF[7]: Allocation Failure. need 1048640 bytes, 16836 ms since last AF>
+<AF[7]: managing allocation failure, action=1 (32022272/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:42:46 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(7): freed 212654752 bytes in 101 ms, 92% free (247822752/268435448)>
+  <GC(7): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(7): refs: soft 0 (age >= 32), weak 0, final 662, phantom 0>
+<AF[7]: completed in 105 ms>
+
+<AF[8]: Allocation Failure. need 1048840 bytes, 10849 ms since last AF>
+<AF[8]: managing allocation failure, action=1 (32010080/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:42:57 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(8): freed 214746664 bytes in 102 ms, 93% free (249902472/268435448)>
+  <GC(8): mark: 67 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(8): refs: soft 0 (age >= 32), weak 0, final 652, phantom 0>
+<AF[8]: completed in 105 ms>
+
+<AF[9]: Allocation Failure. need 1048640 bytes, 10658 ms since last AF>
+<AF[9]: managing allocation failure, action=1 (31967240/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:43:07 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(9): freed 214786632 bytes in 102 ms, 93% free (249899600/268435448)>
+  <GC(9): mark: 67 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(9): refs: soft 0 (age >= 32), weak 0, final 662, phantom 0>
+<AF[9]: completed in 105 ms>
+
+<AF[10]: Allocation Failure. need 1048640 bytes, 10950 ms since last AF>
+<AF[10]: managing allocation failure, action=1 (32024128/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:43:18 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(10): freed 210545536 bytes in 102 ms, 91% free (245715392/268435448)>
+  <GC(10): mark: 67 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(10): refs: soft 0 (age >= 32), weak 0, final 650, phantom 0>
+<AF[10]: completed in 104 ms>
+
+<AF[11]: Allocation Failure. need 1048640 bytes, 10509 ms since last AF>
+<AF[11]: managing allocation failure, action=1 (32041176/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:43:29 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(11): freed 212620792 bytes in 101 ms, 92% free (247807696/268435448)>
+  <GC(11): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(11): refs: soft 0 (age >= 32), weak 0, final 650, phantom 0>
+<AF[11]: completed in 104 ms>
+
+<AF[12]: Allocation Failure. need 1048592 bytes, 10636 ms since last AF>
+<AF[12]: managing allocation failure, action=1 (33110232/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:43:40 2002
+<GC(12): freed 208401432 bytes in 101 ms, 91% free (244657392/268435448)>
+  <GC(12): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(12): refs: soft 0 (age >= 32), weak 0, final 638, phantom 0>
+<AF[12]: completed in 103 ms>
+
+<AF[13]: Allocation Failure. need 1048640 bytes, 9907 ms since last AF>
+<AF[13]: managing allocation failure, action=1 (31037288/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:43:50 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(13): freed 206286152 bytes in 102 ms, 89% free (240469168/268435448)>
+  <GC(13): mark: 67 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(13): refs: soft 0 (age >= 32), weak 0, final 648, phantom 0>
+<AF[13]: completed in 105 ms>
+
+<AF[14]: Allocation Failure. need 1048640 bytes, 10550 ms since last AF>
+<AF[14]: managing allocation failure, action=1 (32101096/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:44:00 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(14): freed 208367072 bytes in 102 ms, 90% free (243613896/268435448)>
+  <GC(14): mark: 67 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(14): refs: soft 0 (age >= 32), weak 0, final 636, phantom 0>
+<AF[14]: completed in 105 ms>
+
+<AF[15]: Allocation Failure. need 1048840 bytes, 10503 ms since last AF>
+<AF[15]: managing allocation failure, action=1 (33134456/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:44:11 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(15): freed 204187376 bytes in 101 ms, 89% free (240467560/268435448)>
+  <GC(15): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(15): refs: soft 0 (age >= 32), weak 0, final 627, phantom 0>
+<AF[15]: completed in 105 ms>
+
+<AF[16]: Allocation Failure. need 1048640 bytes, 9867 ms since last AF>
+<AF[16]: managing allocation failure, action=1 (31055904/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:44:21 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(16): freed 208359448 bytes in 102 ms, 90% free (242561080/268435448)>
+  <GC(16): mark: 68 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(16): refs: soft 0 (age >= 32), weak 0, final 636, phantom 0>
+<AF[16]: completed in 106 ms>
+
+<AF[17]: Allocation Failure. need 1048840 bytes, 10255 ms since last AF>
+<AF[17]: managing allocation failure, action=1 (33191248/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:44:31 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(17): freed 204138656 bytes in 101 ms, 89% free (240475632/268435448)>
+  <GC(17): mark: 67 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(17): refs: soft 0 (age >= 32), weak 0, final 625, phantom 0>
+<AF[17]: completed in 105 ms>
+
+<AF[18]: Allocation Failure. need 1048592 bytes, 10215 ms since last AF>
+<AF[18]: managing allocation failure, action=1 (30925160/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:44:42 2002
+<GC(18): freed 208415744 bytes in 102 ms, 90% free (242486632/268435448)>
+  <GC(18): mark: 67 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(18): refs: soft 0 (age >= 32), weak 0, final 625, phantom 0>
+<AF[18]: completed in 104 ms>
+
+<AF[19]: Allocation Failure. need 1048592 bytes, 10286 ms since last AF>
+<AF[19]: managing allocation failure, action=1 (30818464/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:44:52 2002
+<GC(19): freed 208423320 bytes in 102 ms, 90% free (242387512/268435448)>
+  <GC(19): mark: 68 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(19): refs: soft 0 (age >= 32), weak 0, final 637, phantom 0>
+<AF[19]: completed in 104 ms>
+
+<AF[20]: Allocation Failure. need 1048840 bytes, 10250 ms since last AF>
+<AF[20]: managing allocation failure, action=1 (33006008/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:45:02 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(20): freed 204137728 bytes in 105 ms, 89% free (240289464/268435448)>
+  <GC(20): mark: 71 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(20): refs: soft 0 (age >= 32), weak 0, final 636, phantom 0>
+<AF[20]: completed in 109 ms>
+
+<AF[21]: Allocation Failure. need 1048640 bytes, 11368 ms since last AF>
+<AF[21]: managing allocation failure, action=1 (31778368/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:45:14 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(21): freed 204224208 bytes in 103 ms, 89% free (239148304/268435448)>
+  <GC(21): mark: 68 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(21): refs: soft 0 (age >= 32), weak 0, final 625, phantom 0>
+<AF[21]: completed in 106 ms>
+
+<AF[22]: Allocation Failure. need 1048840 bytes, 10377 ms since last AF>
+<AF[22]: managing allocation failure, action=1 (32924912/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:45:24 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(22): freed 204139688 bytes in 103 ms, 89% free (240210328/268435448)>
+  <GC(22): mark: 68 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(22): refs: soft 0 (age >= 32), weak 0, final 624, phantom 0>
+<AF[22]: completed in 106 ms>
+
+<AF[23]: Allocation Failure. need 1048592 bytes, 10389 ms since last AF>
+<AF[23]: managing allocation failure, action=1 (31702144/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:45:35 2002
+<GC(23): freed 208412960 bytes in 103 ms, 90% free (243260832/268435448)>
+  <GC(23): mark: 69 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(23): refs: soft 0 (age >= 32), weak 0, final 624, phantom 0>
+<AF[23]: completed in 105 ms>
+
+<AF[24]: Allocation Failure. need 1048592 bytes, 10490 ms since last AF>
+<AF[24]: managing allocation failure, action=1 (30544464/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:45:45 2002
+<GC(24): freed 208431688 bytes in 104 ms, 90% free (242121880/268435448)>
+  <GC(24): mark: 69 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(24): refs: soft 0 (age >= 32), weak 0, final 638, phantom 0>
+<AF[24]: completed in 104 ms>
+
+<AF[25]: Allocation Failure. need 1048640 bytes, 9944 ms since last AF>
+<AF[25]: managing allocation failure, action=1 (31482288/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:45:55 2002
+<GC: freeing class sun.io.CharToByteCp500(60006898)>
+<GC: freeing class sun.io.CharToByteSingleByte(60007f28)>
+<GC: unloaded and freed 2 classes>
+<GC(25): freed 208452056 bytes in 104 ms, 90% free (243080072/268435448)>
+  <GC(25): mark: 69 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(25): refs: soft 0 (age >= 32), weak 0, final 647, phantom 0>
+<AF[25]: completed in 108 ms>
+
+<AF[26]: Allocation Failure. need 1048592 bytes, 10539 ms since last AF>
+<AF[26]: managing allocation failure, action=1 (30311416/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:46:06 2002
+<GC(26): freed 208460040 bytes in 104 ms, 90% free (241917184/268435448)>
+  <GC(26): mark: 69 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(26): refs: soft 0 (age >= 32), weak 0, final 628, phantom 0>
+<AF[26]: completed in 106 ms>
+
+<AF[27]: Allocation Failure. need 1048592 bytes, 10288 ms since last AF>
+<AF[27]: managing allocation failure, action=1 (30405832/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:46:16 2002
+<GC(27): freed 208384704 bytes in 103 ms, 90% free (241936264/268435448)>
+  <GC(27): mark: 69 ms, sweep: 34 ms, compact: 0 ms>
+  <GC(27): refs: soft 0 (age >= 32), weak 0, final 637, phantom 0>
+<AF[27]: completed in 105 ms>
+
+<AF[28]: Allocation Failure. need 1048640 bytes, 10128 ms since last AF>
+<AF[28]: managing allocation failure, action=1 (31349416/265289720) (3145728/3145728)>
+<GC: Mon Jul  8 10:46:27 2002
+<GC: freeing class sun.io.CharToByteCp500(60007f28)>
+<GC: freeing class sun.io.CharToByteSingleByte(60006898)>
+<GC: unloaded and freed 2 classes>
+<GC(28): freed 204204928 bytes in 104 ms, 88% free (238700072/268435448)>
+  <GC(28): mark: 69 ms, sweep: 35 ms, compact: 0 ms>
+  <GC(28): refs: soft 0 (age >= 32), weak 0, final 636, phantom 0>
+<AF[28]: completed in 107 ms>
