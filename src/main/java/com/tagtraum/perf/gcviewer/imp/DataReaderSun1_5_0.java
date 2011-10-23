@@ -76,7 +76,7 @@ public class DataReaderSun1_5_0 extends DataReaderSun1_4_0 {
                     skipDetails(line, pos);
                     // hack to add tenured detail event CMS_REMARK
                     if (line.indexOf(AbstractGCEvent.Type.CMS_REMARK.getType()) != -1) {
-                        final ConcurrentGCEvent detailEvent = new ConcurrentGCEvent();
+                        final GCEvent detailEvent = new GCEvent();
                         detailEvent.setTimestamp(timestamp);
                         detailEvent.setType(AbstractGCEvent.Type.CMS_REMARK);
                         event.add(detailEvent);
@@ -99,7 +99,7 @@ public class DataReaderSun1_5_0 extends DataReaderSun1_4_0 {
                         setMemoryAndPauses(detailEvent, line, pos);
                         event.add(detailEvent);
                     }
-                    setPause(event, line, pos);
+                    parsePause(event, line, pos);
                 }
                 ae = event;
             }

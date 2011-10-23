@@ -1,19 +1,19 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.DataReader;
-import com.tagtraum.perf.gcviewer.GCEvent;
-import com.tagtraum.perf.gcviewer.GCModel;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.DataReader;
+import com.tagtraum.perf.gcviewer.GCEvent;
+import com.tagtraum.perf.gcviewer.GCModel;
 
 /**
  * Parses -verbose:gc output from Sun JDK 1.4.0.
@@ -31,7 +31,8 @@ public class DataReaderSun1_4_0 extends AbstractDataReaderSun implements DataRea
     private static final String APPLICATION_TIME = "Application time:";
     private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:";
     private static final String SURVIVOR_AGE = "- age";
-    private static final HashSet EXCLUDE_STRINGS = new HashSet();
+    private static final Set<String> EXCLUDE_STRINGS = new HashSet<String>();
+    
 
     static {
         EXCLUDE_STRINGS.add(UNLOADING_CLASS);
@@ -40,7 +41,7 @@ public class DataReaderSun1_4_0 extends AbstractDataReaderSun implements DataRea
         EXCLUDE_STRINGS.add(TOTAL_TIME_THREADS_STOPPED);
         EXCLUDE_STRINGS.add(SURVIVOR_AGE);
     }
-    private Pattern unloadingClassPattern = Pattern.compile(".*\\[Unloading class [^\\]]+\\]$");
+    private static Pattern unloadingClassPattern = Pattern.compile(".*\\[Unloading class [^\\]]+\\]$");
 
     public DataReaderSun1_4_0(final InputStream in) throws UnsupportedEncodingException {
         super(in);
@@ -48,6 +49,7 @@ public class DataReaderSun1_4_0 extends AbstractDataReaderSun implements DataRea
 
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.4.x/1.5.x format...");
+        
         try {
             final GCModel model = new GCModel(true);
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
@@ -58,15 +60,15 @@ public class DataReaderSun1_4_0 extends AbstractDataReaderSun implements DataRea
             while ((line = in.readLine()) != null) {
                 try {
                     // filter out [Unloading class com.xyz] statements
-                    for (Iterator i=EXCLUDE_STRINGS.iterator(); i.hasNext(); ) {
-                        final String s = (String)i.next();
-                        if (line.indexOf(s) == 0) continue OUTERLOOP;
+                    for (String i : EXCLUDE_STRINGS) {
+                        if (line.indexOf(i) == 0) continue OUTERLOOP;
                     }
                     final int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassPattern.matcher(line).matches()) {
                         beginningOfLine = line.substring(0, unloadingClassIndex);
                         continue;
-                    } else if (line.endsWith("[DefNew") || line.endsWith("[ParNew")) {
+                    }
+                    else if (line.endsWith("[DefNew") || line.endsWith("[ParNew")) {
                         beginningOfLine = line;
                         continue;
                     }
@@ -76,7 +78,7 @@ public class DataReaderSun1_4_0 extends AbstractDataReaderSun implements DataRea
                     }
                     model.add(parseLine(line, parsePosition));
                 } catch (ParseException pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.getMessage());
+                    if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
                 }
                 // reset ParsePosition
@@ -131,7 +133,7 @@ public class DataReaderSun1_4_0 extends AbstractDataReaderSun implements DataRea
                     setMemoryAndPauses(detailEvent, line, pos);
                     event.add(detailEvent);
                 }
-                    setPause(event, line, pos);
+                    parsePause(event, line, pos);
             }
             return event;
         } catch (RuntimeException rte) {

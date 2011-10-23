@@ -1,27 +1,45 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.SwingPropertyChangeSupport;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Logger;
-import java.util.ResourceBundle;
 import java.text.MessageFormat;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.SwingPropertyChangeSupport;
+
+import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 
 
 /**
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * Date: May 5, 2005
- * Time: 2:14:36 PM
+ * <p>Date: May 5, 2005<br/>
+ * Time: 2:14:36 PM</p>
  *
  */
 public class ChartPanelView {
@@ -51,6 +69,8 @@ public class ChartPanelView {
         this.textAreaLogHandler = new TextAreaLogHandler();
         final GCModel model = loadModel(url);
         setModel(model);
+        // TODO delete
+        model.printPauseMaps();
     }
 
     /**
@@ -79,7 +99,7 @@ public class ChartPanelView {
             if (textAreaLogHandler.hasErrors()) {
                 // show error dialog
                 final JPanel panel = new JPanel(new BorderLayout());
-                final JLabel messageLabel = new JLabel(new MessageFormat(localStrings.getString("datareader_parseerror_dialog_message")).format(new Object[]{url}));
+                final JLabel messageLabel = new JLabel(new MessageFormat(localStrings.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
                 messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
                 panel.add(messageLabel, BorderLayout.NORTH);
                 final JScrollPane textAreaScrollPane = new JScrollPane(textAreaLogHandler.getTextArea());

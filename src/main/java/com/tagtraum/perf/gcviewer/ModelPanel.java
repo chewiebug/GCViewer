@@ -1,17 +1,22 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.util.TimeFormat;
-import com.tagtraum.perf.gcviewer.util.MemoryFormat;
-
-import javax.swing.*;
-import java.awt.*;
-import java.text.NumberFormat;
+import java.awt.GridLayout;
 import java.text.DateFormat;
-import java.util.ResourceBundle;
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
+import com.tagtraum.perf.gcviewer.util.MemoryFormat;
+import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
 /**
- * Panel that contains characteristic data about about the gc file.
+ * Panel that contains characteristic data about the gc file.
  *
  * Date: Feb 3, 2002
  * Time: 9:58:00 PM
@@ -91,530 +96,204 @@ public class ModelPanel extends JTabbedPane {
         return average-standardDeviation > 0.75 * average;
     }
 
-
-    private class MemoryTab extends JPanel {
-        private JLabel footprintAfterFullGCValue;
-        private JLabel footprintAfterGCValue;
-        private JLabel slopeAfterFullGCValue;
-        private JLabel slopeAfterGCValue;
-        private JLabel freedMemoryByFullGCValue;
-        private JLabel avgFreedMemoryByFullGCValue;
-        private JLabel freedMemoryByGCValue;
-        private JLabel avgFreedMemoryByGCValue;
-        private JLabel avgRelativePostGCIncValue;
-        private JLabel avgRelativePostFullGCIncValue;
-        private JLabel footprintValue;
-        private JLabel freedMemoryValue;
-
-        public MemoryTab() {
-            GridBagLayout layout = new GridBagLayout();
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            constraints.weightx = 1.0;
-            constraints.weighty = 1.0;
-            constraints.insets = new Insets(0, 3, 0, 3);
-            constraints.gridy = -1;
-            setLayout(layout);
-
-            // footprint
-            JLabel footprintLabel = new JLabel(localStrings.getString("data_panel_footprint"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(footprintLabel, constraints);
-            add(footprintLabel);
-            footprintValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(footprintValue, constraints);
-            add(footprintValue);
-
-            // footprint after full gc
-            JLabel footprintAfterFullGCLabel = new JLabel(localStrings.getString("data_panel_footprintafterfullgc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(footprintAfterFullGCLabel, constraints);
-            add(footprintAfterFullGCLabel);
-            footprintAfterFullGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(footprintAfterFullGCValue, constraints);
-            add(footprintAfterFullGCValue);
-
-            // footprint after (small) gc
-            JLabel footprintAfterGCLabel = new JLabel(localStrings.getString("data_panel_footprintaftergc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(footprintAfterGCLabel, constraints);
-            add(footprintAfterGCLabel);
-            footprintAfterGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(footprintAfterGCValue, constraints);
-            add(footprintAfterGCValue);
-
-            // freed memory
-            JLabel freedMemoryLabel = new JLabel(localStrings.getString("data_panel_freedmemory"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(freedMemoryLabel, constraints);
-            add(freedMemoryLabel);
-            freedMemoryValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(freedMemoryValue, constraints);
-            add(freedMemoryValue);
-
-            // memory freed by full gc
-            JLabel freedMemoryByFullGCLabel = new JLabel(localStrings.getString("data_panel_freedmemorybyfullgc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(freedMemoryByFullGCLabel, constraints);
-            add(freedMemoryByFullGCLabel);
-            freedMemoryByFullGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(freedMemoryByFullGCValue, constraints);
-            add(freedMemoryByFullGCValue);
-
-            // memory freed by gc
-            JLabel freedMemoryByGCLabel = new JLabel(localStrings.getString("data_panel_freedmemorybygc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(freedMemoryByGCLabel, constraints);
-            add(freedMemoryByGCLabel);
-            freedMemoryByGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(freedMemoryByGCValue, constraints);
-            add(freedMemoryByGCValue);
-
-            // avg memory freed by full gc
-            JLabel avgFreedMemoryByFullGCLabel = new JLabel(localStrings.getString("data_panel_avgfreedmemorybyfullgc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(avgFreedMemoryByFullGCLabel, constraints);
-            add(avgFreedMemoryByFullGCLabel);
-            avgFreedMemoryByFullGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(avgFreedMemoryByFullGCValue, constraints);
-            add(avgFreedMemoryByFullGCValue);
-
-            // avg memory freed by gc
-            JLabel avgFreedMemoryByGCLabel = new JLabel(localStrings.getString("data_panel_avgfreedmemorybygc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(avgFreedMemoryByGCLabel, constraints);
-            add(avgFreedMemoryByGCLabel);
-            avgFreedMemoryByGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(avgFreedMemoryByGCValue, constraints);
-            add(avgFreedMemoryByGCValue);
-
-            // avg increase in memory consumption in comparison to foorprint after the last full GC
-            JLabel avgRelativePostFullGCIncLabel = new JLabel(localStrings.getString("data_panel_avgrelativepostfullgcincrease"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(avgRelativePostFullGCIncLabel, constraints);
-            add(avgRelativePostFullGCIncLabel);
-            avgRelativePostFullGCIncValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(avgRelativePostFullGCIncValue, constraints);
-            add(avgRelativePostFullGCIncValue);
-
-            // avg increase in memory consumption in comparison to foorprint after the last GC
-            JLabel avgRelativepostGCIncLabel = new JLabel(localStrings.getString("data_panel_avgrelativepostgcincrease"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(avgRelativepostGCIncLabel, constraints);
-            add(avgRelativepostGCIncLabel);
-            avgRelativePostGCIncValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(avgRelativePostGCIncValue, constraints);
-            add(avgRelativePostGCIncValue);
-
-            // slope of footprint after full gc
-            JLabel slopeAfterFullGCLabel = new JLabel(localStrings.getString("data_panel_slopeafterfullgc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(slopeAfterFullGCLabel, constraints);
-            add(slopeAfterFullGCLabel);
-            slopeAfterFullGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(slopeAfterFullGCValue, constraints);
-            add(slopeAfterFullGCValue);
-
-            // weighted slope of footprint after (small) gc
-            JLabel slopeAfterGCLabel = new JLabel(localStrings.getString("data_panel_slopeaftergc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(slopeAfterGCLabel, constraints);
-            add(slopeAfterGCLabel);
-            slopeAfterGCValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(slopeAfterGCValue, constraints);
-            add(slopeAfterGCValue);
-
-        }
+    private class ValuesTab extends JPanel {
+    	private int rowCount = 0;
+    	private JPanel currentPanel;
+    	private GridLayout currentLayout;
+    	
+    	public ValuesTab() {
+    		super();
+    		
+    		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    		
+    	}
+    	
+    	public void newGroup(String name, boolean withBorder) {
+    		currentPanel = new JPanel();
+    		if (withBorder) {
+	    		currentPanel.setBorder(BorderFactory.createCompoundBorder(
+	                    BorderFactory.createTitledBorder(name),
+	                    BorderFactory.createEmptyBorder(0,0,0,0)));
+    		}
+    		
+    		currentLayout = new GridLayout(0, 2, 0, 0);
+    		
+    		currentPanel.setLayout(currentLayout);
+    		
+    		add(currentPanel);
+    		
+    		rowCount = 0;
+    	}
+    	
+    	public void addValue(String name, String value, boolean enabled) {
+    		if (currentPanel == null) {
+    			newGroup("", false);
+    		}
+    		
+    		currentLayout.setRows(++rowCount);
+    		
+    		currentPanel.add(new JLabel(name));
+    		
+    		JLabel valueLabel = new JLabel(value, JLabel.RIGHT);
+    		valueLabel.setEnabled(enabled);
+    		currentPanel.add(valueLabel);
+    	}
+    	
+    }
+    
+    private class MemoryTab extends ValuesTab {
 
         public void setModel(GCModel model) {
-            footprintValue.setText(footprintFormatter.format(model.getFootprint()));
-            // check whether we have full gc data at all
             final boolean fullGCDataVailable = model.getFootprintAfterFullGC().getN() != 0;
-            final boolean fullGCSlopeDataVailable = model.getFootprintAfterFullGC().getN() > 1;
-            footprintAfterFullGCValue.setEnabled(fullGCDataVailable);
-            slopeAfterFullGCValue.setEnabled(fullGCDataVailable);
-            freedMemoryByFullGCValue.setEnabled(fullGCDataVailable);
-            avgFreedMemoryByFullGCValue.setEnabled(fullGCDataVailable);
-            avgRelativePostFullGCIncValue.setEnabled(fullGCDataVailable);
-            if (!fullGCDataVailable) {
-                footprintAfterFullGCValue.setText("n.a.");
-                slopeAfterFullGCValue.setText("n.a.");
-                freedMemoryByFullGCValue.setText("n.a.");
-                avgFreedMemoryByFullGCValue.setText("n.a.");
-            }
-            else {
-                footprintAfterFullGCValue.setText(footprintFormatter.format(model.getFootprintAfterFullGC().average())
-                        + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation()) +")");
-                footprintAfterFullGCValue.setEnabled(isSignificant(model.getFootprintAfterFullGC().average(),
-                        model.getFootprintAfterFullGC().standardDeviation()));
-                freedMemoryByFullGCValue.setText(footprintFormatter.format(model.getFreedMemoryByFullGC().getSum())
-                        + " (" + percentFormatter.format(model.getFreedMemoryByFullGC().getSum()*100.0/model.getFreedMemory()) + "%)");
-                avgFreedMemoryByFullGCValue.setText(footprintFormatter.format(model.getFreedMemoryByFullGC().average())
-                        + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByFullGC().standardDeviation()) + ")");
-                avgFreedMemoryByFullGCValue.setEnabled(isSignificant(model.getFreedMemoryByFullGC().average(),
-                        model.getFreedMemoryByFullGC().standardDeviation()));
-                if (fullGCSlopeDataVailable) {
-                    slopeAfterFullGCValue.setText(footprintSlopeFormatter.format(model.getPostFullGCSlope().slope()) + "/s");
-                    avgRelativePostFullGCIncValue.setText(footprintSlopeFormatter.format(model.getRelativePostFullGCIncrease().slope()) + "/coll");
-                }
-                else {
-                    slopeAfterFullGCValue.setText("n.a.");
-                    avgRelativePostFullGCIncValue.setText("n.a.");
-                }
-            }
-            // check whether we have gc data at all (or only full gc)
+            final boolean fullGCSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
             final boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
-            footprintAfterGCValue.setEnabled(gcDataAvailable);
-            slopeAfterGCValue.setEnabled(gcDataAvailable && fullGCDataVailable);
-            freedMemoryByGCValue.setEnabled(gcDataAvailable);
-            avgFreedMemoryByGCValue.setEnabled(gcDataAvailable);
-            avgRelativePostGCIncValue.setEnabled(gcDataAvailable && fullGCDataVailable);
-            if (!gcDataAvailable) {
-                footprintAfterGCValue.setText("n.a.");
-                slopeAfterGCValue.setText("n.a.");
-                freedMemoryByGCValue.setText("n.a.");
-                avgFreedMemoryByGCValue.setText("n.a.");
-                avgRelativePostGCIncValue.setText("n.a.");
-            }
-            else {
-                footprintAfterGCValue.setText(footprintFormatter.format(model.getFootprintAfterGC().average())
-                    + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterGC().standardDeviation()) + ")");
-                footprintAfterGCValue.setEnabled(isSignificant(model.getFootprintAfterGC().average(),
-                        model.getFootprintAfterGC().standardDeviation()));
-                if (fullGCDataVailable && model.getRelativePostGCIncrease().getN() != 0) {
-                    slopeAfterGCValue.setText(footprintSlopeFormatter.format(model.getPostGCSlope()) + "/s");
-                    avgRelativePostGCIncValue.setText(footprintSlopeFormatter.format(model.getRelativePostGCIncrease().average()) + "/coll");
-                }
-                else {
-                    slopeAfterGCValue.setText("n.a.");
-                    avgRelativePostGCIncValue.setText("n.a.");
-                    slopeAfterGCValue.setEnabled(false);
-                    avgRelativePostGCIncValue.setEnabled(false);
-                }
-                freedMemoryByGCValue.setText(footprintFormatter.format(model.getFreedMemoryByGC().getSum())
-                        + " (" + percentFormatter.format(model.getFreedMemoryByGC().getSum()*100.0/model.getFreedMemory()) + "%)");
-                avgFreedMemoryByGCValue.setText(footprintFormatter.format(model.getFreedMemoryByGC().average())
-                        + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByGC().standardDeviation()) + ")");
-                avgFreedMemoryByGCValue.setEnabled(isSignificant(model.getFreedMemoryByGC().average(),
-                        model.getFreedMemoryByGC().standardDeviation()));
-            }
-            freedMemoryValue.setText(footprintFormatter.format(model.getFreedMemory()));
-        }
+            final boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
 
+            addValue(localStrings.getString("data_panel_footprint"),
+        			footprintFormatter.format(model.getFootprint()), 
+        			true);
+        	addValue(localStrings.getString("data_panel_footprintafterfullgc"),
+        			fullGCDataVailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
+                            + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation()) +")" : "n/a",
+                    fullGCDataVailable && isSignificant(model.getFootprintAfterFullGC().average(),
+                            model.getFootprintAfterFullGC().standardDeviation()));
+        	addValue(localStrings.getString("data_panel_footprintaftergc"),
+        			gcDataAvailable ? footprintFormatter.format(model.getFootprintAfterGC().average())
+                            + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterGC().standardDeviation()) + ")" : "n/a",
+                    gcDataAvailable && isSignificant(model.getFootprintAfterGC().average(),
+                                    model.getFootprintAfterGC().standardDeviation()));
+        	
+        	addValue(localStrings.getString("data_panel_freedmemorybygc"),
+        			footprintFormatter.format(model.getFreedMemory()),
+        			true);
+        	addValue(localStrings.getString("data_panel_freedmemorybyfullgc"),
+        			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum())
+                            + " (" + percentFormatter.format(model.getFreedMemoryByFullGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
+                    fullGCDataVailable);
+        	addValue(localStrings.getString("data_panel_freedmemorybygc"),
+        			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().getSum())
+                            + " (" + percentFormatter.format(model.getFreedMemoryByGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
+                    gcDataAvailable);
+        	
+        	addValue(localStrings.getString("data_panel_avgfreedmemorybyfullgc"),
+        			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().average())
+                            + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByFullGC().standardDeviation()) + ")" : "n/a",
+                    fullGCDataVailable && isSignificant(model.getFreedMemoryByFullGC().average(),
+                            model.getFreedMemoryByFullGC().standardDeviation()));
+        	addValue(localStrings.getString("data_panel_avgfreedmemorybygc"),
+        			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().average())
+                            + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByGC().standardDeviation()) + ")" : "n/a",
+                    gcDataAvailable && isSignificant(model.getFreedMemoryByGC().average(),
+                            model.getFreedMemoryByGC().standardDeviation()));
+        	
+        	addValue(localStrings.getString("data_panel_avgrelativepostfullgcincrease"),
+        			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostFullGCIncrease().slope()) + "/coll" : "n/a",
+        			fullGCSlopeDataAvailable);
+        	addValue(localStrings.getString("data_panel_avgrelativepostgcincrease"),
+        			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostGCIncrease().average()) + "/coll" : "n/a",
+        			gcSlopeDataAvailable);
+        	
+        	addValue(localStrings.getString("data_panel_slopeafterfullgc"),
+        			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostFullGCSlope().slope()) + "/s" : "n/a",
+        			fullGCSlopeDataAvailable);
+        	addValue(localStrings.getString("data_panel_slopeaftergc"),
+        			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostGCSlope()) + "/s" : "n/a",
+        			gcSlopeDataAvailable);
+        }
     }
 
-    private class PauseTab extends JPanel {
-        private JLabel fullGCPauseValue;
-        private JLabel gcPauseValue;
-        private JLabel avgFullGCPauseValue;
-        private JLabel avgGCPauseValue;
-        private JLabel avgPauseValue;
-        private JLabel minPauseValue;
-        private JLabel maxPauseValue;
-        private JLabel accumPauseValue;
-
-
-        public PauseTab() {
-            GridBagLayout layout = new GridBagLayout();
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            constraints.weightx = 1.0;
-            constraints.weighty = 1.0;
-            constraints.insets = new Insets(0, 3, 0, 3);
-            constraints.gridy = -1;
-            setLayout(layout);
-
-            JLabel accumPauseLabel = new JLabel(localStrings.getString("data_panel_acc_pauses"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(accumPauseLabel, constraints);
-            add(accumPauseLabel);
-            accumPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(accumPauseValue, constraints);
-            add(accumPauseValue);
-
-            // full gc pauses
-            JLabel fullGCPauseLabel = new JLabel(localStrings.getString("data_panel_acc_fullgcpauses"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(fullGCPauseLabel, constraints);
-            add(fullGCPauseLabel);
-            fullGCPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(fullGCPauseValue, constraints);
-            add(fullGCPauseValue);
-
-            // gc pauses
-            JLabel gcPauseLabel = new JLabel(localStrings.getString("data_panel_acc_gcpauses"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(gcPauseLabel, constraints);
-            add(gcPauseLabel);
-            gcPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(gcPauseValue, constraints);
-            add(gcPauseValue);
-
-            JLabel minPauseLabel = new JLabel(localStrings.getString("data_panel_min_pause"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(minPauseLabel, constraints);
-            add(minPauseLabel);
-            minPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(minPauseValue, constraints);
-            add(minPauseValue);
-
-            JLabel maxPauseLabel = new JLabel(localStrings.getString("data_panel_max_pause"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(maxPauseLabel, constraints);
-            add(maxPauseLabel);
-            maxPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(maxPauseValue, constraints);
-            add(maxPauseValue);
-
-            JLabel avgPauseLabel = new JLabel(localStrings.getString("data_panel_avg_pause"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(avgPauseLabel, constraints);
-            add(avgPauseLabel);
-            avgPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(avgPauseValue, constraints);
-            add(avgPauseValue);
-
-            JLabel avgFullGCPauseLabel = new JLabel(localStrings.getString("data_panel_avg_fullgcpause"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(avgFullGCPauseLabel, constraints);
-            add(avgFullGCPauseLabel);
-            avgFullGCPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(avgFullGCPauseValue, constraints);
-            add(avgFullGCPauseValue);
-
-            JLabel avgGCPauseLabel = new JLabel(localStrings.getString("data_panel_avg_gcpause"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(avgGCPauseLabel, constraints);
-            add(avgGCPauseLabel);
-            avgGCPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(avgGCPauseValue, constraints);
-            add(avgGCPauseValue);
-
-        }
+    private class PauseTab extends ValuesTab {
 
         public void setModel(GCModel model) {
             final boolean pauseDataAvailable = model.getPause().getN() != 0;
             final boolean gcDataAvailable = model.getGCPause().getN() > 0;
             final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
-            avgPauseValue.setEnabled(pauseDataAvailable);
-            minPauseValue.setEnabled(pauseDataAvailable);
-            maxPauseValue.setEnabled(pauseDataAvailable);
-            avgGCPauseValue.setEnabled(pauseDataAvailable);
-            avgFullGCPauseValue.setEnabled(pauseDataAvailable);
-            if (pauseDataAvailable) {
-                avgPauseValue.setEnabled(isSignificant(model.getPause().average(), model.getPause().standardDeviation()));
-                avgPauseValue.setText(pauseFormatter.format(model.getPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPause().standardDeviation()) +")");
-                minPauseValue.setText(pauseFormatter.format(model.getPause().getMin()) + "s");
-                maxPauseValue.setText(pauseFormatter.format(model.getPause().getMax()) + "s");
+            
+            newGroup(localStrings.getString("data_panel_group_total_pause"), true);
+            addValue(localStrings.getString("data_panel_acc_pauses"), 
+            		gcTimeFormatter.format(model.getPause().getSum()) + "s", 
+            		true);
+            addValue(localStrings.getString("data_panel_count_pauses"), 
+            		Integer.toString(model.getPause().getN()), 
+            		true);
+            addValue(localStrings.getString("data_panel_avg_pause"), 
+            		pauseDataAvailable ? pauseFormatter.format(model.getPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPause().standardDeviation()) +")" : "n/a", 
+            		pauseDataAvailable ? isSignificant(model.getPause().average(), model.getPause().standardDeviation()) : false);
+            addValue(localStrings.getString("data_panel_min_pause"), 
+            		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMin()) + "s" : "n/a", 
+            		pauseDataAvailable);
+            addValue(localStrings.getString("data_panel_max_pause"), 
+            		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMax()) + "s" : "n/a", 
+            		pauseDataAvailable);
 
-                avgGCPauseValue.setEnabled(gcDataAvailable);
-                if (gcDataAvailable) {
-                    avgGCPauseValue.setEnabled(isSignificant(model.getGCPause().average(), model.getGCPause().standardDeviation()));
-                    avgGCPauseValue.setText(pauseFormatter.format(model.getGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getGCPause().standardDeviation()) +")");
-                }
-                else {
-                    avgGCPauseValue.setText("n.a.");
-                }
-                avgFullGCPauseValue.setEnabled(fullGCDataAvailable);
-                if (fullGCDataAvailable) {
-                    avgFullGCPauseValue.setEnabled(isSignificant(model.getFullGCPause().average(), model.getPause().standardDeviation()));
-                    avgFullGCPauseValue.setText(pauseFormatter.format(model.getFullGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getFullGCPause().standardDeviation()) +")");
-                }
-                else {
-                    avgFullGCPauseValue.setText("n.a.");
-                }
-            }
-            else {
-                avgPauseValue.setText("n.a.");
-                minPauseValue.setText("n.a.");
-                maxPauseValue.setText("n.a.");
-                avgGCPauseValue.setText("n.a.");
-                avgFullGCPauseValue.setText("n.a.");
-            }
-            accumPauseValue.setText(gcTimeFormatter.format(model.getPause().getSum()) + "s");
-            fullGCPauseValue.setText(gcTimeFormatter.format(model.getFullGCPause().getSum())+ "s (" + percentFormatter.format(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()) + "%)");
-            gcPauseValue.setText(gcTimeFormatter.format(model.getGCPause().getSum())+ "s (" + percentFormatter.format(model.getGCPause().getSum()*100.0/model.getPause().getSum()) + "%)");
+            newGroup(localStrings.getString("data_panel_group_full_gc_pauses"), true);
+            addValue(localStrings.getString("data_panel_acc_fullgcpauses"), 
+            		gcTimeFormatter.format(model.getFullGCPause().getSum())+ "s (" + percentFormatter.format(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 
+            		true);
+            addValue(localStrings.getString("data_panel_count_full_gc_pauses"), 
+            		Integer.toString(model.getFullGCPause().getN()), 
+            		true);
+            addValue(localStrings.getString("data_panel_avg_fullgcpause"), 
+            		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getFullGCPause().standardDeviation()) +")" : "n/a", 
+            		fullGCDataAvailable ? isSignificant(model.getFullGCPause().average(), model.getPause().standardDeviation()) : false);
+            addValue(localStrings.getString("data_panel_min_full_gc_pause"), 
+            		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMin()) + "s" : "n/a", 
+            		fullGCDataAvailable);
+            addValue(localStrings.getString("data_panel_max_full_gc_pause"), 
+            		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMax()) + "s" : "n/a", 
+            		fullGCDataAvailable);
+
+            newGroup(localStrings.getString("data_panel_group_gc_pauses"), true);
+            addValue(localStrings.getString("data_panel_acc_gcpauses"), 
+            		gcTimeFormatter.format(model.getGCPause().getSum())+ "s (" + percentFormatter.format(model.getGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 
+            		true);
+            addValue(localStrings.getString("data_panel_count_gc_pauses"), 
+            		Integer.toString(model.getGCPause().getN()), 
+            		true);
+            addValue(localStrings.getString("data_panel_avg_gcpause"), 
+            		gcDataAvailable ? pauseFormatter.format(model.getGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getGCPause().standardDeviation()) +")" : "n/a", 
+            		gcDataAvailable ? isSignificant(model.getGCPause().average(), model.getGCPause().standardDeviation()) : false);
+            addValue(localStrings.getString("data_panel_min_gc_pause"), 
+            		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMin()) + "s" : "n/a", 
+            		gcDataAvailable);
+            addValue(localStrings.getString("data_panel_max_gc_pause"), 
+            		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMax()) + "s" : "n/a", 
+            		gcDataAvailable);
+            
         }
     }
 
-    private class SummaryTab extends JPanel {
-        private JLabel footprintValue;
-        private JLabel accumPauseValue;
-        private JLabel throughputValue;
-        private JLabel totalTimeValue;
-        private JLabel freedMemoryPerMinValue;
-        private JLabel freedMemoryValue;
-        private JLabel fullGCPerformanceValue;
-        private JLabel gcPerformanceValue;
-
-
-        public SummaryTab() {
-            GridBagLayout layout = new GridBagLayout();
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            constraints.weightx = 1.0;
-            constraints.weighty = 1.0;
-            constraints.insets = new Insets(0, 3, 0, 3);
-            constraints.gridy = -1;
-            setLayout(layout);
-
-            // footprint
-            JLabel footprintLabel = new JLabel(localStrings.getString("data_panel_footprint"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(footprintLabel, constraints);
-            add(footprintLabel);
-            footprintValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(footprintValue, constraints);
-            add(footprintValue);
-
-            // freed memory
-            JLabel freedMemoryLabel = new JLabel(localStrings.getString("data_panel_freedmemory"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(freedMemoryLabel, constraints);
-            add(freedMemoryLabel);
-            freedMemoryValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(freedMemoryValue, constraints);
-            add(freedMemoryValue);
-
-            JLabel freedMemoryPerMinLabel = new JLabel(localStrings.getString("data_panel_freedmemorypermin"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(freedMemoryPerMinLabel, constraints);
-            add(freedMemoryPerMinLabel);
-            freedMemoryPerMinValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(freedMemoryPerMinValue, constraints);
-            add(freedMemoryPerMinValue);
-
-            JLabel totalTimeLabel = new JLabel(localStrings.getString("data_panel_total_time"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(totalTimeLabel, constraints);
-            add(totalTimeLabel);
-            totalTimeValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(totalTimeValue, constraints);
-            add(totalTimeValue);
-
-            JLabel accumPauseLabel = new JLabel(localStrings.getString("data_panel_acc_pauses"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(accumPauseLabel, constraints);
-            add(accumPauseLabel);
-            accumPauseValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(accumPauseValue, constraints);
-            add(accumPauseValue);
-
-            JLabel throughputLabel = new JLabel(localStrings.getString("data_panel_throughput"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(throughputLabel, constraints);
-            add(throughputLabel);
-            throughputValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(throughputValue, constraints);
-            add(throughputValue);
-
-            // fullgc performance
-            JLabel fullGCPerformanceLabel = new JLabel(localStrings.getString("data_panel_performance_fullgc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(fullGCPerformanceLabel, constraints);
-            add(fullGCPerformanceLabel);
-            fullGCPerformanceValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(fullGCPerformanceValue, constraints);
-            add(fullGCPerformanceValue);
-
-            // gc performance
-            JLabel gcPerformanceLabel = new JLabel(localStrings.getString("data_panel_performance_gc"));
-            constraints.gridy++;
-            constraints.gridx = 0;
-            layout.setConstraints(gcPerformanceLabel, constraints);
-            add(gcPerformanceLabel);
-            gcPerformanceValue = new JLabel("", JLabel.RIGHT);
-            constraints.gridx = 1;
-            layout.setConstraints(gcPerformanceValue, constraints);
-            add(gcPerformanceValue);
-        }
+    private class SummaryTab extends ValuesTab {
 
         public void setModel(GCModel model) {
-            accumPauseValue.setText(gcTimeFormatter.format(model.getPause().getSum()) + "s");
-            footprintValue.setText(footprintFormatter.format(model.getFootprint()));
-            freedMemoryValue.setText(footprintFormatter.format(model.getFreedMemory()));
-            if (model.hasCorrectTimestamp()) {
-                throughputValue.setText(throughputFormatter.format(model.getThroughput()) + "%");
-                totalTimeValue.setText(totalTimeFormatter.format(new Date((long)model.getRunningTime()*1000l)));
-                freedMemoryPerMinValue.setText(freedMemoryPerMinFormatter.format(model.getFreedMemory()/model.getRunningTime()*60.0) + "/min");
-            } else {
-                throughputValue.setText("n.a.");
-                totalTimeValue.setText("n.a.");
-                freedMemoryPerMinValue.setText("n.a.");
-            }
-            final boolean gcDataAvailable = model.getGCPause().getN() > 0;
-            gcPerformanceValue.setEnabled(gcDataAvailable);
-            if (gcDataAvailable) {
-                gcPerformanceValue.setText(footprintFormatter.format(model.getFreedMemoryByGC().getSum()/model.getGCPause().getSum()) + "/s");
-            }
-            else {
-                gcPerformanceValue.setText("n.a.");
-            }
-            final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
-            fullGCPerformanceValue.setEnabled(fullGCDataAvailable);
-            if (fullGCDataAvailable) {
-                fullGCPerformanceValue.setText(footprintFormatter.format(model.getFreedMemoryByFullGC().getSum()/model.getFullGCPause().getSum()) + "/s");
-            }
-            else {
-                fullGCPerformanceValue.setText("n.a.");
-            }
+        	addValue(localStrings.getString("data_panel_footprint"),
+        			footprintFormatter.format(model.getFootprint()), 
+        			true);
+        	addValue(localStrings.getString("data_panel_freedmemory"),
+        			footprintFormatter.format(model.getFreedMemory()),
+        			true);
+        	addValue(localStrings.getString("data_panel_freedmemorypermin"),
+        			freedMemoryPerMinFormatter.format(model.getFreedMemory()/model.getRunningTime()*60.0) + "/min",
+        			true);
+        	addValue(localStrings.getString("data_panel_total_time"),
+        			model.hasCorrectTimestamp() ? totalTimeFormatter.format(new Date((long)model.getRunningTime()*1000l)) : "n/a",
+        			model.hasCorrectTimestamp());
+        	addValue(localStrings.getString("data_panel_acc_pauses"),
+        			gcTimeFormatter.format(model.getPause().getSum()) + "s",
+        			true);
+        	addValue(localStrings.getString("data_panel_throughput"),
+        			model.hasCorrectTimestamp() ? throughputFormatter.format(model.getThroughput()) + "%" : "n/a",
+        			model.hasCorrectTimestamp());
+        	addValue(localStrings.getString("data_panel_performance_fullgc"),
+        			model.getFullGCPause().getN() > 0  
+        					? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum()/model.getFullGCPause().getSum()) + "/s"
+        					: "n/a",
+        			model.getFullGCPause().getN() > 0);
+        	addValue(localStrings.getString("data_panel_performance_gc"),
+        			model.getGCPause().getN() > 0 
+        				? footprintFormatter.format(model.getFreedMemoryByGC().getSum()/model.getGCPause().getSum()) + "/s"
+        				: "n/a",
+        			model.getGCPause().getN() > 0);
         }
 
     }

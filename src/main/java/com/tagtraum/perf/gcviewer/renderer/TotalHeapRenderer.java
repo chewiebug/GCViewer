@@ -27,9 +27,13 @@ public class TotalHeapRenderer extends PolygonChartRenderer {
     public Polygon computePolygon(ModelChart modelChart, GCModel model) {
         ScaledPolygon polygon = createMemoryScaledPolygon();
         polygon.addPoint(0.0d, 0.0d);
-        for (Iterator i = model.getGCEvents(); i.hasNext();) {
-            GCEvent event = (GCEvent) i.next();
-            polygon.addPoint(event.getTimestamp(), event.getTotal());
+        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
+            GCEvent event = i.next();
+            if (event.getTotal() > 0) {
+            	// there are events that don't have a heap size associated (like "GC remark" of G1)
+            	// -> skip them
+            	polygon.addPoint(event.getTimestamp(), event.getTotal());
+            }
         }
         polygon.addPoint(model.getRunningTime(), 0.0d);
         return polygon;

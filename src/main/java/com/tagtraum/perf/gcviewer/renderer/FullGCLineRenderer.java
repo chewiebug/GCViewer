@@ -32,14 +32,12 @@ public class FullGCLineRenderer extends ChartRenderer {
 
         final int height = getHeight();
         int lastScaledTimestamp = Integer.MIN_VALUE;
-        for (Iterator i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
-            GCEvent event = (GCEvent) i.next();
-            if (event.isFull()) {
-                final int scaledTimestamp = (int)(scaleFactor * event.getTimestamp());
-                if (scaledTimestamp != lastScaledTimestamp && scaledTimestamp >= minX && scaledTimestamp <= maxX) {
-                    g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
-                    lastScaledTimestamp = scaledTimestamp;
-                }
+        for (Iterator<GCEvent> i = getModelChart().getModel().getFullGCEvents(); i.hasNext();) {
+            GCEvent event = i.next();
+            final int scaledTimestamp = (int)(scaleFactor * event.getTimestamp());
+            if (scaledTimestamp != lastScaledTimestamp && scaledTimestamp >= minX && scaledTimestamp <= maxX) {
+                g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
+                lastScaledTimestamp = scaledTimestamp;
             }
         }
     }

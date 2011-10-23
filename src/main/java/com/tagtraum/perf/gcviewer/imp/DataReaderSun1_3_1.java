@@ -39,14 +39,14 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
             count = 0;
             GCModel model = new GCModel(true);
             model.setFormat(GCModel.Format.SUN_VERBOSE_GC);
-            List lineStack = new ArrayList();
+            List<StringBuilder> lineStack = new ArrayList<StringBuilder>();
             int i;
-            StringBuffer line = null;
+            StringBuilder line = null;
             while ((i = in.read()) != -1) {
                 char c = (char) i;
                 if (c == '[') {
                     if (line != null) lineStack.add(line); // push
-                    line = new StringBuffer(64);
+                    line = new StringBuilder(64);
                 } else if (c == ']') {
                     try {
                         model.add(parseLine(line.toString(), null));
@@ -55,7 +55,7 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
                         System.out.println(e.getMessage());
                     }
                     if (!lineStack.isEmpty()) {
-                        line = (StringBuffer) lineStack.remove(lineStack.size() - 1); // pop
+                        line = lineStack.remove(lineStack.size() - 1); // pop
                     }
                 } else {
                     if (line != null) line.append(c);

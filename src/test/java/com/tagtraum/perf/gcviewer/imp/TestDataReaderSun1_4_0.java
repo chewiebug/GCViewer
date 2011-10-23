@@ -48,6 +48,8 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals(event, event5);
         event = (AbstractGCEvent) i.next();
         assertEquals(event, event6);
+        
+        assertEquals("throughput", 65.680144, model.getThroughput(), 0.0000001);
     }
 
     public void testNoFullGC() throws Exception {
@@ -84,6 +86,8 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals(event, event5);
         event = (AbstractGCEvent) i.next();
         assertEquals(event, event6);
+        
+        assertEquals("throughput", 98.92780024997158, model.getThroughput(), 0.00000000001);
     }
 
 
@@ -107,7 +111,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         AbstractGCEvent event4 = new GCEvent(31.788d, 17881, 13914, 18640, 0.8036514d, GCEvent.Type.FULL_GC);
         event4.add(new GCEvent(31.788d, 16141, 13914, 16528, 0.8032950d, GCEvent.Type.TENURED));
 
-        assertTrue(model.size() == 4);
+        assertEquals("model.size()", 4, model.size());
         Iterator i = model.getGCEvents();
         AbstractGCEvent event = (AbstractGCEvent) i.next();
         assertEquals(event1, event);
@@ -117,6 +121,8 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals(event3, event);
         event = (AbstractGCEvent) i.next();
         assertEquals(event4, event);
+
+        assertEquals("throughput", 93.984703347, model.getThroughput(), 0.000001);
     }
 
     public static TestSuite suite() {

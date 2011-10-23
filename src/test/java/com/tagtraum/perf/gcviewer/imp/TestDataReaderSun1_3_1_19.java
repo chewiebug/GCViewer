@@ -1,10 +1,11 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.DataReader;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import java.io.InputStream;
+
+import junit.framework.TestCase;
+
+import com.tagtraum.perf.gcviewer.DataReader;
+import com.tagtraum.perf.gcviewer.GCModel;
 
 /**
  *
@@ -20,16 +21,13 @@ public class TestDataReaderSun1_3_1_19 extends TestCase {
     }
 
     public void testCMSPrintGCDetails() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_3_1_19SunOS.txt");
+    	// does not seem to be implemented at all
+    	
+    	final InputStream in = getClass().getResourceAsStream("SampleSun1_3_1_19SunOS.txt");
         final DataReader reader = new DataReaderSun1_3_1(in);
-        reader.read();
+        GCModel model = reader.read();
+        
+        assertEquals("throughput", 95.21, model.getThroughput(), 0.01);
     }
 
-    public static TestSuite suite() {
-        return new TestSuite(TestDataReaderSun1_3_1.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
 }

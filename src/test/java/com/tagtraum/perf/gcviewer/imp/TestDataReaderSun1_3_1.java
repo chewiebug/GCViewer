@@ -41,6 +41,8 @@ public class TestDataReaderSun1_3_1 extends TestCase {
         assertEquals(event, event3);
         event = (AbstractGCEvent) i.next();
         assertEquals(event, event4);
+
+        assertEquals("throughput", 89.13905666, model.getThroughput(), 0.00000001);
     }
 
     public static TestSuite suite() {

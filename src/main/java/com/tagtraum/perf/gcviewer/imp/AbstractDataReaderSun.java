@@ -1,15 +1,16 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.GCEvent;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.GCEvent;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  *
@@ -31,26 +32,45 @@ public abstract class AbstractDataReaderSun {
         setMemoryAndPauses(event, line, new ParsePosition(0));
     }
 
+    // Suns G1 log output uses K, M and G for memory sizes; I only want K, so I have to change M and G values
+    private int getMemoryUnitMultiplier(String line, char memUnit) {
+    	if ('K' == memUnit) {
+    		return 1;
+    	}
+    	else if ('M' == memUnit) {
+    		return 1024;
+    	}
+    	else if ('G' == memUnit) {
+    		return 1024*1024;
+    	}
+    	else {
+    		if (LOG.isLoggable(Level.WARNING)) {
+    			LOG.warning("unknown memoryunit: " + memUnit + " in line " + line);
+    		}
+    		return 1;
+    	}
+    }
+    
     public void setMemoryAndPauses(GCEvent event, String line, ParsePosition pos) throws ParseException {
         int start = pos.getIndex();
-        int end = line.indexOf("K->", pos.getIndex());
-        if (end != -1) for (start = end-1; start >= 0 && Character.isDigit(line.charAt(start)); start--) {}
+        int end = line.indexOf("->", pos.getIndex()) - 1;
+        if (end != -2) for (start = end-1; start >= 0 && Character.isDigit(line.charAt(start)); start--) {}
         int parenthesis = line.indexOf('(', start);
-        boolean foundPreUsed = end != -1 && parenthesis > end;
+        boolean foundPreUsed = end != -2 && parenthesis > end;
         if (foundPreUsed) {
             start = line.lastIndexOf(' ', end) + 1;
-            event.setPreUsed(NumberParser.parseInt(line, start, end-start));
+            event.setPreUsed(NumberParser.parseInt(line, start, end-start) * getMemoryUnitMultiplier(line, line.charAt(end)));
             start = end + 3;
         }
-        end = line.indexOf('K', start);
-        event.setPostUsed(NumberParser.parseInt(line, start, end-start));
+        for (end = start; Character.isDigit(line.charAt(end)); ++end);
+        event.setPostUsed(NumberParser.parseInt(line, start, end-start) * getMemoryUnitMultiplier(line, line.charAt(end)));
         if (!foundPreUsed) {
             event.setPreUsed(event.getPostUsed());
         }
 
         start = end + 2;
-        end = line.indexOf('K', start);
-        event.setTotal(NumberParser.parseInt(line, start, end-start));
+        end = line.indexOf(')', start) - 1;
+        event.setTotal(NumberParser.parseInt(line, start, end-start) * getMemoryUnitMultiplier(line, line.charAt(end)));
         if (line.charAt(end + 1) == ')') pos.setIndex(end+2);
         else pos.setIndex(end+1);
 
@@ -76,34 +96,7 @@ public abstract class AbstractDataReaderSun {
             pos.setIndex(end+1);
         }
 
-        final int openingBracket = line.indexOf('[', pos.getIndex());
-        if (openingBracket == pos.getIndex()+3 || openingBracket == pos.getIndex()+2) {
-            pos.setIndex(openingBracket);
-        }
-        else if (line.indexOf(',', pos.getIndex()) == pos.getIndex()) {
-            pos.setIndex(pos.getIndex() + 2);
-            setPause(event, line, pos);
-        }
-        else if (line.indexOf("icms_dc=", pos.getIndex()) != -1) {
-            // skip CMS incremental pacing output
-            // - patch provided by Anders Wallgren to handle -XX:+CMSIncrementalPacing flag
-            final int comma = line.indexOf(',', pos.getIndex());
-            pos.setIndex(comma+2);
-            setPause(event, line, pos);
-        }
-        else {
-            // in case there is no time, this ends with a ']'
-            final int closingBracket = line.indexOf(']', pos.getIndex());
-            if (closingBracket == pos.getIndex()) {
-                pos.setIndex(closingBracket + 1);
-                if (line.charAt(closingBracket + 1) == ',')
-                    pos.setIndex(closingBracket + 3);
-                else
-                    pos.setIndex(closingBracket + 1);
-            } else {
-                LOG.severe("Hm... something went wrong here...");
-            }
-        }
+        parsePause(event, line, pos);
     }
 
     private boolean isGeneration(final String line, final ParsePosition pos) {
@@ -115,12 +108,76 @@ public abstract class AbstractDataReaderSun {
                 || trimmedLine.startsWith("permanent");
     }
 
-    public void setPause(GCEvent event, String line, ParsePosition pos) {
-        final int end = line.indexOf(' ', pos.getIndex());
-        event.setPause(Double.parseDouble(line.substring(pos.getIndex(), end).replace(',', '.')));
-        pos.setIndex(line.indexOf(']', end) + 1);
-    }
+    protected void parsePause(GCEvent event, String line, ParsePosition pos) {
+    	// TODO refactor
 
+    	// in case there is no time, this ends with a ']'
+        int closingBracket = line.indexOf(']', pos.getIndex());
+        if (closingBracket == pos.getIndex()) {
+            pos.setIndex(closingBracket + 1);
+            if (line.charAt(closingBracket + 1) == ',')
+                pos.setIndex(closingBracket + 3);
+            else
+                pos.setIndex(closingBracket + 1);
+        } 
+        else if (Character.isDigit(line.charAt(pos.getIndex()))) {
+        	// if current position is a digit, this is where the pause starts
+            int end = line.indexOf(' ', pos.getIndex());
+            if (end < 0) {
+            	end = line.indexOf(']', pos.getIndex());
+            }
+    		event.setPause(Double.parseDouble(line.substring(pos.getIndex(), end).replace(',', '.')));
+
+    		// skip "secs]"
+            pos.setIndex(line.indexOf(']', end) + 1);
+    	}
+    	else {
+	        final int openingBracket = line.indexOf('[', pos.getIndex());
+	        if (openingBracket == pos.getIndex()+3 || openingBracket == pos.getIndex()+2 || openingBracket == pos.getIndex()+1) {
+	            pos.setIndex(openingBracket);
+	        }
+	        else if (line.indexOf(',', pos.getIndex()) == pos.getIndex()) {
+	            pos.setIndex(pos.getIndex() + 2);
+	            parsePause(event, line, pos);
+	        }
+	        else if (line.indexOf("icms_dc=", pos.getIndex()) != -1) {
+	            // skip CMS incremental pacing output
+	            // - patch provided by Anders Wallgren to handle -XX:+CMSIncrementalPacing flag
+	            final int comma = line.indexOf(',', pos.getIndex());
+	            pos.setIndex(comma+2);
+	            parsePause(event, line, pos);
+	        }
+	        else {
+	            // in case there is no time, this ends with a ']'
+	            closingBracket = line.indexOf(']', pos.getIndex());
+	            if (closingBracket == pos.getIndex()) {
+	                pos.setIndex(closingBracket + 1);
+	                if (line.charAt(closingBracket + 1) == ',')
+	                    pos.setIndex(closingBracket + 3);
+	                else
+	                    pos.setIndex(closingBracket + 1);
+	            } else {
+	                LOG.severe("Hm... something went wrong here... (line='" + line + "'");
+	            }
+	        }
+    	}
+    }
+    
+    public double parsePause(String line, ParsePosition pos) {
+    	// usual pattern expected: "..., 0.002032 secs]"
+    	// but may be as well (G1): "..., 0.003032]"
+        int end = line.indexOf(' ', pos.getIndex());
+        if (end < 0) {
+        	end = line.indexOf(']', pos.getIndex());
+        }
+        final double pause = Double.parseDouble(line.substring(pos.getIndex(), end).replace(',', '.'));
+        
+        // skip "secs]"
+        pos.setIndex(line.indexOf(']', end) + 1);
+        
+        return pause;
+    }
+    
     protected boolean hasNextDetail(String line, ParsePosition pos) {
         return isTimestamp(line, pos) || nextCharIsBracket(line, pos);
     }
@@ -137,7 +194,7 @@ public abstract class AbstractDataReaderSun {
             // consume all leading spaces and [
             final int lineLength = line.length();
             final char[] lineChars = line.toCharArray();
-            char c = c = lineChars[i];
+            char c = lineChars[i];
             for (; i<lineLength; c = lineChars[++i]) {
                 if (c != ' ' && c != '[') break;
             }
@@ -145,13 +202,14 @@ public abstract class AbstractDataReaderSun {
             StringBuffer sb = new StringBuffer(20);
             // check whether the type name starts with a number
             // e.g. 0.406: [GC [1 CMS-initial-mark: 7664K(12288K)] 7666K(16320K), 0.0006855 secs]
-            final int startNumbers = i;
+            //final int startNumbers = i;
+            // -> skip number
             for (; Character.isDigit(c) && i<lineLength; c = lineChars[++i]);
-            if (startNumbers != i) sb.append(lineChars, startNumbers, i);
+            //if (startNumbers != i) sb.append(lineChars, startNumbers, i);
             // append all chars, but no numbers, colons, [ or ]
             final int startType = i;
             for (; i<lineLength; c = lineChars[++i]) {
-                if (c == ':' || c == '[' || c == ']' || Character.isDigit(c)) break;
+                if (c == ':' || c == '[' || c == ']' || c== ',' || Character.isDigit(c)) break;
             }
             sb.append(lineChars, startType, i-startType);
             for (; i<lineLength; c = lineChars[++i]) {
@@ -170,7 +228,7 @@ public abstract class AbstractDataReaderSun {
             }
             if (gcType == null) {
                 //System.out.println("Error parsing entry: " + line + " Unknown GC type: " + s);
-                throw new ParseException("Unknown GC type: " + s, line);
+                throw new UnknownGcTypeException(s, line);
             }
             return gcType;
         }

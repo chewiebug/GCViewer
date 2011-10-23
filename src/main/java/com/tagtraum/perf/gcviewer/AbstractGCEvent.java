@@ -1,7 +1,13 @@
 package com.tagtraum.perf.gcviewer;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -10,20 +16,21 @@ import java.util.*;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public abstract class AbstractGCEvent implements Serializable {
-    private static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+    private static final Iterator<AbstractGCEvent> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+    private Date datestamp;
     private double timestamp;
     private Type type = Type.GC;
     private boolean tenuredDetail;
-    protected List details;
+    protected List<AbstractGCEvent> details;
 
-    public Iterator details() {
+    public Iterator<AbstractGCEvent> details() {
         if (details == null) return EMPTY_ITERATOR;
         return details.iterator();
     }
 
     public void add(AbstractGCEvent detail) {
         // most events have only one detail event
-        if (details == null) details = new ArrayList(2);
+        if (details == null) details = new ArrayList<AbstractGCEvent>(2);
         details.add(detail);
         if (detail.getType().getGeneration() == Generation.TENURED) tenuredDetail = true;
     }
@@ -32,6 +39,10 @@ public abstract class AbstractGCEvent implements Serializable {
         return tenuredDetail;
     }
 
+    public void setDateStamp(Date datestamp) {
+    	this.datestamp = datestamp;
+    }
+    
     public void setTimestamp(double timestamp) {
         this.timestamp = timestamp;
     }
@@ -43,9 +54,52 @@ public abstract class AbstractGCEvent implements Serializable {
     public Type getType() {
         return type;
     }
+    
+    public String getTypeAsString() {
+    	StringBuilder sb = new StringBuilder(getType().getType());
+    	if (details != null) {
+    		for (AbstractGCEvent detailType : details) {
+    			sb.append(" ").append(detailType.getType());
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    public boolean isStopTheWorld() {
+    	boolean isStopTheWorld = getType().getConcurrency() == Concurrency.SERIAL;
+    	if (details != null) {
+    		for (AbstractGCEvent detailEvent : details) {
+    			if (!isStopTheWorld) {
+    				isStopTheWorld = detailEvent.getType().getConcurrency() == Concurrency.SERIAL;
+    			}
+    		}
+    	}
+    	
+    	return isStopTheWorld;
+    }
+    
+    public Generation getDetailGeneration() {
+    	Generation generation = getType().getGeneration();
+    	if (details != null) {
+    		for (AbstractGCEvent detailEvent : details) {
+    			if (generation.compareTo(detailEvent.getType().getGeneration()) < 0
+    					&& detailEvent.getType().getGeneration() != Generation.PERM) {
+    				
+    				generation = detailEvent.getType().getGeneration();
+    			}
+    		}
+    	}
+    	
+    	return generation;
+    }
 
     public double getTimestamp() {
         return timestamp;
+    }
+    
+    public Date getDatestamp() {
+    	return datestamp;
     }
 
     public abstract void toStringBuffer(StringBuffer sb);
@@ -77,39 +131,54 @@ public abstract class AbstractGCEvent implements Serializable {
     public static class Type implements Serializable {
         private final String type;
         private final String rep;
-        private GCEvent.Generation generation;
-        private GCEvent.Concurrency concurrency;
-        private static final Map TYPE_MAP = new HashMap();
+        private Generation generation;
+        private Concurrency concurrency;
+        /** pattern this event has in the logfile */
+        private Pattern pattern;
+        private static final Map<String, Type> TYPE_MAP = new HashMap<String, Type>();
 
-        private Type(String type, GCEvent.Generation generation) {
+        private Type(String type, Generation generation) {
             this(type, type, generation);
         }
 
-        private Type(String type, String rep, GCEvent.Generation generation) {
-            this(type, rep, generation, GCEvent.Concurrency.SERIAL);
+        private Type(String type, String rep, Generation generation) {
+            this(type, rep, generation, Concurrency.SERIAL);
         }
 
-        private Type(String type, String rep, GCEvent.Generation generation, GCEvent.Concurrency concurrency) {
+        private Type(String type, String rep, Generation generation, Concurrency concurrency) {
+        	this(type, rep, generation, concurrency, Pattern.GC_MEMORY_PAUSE);
+        }
+
+        private Type(String type, String rep, Generation generation, Concurrency concurrency, Pattern pattern) {
             this.type = type.intern();
             this.rep = rep;
             this.generation = generation;
             this.concurrency = concurrency;
+            this.pattern = pattern;
             TYPE_MAP.put(this.type, this);
         }
 
-        public static GCEvent.Type parse(String type) {
+        public static Type parse(String type) {
             type = type.trim();
-            GCEvent.Type gcType = (GCEvent.Type)TYPE_MAP.get(type);
-            if (gcType == null && type.endsWith(GCEvent.Type.CMS_INITIAL_MARK.getType())) gcType = GCEvent.Type.CMS_INITIAL_MARK;
+            Type gcType = TYPE_MAP.get(type);
+            // TODO why does lookup fail here -> change Type definition?
+            if (gcType == null) {
+            	if (type.endsWith(Type.CMS_INITIAL_MARK.getType())) {
+                	gcType = Type.CMS_INITIAL_MARK;
+            	}
+            	else if (Type.PAR_NEW_PROMOTION_FAILED.getType().startsWith(type)) {
+            		gcType = Type.PAR_NEW_PROMOTION_FAILED;
+            	}
+            }
             return gcType;
         }
 
-        public static GCEvent.Type parse(final int reason) {
+        public static Type parse(final int reason) {
             return reason == -1 ? Type.GC : Type.FULL_GC;
         }
 
-        public static GCEvent.Type parse(final int typeOfGC, final float details) {
-            final GCEvent.Type type;
+        public static Type parse(final int typeOfGC, final float details) {
+            final Type type;
             switch (typeOfGC) {
                 case 1:
                     if (details == 0) {
@@ -137,86 +206,97 @@ public abstract class AbstractGCEvent implements Serializable {
             return type;
         }
 
-        public GCEvent.Generation getGeneration() {
+        public Generation getGeneration() {
             return generation;
         }
 
-        public GCEvent.Concurrency getConcurrency() {
+        public Concurrency getConcurrency() {
             return concurrency;
         }
 
+        public Pattern getPattern() {
+        	return pattern;
+        }
+        
         public String toString() {
             return rep;
         }
 
         // TODO: is jrockit GC really of type Generation.ALL or rather Generation.TENURED ?
-        public static final GCEvent.Type JROCKIT_GC = new GCEvent.Type("jrockit.GC", GCEvent.Generation.TENURED);
-        public static final GCEvent.Type JROCKIT_NURSERY_GC = new GCEvent.Type("jrockit.Nursery GC", GCEvent.Generation.YOUNG);
-        public static final GCEvent.Type JROCKIT_PARALLEL_NURSERY_GC = new GCEvent.Type("jrockit.parallel nursery GC", GCEvent.Generation.YOUNG);
+        public static final Type JROCKIT_GC = new Type("jrockit.GC", Generation.TENURED);
+        public static final Type JROCKIT_NURSERY_GC = new Type("jrockit.Nursery GC", Generation.YOUNG);
+        public static final Type JROCKIT_PARALLEL_NURSERY_GC = new Type("jrockit.parallel nursery GC", Generation.YOUNG);
 
-        public static final GCEvent.Type FULL_GC = new GCEvent.Type("Full GC", GCEvent.Generation.ALL);
-        public static final GCEvent.Type GC = new GCEvent.Type("GC", GCEvent.Generation.YOUNG);
-        public static final GCEvent.Type GC__ = new GCEvent.Type("GC--", GCEvent.Generation.YOUNG);
-        public static final GCEvent.Type DEF_NEW = new GCEvent.Type("DefNew", "DefNew:", GCEvent.Generation.YOUNG);
-        public static final GCEvent.Type PAR_NEW = new GCEvent.Type("ParNew", "ParNew:", GCEvent.Generation.YOUNG);
-        public static final GCEvent.Type PAR_OLD_GEN = new GCEvent.Type("ParOldGen", "ParOldGen:", GCEvent.Generation.TENURED);
-        public static final GCEvent.Type PS_YOUNG_GEN = new GCEvent.Type("PSYoungGen", "PSYoungGen:", GCEvent.Generation.YOUNG);
-        public static final GCEvent.Type PS_OLD_GEN = new GCEvent.Type("PSOldGen", "PSOldGen:", GCEvent.Generation.TENURED);
-        public static final GCEvent.Type PS_PERM_GEN = new GCEvent.Type("PSPermGen", "PSPermGen:", GCEvent.Generation.PERM);
-        public static final GCEvent.Type TENURED = new GCEvent.Type("Tenured", "Tenured:", GCEvent.Generation.TENURED);
-        public static final GCEvent.Type INC_GC = new GCEvent.Type("Inc GC", GCEvent.Generation.YOUNG);
-        public static final GCEvent.Type TRAIN = new GCEvent.Type("Train", "Train:", GCEvent.Generation.TENURED);
-        public static final GCEvent.Type TRAIN_MSC = new GCEvent.Type("Train MSC", "Train MSC:", GCEvent.Generation.TENURED);
-        public static final GCEvent.Type PERM = new GCEvent.Type("Perm", "Perm:", GCEvent.Generation.PERM);
-        public static final GCEvent.Type CMS = new GCEvent.Type("CMS", "CMS:", GCEvent.Generation.TENURED);
-        public static final GCEvent.Type CMS_PERM = new GCEvent.Type("CMS Perm", "CMS Perm :", GCEvent.Generation.PERM);
+        public static final Type FULL_GC = new Type("Full GC", Generation.ALL);
+        public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
+        public static final Type GC = new Type("GC", Generation.YOUNG);
+        public static final Type GC__ = new Type("GC--", Generation.YOUNG);
+        public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG);
+        public static final Type PAR_NEW = new Type("ParNew", "ParNew:", Generation.YOUNG);
+        public static final Type PAR_OLD_GEN = new Type("ParOldGen", "ParOldGen:", Generation.TENURED);
+        public static final Type PS_YOUNG_GEN = new Type("PSYoungGen", "PSYoungGen:", Generation.YOUNG);
+        public static final Type PS_OLD_GEN = new Type("PSOldGen", "PSOldGen:", Generation.TENURED);
+        public static final Type PS_PERM_GEN = new Type("PSPermGen", "PSPermGen:", Generation.PERM);
+        public static final Type TENURED = new Type("Tenured", "Tenured:", Generation.TENURED);
+        public static final Type INC_GC = new Type("Inc GC", Generation.YOUNG);
+        public static final Type TRAIN = new Type("Train", "Train:", Generation.TENURED);
+        public static final Type TRAIN_MSC = new Type("Train MSC", "Train MSC:", Generation.TENURED);
+        public static final Type PERM = new Type("Perm", "Perm:", Generation.PERM);
+        public static final Type CMS = new Type("CMS", "CMS:", Generation.TENURED);
+        public static final Type CMS_PERM = new Type("CMS Perm", "CMS Perm :", Generation.PERM);
+        
+        // Parnew (promotion failed)
+        public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", "ParNew (promotion failed):", Generation.ALL, Concurrency.SERIAL);
         
         // CMS (concurrent mode failure)
-        public static final GCEvent.Type CMS_CMF = new GCEvent.Type("CMS (concurrent mode failure)", "CMS (concurrent mode failure):", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
+        public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", "CMS (concurrent mode failure):", Generation.ALL, Concurrency.SERIAL);
 
         // CMS (Concurrent Mark Sweep) Event Types
-        public static final GCEvent.Type CMS_CONCURRENT_MARK_START = new GCEvent.Type("CMS-concurrent-mark-start", "CMS-concurrent-mark-start", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_MARK = new GCEvent.Type("CMS-concurrent-mark", "CMS-concurrent-mark:", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_PRECLEAN_START = new GCEvent.Type("CMS-concurrent-preclean-start", "CMS-concurrent-preclean-start", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_PRECLEAN = new GCEvent.Type("CMS-concurrent-preclean", "CMS-concurrent-preclean", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_SWEEP_START = new GCEvent.Type("CMS-concurrent-sweep-start", "CMS-concurrent-sweep-start", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_SWEEP = new GCEvent.Type("CMS-concurrent-sweep", "CMS-concurrent-sweep:", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_RESET_START = new GCEvent.Type("CMS-concurrent-reset-start", "CMS-concurrent-reset-start", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_RESET = new GCEvent.Type("CMS-concurrent-reset", "CMS-concurrent-reset:", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new GCEvent.Type("CMS-concurrent-abortable-preclean-start", "CMS-concurrent-abortable-preclean-start", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
-        public static final GCEvent.Type CMS_CONCURRENT_ABORTABLE_PRECLEAN = new GCEvent.Type("CMS-concurrent-abortable-preclean", "CMS-concurrent-abortable-preclean:", GCEvent.Generation.TENURED, GCEvent.Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_MARK_START = new Type("CMS-concurrent-mark-start", "CMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_MARK = new Type("CMS-concurrent-mark", "CMS-concurrent-mark:", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_PRECLEAN_START = new Type("CMS-concurrent-preclean-start", "CMS-concurrent-preclean-start", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_PRECLEAN = new Type("CMS-concurrent-preclean", "CMS-concurrent-preclean", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_SWEEP_START = new Type("CMS-concurrent-sweep-start", "CMS-concurrent-sweep-start", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_SWEEP = new Type("CMS-concurrent-sweep", "CMS-concurrent-sweep:", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_RESET_START = new Type("CMS-concurrent-reset-start", "CMS-concurrent-reset-start", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_RESET = new Type("CMS-concurrent-reset", "CMS-concurrent-reset:", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("CMS-concurrent-abortable-preclean-start", "CMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT);
+        public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("CMS-concurrent-abortable-preclean", "CMS-concurrent-abortable-preclean:", Generation.TENURED, Concurrency.CONCURRENT);
 
-        public static final GCEvent.Type CMS_INITIAL_MARK = new GCEvent.Type("CMS-initial-mark", "CMS-initial-mark:", GCEvent.Generation.TENURED, GCEvent.Concurrency.SERIAL);
-        public static final GCEvent.Type CMS_REMARK = new GCEvent.Type("CMS-remark", "CMS-remark:", GCEvent.Generation.TENURED, GCEvent.Concurrency.SERIAL);
+        public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", "CMS-initial-mark:", Generation.TENURED, Concurrency.SERIAL);
+        public static final Type CMS_REMARK = new Type("CMS-remark", "CMS-remark:", Generation.TENURED, Concurrency.SERIAL);
+        
+        // G1 stop the world types
+        // only young collection
+        public static final Type G1_YOUNG = new Type("GC pause (young)", "GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        public static final Type G1_YOUNG__ = new Type("GC pause (young)--", "GC pause (young)--", Generation.YOUNG, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        // partially young collection (
+        public static final Type G1_PARTIAL = new Type("GC pause (partial)", "GC pause (partial)", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
 
+        // TODO: Generation: young and tenured!
+        public static final Type G1_INITIAL_MARK = new Type("GC pause (young) (initial-mark)", "GC pause (young) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        public static final Type G1_REMARK = new Type("GC remark", "GC remark", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_PAUSE);
+        public static final Type G1_CLEANUP = new Type("GC cleanup", "GC cleanup", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        
+        // G1 concurrent types
+        public static final Type G1_CONCURRENT_MARK_START = new Type("GC concurrent-mark-start", "GC concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
+        public static final Type G1_CONCURRENT_MARK_END = new Type("GC concurrent-mark-end", "GC concurrent-mark-end,", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE);
+        public static final Type G1_CONCURRENT_MARK_ABORT = new Type("GC concurrent-mark-abort", "GC concurrent-mark-abort", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
+        public static final Type G1_CONCURRENT_COUNT_START = new Type("GC concurrent-count-start", "GC concurrent-count-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
+        public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", "GC concurrent-count-end,", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE);
+        public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", "GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
+        public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", "GC concurrent-cleanup-end,", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE);
     }
 
-    public static class Concurrency {
-        private String name;
-        private Concurrency(String name) {
-            this.name = name.intern();
-        }
+    public static enum Pattern {
+    	// <timestamp>: [<GC type>]
+    	GC,
+    	// <timestamp>: [<GC type>, <pause>]
+    	GC_PAUSE,
+    	// <timestamp>: [<GC type> <mem before>-><mem after>(<mem total>), <pause>]
+    	GC_MEMORY_PAUSE} 
+    
+    public static enum Concurrency {CONCURRENT, SERIAL};
 
-        public String toString() {
-            return name;
-        }
-        public static final GCEvent.Concurrency CONCURRENT = new GCEvent.Concurrency("Concurrent");
-        public static final GCEvent.Concurrency SERIAL = new GCEvent.Concurrency("Serial");
-    }
-
-    public static class Generation {
-        private String name;
-        private Generation(String name) {
-            this.name = name.intern();
-        }
-
-        public String toString() {
-            return name;
-        }
-
-        public static final GCEvent.Generation YOUNG = new GCEvent.Generation("Young");
-        public static final GCEvent.Generation TENURED = new GCEvent.Generation("Tenured");
-        public static final GCEvent.Generation PERM = new GCEvent.Generation("Perm");
-        public static final GCEvent.Generation ALL = new GCEvent.Generation("All");
-    }
+    public static enum Generation { YOUNG, TENURED, PERM, ALL };
 }

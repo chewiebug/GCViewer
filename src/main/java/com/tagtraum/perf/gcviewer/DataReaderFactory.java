@@ -44,6 +44,14 @@ public class DataReaderFactory {
             // this should be an IBM JDK < 1.3.0
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM <1.3.0");
             return new DataReaderIBM1_3_0(in);
+        } else if (s.indexOf("pause") > 0) {
+        	// G1 logger usually starts with "<timestamp>: [GC pause (young) ..."
+            if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x");
+            return new DataReaderSun1_6_0G1(in);
+        } else if (s.indexOf("[Times:") > 0) {
+        	// all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
+            if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x");
+            return new DataReaderSun1_6_0(in);
         } else if (s.indexOf("CMS-initial-mark") != -1 || s.indexOf("PSYoungGen") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.5.x");
             return new DataReaderSun1_5_0(in);

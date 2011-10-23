@@ -22,8 +22,8 @@ Supported verbose:gc formats are:
 
 Best results are achieved with: -Xloggc:<file> -XX:+PrintGCDetails -XX:+PrintGCDateStamps
 
-Up to GCViewer 1.29 was written by Hendrik Schreiber. What you are seeing
-here is based on his very good work.
+Hendrik Schreiber wrote GCViewer up to 1.29. What you are seeing here is based 
+on his very good work.
 In detail descriptions of most JVM parameters relevant to garbage collection
 can be found at http://www.tagtraum.com/gcviewer-vmflags.html
 
