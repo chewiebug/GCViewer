@@ -25,7 +25,13 @@ public class ExtensionFileFilter extends FileFilter {
     }
 
     public boolean accept(File f) {
-        return f.isDirectory() || f.toString().toLowerCase().endsWith("." + extension);
+    	// TODO: Can probably be refactored; seems to be the same as in Export class
+    	try {
+    		return f.isDirectory() || f.toString().toLowerCase().endsWith("." + extension);
+    	} 
+    	catch (NullPointerException e) {
+    		return false;
+    	}
     }
 
     public String getDescription() {

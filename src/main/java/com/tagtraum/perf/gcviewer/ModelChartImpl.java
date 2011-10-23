@@ -147,7 +147,10 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
                     }
                     else {
                         long suggestedStartDate = model.getLastModified();
-                        if (model.hasCorrectTimestamp()) {
+                        if (model.hasDateStamp()) {
+                        	suggestedStartDate = (long)(model.getFirstDateStamp().getTime());
+                        }
+                        else if (model.hasCorrectTimestamp()) {
                             suggestedStartDate -= (long)(model.getRunningTime() * 1000.0d);
                         }
                         timeOffsetPanel.setDate(new Date(suggestedStartDate));

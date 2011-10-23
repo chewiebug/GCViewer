@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer;
 
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.math.IntData;
 import com.tagtraum.perf.gcviewer.math.RegressionLine;
@@ -9,8 +10,11 @@ import java.io.Serializable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.net.URL;
@@ -28,23 +32,27 @@ import java.net.HttpURLConnection;
  */
 public class GCModel implements Serializable {
 
-    private static Logger LOG = Logger.getLogger(GCModel.class.getName());
+	private static final long serialVersionUID = -6479685723904770990L;
 
+	private static Logger LOG = Logger.getLogger(GCModel.class.getName());
 
-    private List allEvents;
-    private List events;
-    private List gcEvents;
-    private List concurrentGCEvents;
-    private List currentNoFullGCEvents;
-    private List fullGCEvents;
+    private List<AbstractGCEvent> allEvents;
+    private List<GCEvent> stopTheWorldEvents;
+    private List<GCEvent> gcEvents;
+    private List<ConcurrentGCEvent> concurrentGCEvents;
+    private List<GCEvent> currentNoFullGCEvents;
+    private List<GCEvent> fullGCEvents;
     private long lastModified;
     private long length;
 
+    private Map<String, DoubleData> gcEventPauses;
+    private Map<String, DoubleData> concurrentGcEventPauses;
+    
     private long footprint;
     private double runningTime;
-    private DoubleData pause;
+    private DoubleData totalPause;
     private DoubleData fullGCPause;
-    private DoubleData gcPause;
+    private DoubleData gcPause; // not full gc but stop the world pause
     private long freedMemory;
     private Format format;
     private IntData postGCUsedMemory;
@@ -62,12 +70,13 @@ public class GCModel implements Serializable {
 
     public GCModel(boolean countTenuredAsFull) {
         this.countTenuredAsFull = countTenuredAsFull;
-        this.allEvents = new ArrayList();
-        this.events = new ArrayList();
-        this.gcEvents = new ArrayList();
-        this.concurrentGCEvents = new ArrayList();
-        this.fullGCEvents = new ArrayList();
-        this.currentNoFullGCEvents = new ArrayList();
+        
+        this.allEvents = new ArrayList<AbstractGCEvent>();
+        this.stopTheWorldEvents = new ArrayList<GCEvent>();
+        this.gcEvents = new ArrayList<GCEvent>();
+        this.concurrentGCEvents = new ArrayList<ConcurrentGCEvent>();
+        this.fullGCEvents = new ArrayList<GCEvent>();
+        this.currentNoFullGCEvents = new ArrayList<GCEvent>();
         this.currentPostGCSlope = new RegressionLine();
         this.postFullGCSlope = new RegressionLine();
         this.postGCSlope = new DoubleData();
@@ -75,12 +84,15 @@ public class GCModel implements Serializable {
         this.freedMemoryByFullGC = new IntData();
         this.postFullGCUsedMemory = new IntData();
         this.postGCUsedMemory = new IntData();
-        this.pause = new DoubleData();
+        this.totalPause = new DoubleData();
         this.fullGCPause = new DoubleData();
         this.gcPause = new DoubleData();
         this.currentRelativePostGCIncrease = new RegressionLine();
         this.relativePostGCIncrease = new DoubleData();
         this.relativePostFullGCIncrease = new RegressionLine();
+        
+        this.gcEventPauses = new TreeMap<String, DoubleData>();
+        this.concurrentGcEventPauses = new TreeMap<String, DoubleData>();
     }
 
     public boolean isCountTenuredAsFull() {
@@ -95,6 +107,21 @@ public class GCModel implements Serializable {
         return url;
     }
 
+    private void printPauseMap(Map<String, DoubleData> pauseMap) {
+    	for (Map.Entry<String, DoubleData> entry: pauseMap.entrySet()) {
+    		System.out.println(entry.getKey() + " [n, sum, min, max]:\t" + entry.getValue().getN() + "\t" + entry.getValue().getSum() + "\t" + entry.getValue().getMin() + "\t" + entry.getValue().getMax());
+    	}
+    }
+    
+    public void printPauseMaps() {
+    	// TODO delete
+    	printPauseMap(gcEventPauses);
+    	printPauseMap(concurrentGcEventPauses);
+    	System.out.println("sum of pauses\t" + totalPause.getSum());
+    	System.out.println("sum of full gc pauses\t" + fullGCPause.getSum());
+    	System.out.println("sum of young gc pauses\t" + gcPause.getSum());
+    }
+    
     public void setURL(final URL url) {
         this.url = url;
         if (url.getProtocol().startsWith("http")) {
@@ -213,30 +240,56 @@ public class GCModel implements Serializable {
         return this.lastModified != otherLastModified || this.length != otherLength;
     }
 
-    public Iterator getGCEvents() {
-        return events.iterator();
+    public Iterator<GCEvent> getGCEvents() {
+        return stopTheWorldEvents.iterator();
     }
 
-    public Iterator getConcurrentGCEvents() {
+    public Iterator<ConcurrentGCEvent> getConcurrentGCEvents() {
         return concurrentGCEvents.iterator();
     }
 
-    public Iterator getEvents() {
+    public Iterator<AbstractGCEvent> getEvents() {
         return allEvents.iterator();
     }
+    
+    public Iterator<GCEvent> getFullGCEvents() {
+    	return fullGCEvents.iterator();
+    }
 
+    private DoubleData getDoubleData(String key, Map<String, DoubleData> eventMap) {
+    	DoubleData data = eventMap.get(key);
+    	if (data == null) {
+    		data = new DoubleData();
+    		eventMap.put(key, data);
+    	}
+    	
+    	return data;
+    }
+    
     public void add(final AbstractGCEvent abstractEvent) {
         allEvents.add(abstractEvent);
         if (abstractEvent instanceof ConcurrentGCEvent) {
-            concurrentGCEvents.add(abstractEvent);
+        	final ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
+            concurrentGCEvents.add(concEvent);
+        
+            DoubleData pauses = getDoubleData(concEvent.getType().getType(), concurrentGcEventPauses);
+            pauses.add(concEvent.getPause());
+
         } else if (abstractEvent instanceof GCEvent) {
-            events.add(abstractEvent);
+        	
+        	// collect statistics about all stop the world events
             final GCEvent event = (GCEvent) abstractEvent;
+            
+            DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
+            pauses.add(event.getPause());
+            
+            stopTheWorldEvents.add(event);
             footprint = Math.max(footprint, event.getTotal());
             runningTime = Math.max(runningTime, event.getTimestamp());
             freedMemory += event.getPreUsed() - event.getPostUsed();
-            pause.add(event.getPause());
-            if (event.getType().getGeneration() != GCEvent.Generation.TENURED && !event.hasTenuredDetail()) {
+            totalPause.add(event.getPause());
+            if (event.getDetailGeneration().compareTo(Generation.ALL) != 0) {
+            	// make a difference between stop the world events, which only collect from some generations...
                 gcEvents.add(event);
                 postGCUsedMemory.add(event.getPostUsed());
                 freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
@@ -245,7 +298,8 @@ public class GCModel implements Serializable {
                 currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
                 gcPause.add(event.getPause());
             } else {
-                if (event.getType().getGeneration() == GCEvent.Generation.TENURED || event.hasTenuredDetail()) {
+                if (event.getDetailGeneration().compareTo(Generation.ALL) == 0 && event.isStopTheWorld()) {
+                	// ... as opposed to all generations
                     fullGCEvents.add(event);
                     postFullGCUsedMemory.add(event.getPostUsed());
                     final int freed = event.getPreUsed() - event.getPostUsed();
@@ -269,11 +323,11 @@ public class GCModel implements Serializable {
     }
 
     public int size() {
-        return events.size();
+        return allEvents.size();
     }
 
     public AbstractGCEvent get(final int index) {
-        return (AbstractGCEvent) events.get(index);
+        return (AbstractGCEvent) allEvents.get(index);
     }
 
 
@@ -365,14 +419,14 @@ public class GCModel implements Serializable {
      * Pause in sec.
      */
     public DoubleData getPause() {
-        return pause;
+        return totalPause;
     }
 
     /**
      * Throughput in percent.
      */
     public double getThroughput() {
-        return 100 * (runningTime - pause.getSum()) / runningTime;
+        return 100 * (runningTime - totalPause.getSum()) / runningTime;
     }
 
     /**
@@ -407,13 +461,27 @@ public class GCModel implements Serializable {
     public boolean hasCorrectTimestamp() {
         return format == Format.IBM_VERBOSE_GC || format == Format.SUN_X_LOG_GC || format == Format.SUN_1_2_2VERBOSE_GC;
     }
+    
+    public boolean hasDateStamp() {
+    	return allEvents.size() > 0 
+    			? get(0).getDatestamp() != null 
+    			: false;
+    }
+    
+    public Date getFirstDateStamp() {
+    	return allEvents.size() > 0 
+    			? get(0).getDatestamp() 
+    			: null;
+    }
 
     public String toString() {
-        return events.toString();
+        return allEvents.toString();
     }
 
     public static class Format implements Serializable {
-        private String format;
+		private static final long serialVersionUID = 483615745336894207L;
+		
+		private String format;
 
         private Format(final String format) {
             this.format = format;

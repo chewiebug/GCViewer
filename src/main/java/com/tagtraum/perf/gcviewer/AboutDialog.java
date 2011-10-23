@@ -1,16 +1,21 @@
 package com.tagtraum.perf.gcviewer;
 
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.SoftBevelBorder;
-import java.awt.*;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.MalformedURLException;
-import java.io.IOException;
+import java.util.ResourceBundle;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.border.SoftBevelBorder;
 
 
 /**
@@ -40,6 +45,12 @@ public class AboutDialog extends JDialog implements ActionListener {
         //la_icon.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         la_icon.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
         panel0.add(la_icon);
+        
+        Panel panel1 = new Panel();
+        // TODO build automation -> version number
+        JLabel version = new JLabel("JW edition [improvements for SUN 1.6.x (CMS)] 1.31");
+        panel1.add(version);
+        
         Panel panel2 = new Panel();
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT));
         if (ExternalViewer.isSupported()) {
@@ -58,7 +69,7 @@ public class AboutDialog extends JDialog implements ActionListener {
         okButton.addActionListener(this);
         panel2.add(okButton);
         getContentPane().add("North", panel0);
-        // getContentPane().add("Center",panel1);
+        getContentPane().add("Center",panel1);
         getContentPane().add("South", panel2);
         pack();
         setResizable(false);

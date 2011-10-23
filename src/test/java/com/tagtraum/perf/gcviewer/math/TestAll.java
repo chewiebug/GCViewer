@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.math;
 
+import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-import com.tagtraum.perf.gcviewer.TestDataReaderFactory;
 
 public class TestAll {
 
@@ -12,8 +12,8 @@ public class TestAll {
     /**
      * Returns the TestSuite for TestAll.
      */
-    public static TestSuite suite() {
-        TestSuite suite = new TestSuite();
+    public static Test suite() {
+        TestSuite suite = new TestSuite("all math tests");
         suite.addTestSuite(TestRegressionLine.class);
         suite.addTestSuite(TestDoubleData.class);
         suite.addTestSuite(TestIntData.class);

@@ -23,11 +23,10 @@ public class GCEvent extends AbstractGCEvent {
      * Capacity in KB.
      */
     private int total;
-    /**
-     * Pause in seconds.
-     */
-    private double pause;
-
+	/**
+	 * Pause in seconds.
+	 */
+	protected double pause;
     public GCEvent() {
     }
 
@@ -52,21 +51,14 @@ public class GCEvent extends AbstractGCEvent {
         this.total = total;
     }
 
-    public void setPause(double pause) {
-        this.pause = pause;
-    }
-
     public boolean isFull() {
+    	return getDetailGeneration() == Generation.ALL;
         //return getType() == GCEvent.Type.FULL_GC;
-        return getType() == GCEvent.Type.FULL_GC || getType().getGeneration() == Generation.TENURED || hasTenuredDetail();
+        //return getType() == GCEvent.Type.FULL_GC || getType().getGeneration() == Generation.TENURED || hasTenuredDetail();
     }
 
     public boolean isInc() {
         return getType() == GCEvent.Type.INC_GC;
-    }
-
-    public double getPause() {
-        return pause;
     }
 
     public int getPreUsed() {
@@ -87,8 +79,7 @@ public class GCEvent extends AbstractGCEvent {
         sb.append(getType());
         sb.append(' ');
         if (details != null) {
-            for (int i=0,length=details.size(); i<length; i++) {
-                final AbstractGCEvent event = (AbstractGCEvent)details.get(i);
+            for (AbstractGCEvent event : details) {
                 event.toStringBuffer(sb);
             }
         }
@@ -101,6 +92,14 @@ public class GCEvent extends AbstractGCEvent {
         sb.append(pause);
         sb.append(" secs]");
     }
+
+	public void setPause(double pause) {
+	    this.pause = pause;
+	}
+
+	public double getPause() {
+	    return pause;
+	}
 
 
 }

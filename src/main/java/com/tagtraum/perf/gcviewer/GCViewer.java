@@ -1,13 +1,10 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.action.*;
-import com.tagtraum.perf.gcviewer.renderer.*;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-
-import javax.swing.*;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -16,10 +13,57 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-import java.io.*;
-import java.util.*;
-import java.net.URL;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+
+import com.tagtraum.perf.gcviewer.action.About;
+import com.tagtraum.perf.gcviewer.action.Arrange;
+import com.tagtraum.perf.gcviewer.action.Exit;
+import com.tagtraum.perf.gcviewer.action.Export;
+import com.tagtraum.perf.gcviewer.action.OpenFile;
+import com.tagtraum.perf.gcviewer.action.OpenRecent;
+import com.tagtraum.perf.gcviewer.action.OpenURL;
+import com.tagtraum.perf.gcviewer.action.Refresh;
+import com.tagtraum.perf.gcviewer.action.Watch;
+import com.tagtraum.perf.gcviewer.action.Zoom;
+import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
+import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
+import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
+import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
+import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
+import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
+import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * Main class.
@@ -660,6 +704,17 @@ public class GCViewer extends JFrame {
         if (args.length > 1)
             usage();
         else {
+//        	try {
+//        	    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//        	        if ("Nimbus".equals(info.getName())) {
+//        	            UIManager.setLookAndFeel(info.getClassName());
+//        	            break;
+//        	        }
+//        	    }
+//        	} catch (Exception e) {
+//        	    // If Nimbus is not available, you can set the GUI to another look and feel.
+//        	}
+
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     final GCViewer viewer = new GCViewer();

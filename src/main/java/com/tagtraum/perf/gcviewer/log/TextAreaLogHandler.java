@@ -15,6 +15,7 @@ public class TextAreaLogHandler extends Handler {
 
     private JTextArea textArea;
     private boolean errors;
+    private int errorCount;
 
     public TextAreaLogHandler() {
         this.textArea = new JTextArea();
@@ -28,10 +29,15 @@ public class TextAreaLogHandler extends Handler {
     public boolean hasErrors() {
         return errors;
     }
+    
+    public int getErrorCount() {
+    	return errorCount;
+    }
 
     public void publish(LogRecord record) {
         try {
             if (isLoggable(record)) {
+            	++errorCount;
                 if (!errors) {
                     final int level = record.getLevel().intValue();
                     errors = level >= Level.WARNING.intValue() && level < Level.OFF.intValue();

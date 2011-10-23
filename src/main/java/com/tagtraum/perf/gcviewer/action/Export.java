@@ -78,7 +78,13 @@ public class Export extends AbstractAction {
 
         }
         public boolean accept(final File file) {
-            return file.toString().toLowerCase().endsWith(extension);
+        	// TODO refactor
+        	if (file != null) {
+                return file.toString().toLowerCase().endsWith(extension);
+        	}
+        	else {
+        		return false;
+        	}
         }
 
         public String getExtension() {
