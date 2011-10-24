@@ -1,16 +1,41 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.renderer.*;
-import com.tagtraum.perf.gcviewer.util.TimeFormat;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Iterator;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
+import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
+import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
+import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
+import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
+import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
+import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
 /**
  * Graphical chart of the gc file.
@@ -327,7 +352,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
                 AbstractGCEvent event = (AbstractGCEvent) i.next();
                 for (Iterator iterator=event.details(); iterator.hasNext();) {
                     GCEvent detailEvent = (GCEvent)iterator.next();
-                    if (detailEvent.getType().getGeneration() == GCEvent.Generation.TENURED) {
+                    if (detailEvent.getType().getGeneration() == Generation.TENURED) {
                         polygon.addPoint(scaleX(detailEvent.getTimestamp()), memScaleY(detailEvent.getPreUsed()));
                         polygon.addPoint(scaleX(detailEvent.getTimestamp()+detailEvent.getPause()), memScaleY(detailEvent.getPostUsed()));
                     }

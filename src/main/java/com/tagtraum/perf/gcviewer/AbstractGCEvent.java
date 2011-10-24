@@ -267,6 +267,8 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type CMS_REMARK = new Type("CMS-remark", "CMS-remark:", Generation.TENURED, Concurrency.SERIAL);
         
         // G1 stop the world types
+        public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", "Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        
         // only young collection
         public static final Type G1_YOUNG = new Type("GC pause (young)", "GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
         public static final Type G1_YOUNG__ = new Type("GC pause (young)--", "GC pause (young)--", Generation.YOUNG, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);

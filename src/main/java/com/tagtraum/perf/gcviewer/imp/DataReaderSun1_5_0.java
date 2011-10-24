@@ -1,12 +1,15 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.*;
-
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
+import com.tagtraum.perf.gcviewer.GCEvent;
 
 /**
  * Parses -Xloggc: output from Sun JDK 1.5.0.
@@ -32,7 +35,7 @@ public class DataReaderSun1_5_0 extends DataReaderSun1_4_0 {
             final double timestamp = parseTimestamp(line, pos);
             final GCEvent.Type type = parseType(line, pos);
             // special provision for CMS events
-            if (type.getConcurrency() == GCEvent.Concurrency.CONCURRENT) {
+            if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 if (type.toString().endsWith("-start")) {
                     final ConcurrentGCEvent event = new ConcurrentGCEvent();
                     event.setTimestamp(timestamp);

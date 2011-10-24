@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Concurrency;
 import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
@@ -129,8 +130,8 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
             final double timestamp = parseTimestamp(line, pos);
             final GCEvent.Type type = parseType(line, pos);
             // special provision for CMS events
-            if (type.getConcurrency() == GCEvent.Concurrency.CONCURRENT) {
-                if (type.toString().endsWith("-start")) {
+            if (type.getConcurrency() == Concurrency.CONCURRENT) {
+                if (type.getPattern() == AbstractGCEvent.Pattern.GC) {
                     final ConcurrentGCEvent event = new ConcurrentGCEvent();
                     event.setDateStamp(datestamp);
                     event.setTimestamp(timestamp);
@@ -148,7 +149,7 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                     event.setPause(Double.parseDouble(line.substring(start, end)));
                     start = end + 1;
                     end = line.indexOf(' ', start);
-                    ((ConcurrentGCEvent) event).setDuration(Double.parseDouble(line.substring(start, end)));
+                    event.setDuration(Double.parseDouble(line.substring(start, end)));
                     // nothing more to parse
                     ae = event;
                 }

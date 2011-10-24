@@ -1,9 +1,16 @@
 package com.tagtraum.perf.gcviewer.renderer;
 
-import com.tagtraum.perf.gcviewer.*;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Paint;
+import java.awt.Polygon;
 import java.util.Iterator;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.GCEvent;
+import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.ModelChart;
+import com.tagtraum.perf.gcviewer.ModelChartImpl;
 
 /**
  * TotalYoungRenderer.
@@ -37,12 +44,12 @@ public class TotalYoungRenderer extends PolygonChartRenderer {
                 final Object o = iterator.next();
                 if (o instanceof GCEvent) {
                     GCEvent detailEvent = (GCEvent)o;
-                    if (modelChart.isShowTenured() && detailEvent.getType().getGeneration() == GCEvent.Generation.TENURED) {
+                    if (modelChart.isShowTenured() && detailEvent.getType().getGeneration() == Generation.TENURED) {
                         double total = detailEvent.getTotal();
                         if (total == 0) total = tenured;
                         else tenured = total;
                     }
-                    if (detailEvent.getType().getGeneration() == GCEvent.Generation.YOUNG) {
+                    if (detailEvent.getType().getGeneration() == Generation.YOUNG) {
                         double total = detailEvent.getTotal();
                         if (total == 0) total = young;
                         else young = total;

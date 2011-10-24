@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Concurrency;
 import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCEvent;
@@ -81,9 +82,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataR
             final double timestamp = parseTimestamp(line, pos);
             final GCEvent.Type type = parseType(line, pos);
             // special provision for concurrent events
-            if (type.getConcurrency() == GCEvent.Concurrency.CONCURRENT) {
+            if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 final ConcurrentGCEvent event = new ConcurrentGCEvent();
-                if (type.getPattern() == GCEvent.Pattern.GC) {
+                if (type.getPattern() == AbstractGCEvent.Pattern.GC) {
                     event.setTimestamp(timestamp);
                     event.setType(type);
                     // nothing more to parse...
@@ -101,7 +102,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataR
             	final GCEvent event = new GCEvent();
                 event.setTimestamp(timestamp);
                 event.setType(type);
-                if (event.getType().getPattern() == GCEvent.Pattern.GC_MEMORY_PAUSE) {
+                if (event.getType().getPattern() == AbstractGCEvent.Pattern.GC_MEMORY_PAUSE) {
                 	setMemoryAndPauses((GCEvent)event, line, pos);
                 }
                 else {

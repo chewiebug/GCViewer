@@ -1,16 +1,17 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.DataReader;
-import com.tagtraum.perf.gcviewer.GCModel;
-import com.tagtraum.perf.gcviewer.GCEvent;
-import com.tagtraum.perf.gcviewer.AbstractGCEvent;
-
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Logger;
+import java.io.LineNumberReader;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.DataReader;
+import com.tagtraum.perf.gcviewer.GCEvent;
+import com.tagtraum.perf.gcviewer.GCModel;
 
 /**
  * DataReaderJRockit1_4_2.
@@ -132,14 +133,14 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                 model.add(event);
 
                 // add artificial detail events
-                if (nurserySize != -1 && event.getType().getGeneration() == AbstractGCEvent.Generation.YOUNG) {
+                if (nurserySize != -1 && event.getType().getGeneration() == Generation.YOUNG) {
                     GCEvent detailEvent = new GCEvent();
                     detailEvent.setType(event.getType());
                     detailEvent.setTimestamp(event.getTimestamp());
                     detailEvent.setTotal(nurserySize);
                     event.add(detailEvent);
                 }
-                if (nurserySize != -1 && event.getType().getGeneration() == AbstractGCEvent.Generation.TENURED) {
+                if (nurserySize != -1 && event.getType().getGeneration() == Generation.TENURED) {
                     GCEvent detailEvent = new GCEvent();
                     detailEvent.setType(event.getType());
                     detailEvent.setTimestamp(event.getTimestamp());
