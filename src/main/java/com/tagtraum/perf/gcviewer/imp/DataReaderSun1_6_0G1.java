@@ -39,11 +39,12 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataR
             String line;
             String beginningOfLine = null;
             final ParsePosition parsePosition = new ParsePosition(0);
+        	Matcher mixedLine = linesMixedPattern.matcher("");
             while ((line = in.readLine()) != null) {
                 try {
                 	// if a new timestamp occurs in the middle of a line, that should be treated as a new line
                 	// -> the rest of the old line appears on the next line
-                	Matcher mixedLine = linesMixedPattern.matcher(line);
+                    mixedLine.reset(line); 
                     if (mixedLine.matches()) {
                     	beginningOfLine = mixedLine.group(1);
                     	model.add(parseLine(mixedLine.group(2), parsePosition));
