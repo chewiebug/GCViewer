@@ -103,7 +103,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataR
             	final GCEvent event = new GCEvent();
                 event.setTimestamp(timestamp);
                 event.setType(type);
-                if (event.getType().getPattern() == AbstractGCEvent.GcPattern.GC_MEMORY_PAUSE) {
+                if (event.getType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
                 	setMemoryAndPauses((GCEvent)event, line, pos);
                 }
                 else {
