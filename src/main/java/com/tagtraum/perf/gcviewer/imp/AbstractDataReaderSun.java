@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
@@ -19,7 +20,7 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @version $Id: $
  */
-public abstract class AbstractDataReaderSun {
+public abstract class AbstractDataReaderSun implements DataReader {
 
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
     protected BufferedReader in;
