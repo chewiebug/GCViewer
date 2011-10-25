@@ -134,7 +134,7 @@ public abstract class AbstractGCEvent implements Serializable {
         private Generation generation;
         private Concurrency concurrency;
         /** pattern this event has in the logfile */
-        private Pattern pattern;
+        private GcPattern pattern;
         private static final Map<String, Type> TYPE_MAP = new HashMap<String, Type>();
 
         private Type(String type, Generation generation) {
@@ -146,10 +146,10 @@ public abstract class AbstractGCEvent implements Serializable {
         }
 
         private Type(String type, String rep, Generation generation, Concurrency concurrency) {
-        	this(type, rep, generation, concurrency, Pattern.GC_MEMORY_PAUSE);
+        	this(type, rep, generation, concurrency, GcPattern.GC_MEMORY_PAUSE);
         }
 
-        private Type(String type, String rep, Generation generation, Concurrency concurrency, Pattern pattern) {
+        private Type(String type, String rep, Generation generation, Concurrency concurrency, GcPattern pattern) {
             this.type = type.intern();
             this.rep = rep;
             this.generation = generation;
@@ -214,7 +214,7 @@ public abstract class AbstractGCEvent implements Serializable {
             return concurrency;
         }
 
-        public Pattern getPattern() {
+        public GcPattern getPattern() {
         	return pattern;
         }
         
@@ -252,45 +252,45 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", "CMS (concurrent mode failure):", Generation.ALL, Concurrency.SERIAL);
 
         // CMS (Concurrent Mark Sweep) Event Types
-        public static final Type CMS_CONCURRENT_MARK_START = new Type("CMS-concurrent-mark-start", "CMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type CMS_CONCURRENT_MARK = new Type("CMS-concurrent-mark", "CMS-concurrent-mark:", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE_DURATION);
-        public static final Type CMS_CONCURRENT_PRECLEAN_START = new Type("CMS-concurrent-preclean-start", "CMS-concurrent-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type CMS_CONCURRENT_PRECLEAN = new Type("CMS-concurrent-preclean", "CMS-concurrent-preclean", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE_DURATION);
-        public static final Type CMS_CONCURRENT_SWEEP_START = new Type("CMS-concurrent-sweep-start", "CMS-concurrent-sweep-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type CMS_CONCURRENT_SWEEP = new Type("CMS-concurrent-sweep", "CMS-concurrent-sweep:", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE_DURATION);
-        public static final Type CMS_CONCURRENT_RESET_START = new Type("CMS-concurrent-reset-start", "CMS-concurrent-reset-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type CMS_CONCURRENT_RESET = new Type("CMS-concurrent-reset", "CMS-concurrent-reset:", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE_DURATION);
-        public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("CMS-concurrent-abortable-preclean-start", "CMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("CMS-concurrent-abortable-preclean", "CMS-concurrent-abortable-preclean:", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE_DURATION);
+        public static final Type CMS_CONCURRENT_MARK_START = new Type("CMS-concurrent-mark-start", "CMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type CMS_CONCURRENT_MARK = new Type("CMS-concurrent-mark", "CMS-concurrent-mark:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type CMS_CONCURRENT_PRECLEAN_START = new Type("CMS-concurrent-preclean-start", "CMS-concurrent-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type CMS_CONCURRENT_PRECLEAN = new Type("CMS-concurrent-preclean", "CMS-concurrent-preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type CMS_CONCURRENT_SWEEP_START = new Type("CMS-concurrent-sweep-start", "CMS-concurrent-sweep-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type CMS_CONCURRENT_SWEEP = new Type("CMS-concurrent-sweep", "CMS-concurrent-sweep:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type CMS_CONCURRENT_RESET_START = new Type("CMS-concurrent-reset-start", "CMS-concurrent-reset-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type CMS_CONCURRENT_RESET = new Type("CMS-concurrent-reset", "CMS-concurrent-reset:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("CMS-concurrent-abortable-preclean-start", "CMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("CMS-concurrent-abortable-preclean", "CMS-concurrent-abortable-preclean:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
 
-        public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", "CMS-initial-mark:", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_PAUSE);
-        public static final Type CMS_REMARK = new Type("CMS-remark", "CMS-remark:", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_MEMORY);
+        public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", "CMS-initial-mark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type CMS_REMARK = new Type("CMS-remark", "CMS-remark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         
         // G1 stop the world types
-        public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", "Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", "Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         
         // only young collection
-        public static final Type G1_YOUNG = new Type("GC pause (young)", "GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
-        public static final Type G1_YOUNG__ = new Type("GC pause (young)--", "GC pause (young)--", Generation.YOUNG, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        public static final Type G1_YOUNG = new Type("GC pause (young)", "GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_YOUNG__ = new Type("GC pause (young)--", "GC pause (young)--", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         // partially young collection (
-        public static final Type G1_PARTIAL = new Type("GC pause (partial)", "GC pause (partial)", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        public static final Type G1_PARTIAL = new Type("GC pause (partial)", "GC pause (partial)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
 
         // TODO: Generation: young and tenured!
-        public static final Type G1_INITIAL_MARK = new Type("GC pause (young) (initial-mark)", "GC pause (young) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
-        public static final Type G1_REMARK = new Type("GC remark", "GC remark", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_PAUSE);
-        public static final Type G1_CLEANUP = new Type("GC cleanup", "GC cleanup", Generation.TENURED, Concurrency.SERIAL, Pattern.GC_MEMORY_PAUSE);
+        public static final Type G1_INITIAL_MARK = new Type("GC pause (young) (initial-mark)", "GC pause (young) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_REMARK = new Type("GC remark", "GC remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type G1_CLEANUP = new Type("GC cleanup", "GC cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         
         // G1 concurrent types
-        public static final Type G1_CONCURRENT_MARK_START = new Type("GC concurrent-mark-start", "GC concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type G1_CONCURRENT_MARK_END = new Type("GC concurrent-mark-end", "GC concurrent-mark-end,", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE);
-        public static final Type G1_CONCURRENT_MARK_ABORT = new Type("GC concurrent-mark-abort", "GC concurrent-mark-abort", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type G1_CONCURRENT_COUNT_START = new Type("GC concurrent-count-start", "GC concurrent-count-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", "GC concurrent-count-end,", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE);
-        public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", "GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC);
-        public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", "GC concurrent-cleanup-end,", Generation.TENURED, Concurrency.CONCURRENT, Pattern.GC_PAUSE);
+        public static final Type G1_CONCURRENT_MARK_START = new Type("GC concurrent-mark-start", "GC concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type G1_CONCURRENT_MARK_END = new Type("GC concurrent-mark-end", "GC concurrent-mark-end,", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type G1_CONCURRENT_MARK_ABORT = new Type("GC concurrent-mark-abort", "GC concurrent-mark-abort", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type G1_CONCURRENT_COUNT_START = new Type("GC concurrent-count-start", "GC concurrent-count-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", "GC concurrent-count-end,", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", "GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", "GC concurrent-cleanup-end,", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
     }
 
-    public static enum Pattern {
+    public static enum GcPattern {
     	// <timestamp>: [<GC type>]
     	GC,
     	// <timestamp>: [<GC type>, <pause>]

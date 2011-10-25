@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
@@ -131,7 +132,7 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
             final GCEvent.Type type = parseType(line, pos);
             // special provision for CMS events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
-                if (type.getPattern() == AbstractGCEvent.Pattern.GC) {
+                if (type.getPattern() == GcPattern.GC) {
                     final ConcurrentGCEvent event = new ConcurrentGCEvent();
                     event.setDateStamp(datestamp);
                     event.setTimestamp(timestamp);
