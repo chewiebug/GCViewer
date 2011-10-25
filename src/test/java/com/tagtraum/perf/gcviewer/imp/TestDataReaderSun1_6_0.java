@@ -204,5 +204,16 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 		assertEquals("full gc pause", 0.7965714, model.getFullGCPause().getSum(), 0.00000001);
 	}
 
+    public void testCmsConcurrentMarkStart() throws Exception {
 
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-10-24T08:12:24.375+0200: 3388.929: [CMS-concurrent-mark-start]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("full gc pause", 0.0, model.getFullGCPause().getSum(), 0.01);
+
+}
 }
