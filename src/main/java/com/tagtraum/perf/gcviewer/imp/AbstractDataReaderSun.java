@@ -29,7 +29,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
         this.in = new BufferedReader(new InputStreamReader(in, "ASCII"), 64 * 1024);
     }
 
-    public void setMemoryAndPauses(GCEvent event, String line) throws ParseException {
+    protected void setMemoryAndPauses(GCEvent event, String line) throws ParseException {
         setMemoryAndPauses(event, line, new ParsePosition(0));
     }
 
@@ -52,7 +52,16 @@ public abstract class AbstractDataReaderSun implements DataReader {
     	}
     }
     
-    public void setMemoryAndPauses(GCEvent event, String line, ParsePosition pos) throws ParseException {
+    protected void setMemoryAndPauses(GCEvent event, String line, ParsePosition pos) throws ParseException {
+        setMemory(event, line, pos);
+        parsePause(event, line, pos);
+    }
+
+    protected void setMemory(GCEvent event, String line) throws ParseException {
+        setMemory(event, line, new ParsePosition(0));
+    }
+    
+    protected void setMemory(GCEvent event, String line, ParsePosition pos) throws ParseException {
         int start = pos.getIndex();
         int end = line.indexOf("->", pos.getIndex()) - 1;
         if (end != -2) for (start = end-1; start >= 0 && Character.isDigit(line.charAt(start)); start--) {}
@@ -96,8 +105,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
             if (detailEvent.getPreUsed() > detailEvent.getPostUsed()) event.add(detailEvent);
             pos.setIndex(end+1);
         }
-
-        parsePause(event, line, pos);
     }
 
     private boolean isGeneration(final String line, final ParsePosition pos) {
@@ -164,7 +171,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     	}
     }
     
-    public double parsePause(String line, ParsePosition pos) {
+    protected double parsePause(String line, ParsePosition pos) {
     	// usual pattern expected: "..., 0.002032 secs]"
     	// but may be as well (G1): "..., 0.003032]"
         int end = line.indexOf(' ', pos.getIndex());
@@ -189,7 +196,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
         return line.charAt(pos.getIndex()) == '[';
     }
 
-    public GCEvent.Type parseType(String line, ParsePosition pos) throws ParseException {
+    protected GCEvent.Type parseType(String line, ParsePosition pos) throws ParseException {
         int i = pos.getIndex();
         try {
             // consume all leading spaces and [
@@ -246,7 +253,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @param pos
      * @return true if we will encounter a timestamp earlier than a footprint
      */
-    public boolean isTimestamp(String line, ParsePosition pos) {
+    protected boolean isTimestamp(String line, ParsePosition pos) {
         // timestamps end with colons
         // footprint values end with K's
         int colonIndex = line.indexOf(':', pos.getIndex());
@@ -265,7 +272,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @return the parsed timestamp
      * @throws ParseException
      */
-    public double parseTimestamp(String line, ParsePosition pos) throws ParseException {
+    protected double parseTimestamp(String line, ParsePosition pos) throws ParseException {
         // look for end of timestamp, which is a colon ':'
         int endOfTimestamp = line.indexOf(':', pos.getIndex());
         if (endOfTimestamp == -1) throw new ParseException("Error parsing entry.", line);
@@ -278,7 +285,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 
     protected abstract AbstractGCEvent parseLine(String line, ParsePosition pos) throws ParseException;
 
-    public void skipDetails(String line, ParsePosition pos) throws ParseException {
+    protected void skipDetails(String line, ParsePosition pos) throws ParseException {
         int index = line.lastIndexOf(']', line.length()-2) + 1;
         if (index == 0) throw new ParseException("Failed to skip details.", line);
         if (line.charAt(index) == ' ') index++;
