@@ -21,8 +21,10 @@ public class ParseException extends IOException {
         this.line = line;
     }
 
-    public String toString() {
-        if (line == null) return super.toString();
-        return super.toString() + " Line: " + line;
+    @Override
+    public String getMessage() {
+        if (line == null) return super.getMessage();
+        return super.getMessage() + " Line: " + line;
     }
+    
 }
