@@ -26,7 +26,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("throughput", 47.93401098, model.getThroughput(), 0.000000001);
         assertEquals("longest pause", 0.1581177, model.getPause().getMax(), 0.000001);
         assertEquals("total runtime", 120.215, model.getRunningTime(), 0.000001);
-        assertEquals("number of errors", 10, handler.getCount());
+        assertEquals("number of errors", 8, handler.getCount());
     }
     
     public void testG1FullGcSystemGc() throws Exception {

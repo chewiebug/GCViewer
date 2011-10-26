@@ -57,7 +57,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataR
                     }
                     model.add(parseLine(line, parsePosition));
                 } catch (ParseException pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.getMessage());
+                    if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.getMessage(), pe);
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
                 }
                 // reset ParsePosition
@@ -114,7 +114,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataR
             }
             return ae;
         } catch (RuntimeException rte) {
-            if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, rte.toString() + " while parsing line: " + line, rte);
             throw new ParseException("Error parsing entry: " + line + ", " + rte.toString());
         }
     }
