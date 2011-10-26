@@ -3,7 +3,6 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,6 +18,7 @@ import com.tagtraum.perf.gcviewer.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
 

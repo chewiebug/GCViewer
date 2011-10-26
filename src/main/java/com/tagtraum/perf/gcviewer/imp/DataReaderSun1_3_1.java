@@ -1,19 +1,19 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.DataReader;
-import com.tagtraum.perf.gcviewer.GCEvent;
-import com.tagtraum.perf.gcviewer.GCModel;
-import com.tagtraum.perf.gcviewer.AbstractGCEvent;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.DataReader;
+import com.tagtraum.perf.gcviewer.GCEvent;
+import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
  * Parses -verbose:gc output from Sun JDK 1.3.1.

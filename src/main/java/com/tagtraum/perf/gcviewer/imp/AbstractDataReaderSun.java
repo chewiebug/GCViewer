@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.text.ParsePosition;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +11,7 @@ import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
  *
