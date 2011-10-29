@@ -120,7 +120,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         }
                     }
                 } catch (Exception pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.getMessage(), pe);
+                    if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.getMessage());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
                 }
                 parsePosition.setIndex(0);
