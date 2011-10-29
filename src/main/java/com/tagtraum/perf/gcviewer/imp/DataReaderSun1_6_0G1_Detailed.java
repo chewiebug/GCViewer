@@ -3,7 +3,6 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.ParsePosition;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -14,6 +13,7 @@ import com.tagtraum.perf.gcviewer.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.G1GcEvent;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 public class DataReaderSun1_6_0G1_Detailed extends DataReaderSun1_6_0G1 {
 
@@ -51,6 +51,7 @@ public class DataReaderSun1_6_0G1_Detailed extends DataReaderSun1_6_0G1 {
             int lineNumber = 0;
             while ((line = in.readLine()) != null) {
                 ++lineNumber;
+                parsePosition.setLineNumber(lineNumber);
                 // the following case is special for -XX:+PrintGCDetails and must be treated
                 // different from the other cases occuring in G1 standard mode
                 // 0.356: [GC pause (young), 0.00219944 secs] -> GC_PAUSE pattern but GC_MEMORY_PAUSE 

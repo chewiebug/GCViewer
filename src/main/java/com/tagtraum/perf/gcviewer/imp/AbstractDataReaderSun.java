@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.text.ParsePosition;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +11,7 @@ import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
  *
@@ -235,8 +235,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 }
             }
             if (gcType == null) {
-                //System.out.println("Error parsing entry: " + line + " Unknown GC type: " + s);
-                throw new UnknownGcTypeException(s, line);
+                throw new UnknownGcTypeException(s, line, pos);
             }
             return gcType;
         }
@@ -275,7 +274,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     protected double parseTimestamp(String line, ParsePosition pos) throws ParseException {
         // look for end of timestamp, which is a colon ':'
         int endOfTimestamp = line.indexOf(':', pos.getIndex());
-        if (endOfTimestamp == -1) throw new ParseException("Error parsing entry.", line);
+        if (endOfTimestamp == -1) throw new ParseException("Error parsing entry.", line, pos);
         // we have to replace , with . for Europe
         final String timestampString = line.substring(pos.getIndex(), endOfTimestamp).replace(',', '.');
         final double timestamp = Double.parseDouble(timestampString);

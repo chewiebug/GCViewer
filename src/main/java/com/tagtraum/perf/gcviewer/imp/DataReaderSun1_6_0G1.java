@@ -3,7 +3,6 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.ParsePosition;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -16,6 +15,7 @@ import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataReader {
 
@@ -114,7 +114,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun implements DataR
             }
             return ae;
         } catch (RuntimeException rte) {
-            throw new ParseException("Error parsing entry: " + line + ", " + rte.toString());
+            throw new ParseException(rte.toString(), line, pos);
         }
     }
 	
