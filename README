@@ -212,6 +212,17 @@ Sun JDK 1.5 (a.k.a. Java 5)
 correctly reflected in the data panel.
 
 
+Sun JDK 1.6 (a.k.a. Java 6)
+---------------------------
+
+G1 collector sometimes mixes concurrent events with stop the world collections.
+In a few cases the parser can recover from such mixed lines, often it can't an
+will show an error message.
+
+-XX:+UseConcMarkSweepGC: The concurrently collected garbage is not
+correctly reflected in the data panel.
+
+
 BEA JRockit 1.4.2/1.5
 ---------------------
 
@@ -222,7 +233,7 @@ data panel.
 Export formats
 --------------
 
-The CVS format is quite useful for importing the data to a
+The CSV format is quite useful for importing the data to a
 spreadsheet application. However, it does not export all
 data.
 
