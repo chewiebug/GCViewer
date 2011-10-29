@@ -1,0 +1,28 @@
+8.775: [GC pause (young)8.775: [GC concurrent-mark-end, 0.0101638 sec]
+, 0.00831998 secs]
+   [SATB Drain Time:   0.0 ms]
+   [Parallel Time:   7.7 ms]
+      [GC Worker Start Time (ms):  8775.1  8775.1]
+      [Update RS (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+         [Processed Buffers : 2 1
+          Sum: 3, Avg: 1, Min: 1, Max: 2]
+      [Ext Root Scanning (ms):  0.2  0.2
+       Avg:   0.2, Min:   0.2, Max:   0.2]
+      [Mark Stack Scanning (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Scan RS (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Object Copy (ms):  7.4  7.3
+       Avg:   7.3, Min:   7.3, Max:   7.4]
+      [Termination (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+         [Termination Attempts : 1 1
+          Sum: 2, Avg: 1, Min: 1, Max: 1]
+      [GC Worker End Time (ms):  8782.7  8782.7]
+      [Other:   0.1 ms]
+   [Clear CT:   0.1 ms]
+   [Other:   0.5 ms]
+      [Choose CSet:   0.0 ms]
+   [ 169M->162M(256M)]
+ [Times: user=0.03 sys=0.00, real=0.02 secs] 

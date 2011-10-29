@@ -21,7 +21,6 @@ public class TestAll {
         suite.addTestSuite(TestDataReaderSun1_5_0.class);
         suite.addTestSuite(TestDataReaderSun1_6_0.class);
         suite.addTestSuite(TestDataReaderSun1_6_0G1.class);
-        suite.addTestSuite(TestDataReaderSun1_6_0G1_Detailed.class);
 
         suite.addTestSuite(TestDataReaderIBM1_2_2.class);
         suite.addTestSuite(TestDataReaderIBM1_3_1.class);

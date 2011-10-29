@@ -44,12 +44,8 @@ public class DataReaderFactory {
             // this should be an IBM JDK < 1.3.0
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM <1.3.0");
             return new DataReaderIBM1_3_0(in);
-        } else if (s.indexOf("pause (young),") > 0) {
-        	// G1 logger usually starts with "<timestamp>: [GC pause (young), <pause>]"
-            if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x (PrintGcDetails)");
-            return new DataReaderSun1_6_0G1_Detailed(in);
-        } else if (s.indexOf("pause") > 0) {
-        	// G1 logger usually starts with "<timestamp>: [GC pause (young) ...]"
+        } else if (s.indexOf("pause (young)") > 0) {
+        	// G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x");
             return new DataReaderSun1_6_0G1(in);
         } else if (s.indexOf("[Times:") > 0) {

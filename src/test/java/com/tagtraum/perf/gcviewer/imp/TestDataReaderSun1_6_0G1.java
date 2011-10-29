@@ -13,6 +13,9 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
+    /**
+     * Test G1 parser with a gc verbose file (not -XX:+PrintGCDetails)
+     */
     public void testG1GcVerbose() throws Exception {
     	TestLogHandler handler = new TestLogHandler();
     	IMP_LOGGER.addHandler(handler);
@@ -40,6 +43,103 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
 		assertEquals("count", 1, model.size());
 		assertEquals("full gc pause", 0.1604955, model.getFullGCPause().getMax(), 0.000001);
 
+    }
+    
+    public void testG1MixedLine() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("0.388: [GC pause (young) (initial-mark) 10080K->10080K(16M)0.390: [GC concurrent-mark-start]" +
+                		"\n, 0.0013065 secs]")
+                .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 2, model.size());
+        assertEquals("gc pause", 0.0013065, model.getGCPause().getMax(), 0.000001);
+    }
+
+    public void testDetailedYoungCollection() throws Exception {
+        // parse one detailed event
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_Detailed-young.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.00594747, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 4096 - 3936, model.getFreedMemoryByGC().getMax());
+    }
+    
+    public void testDetailedYoungCollectionMixed() throws Exception {
+        // parse one detailed event
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_Detailed-young-mixedLine.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 2, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.00831998, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 169*1024 - 162*1024, model.getFreedMemoryByGC().getMax());
+    }
+    
+    public void testGcPattern() throws Exception {
+        final InputStream in = new ByteArrayInputStream(("0.452: [GC concurrent-count-start]").getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("full gc pause", 0, model.getFullGCPause().getN());
+        assertEquals("gc pause", 0, model.getGCPause().getN());
+    }
+
+    public void testGcPausePattern() throws Exception {
+        final InputStream in = new ByteArrayInputStream(("0.360: [GC concurrent-count-end, 0.0242674]").getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("full gc pause", 0, model.getFullGCPause().getN());
+    }
+
+    public void testGcMemoryPausePattern() throws Exception {
+        final InputStream in = new ByteArrayInputStream(("0.360: [GC cleanup 19M->19M(36M), 0.0007889 secs]").getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("full gc pause", 0, model.getFullGCPause().getN());
+        assertEquals("gc pause", 0.0007889, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("memory", 0, model.getFreedMemoryByGC().getMax());
+    }
+
+    public void testInitialMark() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("0.319: [GC pause (young) (initial-mark), 0.00188271 secs]" +
+                        "\n [Times: user=0.00 sys=0.00, real=0.00 secs] ").getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("full gc pause", 0, model.getFullGCPause().getN());
+        assertEquals("gc pause", 0.00188271, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("memory", 0, model.getFreedMemoryByGC().getMax());
+    }
+
+    public void testRemark() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("0.334: [GC remark, 0.0009506 secs]" +
+                        "\n [Times: user=0.00 sys=0.00, real=0.00 secs] ").getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("full gc pause", 0, model.getFullGCPause().getN());
+        assertEquals("gc pause", 0.0009506, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("memory", 0, model.getFreedMemoryByGC().getMax());
     }
 
 }
