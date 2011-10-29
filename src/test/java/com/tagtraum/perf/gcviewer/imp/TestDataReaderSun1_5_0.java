@@ -1,15 +1,12 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCModel;
-import com.tagtraum.perf.gcviewer.math.DoubleData;
 
 /**
  *
@@ -28,7 +25,6 @@ public class TestDataReaderSun1_5_0 extends TestCase {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0CMS_PrintGCDetails.txt");
         final DataReader reader = new DataReaderSun1_5_0(in);
         GCModel model = reader.read();
-        model.printPauseMaps();
         
         assertEquals("size", 515, model.size());
         assertEquals("throughput", 88.275334, model.getThroughput(), 0.00000001);
@@ -41,7 +37,6 @@ public class TestDataReaderSun1_5_0 extends TestCase {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0ParallelOldGC.txt");
         final DataReader reader = new DataReaderSun1_5_0(in);
         GCModel model = reader.read();
-        model.printPauseMaps();
         
         assertEquals("size", 1, model.size());
         assertEquals("gc pause", 27.0696262, model.getFullGCPause().getMax(), 0.000001);
@@ -51,7 +46,6 @@ public class TestDataReaderSun1_5_0 extends TestCase {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0CMS_IncrementalPacing.txt");
         final DataReader reader = new DataReaderSun1_5_0(in);
         GCModel model = reader.read();
-        model.printPauseMaps();
 
         assertEquals("size", 810, model.size());
         assertEquals("throughput", 94.155883322, model.getThroughput(), 0.00000001);
