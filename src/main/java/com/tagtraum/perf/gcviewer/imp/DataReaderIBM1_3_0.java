@@ -49,7 +49,7 @@ public class DataReaderIBM1_3_0 implements DataReader {
                     case 0:
                         if (line.indexOf("Allocation Failure.") != -1) {
                             event = new GCEvent();
-                            event.setType(GCEvent.Type.FULL_GC);
+                            event.setType(AbstractGCEvent.Type.FULL_GC);
                             event.setTimestamp(lastEvent.getTimestamp() + parseTimeSinceLastAF(line));
                             state++;
                             break;

@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
@@ -75,7 +76,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
                         if (line.indexOf("GC:") != -1) {
                         	// This is the start of the GC log
                             event = new GCEvent();
-                            event.setType(GCEvent.Type.GC);
+                            event.setType(AbstractGCEvent.Type.GC);
                             event.setPreUsed(parseInitialHeap(line));
                             event.setPostUsed(event.getPreUsed());
                             event.setTotal(event.getPreUsed());
@@ -87,7 +88,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
                         else if (line.indexOf("collection starting") != -1) {
                         	// This is the start of a GC event
                             event = new GCEvent();
-                            event.setType(GCEvent.Type.GC);
+                            event.setType(AbstractGCEvent.Type.GC);
                             final long time = parseGCCycleStart(line);
                             if (basetime == 0) basetime = time;
                             event.setTimestamp((time - basetime)/1000.0d);

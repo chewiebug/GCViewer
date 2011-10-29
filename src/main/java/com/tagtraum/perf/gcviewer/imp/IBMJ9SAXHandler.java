@@ -6,6 +6,7 @@
  */
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
 import org.xml.sax.Attributes;
@@ -189,7 +190,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 					LOG.warning("Different GC type: " + currentAF.gcType);
 				} else
 				{
-					event.setType(GCEvent.Type.FULL_GC);
+					event.setType(AbstractGCEvent.Type.FULL_GC);
 				}
 				if(currentAF.initialTotalBytes != -1 && currentAF.initialFreeBytes != -1){
 					int preUsed = currentAF.initialTotalBytes - currentAF.initialFreeBytes;
@@ -217,7 +218,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                 	int postUsed = currentAF.afterSOATotalBytes - currentAF.afterSOAFreeBytes;
                 	final GCEvent detailEvent = new GCEvent();
                 	detailEvent.setTimestamp(currentAF.elapsedTime);
-                	detailEvent.setType(GCEvent.Type.PS_YOUNG_GEN);
+                	detailEvent.setType(AbstractGCEvent.Type.PS_YOUNG_GEN);
                 	detailEvent.setTenuredDetail(true);
                 	detailEvent.setPreUsed(preUsed);
                 	detailEvent.setPostUsed(postUsed);
@@ -230,7 +231,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                 	int postUsed = currentAF.afterLOATotalBytes - currentAF.afterLOAFreeBytes;
                 	final GCEvent detailEvent = new GCEvent();
                 	detailEvent.setTimestamp(currentAF.elapsedTime);
-                	detailEvent.setType(GCEvent.Type.PS_OLD_GEN);
+                	detailEvent.setType(AbstractGCEvent.Type.PS_OLD_GEN);
                 	detailEvent.setTenuredDetail(true);
                 	detailEvent.setPreUsed(preUsed);
                 	detailEvent.setPostUsed(postUsed);

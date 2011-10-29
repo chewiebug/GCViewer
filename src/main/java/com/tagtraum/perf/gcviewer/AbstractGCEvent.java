@@ -128,6 +128,16 @@ public abstract class AbstractGCEvent implements Serializable {
         return sb.toString();
     }
 
+    public boolean isFull() {
+    	return getDetailGeneration() == Generation.ALL;
+        //return getType() == GCEvent.Type.FULL_GC;
+        //return getType() == GCEvent.Type.FULL_GC || getType().getGeneration() == Generation.TENURED || hasTenuredDetail();
+    }
+
+    public boolean isInc() {
+        return getType() == GCEvent.Type.INC_GC;
+    }
+
     public static class Type implements Serializable {
         private final String type;
         private final String rep;

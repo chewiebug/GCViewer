@@ -60,7 +60,7 @@ public class DataReaderSun1_2_2 implements DataReader {
                         event.setPostUsed((int)((incTo * percentUsed / 1024L / 100l)));
                         event.setPreUsed(event.getPostUsed());
                         event.setTotal((int)(incTo / 1024L));
-                        event.setType(GCEvent.Type.GC);
+                        event.setType(AbstractGCEvent.Type.GC);
                         event.setPause(0);
                         model.add(event);
                         lastEvent = event;
@@ -83,7 +83,7 @@ public class DataReaderSun1_2_2 implements DataReader {
                         event.setPreUsed((total - postFree + freed) / 1024);
                         //event.setPostUsed(event.getPreUsed());
                         event.setTotal(total / 1024);
-                        event.setType(GCEvent.Type.GC);
+                        event.setType(AbstractGCEvent.Type.GC);
                         event.setPause(((double)pause) / 1000.0d);
                         model.add(event);
                         lastEvent = event;

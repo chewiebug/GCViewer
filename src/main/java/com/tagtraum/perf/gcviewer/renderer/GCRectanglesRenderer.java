@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.renderer;
 
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.ChartRenderer;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
@@ -56,9 +57,9 @@ public class GCRectanglesRenderer extends ChartRenderer {
             final int x = (int) (scaleFactor * event.getTimestamp());
             final int y = getHeight() - (int) (pause * scaledHeight);
             if (lastX != x || lastY != y || lastWidth != width || lastHeight != height) {
-                if (event.getType() == GCEvent.Type.FULL_GC) {
+                if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
                     g2d.setPaint(darker);
-                } else if (event.getType() == GCEvent.Type.INC_GC) {
+                } else if (event.getType() == AbstractGCEvent.Type.INC_GC) {
                     g2d.setPaint(brighter);
                 } else {
                     g2d.setPaint(getLinePaint());

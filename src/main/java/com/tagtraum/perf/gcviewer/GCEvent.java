@@ -51,16 +51,6 @@ public class GCEvent extends AbstractGCEvent {
         this.total = total;
     }
 
-    public boolean isFull() {
-    	return getDetailGeneration() == Generation.ALL;
-        //return getType() == GCEvent.Type.FULL_GC;
-        //return getType() == GCEvent.Type.FULL_GC || getType().getGeneration() == Generation.TENURED || hasTenuredDetail();
-    }
-
-    public boolean isInc() {
-        return getType() == GCEvent.Type.INC_GC;
-    }
-
     public int getPreUsed() {
         return preUsed;
     }

@@ -37,9 +37,11 @@ public class TextAreaLogHandler extends Handler {
     public void publish(LogRecord record) {
         try {
             if (isLoggable(record)) {
-            	++errorCount;
+                final int level = record.getLevel().intValue();
+                if (level >=Level.WARNING.intValue() && level < Level.OFF.intValue()) {
+                    ++errorCount;
+                }
                 if (!errors) {
-                    final int level = record.getLevel().intValue();
                     errors = level >= Level.WARNING.intValue() && level < Level.OFF.intValue();
                 }
                 String formattedRecord = null;

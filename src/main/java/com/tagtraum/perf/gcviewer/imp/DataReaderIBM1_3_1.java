@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.GCModel;
@@ -55,14 +56,14 @@ public class DataReaderIBM1_3_1 implements DataReader {
                     case 0:
                         if (line.indexOf("Allocation Failure.") != -1) {
                             event = new GCEvent();
-                            event.setType(GCEvent.Type.FULL_GC);
+                            event.setType(AbstractGCEvent.Type.FULL_GC);
                             event.setTimestamp(lastEvent.getTimestamp() + parseTimeSinceLastAF(line));
                             // stay in state 0
                             break;
                         }
                         else if (line.indexOf("GC cycle started") != -1) { // can apparently occur without AF
                             event = new GCEvent();
-                            event.setType(GCEvent.Type.FULL_GC);
+                            event.setType(AbstractGCEvent.Type.FULL_GC);
                             final long time = parseGCCycleStart(line);
                             if (basetime == 0) basetime = time;
                             event.setTimestamp((time - basetime)/1000.0d);
@@ -70,7 +71,7 @@ public class DataReaderIBM1_3_1 implements DataReader {
                             break;
                         } else if (line.indexOf("managing allocation failure, action=3") != -1) {
                             event = new GCEvent();
-                            event.setType(GCEvent.Type.FULL_GC);
+                            event.setType(AbstractGCEvent.Type.FULL_GC);
                             event.setTimestamp(lastEvent.getTimestamp() + lastEvent.getPause());
                             event.setPreUsed(parsePreUsedAFAction3(line));
                             event.setPostUsed(event.getPreUsed());

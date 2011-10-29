@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.renderer;
 
+import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.ChartRenderer;
 import com.tagtraum.perf.gcviewer.GCEvent;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
@@ -29,7 +30,7 @@ public class IncLineRenderer extends ChartRenderer {
         for (Iterator i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
             final Object o = i.next();
             if (o instanceof GCEvent) {
-                GCEvent event = (GCEvent) o;
+                AbstractGCEvent event = (AbstractGCEvent) o;
                 if (event.isInc()) {
                     final int scaledTimestamp = (int) (scaleFactor * event.getTimestamp());
                     if (scaledTimestamp != lastScaledTimestamp) {
