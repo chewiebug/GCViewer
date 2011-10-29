@@ -60,11 +60,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             while ((line = in.readLine()) != null) {
                 ++lineNumber;
                 parsePosition.setLineNumber(lineNumber);
-                // the following case is special for -XX:+PrintGCDetails and must be treated
-                // different from the other cases occuring in G1 standard mode
-                // 0.356: [GC pause (young), 0.00219944 secs] -> GC_PAUSE pattern but GC_MEMORY_PAUSE 
-                //   event (has extensive details)
-                // all other GC types are the same as in standard G1 mode.
                 try {
                     if (!isInDetailedEvent) {
                         // if a new timestamp occurs in the middle of a line, that should be treated as a new line
@@ -80,6 +75,12 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             line = beginningOfLine + line;
                             beginningOfLine = null;
                         }
+
+                        // the following case is special for -XX:+PrintGCDetails and must be treated
+                        // different from the other cases occuring in G1 standard mode
+                        // 0.356: [GC pause (young), 0.00219944 secs] -> GC_PAUSE pattern but GC_MEMORY_PAUSE 
+                        //   event (has extensive details)
+                        // all other GC types are the same as in standard G1 mode.
                         gcPauseMatcher.reset(line);
                         if (gcPauseMatcher.matches()) {
                             AbstractGCEvent.Type type = AbstractGCEvent.Type.parse(gcPauseMatcher.group(GC_TYPE));
