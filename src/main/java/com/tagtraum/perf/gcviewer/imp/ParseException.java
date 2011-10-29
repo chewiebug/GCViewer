@@ -33,8 +33,12 @@ public class ParseException extends IOException {
 
     @Override
     public String getMessage() {
-        if (line == null) return super.getMessage();
-        return super.getMessage() + (parsePosition != null ? (" Line " + parsePosition.getLineNumber() + ": " + line) : (" Line: " + line));
+        if (line == null) {
+            return super.getMessage();
+        }
+        return super.getMessage() + (parsePosition != null 
+                ? (" Line " + parsePosition.getLineNumber() + ": " + line) 
+                        : (" Line: " + line));
     }
     
 }
