@@ -46,7 +46,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     	}
     	else {
     		if (LOG.isLoggable(Level.WARNING)) {
-    			LOG.warning("unknown memoryunit: " + memUnit + " in line " + line);
+    			LOG.warning("unknown memoryunit '" + memUnit + "' in line " + line);
     		}
     		return 1;
     	}
@@ -165,7 +165,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 	                else
 	                    pos.setIndex(closingBracket + 1);
 	            } else {
-	                LOG.severe("Hm... something went wrong here... (line='" + line + "'");
+	                LOG.severe("Hm... something went wrong here... (line " + pos.getLineNumber() + "='" + line + "'");
 	            }
 	        }
     	}
