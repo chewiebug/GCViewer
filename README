@@ -147,10 +147,8 @@ Pause
      o Count of all pauses due to any kind of GC
 - Avg Pause:
      o Average length of a GC pause of any kind
-- Min Pause:
-     o Shortest pause of any kind
-- Max Pause:
-     o Longest pause of any kind
+- Min / max Pause:
+     o Shortest /longest pause of any kind
      
 - Acc full GC:
      o Sum of all pauses due to full collections
@@ -160,10 +158,8 @@ Pause
      o Sum of all full GC pauses
 - Avg full GC:
      o Average length of a full GC pause
-- Min full GC pause:
-     o Shortest full GC pause
-- Max full GC pause:
-     o Longest full GC pause
+- Min / max full GC pause:
+     o Shortest / longest full GC pause
      
 - Acc GC:
      o Sum of all pauses due to minor collections
@@ -171,10 +167,8 @@ Pause
      o Count of all pauses due to minor collections
 - Avg GC:
      o Average length of a minor collection pause
-- Min GC pause:
-     o Shortest minor GC pause
-- Max GC pause:
-     o Longest minor GC pause
+- Min / max GC pause:
+     o Shortest / longest minor GC pause
 
 
 Notes

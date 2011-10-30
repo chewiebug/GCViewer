@@ -219,11 +219,8 @@ public class ModelPanel extends JTabbedPane {
             addValue(localStrings.getString("data_panel_avg_pause"), 
             		pauseDataAvailable ? pauseFormatter.format(model.getPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPause().standardDeviation()) +")" : "n/a", 
             		pauseDataAvailable ? isSignificant(model.getPause().average(), model.getPause().standardDeviation()) : false);
-            addValue(localStrings.getString("data_panel_min_pause"), 
-            		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMin()) + "s" : "n/a", 
-            		pauseDataAvailable);
-            addValue(localStrings.getString("data_panel_max_pause"), 
-            		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMax()) + "s" : "n/a", 
+            addValue(localStrings.getString("data_panel_min_max_pause"), 
+            		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMin()) + "s / " +pauseFormatter.format(model.getPause().getMax()) + "s" : "n/a", 
             		pauseDataAvailable);
 
             newGroup(localStrings.getString("data_panel_group_full_gc_pauses"), true);
@@ -236,11 +233,8 @@ public class ModelPanel extends JTabbedPane {
             addValue(localStrings.getString("data_panel_avg_fullgcpause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getFullGCPause().standardDeviation()) +")" : "n/a", 
             		fullGCDataAvailable ? isSignificant(model.getFullGCPause().average(), model.getPause().standardDeviation()) : false);
-            addValue(localStrings.getString("data_panel_min_full_gc_pause"), 
-            		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMin()) + "s" : "n/a", 
-            		fullGCDataAvailable);
-            addValue(localStrings.getString("data_panel_max_full_gc_pause"), 
-            		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMax()) + "s" : "n/a", 
+            addValue(localStrings.getString("data_panel_min_max_full_gc_pause"), 
+            		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMin()) + "s / " + pauseFormatter.format(model.getFullGCPause().getMax()) + "s" : "n/a", 
             		fullGCDataAvailable);
 
             newGroup(localStrings.getString("data_panel_group_gc_pauses"), true);
@@ -253,11 +247,8 @@ public class ModelPanel extends JTabbedPane {
             addValue(localStrings.getString("data_panel_avg_gcpause"), 
             		gcDataAvailable ? pauseFormatter.format(model.getGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getGCPause().standardDeviation()) +")" : "n/a", 
             		gcDataAvailable ? isSignificant(model.getGCPause().average(), model.getGCPause().standardDeviation()) : false);
-            addValue(localStrings.getString("data_panel_min_gc_pause"), 
-            		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMin()) + "s" : "n/a", 
-            		gcDataAvailable);
-            addValue(localStrings.getString("data_panel_max_gc_pause"), 
-            		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMax()) + "s" : "n/a", 
+            addValue(localStrings.getString("data_panel_min_max_gc_pause"), 
+            		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMin()) + "s / " + pauseFormatter.format(model.getGCPause().getMax()) + "s": "n/a", 
             		gcDataAvailable);
             
         }
