@@ -49,6 +49,7 @@ public abstract class ChartRenderer extends JComponent {
         Paint oldPaint = g2d.getPaint();
         Object oldAAHint = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
         if (modelChart.isAntiAlias()) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setPaint(getLinePaint());
         paintComponent(g2d);
         g2d.setPaint(oldPaint);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAHint);
