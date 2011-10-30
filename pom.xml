@@ -15,6 +15,11 @@
 			<organization>tagtraum industries incorporated</organization>
 			<organizationUrl>http://www.tagtraum.com/</organizationUrl>
 		</developer>
+        <developer>
+            <name>Jörg Wüthrich</name>
+            <email>jwu@gmx.ch</email>
+            <url>http://github.com/chewiebug/GCViewer</url>
+        </developer>
 	</developers>
 	<licenses>
 		<license>
@@ -26,8 +31,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
-			<scope>test</scope>
+			<version>4.10</version>
 		</dependency>
 	</dependencies>
 	<build>
