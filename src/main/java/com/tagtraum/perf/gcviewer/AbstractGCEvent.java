@@ -137,6 +137,10 @@ public abstract class AbstractGCEvent implements Serializable {
     public boolean isInc() {
         return getType() == GCEvent.Type.INC_GC;
     }
+    
+    public boolean isConcurrent() {
+        return getType().getConcurrency().compareTo(Concurrency.CONCURRENT) == 0;
+    }
 
     public static class Type implements Serializable {
         private final String type;
