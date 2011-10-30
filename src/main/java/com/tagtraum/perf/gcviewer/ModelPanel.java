@@ -223,7 +223,7 @@ public class ModelPanel extends JTabbedPane {
             		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMin()) + "s / " +pauseFormatter.format(model.getPause().getMax()) + "s" : "n/a", 
             		pauseDataAvailable);
             addValue(localStrings.getString("data_panel_avg_pause_interval"), 
-                    pauseDataAvailable ? pauseFormatter.format(model.getPauseInterval().average()) + " (\u03c3=" + pauseFormatter.format(model.getPauseInterval().standardDeviation()) +")" : "n/a", 
+                    pauseDataAvailable ? pauseFormatter.format(model.getPauseInterval().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPauseInterval().standardDeviation()) +")" : "n/a", 
                     pauseDataAvailable ? isSignificant(model.getPauseInterval().average(), model.getPauseInterval().standardDeviation()) : false);
             addValue(localStrings.getString("data_panel_min_max_pause_interval"), 
                     pauseDataAvailable ? pauseFormatter.format(model.getPauseInterval().getMin()) + "s / " +pauseFormatter.format(model.getPauseInterval().getMax()) + "s" : "n/a", 
