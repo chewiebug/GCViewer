@@ -149,7 +149,11 @@ Pause
      o Average length of a GC pause of any kind
 - Min / max Pause:
      o Shortest /longest pause of any kind
-     
+- Avg pause interval:
+     o avg interval between two pauses of any kind
+- Min / max pause interval:
+     o Min / max interval between two pauses of any kind
+
 - Acc full GC:
      o Sum of all pauses due to full collections
 - Number of full GC pauses:
@@ -210,7 +214,7 @@ Sun JDK 1.6 (a.k.a. Java 6)
 ---------------------------
 
 G1 collector sometimes mixes concurrent events with stop the world collections.
-In a few cases the parser can recover from such mixed lines, often it can't an
+In a few cases the parser can recover from such mixed lines, often it can't and
 will show an error message.
 
 -XX:+UseConcMarkSweepGC: The concurrently collected garbage is not

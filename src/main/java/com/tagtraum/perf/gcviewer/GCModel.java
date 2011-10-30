@@ -53,6 +53,8 @@ public class GCModel implements Serializable {
     private DoubleData totalPause;
     private DoubleData fullGCPause;
     private DoubleData gcPause; // not full gc but stop the world pause
+    private double lastPauseTimeStamp = -1;
+    private DoubleData pauseInterval; // interval between two stop the world pauses
     private long freedMemory;
     private Format format;
     private IntData postGCUsedMemory;
@@ -87,6 +89,7 @@ public class GCModel implements Serializable {
         this.totalPause = new DoubleData();
         this.fullGCPause = new DoubleData();
         this.gcPause = new DoubleData();
+        this.pauseInterval = new DoubleData();
         this.currentRelativePostGCIncrease = new RegressionLine();
         this.relativePostGCIncrease = new DoubleData();
         this.relativePostFullGCIncrease = new RegressionLine();
@@ -109,7 +112,7 @@ public class GCModel implements Serializable {
 
     private void printPauseMap(Map<String, DoubleData> pauseMap) {
     	for (Map.Entry<String, DoubleData> entry: pauseMap.entrySet()) {
-    		System.out.println(entry.getKey() + " [n, sum, min, max]:\t" + entry.getValue().getN() + "\t" + entry.getValue().getSum() + "\t" + entry.getValue().getMin() + "\t" + entry.getValue().getMax());
+    		System.out.println(entry.getKey() + " [n, avg, sum, min, max]:\t" + entry.getValue().getN() + "\t" + entry.getValue().average() + "\t" + entry.getValue().getSum() + "\t" + entry.getValue().getMin() + "\t" + entry.getValue().getMax());
     	}
     }
     
@@ -120,6 +123,7 @@ public class GCModel implements Serializable {
     	System.out.println("sum of pauses\t" + totalPause.getSum());
     	System.out.println("sum of full gc pauses\t" + fullGCPause.getSum());
     	System.out.println("sum of young gc pauses\t" + gcPause.getSum());
+    	System.out.println("interval between pauses (avg, min, max)\t" + pauseInterval.average() + "\t" + pauseInterval.getMin() + "\t" + pauseInterval.getMax());
     }
     
     public void setURL(final URL url) {
@@ -288,6 +292,12 @@ public class GCModel implements Serializable {
             runningTime = Math.max(runningTime, event.getTimestamp());
             freedMemory += event.getPreUsed() - event.getPostUsed();
             totalPause.add(event.getPause());
+            
+            if (lastPauseTimeStamp > 0) {
+                pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
+            }
+            lastPauseTimeStamp = event.getTimestamp();
+            
             if (event.getDetailGeneration().compareTo(Generation.ALL) != 0) {
             	// make a difference between stop the world events, which only collect from some generations...
                 gcEvents.add(event);
@@ -345,6 +355,13 @@ public class GCModel implements Serializable {
         return gcPause;
     }
 
+    /**
+     * Interval between all types of stop the world pauses.
+     */
+    public DoubleData getPauseInterval() {
+        return pauseInterval;
+    }
+    
     /**
      * The increase in memory consumption after a full collection in relation to the amount that was
      * used after the previous full collection.
