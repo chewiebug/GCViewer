@@ -79,6 +79,10 @@ public abstract class AbstractGCEvent implements Serializable {
     	return isStopTheWorld;
     }
     
+    public Generation getGeneration() {
+        return getType().getGeneration();
+    }
+    
     public Generation getDetailGeneration() {
     	Generation generation = getType().getGeneration();
     	if (details != null) {
@@ -260,10 +264,10 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type CMS_PERM = new Type("CMS Perm", "CMS Perm :", Generation.PERM);
         
         // Parnew (promotion failed)
-        public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", "ParNew (promotion failed):", Generation.ALL, Concurrency.SERIAL);
+        public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", "ParNew (promotion failed):", Generation.YOUNG, Concurrency.SERIAL);
         
         // CMS (concurrent mode failure)
-        public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", "CMS (concurrent mode failure):", Generation.ALL, Concurrency.SERIAL);
+        public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", "CMS (concurrent mode failure):", Generation.TENURED, Concurrency.SERIAL);
 
         // CMS (Concurrent Mark Sweep) Event Types
         public static final Type CMS_CONCURRENT_MARK_START = new Type("CMS-concurrent-mark-start", "CMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);

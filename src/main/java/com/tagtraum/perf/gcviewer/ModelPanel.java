@@ -131,8 +131,10 @@ public class ModelPanel extends JTabbedPane {
     		}
     		
     		currentLayout.setRows(++rowCount);
-    		
-    		currentPanel.add(new JLabel(name));
+
+    		JLabel nameLabel = new JLabel(name);
+    		nameLabel.setEnabled(enabled);
+    		currentPanel.add(nameLabel);
     		
     		JLabel valueLabel = new JLabel(value, JLabel.RIGHT);
     		valueLabel.setEnabled(enabled);
@@ -149,9 +151,18 @@ public class ModelPanel extends JTabbedPane {
             final boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
             final boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
 
-            addValue(localStrings.getString("data_panel_footprint"),
-        			footprintFormatter.format(model.getFootprint()), 
-        			true);
+            addValue(localStrings.getString("data_panel_memory_min_max_heap"),
+                    footprintFormatter.format(model.getHeapSizes().getMin()) + " / " + footprintFormatter.format(model.getHeapSizes().getMax()),
+                    true);
+            addValue(localStrings.getString("data_panel_memory_min_max_tenured_heap"),
+                    model.getTenuredSizes().getN() > 0 ? footprintFormatter.format(model.getTenuredSizes().getMin()) + " / " + footprintFormatter.format(model.getTenuredSizes().getMax()) : "n/a",
+                    model.getTenuredSizes().getN() > 0);
+            addValue(localStrings.getString("data_panel_memory_min_max_young_heap"),
+                    model.getYoungSizes().getN() > 0 ? footprintFormatter.format(model.getYoungSizes().getMin()) + " / " + footprintFormatter.format(model.getYoungSizes().getMax()) : "n/a",
+                    model.getYoungSizes().getN() > 0);
+            addValue(localStrings.getString("data_panel_memory_min_max_perm_heap"),
+                    model.getPermSizes().getN() > 0 ? footprintFormatter.format(model.getPermSizes().getMin()) + " / " + footprintFormatter.format(model.getPermSizes().getMax()) : "n/a",
+                    model.getPermSizes().getN() > 0);
         	addValue(localStrings.getString("data_panel_footprintafterfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation()) +")" : "n/a",

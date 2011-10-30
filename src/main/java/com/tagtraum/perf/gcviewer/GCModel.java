@@ -45,8 +45,13 @@ public class GCModel implements Serializable {
     private long lastModified;
     private long length;
 
-    private Map<String, DoubleData> gcEventPauses;
-    private Map<String, DoubleData> concurrentGcEventPauses;
+    private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
+    private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
+    
+    private IntData heapSizes; // heap size of every event
+    private IntData tenuredSizes; // tenured size of every event that has this information
+    private IntData youngSizes; // young size of every event that has this information
+    private IntData permSizes; // perm size of every event that has this information
     
     private long footprint;
     private double runningTime;
@@ -96,6 +101,11 @@ public class GCModel implements Serializable {
         
         this.gcEventPauses = new TreeMap<String, DoubleData>();
         this.concurrentGcEventPauses = new TreeMap<String, DoubleData>();
+        
+        this.heapSizes = new IntData();
+        this.permSizes = new IntData();
+        this.tenuredSizes = new IntData();
+        this.youngSizes = new IntData();
     }
 
     public boolean isCountTenuredAsFull() {
@@ -116,6 +126,14 @@ public class GCModel implements Serializable {
     	}
     }
     
+    private void printIntData(String name, IntData data) {
+        try {
+            System.out.println(name + " (avg, min, max):\t" + data.average() + "\t" + data.getMin() + "\t" + data.getMax());
+        } catch (IllegalStateException e) {
+            System.out.println(name + "\t" + e.toString());
+        }
+    }
+    
     public void printPauseMaps() {
     	// TODO delete
     	printPauseMap(gcEventPauses);
@@ -124,6 +142,11 @@ public class GCModel implements Serializable {
     	System.out.println("sum of full gc pauses\t" + fullGCPause.getSum());
     	System.out.println("sum of young gc pauses\t" + gcPause.getSum());
     	System.out.println("interval between pauses (avg, min, max)\t" + pauseInterval.average() + "\t" + pauseInterval.getMin() + "\t" + pauseInterval.getMax());
+    	
+    	printIntData("heap size", heapSizes);
+    	printIntData("perm size", permSizes);
+    	printIntData("tenured size", tenuredSizes);
+    	printIntData("young size", youngSizes);
     }
     
     public void setURL(final URL url) {
@@ -284,6 +307,8 @@ public class GCModel implements Serializable {
         	// collect statistics about all stop the world events
             final GCEvent event = (GCEvent) abstractEvent;
             
+            updateHeapSizes(event);
+            
             DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
             pauses.add(event.getPause());
             
@@ -294,7 +319,11 @@ public class GCModel implements Serializable {
             totalPause.add(event.getPause());
             
             if (lastPauseTimeStamp > 0) {
-                pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
+                // JRockit sometimes has special timestamps that seem to go back in time,
+                // omit them here
+                if (event.getTimestamp() - lastPauseTimeStamp > 0) {
+                    pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
+                }
             }
             lastPauseTimeStamp = event.getTimestamp();
             
@@ -328,6 +357,39 @@ public class GCModel implements Serializable {
                     currentPostGCSlope.reset();
                     currentRelativePostGCIncrease.reset();
                 }
+            }
+        }
+    }
+
+    private void updateHeapSizes(GCEvent event) {
+        // event contains always heap size
+        if (event.getTotal() > 0) {
+            heapSizes.add(event.getTotal());
+        }
+        
+        // if there are details, young, tenured and perm sizes can be extracted
+        Iterator<AbstractGCEvent> i = event.details();
+        while (i.hasNext()) {
+            AbstractGCEvent abstractGCEvent = (AbstractGCEvent)i.next();
+            if (abstractGCEvent instanceof GCEvent) {
+                updateHeapSize((GCEvent)abstractGCEvent);
+            }
+        }
+    }
+    
+    private void updateHeapSize(GCEvent event) {
+        if (event.getTotal() > 0) {
+            if (event.getGeneration().equals(Generation.ALL)) {
+                heapSizes.add(event.getTotal());
+            }
+            else if (event.getGeneration().equals(Generation.PERM)) {
+                permSizes.add(event.getTotal());
+            }
+            else if (event.getGeneration().equals(Generation.TENURED)) {
+                tenuredSizes.add(event.getTotal());
+            }
+            else if (event.getGeneration().equals(Generation.YOUNG)) {
+                youngSizes.add(event.getTotal());
             }
         }
     }
@@ -446,6 +508,35 @@ public class GCModel implements Serializable {
         return 100 * (runningTime - totalPause.getSum()) / runningTime;
     }
 
+    /**
+     * max heap size for every event
+     */
+    public IntData getHeapSizes() {
+        return heapSizes;
+    }
+
+    /**
+     * perm sizes for every event that contained one (only if detailed logging is active and
+     * and all spaces were collected) 
+     */
+    public IntData getPermSizes() {
+        return permSizes;
+    }
+    
+    /**
+     * tenured sizes for every event that contained one (only if detailed logging is active) 
+     */
+    public IntData getTenuredSizes() {
+        return tenuredSizes;
+    }
+    
+    /**
+     * young sizes for every event that contained one (only if detailed logging is active) 
+     */
+    public IntData getYoungSizes() {
+        return youngSizes;
+    }
+    
     /**
      * Footprint in KB.
      */

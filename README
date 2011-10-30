@@ -89,8 +89,14 @@ Summary
 Memory
 ------
 
-- Footprint:
-     o Maximal amount of memory allocated (same as in Summary)
+- Total heap (min / max):
+     o Minimal / Maximal amount of memory allocated (max is same as "footprint" in Summary)
+- Tenured heap (min / max):
+     o Minimal / Maximal amount of memory allocated in tenured space
+- Young heap (min / max):
+     o Minimal / Maximal amount of memory allocated in young space
+- Perm heap (min / max):
+     o Minimal / Maximal amount of memory allocated in permanent space
 - Avg after full GC:
      o The average heap memory consumption after a full collection
 - Avg after GC:
