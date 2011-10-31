@@ -327,7 +327,7 @@ public class GCModel implements Serializable {
             }
             lastPauseTimeStamp = event.getTimestamp();
             
-            if (event.getDetailGeneration().compareTo(Generation.ALL) != 0) {
+            if (!event.isFull()) {
             	// make a difference between stop the world events, which only collect from some generations...
                 gcEvents.add(event);
                 postGCUsedMemory.add(event.getPostUsed());
@@ -337,7 +337,7 @@ public class GCModel implements Serializable {
                 currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
                 gcPause.add(event.getPause());
             } else {
-                if (event.getDetailGeneration().compareTo(Generation.ALL) == 0 && event.isStopTheWorld()) {
+                if (event.isFull()) {
                 	// ... as opposed to all generations
                     fullGCEvents.add(event);
                     postFullGCUsedMemory.add(event.getPostUsed());

@@ -83,21 +83,6 @@ public abstract class AbstractGCEvent implements Serializable {
         return getType().getGeneration();
     }
     
-    public Generation getDetailGeneration() {
-    	Generation generation = getType().getGeneration();
-    	if (details != null) {
-    		for (AbstractGCEvent detailEvent : details) {
-    			if (generation.compareTo(detailEvent.getType().getGeneration()) < 0
-    					&& detailEvent.getType().getGeneration() != Generation.PERM) {
-    				
-    				generation = detailEvent.getType().getGeneration();
-    			}
-    		}
-    	}
-    	
-    	return generation;
-    }
-
     public double getTimestamp() {
         return timestamp;
     }
@@ -133,9 +118,17 @@ public abstract class AbstractGCEvent implements Serializable {
     }
 
     public boolean isFull() {
-    	return getDetailGeneration() == Generation.ALL;
-        //return getType() == GCEvent.Type.FULL_GC;
-        //return getType() == GCEvent.Type.FULL_GC || getType().getGeneration() == Generation.TENURED || hasTenuredDetail();
+        if (getType().getGeneration().compareTo(Generation.ALL) == 0) {
+            return true;
+        }
+        
+        if (details != null) {
+            // this is probably only right for SUN garbage collectors
+            return details.size() == 3;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean isInc() {
