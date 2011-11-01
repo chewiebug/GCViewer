@@ -321,7 +321,7 @@ public class GCModel implements Serializable {
             if (lastPauseTimeStamp > 0) {
                 // JRockit sometimes has special timestamps that seem to go back in time,
                 // omit them here
-                if (event.getTimestamp() - lastPauseTimeStamp > 0) {
+                if (event.getTimestamp() - lastPauseTimeStamp >= 0) {
                     pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
                 }
             }
