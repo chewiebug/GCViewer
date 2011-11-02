@@ -41,8 +41,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     @Override
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO))
-            LOG.info("Reading Sun 1.6.x G1 (PrintGcDetails) format...");
+        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x G1 format...");
 
         try {
             final GCModel model = new GCModel(true);
