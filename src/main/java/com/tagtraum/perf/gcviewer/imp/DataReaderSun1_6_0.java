@@ -33,6 +33,7 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
     private static final String APPLICATION_TIME = "Application time:";
     private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:";
     private static final String SURVIVOR_AGE = "- age";
+    private static final String TIMES_ALONE = " [Times";
     private static final Set<String> EXCLUDE_STRINGS = new HashSet<String>();
     
 
@@ -42,6 +43,7 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
         EXCLUDE_STRINGS.add(APPLICATION_TIME);
         EXCLUDE_STRINGS.add(TOTAL_TIME_THREADS_STOPPED);
         EXCLUDE_STRINGS.add(SURVIVOR_AGE);
+        EXCLUDE_STRINGS.add(TIMES_ALONE);
     }
     
     private static final String CMS_ABORTING_PRECLEAN = " CMS: abort preclean due to time";
@@ -66,9 +68,12 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line;
             String beginningOfLine = null;
+            int lineNumber = 0;
             final ParsePosition parsePosition = new ParsePosition(0);
             OUTERLOOP:
             while ((line = in.readLine()) != null) {
+                ++lineNumber;
+                parsePosition.setLineNumber(lineNumber);
                 if ("".equals(line)) {
                     continue;
                 }
@@ -83,7 +88,9 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                         beginningOfLine = line.substring(0, unloadingClassIndex);
                         continue;
                     }
-                    else if (line.endsWith("[DefNew") || line.endsWith("[ParNew")) {
+                    else if (line.endsWith("[DefNew") || line.endsWith("[ParNew") || line.endsWith("[ParNew (promotion failed)")) {
+                        // this is the case, when -XX:+PrintTenuringDistribution is used
+                        // here we want to skip "Desired survivor..." and "- age..." lines
                         beginningOfLine = line;
                         continue;
                     }

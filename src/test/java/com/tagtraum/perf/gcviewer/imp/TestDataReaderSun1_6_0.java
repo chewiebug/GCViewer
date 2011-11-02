@@ -246,4 +246,68 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         assertEquals("event pause", 0.0131346, model.getGCPause().getMax(), 0.0000001);
 
     }
+
+    public void testPrintTenuringDistribution() throws Exception {
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-02-14T13:15:24.164+0100: 31581.748: [GC 31581.748: [ParNew" +
+                        "\nDesired survivor size 5963776 bytes, new threshold 1 (max 4)" +
+                        "\n- age   1:    8317928 bytes,    8317928 total" +
+                        "\n: 92938K->8649K(104832K), 0.0527364 secs] 410416K->326127K(1036928K), 0.0533874 secs] [Times: user=0.46 sys=0.09, real=0.05 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("event pause", 0.0533874, model.getGCPause().getMax(), 0.0000001);
+
+    }
+                                                              
+    public void testPrintTenuringDistributionPromotionFailed() throws Exception {
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-02-14T13:14:36.298+0100: 31533.871: [GC 31533.871: [ParNew (promotion failed)" +
+                        "\nDesired survivor size 524288 bytes, new threshold 1 (max 4)" +
+                        "\n- age   1:     703560 bytes,     703560 total" +
+                        "\n- age   2:     342056 bytes,    1045616 total" +
+                        "\n : 9321K->9398K(9792K), 0.0563031 secs]31533.928: [CMS: 724470K->317478K(931248K), 13.5375713 secs] 733688K->317478K(941040K), [CMS Perm : 51870K->50724K(86384K)], 13.5959700 secs] [Times: user=14.03 sys=0.03, real=13.60 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("event pause", 13.5959700, model.getFullGCPause().getMax(), 0.0000001);
+
+    }
+
+    public void testLineMixesPrintTenuringDistribution() throws Exception {
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-03-31T06:01:25.675+0200: 5682.440: [GC 5682.441: [ParNew2011-03-31T06:01:25.682+0200: 5682.447: [CMS-concurrent-abortable-preclean: 0.035/0.348 secs]" +
+                        "\nDesired survivor size 557056 bytes, new threshold 4 (max 4)" +
+                        "\n- age   1:       1104 bytes,       1104 total" +
+                        "\n- age   2:      52008 bytes,      53112 total" +
+                        "\n- age   3:       4400 bytes,      57512 total" +
+                        "\n [Times: user=0.59 sys=0.01, real=0.35 secs]" +
+                        "\n: 9405K->84K(10368K), 0.0064674 secs] 151062K->141740K(164296K), 0.0067202 secs] [Times: user=0.11 sys=0.01, real=0.01 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("event pause", 0.0067202, model.getGCPause().getMax(), 0.0000001);
+
+    }
+
+                                                             
+                                                             
+    
+            
+            
+            
+            
+            
+             
+                                                             
+                                                            
 }
