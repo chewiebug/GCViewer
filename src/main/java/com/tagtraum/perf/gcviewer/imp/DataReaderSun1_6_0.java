@@ -210,8 +210,7 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
             }
             return ae;
         } catch (RuntimeException rte) {
-            if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, rte.toString() + " while parsing line: " + line, rte);
-            throw new ParseException("Error parsing entry: " + line + ", " + rte.toString());
+            throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
         }
     }
 
