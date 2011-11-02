@@ -69,6 +69,9 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
             final ParsePosition parsePosition = new ParsePosition(0);
             OUTERLOOP:
             while ((line = in.readLine()) != null) {
+                if ("".equals(line)) {
+                    continue;
+                }
                 try {
                     // filter out [Unloading class com.xyz] statements
                     for (String i : EXCLUDE_STRINGS) {

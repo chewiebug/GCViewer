@@ -59,6 +59,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             while ((line = in.readLine()) != null) {
                 ++lineNumber;
                 parsePosition.setLineNumber(lineNumber);
+                if ("".equals(line)) {
+                    continue;
+                }
                 try {
                     if (!isInDetailedEvent) {
                         // if a new timestamp occurs in the middle of a line, that should be treated as a new line

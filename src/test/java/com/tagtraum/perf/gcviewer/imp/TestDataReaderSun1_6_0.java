@@ -229,4 +229,21 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         assertEquals("iof", 0.5022532145182292, model.getCmsInitiatingOccupancyFraction().average(), 0.0000001);
 
     }
+    
+    public void testMixedLineWithEmptyLine() throws Exception {
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-01-25T17:10:16.889+0100: 12076.859: [GC 12076.859: [ParNew2011-01-25T17:10:16.896+0100: 12076.866: [CMS-concurrent-abortable-preclean: 0.929/4.899 secs] [Times: user=2.13 sys=0.04, real=4.90 secs]" +
+                		"\n" +
+                		"\nDesired survivor size 720896 bytes, new threshold 1 (max 4)" +
+                		"\n- age   1:    1058016 bytes,    1058016 total" +
+                		"\n: 13056K->1408K(13056K), 0.0128277 secs] 131480K->122757K(141328K), 0.0131346 secs] [Times: user=0.15 sys=0.00, real=0.01 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("event pause", 0.0131346, model.getGCPause().getMax(), 0.0000001);
+
+    }
 }
