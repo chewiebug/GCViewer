@@ -2,7 +2,6 @@ package com.tagtraum.perf.gcviewer;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.text.DateFormat;
 import java.text.NumberFormat;
