@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
 import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.math.IntData;
 import com.tagtraum.perf.gcviewer.math.RegressionLine;
@@ -60,6 +61,7 @@ public class GCModel implements Serializable {
     private DoubleData gcPause; // not full gc but stop the world pause
     private double lastPauseTimeStamp = -1;
     private DoubleData pauseInterval; // interval between two stop the world pauses
+    private DoubleData initiatingOccupancyFraction; // CMS only
     private long freedMemory;
     private Format format;
     private IntData postGCUsedMemory;
@@ -95,6 +97,7 @@ public class GCModel implements Serializable {
         this.fullGCPause = new DoubleData();
         this.gcPause = new DoubleData();
         this.pauseInterval = new DoubleData();
+        this.initiatingOccupancyFraction = new DoubleData();
         this.currentRelativePostGCIncrease = new RegressionLine();
         this.relativePostGCIncrease = new DoubleData();
         this.relativePostFullGCIncrease = new RegressionLine();
@@ -134,6 +137,14 @@ public class GCModel implements Serializable {
         }
     }
     
+    private void printDoubleData(String name, DoubleData data) {
+        try {
+            System.out.println(name + " (avg, min, max):\t" + data.average() + "\t" + data.getMin() + "\t" + data.getMax());
+        } catch (IllegalStateException e) {
+            System.out.println(name + "\t" + e.toString());
+        }
+    }
+    
     public void printPauseMaps() {
     	// TODO delete
     	printPauseMap(gcEventPauses);
@@ -141,7 +152,8 @@ public class GCModel implements Serializable {
     	System.out.println("sum of pauses\t" + totalPause.getSum());
     	System.out.println("sum of full gc pauses\t" + fullGCPause.getSum());
     	System.out.println("sum of young gc pauses\t" + gcPause.getSum());
-    	System.out.println("interval between pauses (avg, min, max)\t" + pauseInterval.average() + "\t" + pauseInterval.getMin() + "\t" + pauseInterval.getMax());
+    	printDoubleData("interval between pauses", pauseInterval);
+    	printDoubleData("initiatingOccupancyFraction", initiatingOccupancyFraction);
     	
     	printIntData("heap size", heapSizes);
     	printIntData("perm size", permSizes);
@@ -327,6 +339,10 @@ public class GCModel implements Serializable {
             }
             lastPauseTimeStamp = event.getTimestamp();
             
+            if (eventIsCmsInitialMark(event)) {
+                updateInitiatingOccupancyFraction(event);
+            }
+            
             if (!event.isFull()) {
             	// make a difference between stop the world events, which only collect from some generations...
                 gcEvents.add(event);
@@ -359,6 +375,25 @@ public class GCModel implements Serializable {
                 }
             }
         }
+    }
+
+    private void updateInitiatingOccupancyFraction(GCEvent event) {
+        GCEvent initialMarkEvent = null;
+        Iterator<AbstractGCEvent> i = event.details();
+        while (i.hasNext() && initialMarkEvent == null) {
+            AbstractGCEvent gcEvent = i.next();
+            if (gcEvent.getType().toString().equals(Type.CMS_INITIAL_MARK.toString())) {
+                initialMarkEvent = (GCEvent)gcEvent;
+            }
+        }
+        
+        if (initialMarkEvent != null) {
+            initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double)initialMarkEvent.getTotal());
+        }
+    }
+
+    private boolean eventIsCmsInitialMark(GCEvent event) {
+        return event.getTypeAsString().indexOf(Type.CMS_INITIAL_MARK.toString()) >= 0;
     }
 
     private void updateHeapSizes(GCEvent event) {
@@ -422,6 +457,10 @@ public class GCModel implements Serializable {
      */
     public DoubleData getPauseInterval() {
         return pauseInterval;
+    }
+    
+    public DoubleData getCmsInitiatingOccupancyFraction() {
+        return initiatingOccupancyFraction;
     }
     
     /**

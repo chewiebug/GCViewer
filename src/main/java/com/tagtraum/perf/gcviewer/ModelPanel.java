@@ -164,6 +164,7 @@ public class ModelPanel extends JTabbedPane {
             final boolean fullGCSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
             final boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
             final boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
+            final boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
 
             addValue(localStrings.getString("data_panel_memory_min_max_heap"),
                     footprintFormatter.format(model.getHeapSizes().getMin()) + " / " + footprintFormatter.format(model.getHeapSizes().getMax()),
@@ -224,6 +225,10 @@ public class ModelPanel extends JTabbedPane {
         	addValue(localStrings.getString("data_panel_slopeaftergc"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostGCSlope()) + "/s" : "n/a",
         			gcSlopeDataAvailable);
+        	
+        	addValue(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"),
+        	        initiatingOccFractionAvailable ? percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%" : "n/a",
+        	        initiatingOccFractionAvailable);
         }
     }
 

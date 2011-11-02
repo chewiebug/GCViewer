@@ -215,5 +215,18 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         assertEquals("GC count", 1, model.size());
         assertEquals("full gc pause", 0.0, model.getFullGCPause().getSum(), 0.01);
 
-}
+    }
+    
+    public void testCmsInitiatingOccupancyFraction() throws Exception {
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("12460.657: [GC [1 CMS-initial-mark: 789976K(1572864K)] 838178K(2044736K), 0.3114519 secs] [Times: user=0.32 sys=0.00, real=0.31 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("iof", 0.5022532145182292, model.getCmsInitiatingOccupancyFraction().average(), 0.0000001);
+
+    }
 }
