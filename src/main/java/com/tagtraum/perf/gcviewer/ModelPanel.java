@@ -1,6 +1,9 @@
 package com.tagtraum.perf.gcviewer;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -97,9 +100,9 @@ public class ModelPanel extends JTabbedPane {
     }
 
     private class ValuesTab extends JPanel {
-    	private int rowCount = 0;
     	private JPanel currentPanel;
-    	private GridLayout currentLayout;
+    	private GridBagLayout currentLayout;
+    	private GridBagConstraints currentConstraints;
     	
     	public ValuesTab() {
     		super();
@@ -116,29 +119,41 @@ public class ModelPanel extends JTabbedPane {
 	                    BorderFactory.createEmptyBorder(0,0,0,0)));
     		}
     		
-    		currentLayout = new GridLayout(0, 2, 0, 0);
+    		// using GridBagLayout because it allows for 2 columns with different widths
+    		currentLayout = new GridBagLayout();
+    		
+            currentConstraints = new GridBagConstraints();
+            currentConstraints.anchor = GridBagConstraints.WEST;
+            currentConstraints.fill = GridBagConstraints.HORIZONTAL;
+            currentConstraints.weightx = 1.0;
+            currentConstraints.weighty = 1.0;
+            currentConstraints.insets = new Insets(0, 3, 0, 3);
+            currentConstraints.gridy = -1;
     		
     		currentPanel.setLayout(currentLayout);
     		
     		add(currentPanel);
-    		
-    		rowCount = 0;
     	}
-    	
+
     	public void addValue(String name, String value, boolean enabled) {
     		if (currentPanel == null) {
     			newGroup("", false);
     		}
     		
-    		currentLayout.setRows(++rowCount);
+            JLabel nameLabel = new JLabel(name);
+            nameLabel.setEnabled(enabled);
 
-    		JLabel nameLabel = new JLabel(name);
-    		nameLabel.setEnabled(enabled);
-    		currentPanel.add(nameLabel);
-    		
-    		JLabel valueLabel = new JLabel(value, JLabel.RIGHT);
-    		valueLabel.setEnabled(enabled);
-    		currentPanel.add(valueLabel);
+            currentConstraints.gridy++;
+            currentConstraints.gridx = 0;
+            currentLayout.setConstraints(nameLabel, currentConstraints);
+            currentPanel.add(nameLabel);
+            
+            JLabel valueLabel = new JLabel(value, JLabel.RIGHT);
+            valueLabel.setEnabled(enabled);
+
+            currentConstraints.gridx = 1;
+            currentLayout.setConstraints(valueLabel, currentConstraints);
+            currentPanel.add(valueLabel);
     	}
     	
     }
