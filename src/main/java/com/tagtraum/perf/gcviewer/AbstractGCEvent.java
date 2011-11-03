@@ -136,9 +136,13 @@ public abstract class AbstractGCEvent implements Serializable {
     }
     
     public boolean isConcurrent() {
-        return getType().getConcurrency().compareTo(Concurrency.CONCURRENT) == 0;
+        return getType().getConcurrency().equals(Concurrency.CONCURRENT);
     }
 
+    public boolean isConcurrencyHelper() {
+        return getType().getCollectionType().equals(CollectionType.CONCURRENCY_HELPER);
+    }
+    
     public static class Type implements Serializable {
         private final String type;
         private final String rep;
@@ -146,6 +150,7 @@ public abstract class AbstractGCEvent implements Serializable {
         private Concurrency concurrency;
         /** pattern this event has in the logfile */
         private GcPattern pattern;
+        private CollectionType collectionType;
         private static final Map<String, Type> TYPE_MAP = new HashMap<String, Type>();
 
         private Type(String type, Generation generation) {
@@ -161,11 +166,17 @@ public abstract class AbstractGCEvent implements Serializable {
         }
 
         private Type(String type, String rep, Generation generation, Concurrency concurrency, GcPattern pattern) {
+            this(type, rep, generation, concurrency, pattern, CollectionType.COLLECTION);
+        }
+
+        private Type(String type, String rep, Generation generation, Concurrency concurrency, GcPattern pattern, CollectionType collectionType) {
             this.type = type.intern();
             this.rep = rep;
             this.generation = generation;
             this.concurrency = concurrency;
             this.pattern = pattern;
+            this.collectionType = collectionType;
+            
             TYPE_MAP.put(this.type, this);
         }
 
@@ -229,6 +240,10 @@ public abstract class AbstractGCEvent implements Serializable {
         	return pattern;
         }
         
+        public CollectionType getCollectionType() {
+            return collectionType;
+        }
+
         public String toString() {
             return rep;
         }
@@ -288,8 +303,8 @@ public abstract class AbstractGCEvent implements Serializable {
 
         // TODO: Generation: young and tenured!
         public static final Type G1_INITIAL_MARK = new Type("GC pause (young) (initial-mark)", "GC pause (young) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
-        public static final Type G1_REMARK = new Type("GC remark", "GC remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type G1_CLEANUP = new Type("GC cleanup", "GC cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_REMARK = new Type("GC remark", "GC remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        public static final Type G1_CLEANUP = new Type("GC cleanup", "GC cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
         
         // G1 concurrent types
         public static final Type G1_CONCURRENT_MARK_START = new Type("GC concurrent-mark-start", "GC concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
@@ -313,7 +328,13 @@ public abstract class AbstractGCEvent implements Serializable {
     	// <timestamp>: [<GC type> <mem before>-><mem after>(<mem total>), <pause>]
     	GC_MEMORY_PAUSE} 
     
-    public static enum Concurrency {CONCURRENT, SERIAL};
+    public static enum Concurrency { CONCURRENT, SERIAL };
 
     public static enum Generation { YOUNG, TENURED, PERM, ALL };
+    
+    public static enum CollectionType {
+        // plain GC pause collection garbage
+        COLLECTION,
+        // stop the world pause but used to prepare concurrent collection, does not collect garbage
+        CONCURRENCY_HELPER };
 }

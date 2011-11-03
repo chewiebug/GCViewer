@@ -153,6 +153,7 @@ public class GCModel implements Serializable {
     	System.out.println("sum of full gc pauses\t" + fullGCPause.getSum());
     	System.out.println("sum of young gc pauses\t" + gcPause.getSum());
     	printDoubleData("interval between pauses", pauseInterval);
+    	System.out.println("interval (runningTime / interval count): " + runningTime / (pauseInterval.getN()));
     	printDoubleData("initiatingOccupancyFraction", initiatingOccupancyFraction);
     	
     	printIntData("heap size", heapSizes);
@@ -330,7 +331,7 @@ public class GCModel implements Serializable {
             freedMemory += event.getPreUsed() - event.getPostUsed();
             totalPause.add(event.getPause());
             
-            if (lastPauseTimeStamp > 0) {
+            if (lastPauseTimeStamp > 0 && !event.isConcurrencyHelper()) {
                 // JRockit sometimes has special timestamps that seem to go back in time,
                 // omit them here
                 if (event.getTimestamp() - lastPauseTimeStamp >= 0) {
@@ -352,17 +353,17 @@ public class GCModel implements Serializable {
                 currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
                 currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
                 gcPause.add(event.getPause());
+
             } else {
-                if (event.isFull()) {
-                	// ... as opposed to all generations
-                    fullGCEvents.add(event);
-                    postFullGCUsedMemory.add(event.getPostUsed());
-                    final int freed = event.getPreUsed() - event.getPostUsed();
-                    freedMemoryByFullGC.add(freed);
-                    fullGCPause.add(event.getPause());
-                    postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-                    relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
-                }
+            	// ... as opposed to all generations
+                fullGCEvents.add(event);
+                postFullGCUsedMemory.add(event.getPostUsed());
+                final int freed = event.getPreUsed() - event.getPostUsed();
+                freedMemoryByFullGC.add(freed);
+                fullGCPause.add(event.getPause());
+                postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+                relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
+
                 // process no full-gc run data
                 if (currentPostGCSlope.hasPoints()) {
                     // make sure we have at least _two_ data points
@@ -373,6 +374,7 @@ public class GCModel implements Serializable {
                     currentPostGCSlope.reset();
                     currentRelativePostGCIncrease.reset();
                 }
+
             }
         }
     }
