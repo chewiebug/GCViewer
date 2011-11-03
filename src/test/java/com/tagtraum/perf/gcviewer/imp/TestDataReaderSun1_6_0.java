@@ -11,7 +11,8 @@ import com.tagtraum.perf.gcviewer.DataReader;
 import com.tagtraum.perf.gcviewer.GCModel;
 
 public class TestDataReaderSun1_6_0 extends TestCase {
-	public void testPrintGCDateStamps() throws Exception {
+
+    public void testPrintGCDateStamps() throws Exception {
 		final ByteArrayInputStream in = new ByteArrayInputStream(
 				("2011-10-05T04:23:39.427+0200: 19.845: [GC 19.845: [ParNew: 93184K->5483K(104832K), 0.0384413 secs] 93184K->5483K(1036928K), 0.0388082 secs] [Times: user=0.41 sys=0.06, real=0.04 secs]")
 						.getBytes());
@@ -57,7 +58,6 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 				"\n (concurrent mode failure): 1143630K->1154547K(1572864K), 40.1744087 secs] 1590086K->1154547K(2044736K), [CMS Perm : 65802K->63368K(109784K)], 41.0904457 secs] [Times: user=60.57 sys=0.07, real=41.09 secs]")
 						.getBytes());
 				 
-//		final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0CMSConcurrentModeFailure.txt");
 		final DataReader reader = new DataReaderSun1_6_0(in);
 		GCModel model = reader.read();
 
@@ -299,15 +299,21 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 
     }
 
-                                                             
-                                                             
+    public void testCmsMemory() throws Exception {
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0CMS.txt");
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 41, model.size());
+        assertEquals("heap min", 249088, model.getHeapSizes().getMin());
+        assertEquals("heap max", 249088, model.getHeapSizes().getMax());
+        assertEquals("young min", 118016, model.getYoungSizes().getMin());
+        assertEquals("young max", 118016, model.getYoungSizes().getMax());
+        assertEquals("tenured min", 131072, model.getTenuredSizes().getMin());
+        assertEquals("tenured max", 131072, model.getTenuredSizes().getMax());
+        assertEquals("perm min", 21248, model.getPermSizes().getMin());
+        assertEquals("perm max", 21248, model.getPermSizes().getMax());
+
+    }
     
-            
-            
-            
-            
-            
-             
-                                                             
-                                                            
 }
