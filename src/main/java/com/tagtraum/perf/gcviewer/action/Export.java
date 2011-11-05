@@ -79,10 +79,10 @@ public class Export extends AbstractAction {
         }
         public boolean accept(final File file) {
         	// TODO refactor
-        	if (file != null) {
+        	try {
                 return file.toString().toLowerCase().endsWith(extension);
         	}
-        	else {
+        	catch (NullPointerException e) {
         		return false;
         	}
         }
