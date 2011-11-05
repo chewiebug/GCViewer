@@ -79,7 +79,26 @@
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
+					<excludes>
+					   <exclude>**/*.psd</exclude>
+					   <!-- version.properties is only a template; 
+					        the productive one is generated to where the other ressources are -->
+					   <exclude>version.properties</exclude>
+					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
