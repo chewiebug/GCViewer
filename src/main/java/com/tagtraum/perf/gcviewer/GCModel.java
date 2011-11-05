@@ -59,7 +59,7 @@ public class GCModel implements Serializable {
     private DoubleData totalPause;
     private DoubleData fullGCPause;
     private DoubleData gcPause; // not full gc but stop the world pause
-    private double lastPauseTimeStamp = -1;
+    private double lastPauseTimeStamp = 0;
     private DoubleData pauseInterval; // interval between two stop the world pauses
     private DoubleData initiatingOccupancyFraction; // CMS only
     private long freedMemory;
@@ -331,14 +331,20 @@ public class GCModel implements Serializable {
             freedMemory += event.getPreUsed() - event.getPostUsed();
             totalPause.add(event.getPause());
             
-            if (lastPauseTimeStamp > 0 && !event.isConcurrencyHelper()) {
-                // JRockit sometimes has special timestamps that seem to go back in time,
-                // omit them here
-                if (event.getTimestamp() - lastPauseTimeStamp >= 0) {
-                    pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
+            if (lastPauseTimeStamp > 0) {
+                if (!event.isConcurrencyHelper()) {
+                    // JRockit sometimes has special timestamps that seem to go back in time,
+                    // omit them here
+                    if (event.getTimestamp() - lastPauseTimeStamp >= 0) {
+                        pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
+                    }
+                    lastPauseTimeStamp = event.getTimestamp();
                 }
+            } else {
+                // interval between startup of VM and first gc event should be omitted because
+                // startup time of VM is included.
+                lastPauseTimeStamp = event.getTimestamp();
             }
-            lastPauseTimeStamp = event.getTimestamp();
             
             if (eventIsCmsInitialMark(event)) {
                 updateInitiatingOccupancyFraction(event);

@@ -32,7 +32,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("number of errors", 8, handler.getCount());
         
         assertEquals("max interval", 0.211, model.getPauseInterval().getMax(), 0.000001);
-        assertEquals("avg interval", 0.043672844, model.getPauseInterval().average(), 0.0000001);
+        assertEquals("avg interval", 0.048291297, model.getPauseInterval().average(), 0.0000001);
     }
     
     public void testG1FullGcSystemGc() throws Exception {
