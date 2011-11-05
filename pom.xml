@@ -15,11 +15,11 @@
 			<organization>tagtraum industries incorporated</organization>
 			<organizationUrl>http://www.tagtraum.com/</organizationUrl>
 		</developer>
-        <developer>
-            <name>Jörg Wüthrich</name>
-            <email>jwu@gmx.ch</email>
-            <url>http://github.com/chewiebug/GCViewer</url>
-        </developer>
+		<developer>
+			<name>Jörg Wüthrich</name>
+			<email>jwu@gmx.ch</email>
+			<url>http://github.com/chewiebug/GCViewer</url>
+		</developer>
 	</developers>
 	<licenses>
 		<license>
@@ -35,6 +35,19 @@
 		</dependency>
 	</dependencies>
 	<build>
+	<!-- 
+	  if this resource declaration is present, maven deletes all resources from the target path :-(
+		<resources>
+			<resource>
+				<targetPath>${basedir}/src/main/resources/com/tagtraum/perf/gcviewer</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>version.properties</include>
+				</includes>
+			</resource>
+		</resources>
+		 -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
