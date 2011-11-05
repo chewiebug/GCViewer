@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tagtraum</groupId>
 	<artifactId>gcviewer</artifactId>
-	<version>1.31-SNAPSHOT</version>
+	<version>1.31-RC1</version>
 	<packaging>jar</packaging>
 	<name>GCViewer</name>
 	<url>http://www.tagtraum.com/gcviewer.html</url>
@@ -35,8 +35,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-	<!-- 
-	  if this resource declaration is present, maven deletes all resources from the target path :-(
+<!-- 	  if this resource declaration is present, maven deletes all resources from the target path :-(  
 		<resources>
 			<resource>
 				<targetPath>${basedir}/src/main/resources/com/tagtraum/perf/gcviewer</targetPath>
@@ -47,7 +46,7 @@
 				</includes>
 			</resource>
 		</resources>
-		 -->
+		-->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
