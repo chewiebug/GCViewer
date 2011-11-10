@@ -34,7 +34,7 @@ public class AboutDialog extends JDialog implements ActionListener {
     public static String vcid = "$Id: AboutDialog.java,v 1.1.1.1 2002/01/15 19:48:45 hendriks73 Exp $";
     private static ResourceBundle localStrings = ResourceBundle
             .getBundle("com.tagtraum.perf.gcviewer.localStrings");
-    private static final String GCVIEWER_HOMEPAGE = "http://www.tagtraum.com/";
+    private static final String GCVIEWER_HOMEPAGE = "https://github.com/chewiebug/gcviewer/";
 
     private Frame frame;
 
