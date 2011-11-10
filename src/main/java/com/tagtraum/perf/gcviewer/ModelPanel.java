@@ -6,7 +6,10 @@ import java.awt.Insets;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -98,16 +101,46 @@ public class ModelPanel extends JTabbedPane {
         return average-standardDeviation > 0.75 * average;
     }
 
+    /**
+     * A simple container class to hold two labels ("name" and "value"). 
+     * 
+     * @author <a href="mailto:jwu@gmx.ch">Joerg Wuethrich</a>
+     * <p>created on: 10.11.2011</p>
+     */
+    private class TwoLabelsContainer {
+        private JLabel nameLabel;
+        private JLabel valueLabel;
+        
+        public TwoLabelsContainer(JLabel nameLabel, JLabel valueLabel) {
+            super();
+            
+            this.nameLabel = nameLabel;
+            this.valueLabel = valueLabel;
+        }
+        
+        public void updateValue(String value) {
+            valueLabel.setText(value);
+        }
+        
+        public void setEnabled(boolean enabled) {
+            nameLabel.setEnabled(enabled);
+            valueLabel.setEnabled(enabled);
+        }
+    }
+    
     private class ValuesTab extends JPanel {
+        private final Logger LOG = Logger.getLogger(ValuesTab.class.getName());
+        
     	private JPanel currentPanel;
     	private GridBagLayout currentLayout;
     	private GridBagConstraints currentConstraints;
+    	private Map<String, TwoLabelsContainer> labelMap;
     	
     	public ValuesTab() {
     		super();
     		
     		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    		
+    		labelMap = new HashMap<String, TwoLabelsContainer>();
     	}
     	
     	public void newGroup(String name, boolean withBorder) {
@@ -134,31 +167,67 @@ public class ModelPanel extends JTabbedPane {
     		add(currentPanel);
     	}
 
-    	public void addValue(String name, String value, boolean enabled) {
+    	public void addEntry(String name) {
     		if (currentPanel == null) {
     			newGroup("", false);
     		}
     		
             JLabel nameLabel = new JLabel(name);
-            nameLabel.setEnabled(enabled);
 
             currentConstraints.gridy++;
             currentConstraints.gridx = 0;
             currentLayout.setConstraints(nameLabel, currentConstraints);
             currentPanel.add(nameLabel);
             
-            JLabel valueLabel = new JLabel(value, JLabel.RIGHT);
-            valueLabel.setEnabled(enabled);
+            JLabel valueLabel = new JLabel("", JLabel.RIGHT);
 
             currentConstraints.gridx = 1;
             currentLayout.setConstraints(valueLabel, currentConstraints);
             currentPanel.add(valueLabel);
+            
+            labelMap.put(name, new TwoLabelsContainer(nameLabel, valueLabel));
+    	}
+    	
+    	public void updateValue(String name, String value, boolean enabled) {
+    	    TwoLabelsContainer labelContainer = labelMap.get(name);
+    	    if (labelContainer != null) {
+    	        labelContainer.updateValue(value);
+    	        labelContainer.setEnabled(enabled);
+    	    }
+    	    else {
+    	       LOG.severe("'" + name + "' not present in labelMap, was it registered?");
+    	    }
     	}
     	
     }
     
     private class MemoryTab extends ValuesTab {
 
+        public MemoryTab() {
+            super();
+            
+            addEntry(localStrings.getString("data_panel_memory_min_max_heap"));
+            addEntry(localStrings.getString("data_panel_memory_min_max_tenured_heap"));
+            addEntry(localStrings.getString("data_panel_memory_min_max_young_heap"));
+            addEntry(localStrings.getString("data_panel_memory_min_max_perm_heap"));
+            addEntry(localStrings.getString("data_panel_footprintafterfullgc"));
+            addEntry(localStrings.getString("data_panel_footprintaftergc"));
+            
+            addEntry(localStrings.getString("data_panel_freedmemorybyfullgc"));
+            addEntry(localStrings.getString("data_panel_freedmemorybygc"));
+            
+            addEntry(localStrings.getString("data_panel_avgfreedmemorybyfullgc"));
+            addEntry(localStrings.getString("data_panel_avgfreedmemorybygc"));
+            
+            addEntry(localStrings.getString("data_panel_avgrelativepostfullgcincrease"));
+            addEntry(localStrings.getString("data_panel_avgrelativepostgcincrease"));
+            
+            addEntry(localStrings.getString("data_panel_slopeafterfullgc"));
+            addEntry(localStrings.getString("data_panel_slopeaftergc"));
+            
+            addEntry(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"));
+       }
+        
         public void setModel(GCModel model) {
             final boolean fullGCDataVailable = model.getFootprintAfterFullGC().getN() != 0;
             final boolean fullGCSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
@@ -166,67 +235,64 @@ public class ModelPanel extends JTabbedPane {
             final boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
             final boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
 
-            addValue(localStrings.getString("data_panel_memory_min_max_heap"),
+            updateValue(localStrings.getString("data_panel_memory_min_max_heap"),
                     footprintFormatter.format(model.getHeapSizes().getMin()) + " / " + footprintFormatter.format(model.getHeapSizes().getMax()),
                     true);
-            addValue(localStrings.getString("data_panel_memory_min_max_tenured_heap"),
+            updateValue(localStrings.getString("data_panel_memory_min_max_tenured_heap"),
                     model.getTenuredSizes().getN() > 0 ? footprintFormatter.format(model.getTenuredSizes().getMin()) + " / " + footprintFormatter.format(model.getTenuredSizes().getMax()) : "n/a",
                     model.getTenuredSizes().getN() > 0);
-            addValue(localStrings.getString("data_panel_memory_min_max_young_heap"),
+            updateValue(localStrings.getString("data_panel_memory_min_max_young_heap"),
                     model.getYoungSizes().getN() > 0 ? footprintFormatter.format(model.getYoungSizes().getMin()) + " / " + footprintFormatter.format(model.getYoungSizes().getMax()) : "n/a",
                     model.getYoungSizes().getN() > 0);
-            addValue(localStrings.getString("data_panel_memory_min_max_perm_heap"),
+            updateValue(localStrings.getString("data_panel_memory_min_max_perm_heap"),
                     model.getPermSizes().getN() > 0 ? footprintFormatter.format(model.getPermSizes().getMin()) + " / " + footprintFormatter.format(model.getPermSizes().getMax()) : "n/a",
                     model.getPermSizes().getN() > 0);
-        	addValue(localStrings.getString("data_panel_footprintafterfullgc"),
+            updateValue(localStrings.getString("data_panel_footprintafterfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation()) +")" : "n/a",
                     fullGCDataVailable && isSignificant(model.getFootprintAfterFullGC().average(),
                             model.getFootprintAfterFullGC().standardDeviation()));
-        	addValue(localStrings.getString("data_panel_footprintaftergc"),
+            updateValue(localStrings.getString("data_panel_footprintaftergc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFootprintAfterGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterGC().standardDeviation()) + ")" : "n/a",
                     gcDataAvailable && isSignificant(model.getFootprintAfterGC().average(),
                                     model.getFootprintAfterGC().standardDeviation()));
         	
-        	addValue(localStrings.getString("data_panel_freedmemorybygc"),
-        			footprintFormatter.format(model.getFreedMemory()),
-        			true);
-        	addValue(localStrings.getString("data_panel_freedmemorybyfullgc"),
+            updateValue(localStrings.getString("data_panel_freedmemorybyfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum())
                             + " (" + percentFormatter.format(model.getFreedMemoryByFullGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
                     fullGCDataVailable);
-        	addValue(localStrings.getString("data_panel_freedmemorybygc"),
+            updateValue(localStrings.getString("data_panel_freedmemorybygc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().getSum())
                             + " (" + percentFormatter.format(model.getFreedMemoryByGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
                     gcDataAvailable);
         	
-        	addValue(localStrings.getString("data_panel_avgfreedmemorybyfullgc"),
+            updateValue(localStrings.getString("data_panel_avgfreedmemorybyfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().average())
                             + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByFullGC().standardDeviation()) + ")" : "n/a",
                     fullGCDataVailable && isSignificant(model.getFreedMemoryByFullGC().average(),
                             model.getFreedMemoryByFullGC().standardDeviation()));
-        	addValue(localStrings.getString("data_panel_avgfreedmemorybygc"),
+            updateValue(localStrings.getString("data_panel_avgfreedmemorybygc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().average())
                             + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByGC().standardDeviation()) + ")" : "n/a",
                     gcDataAvailable && isSignificant(model.getFreedMemoryByGC().average(),
                             model.getFreedMemoryByGC().standardDeviation()));
         	
-        	addValue(localStrings.getString("data_panel_avgrelativepostfullgcincrease"),
+            updateValue(localStrings.getString("data_panel_avgrelativepostfullgcincrease"),
         			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostFullGCIncrease().slope()) + "/coll" : "n/a",
         			fullGCSlopeDataAvailable);
-        	addValue(localStrings.getString("data_panel_avgrelativepostgcincrease"),
+            updateValue(localStrings.getString("data_panel_avgrelativepostgcincrease"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostGCIncrease().average()) + "/coll" : "n/a",
         			gcSlopeDataAvailable);
         	
-        	addValue(localStrings.getString("data_panel_slopeafterfullgc"),
+            updateValue(localStrings.getString("data_panel_slopeafterfullgc"),
         			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostFullGCSlope().slope()) + "/s" : "n/a",
         			fullGCSlopeDataAvailable);
-        	addValue(localStrings.getString("data_panel_slopeaftergc"),
+            updateValue(localStrings.getString("data_panel_slopeaftergc"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostGCSlope()) + "/s" : "n/a",
         			gcSlopeDataAvailable);
         	
-        	addValue(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"),
+            updateValue(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"),
         	        initiatingOccFractionAvailable ? percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%" : "n/a",
         	        initiatingOccFractionAvailable);
         }
@@ -234,56 +300,77 @@ public class ModelPanel extends JTabbedPane {
 
     private class PauseTab extends ValuesTab {
 
+        public PauseTab() {
+            super();
+            
+            newGroup(localStrings.getString("data_panel_group_total_pause"), true);
+            addEntry(localStrings.getString("data_panel_acc_pauses"));
+            addEntry(localStrings.getString("data_panel_count_pauses"));
+            addEntry(localStrings.getString("data_panel_avg_pause"));
+            addEntry(localStrings.getString("data_panel_min_max_pause"));
+            addEntry(localStrings.getString("data_panel_avg_pause_interval"));
+            addEntry(localStrings.getString("data_panel_min_max_pause_interval"));
+
+            newGroup(localStrings.getString("data_panel_group_full_gc_pauses"), true);
+            addEntry(localStrings.getString("data_panel_acc_fullgcpauses"));
+            addEntry(localStrings.getString("data_panel_count_full_gc_pauses"));
+            addEntry(localStrings.getString("data_panel_avg_fullgcpause"));
+            addEntry(localStrings.getString("data_panel_min_max_full_gc_pause"));
+
+            newGroup(localStrings.getString("data_panel_group_gc_pauses"), true);
+            addEntry(localStrings.getString("data_panel_acc_gcpauses"));
+            addEntry(localStrings.getString("data_panel_count_gc_pauses"));
+            addEntry(localStrings.getString("data_panel_avg_gcpause"));
+            addEntry(localStrings.getString("data_panel_min_max_gc_pause"));
+        }
+        
         public void setModel(GCModel model) {
             final boolean pauseDataAvailable = model.getPause().getN() != 0;
             final boolean gcDataAvailable = model.getGCPause().getN() > 0;
             final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
             
-            newGroup(localStrings.getString("data_panel_group_total_pause"), true);
-            addValue(localStrings.getString("data_panel_acc_pauses"), 
+            updateValue(localStrings.getString("data_panel_acc_pauses"), 
             		gcTimeFormatter.format(model.getPause().getSum()) + "s", 
             		true);
-            addValue(localStrings.getString("data_panel_count_pauses"), 
+            updateValue(localStrings.getString("data_panel_count_pauses"), 
             		Integer.toString(model.getPause().getN()), 
             		true);
-            addValue(localStrings.getString("data_panel_avg_pause"), 
+            updateValue(localStrings.getString("data_panel_avg_pause"), 
             		pauseDataAvailable ? pauseFormatter.format(model.getPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPause().standardDeviation()) +")" : "n/a", 
             		pauseDataAvailable ? isSignificant(model.getPause().average(), model.getPause().standardDeviation()) : false);
-            addValue(localStrings.getString("data_panel_min_max_pause"), 
+            updateValue(localStrings.getString("data_panel_min_max_pause"), 
             		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMin()) + "s / " +pauseFormatter.format(model.getPause().getMax()) + "s" : "n/a", 
             		pauseDataAvailable);
-            addValue(localStrings.getString("data_panel_avg_pause_interval"), 
+            updateValue(localStrings.getString("data_panel_avg_pause_interval"), 
                     pauseDataAvailable ? pauseFormatter.format(model.getPauseInterval().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPauseInterval().standardDeviation()) +")" : "n/a", 
                     pauseDataAvailable ? isSignificant(model.getPauseInterval().average(), model.getPauseInterval().standardDeviation()) : false);
-            addValue(localStrings.getString("data_panel_min_max_pause_interval"), 
+            updateValue(localStrings.getString("data_panel_min_max_pause_interval"), 
                     pauseDataAvailable ? pauseFormatter.format(model.getPauseInterval().getMin()) + "s / " +pauseFormatter.format(model.getPauseInterval().getMax()) + "s" : "n/a", 
                     pauseDataAvailable);
 
-            newGroup(localStrings.getString("data_panel_group_full_gc_pauses"), true);
-            addValue(localStrings.getString("data_panel_acc_fullgcpauses"), 
+            updateValue(localStrings.getString("data_panel_acc_fullgcpauses"), 
             		gcTimeFormatter.format(model.getFullGCPause().getSum())+ "s (" + percentFormatter.format(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 
             		true);
-            addValue(localStrings.getString("data_panel_count_full_gc_pauses"), 
+            updateValue(localStrings.getString("data_panel_count_full_gc_pauses"), 
             		Integer.toString(model.getFullGCPause().getN()), 
             		true);
-            addValue(localStrings.getString("data_panel_avg_fullgcpause"), 
+            updateValue(localStrings.getString("data_panel_avg_fullgcpause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getFullGCPause().standardDeviation()) +")" : "n/a", 
             		fullGCDataAvailable ? isSignificant(model.getFullGCPause().average(), model.getPause().standardDeviation()) : false);
-            addValue(localStrings.getString("data_panel_min_max_full_gc_pause"), 
+            updateValue(localStrings.getString("data_panel_min_max_full_gc_pause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMin()) + "s / " + pauseFormatter.format(model.getFullGCPause().getMax()) + "s" : "n/a", 
             		fullGCDataAvailable);
 
-            newGroup(localStrings.getString("data_panel_group_gc_pauses"), true);
-            addValue(localStrings.getString("data_panel_acc_gcpauses"), 
+            updateValue(localStrings.getString("data_panel_acc_gcpauses"), 
             		gcTimeFormatter.format(model.getGCPause().getSum())+ "s (" + percentFormatter.format(model.getGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 
             		true);
-            addValue(localStrings.getString("data_panel_count_gc_pauses"), 
+            updateValue(localStrings.getString("data_panel_count_gc_pauses"), 
             		Integer.toString(model.getGCPause().getN()), 
             		true);
-            addValue(localStrings.getString("data_panel_avg_gcpause"), 
+            updateValue(localStrings.getString("data_panel_avg_gcpause"), 
             		gcDataAvailable ? pauseFormatter.format(model.getGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getGCPause().standardDeviation()) +")" : "n/a", 
             		gcDataAvailable ? isSignificant(model.getGCPause().average(), model.getGCPause().standardDeviation()) : false);
-            addValue(localStrings.getString("data_panel_min_max_gc_pause"), 
+            updateValue(localStrings.getString("data_panel_min_max_gc_pause"), 
             		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMin()) + "s / " + pauseFormatter.format(model.getGCPause().getMax()) + "s": "n/a", 
             		gcDataAvailable);
             
@@ -292,31 +379,44 @@ public class ModelPanel extends JTabbedPane {
 
     private class SummaryTab extends ValuesTab {
 
+        public SummaryTab() {
+            super();
+            
+            addEntry(localStrings.getString("data_panel_footprint"));
+            addEntry(localStrings.getString("data_panel_freedmemory"));
+            addEntry(localStrings.getString("data_panel_freedmemorypermin"));
+            addEntry(localStrings.getString("data_panel_total_time"));
+            addEntry(localStrings.getString("data_panel_acc_pauses"));
+            addEntry(localStrings.getString("data_panel_throughput"));
+            addEntry(localStrings.getString("data_panel_performance_fullgc"));
+            addEntry(localStrings.getString("data_panel_performance_gc"));
+        }
+        
         public void setModel(GCModel model) {
-        	addValue(localStrings.getString("data_panel_footprint"),
+        	updateValue(localStrings.getString("data_panel_footprint"),
         			footprintFormatter.format(model.getFootprint()), 
         			true);
-        	addValue(localStrings.getString("data_panel_freedmemory"),
+        	updateValue(localStrings.getString("data_panel_freedmemory"),
         			footprintFormatter.format(model.getFreedMemory()),
         			true);
-        	addValue(localStrings.getString("data_panel_freedmemorypermin"),
+        	updateValue(localStrings.getString("data_panel_freedmemorypermin"),
         			freedMemoryPerMinFormatter.format(model.getFreedMemory()/model.getRunningTime()*60.0) + "/min",
         			true);
-        	addValue(localStrings.getString("data_panel_total_time"),
+        	updateValue(localStrings.getString("data_panel_total_time"),
         			model.hasCorrectTimestamp() ? totalTimeFormatter.format(new Date((long)model.getRunningTime()*1000l)) : "n/a",
         			model.hasCorrectTimestamp());
-        	addValue(localStrings.getString("data_panel_acc_pauses"),
+        	updateValue(localStrings.getString("data_panel_acc_pauses"),
         			gcTimeFormatter.format(model.getPause().getSum()) + "s",
         			true);
-        	addValue(localStrings.getString("data_panel_throughput"),
+        	updateValue(localStrings.getString("data_panel_throughput"),
         			model.hasCorrectTimestamp() ? throughputFormatter.format(model.getThroughput()) + "%" : "n/a",
         			model.hasCorrectTimestamp());
-        	addValue(localStrings.getString("data_panel_performance_fullgc"),
+        	updateValue(localStrings.getString("data_panel_performance_fullgc"),
         			model.getFullGCPause().getN() > 0  
         					? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum()/model.getFullGCPause().getSum()) + "/s"
         					: "n/a",
         			model.getFullGCPause().getN() > 0);
-        	addValue(localStrings.getString("data_panel_performance_gc"),
+        	updateValue(localStrings.getString("data_panel_performance_gc"),
         			model.getGCPause().getN() > 0 
         				? footprintFormatter.format(model.getFreedMemoryByGC().getSum()/model.getGCPause().getSum()) + "/s"
         				: "n/a",
