@@ -96,7 +96,7 @@ public class ChartPanelView {
             final DataReader reader = factory.getDataReader(in);
             final GCModel model = reader.read();
             model.setURL(url);
-            if (textAreaLogHandler.hasErrors()) {
+            if (textAreaLogHandler.hasErrors() && !gcDocument.isWatched()) {
                 // show error dialog
                 final JPanel panel = new JPanel(new BorderLayout());
                 final JLabel messageLabel = new JLabel(new MessageFormat(localStrings.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
