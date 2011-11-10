@@ -21,6 +21,7 @@ import java.io.IOException;
 public class DesktopPane extends JDesktopPane {
 
     public DesktopPane(final GCViewer gcViewer) {
+        // TODO refactor; looks very similar to GCDocument implementation
         gcViewer.setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY, new DropTargetListener(){
             public void dragEnter(DropTargetDragEvent e) {
                 if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -68,11 +69,6 @@ public class DesktopPane extends JDesktopPane {
     }
     public void paint(Graphics g) {
         Rectangle r = g.getClipBounds();
-        /*
-        Color c = getBackground();
-        if(c == null)
-            c = Color.lightGray;
-        */
         g.setColor(Color.WHITE);
         if (r != null) {
             g.fillRect(r.x, r.y, r.width, r.height);
@@ -81,7 +77,6 @@ public class DesktopPane extends JDesktopPane {
             g.fillRect(0, 0, getWidth(), getHeight());
         }
         g.drawImage(logoIcon.getImage(), getWidth()/2 - logoIcon.getIconWidth()/2, getHeight()/2 - logoIcon.getIconHeight()/2, logoIcon.getIconWidth(), logoIcon.getIconHeight(), logoIcon.getImageObserver());
-        //g.drawImage(logoIcon.getImage(), getWidth() - logoIcon.getIconWidth(), getHeight() - logoIcon.getIconHeight(), logoIcon.getIconWidth(), logoIcon.getIconHeight(), logoIcon.getImageObserver());
         super.paint(g);
     }
 

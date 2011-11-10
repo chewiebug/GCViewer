@@ -1,19 +1,35 @@
 package com.tagtraum.perf.gcviewer;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.io.File;
-import java.util.*;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -22,7 +38,7 @@ import java.net.URL;
  */
 public class GCDocument extends JInternalFrame {
 
-    private java.util.List chartPanelViews = new ArrayList();
+    private List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
     private ModelChart modelChart;
     private boolean showModelPanel = true;
     private boolean watched;
@@ -36,6 +52,7 @@ public class GCDocument extends JInternalFrame {
         modelChart = new MultiModelChartFacade();
         GridBagLayout layout = new GridBagLayout();
         getContentPane().setLayout(layout);
+        // TODO refactor; looks very similar to DesktopPane implementation
         getContentPane().setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY, new DropTargetListener(){
             public void dragEnter(DropTargetDragEvent e) {
                 if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
