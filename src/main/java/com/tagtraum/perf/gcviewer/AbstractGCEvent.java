@@ -181,18 +181,7 @@ public abstract class AbstractGCEvent implements Serializable {
         }
 
         public static Type parse(String type) {
-            type = type.trim();
-            Type gcType = TYPE_MAP.get(type);
-            // TODO why does lookup fail here -> change Type definition?
-            if (gcType == null) {
-            	if (type.endsWith(Type.CMS_INITIAL_MARK.getType())) {
-                	gcType = Type.CMS_INITIAL_MARK;
-            	}
-            	else if (Type.PAR_NEW_PROMOTION_FAILED.getType().startsWith(type)) {
-            		gcType = Type.PAR_NEW_PROMOTION_FAILED;
-            	}
-            }
-            return gcType;
+            return TYPE_MAP.get(type.trim());
         }
 
         public static Type parse(final int reason) {

@@ -29,7 +29,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("throughput", 47.93401098, model.getThroughput(), 0.000000001);
         assertEquals("longest pause", 0.1581177, model.getPause().getMax(), 0.000001);
         assertEquals("total runtime", 120.215, model.getRunningTime(), 0.000001);
-        assertEquals("number of errors", 8, handler.getCount());
+        assertEquals("number of errors", 6, handler.getCount());
         
         assertEquals("max interval", 0.211, model.getPauseInterval().getMax(), 0.000001);
         assertEquals("avg interval", 0.048291297, model.getPauseInterval().average(), 0.0000001);
