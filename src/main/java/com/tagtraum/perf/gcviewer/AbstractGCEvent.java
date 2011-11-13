@@ -143,6 +143,16 @@ public abstract class AbstractGCEvent implements Serializable {
         return getType().getCollectionType().equals(CollectionType.CONCURRENCY_HELPER);
     }
     
+    public boolean isConcurrentCollectionStart() {
+        return getType().getType().equals(Type.CMS_CONCURRENT_MARK_START.getType()) // CMS
+                || getType().getType().equals(Type.G1_CONCURRENT_MARK_START.getType());// G1
+    }
+    
+    public boolean isConcurrentCollectionEnd() {
+        return getType().getType().equals(Type.CMS_CONCURRENT_RESET.getType()) // CMS
+                || getType().getType().equals(Type.G1_CONCURRENT_CLEANUP_END.getType()); // G1
+    }
+    
     public static class Type implements Serializable {
         private final String type;
         private final String rep;
