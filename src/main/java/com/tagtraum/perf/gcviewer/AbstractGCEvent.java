@@ -273,8 +273,9 @@ public abstract class AbstractGCEvent implements Serializable {
         // Parnew (promotion failed)
         public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", "ParNew (promotion failed):", Generation.YOUNG, Concurrency.SERIAL);
         
-        // CMS (concurrent mode failure)
+        // CMS (concurrent mode failure / interrupted)
         public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", "CMS (concurrent mode failure):", Generation.TENURED, Concurrency.SERIAL);
+        public static final Type CMS_CMI = new Type("CMS (concurrent mode interrupted)", "CMS (concurrent mode interrupted):", Generation.TENURED, Concurrency.SERIAL);
 
         // CMS (Concurrent Mark Sweep) Event Types
         public static final Type CMS_CONCURRENT_MARK_START = new Type("CMS-concurrent-mark-start", "CMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
