@@ -388,7 +388,9 @@ public class ModelPanel extends JTabbedPane {
             addEntry(localStrings.getString("data_panel_total_time"));
             addEntry(localStrings.getString("data_panel_acc_pauses"));
             addEntry(localStrings.getString("data_panel_throughput"));
+            addEntry(localStrings.getString("data_panel_count_full_gc_pauses"));
             addEntry(localStrings.getString("data_panel_performance_fullgc"));
+            addEntry(localStrings.getString("data_panel_count_gc_pauses"));
             addEntry(localStrings.getString("data_panel_performance_gc"));
         }
         
@@ -411,11 +413,17 @@ public class ModelPanel extends JTabbedPane {
         	updateValue(localStrings.getString("data_panel_throughput"),
         			model.hasCorrectTimestamp() ? throughputFormatter.format(model.getThroughput()) + "%" : "n/a",
         			model.hasCorrectTimestamp());
+            updateValue(localStrings.getString("data_panel_count_full_gc_pauses"), 
+                    Integer.toString(model.getFullGCPause().getN()), 
+                    true);
         	updateValue(localStrings.getString("data_panel_performance_fullgc"),
         			model.getFullGCPause().getN() > 0  
         					? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum()/model.getFullGCPause().getSum()) + "/s"
         					: "n/a",
         			model.getFullGCPause().getN() > 0);
+            updateValue(localStrings.getString("data_panel_count_gc_pauses"), 
+                    Integer.toString(model.getGCPause().getN()), 
+                    true);
         	updateValue(localStrings.getString("data_panel_performance_gc"),
         			model.getGCPause().getN() > 0 
         				? footprintFormatter.format(model.getFreedMemoryByGC().getSum()/model.getGCPause().getSum()) + "/s"
