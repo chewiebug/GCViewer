@@ -302,10 +302,8 @@ public class ModelPanel extends JTabbedPane {
         			gcSlopeDataAvailable);
         	
             updateValue(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"),
-        	        initiatingOccFractionAvailable ? percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%" +
-        	        		" (\u03c3=" + sigmaMemoryFormat(model.getCmsInitiatingOccupancyFraction().standardDeviation()) + ")" : "n/a",
-        	        initiatingOccFractionAvailable && isSignificant(model.getCmsInitiatingOccupancyFraction().average(),
-                            model.getCmsInitiatingOccupancyFraction().standardDeviation()));
+        	        initiatingOccFractionAvailable ? percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%" : "n/a",
+        	        initiatingOccFractionAvailable);
 
             updateValue(localStrings.getString("data_panel_memory_promotion_avg"),
                     promotionAvailable ? promotionFormatter.format(model.getPromotion().average()) + "/coll"+
