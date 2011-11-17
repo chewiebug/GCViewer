@@ -42,9 +42,12 @@ public class ModelPanel extends JTabbedPane {
     private NumberFormat percentFormatter;
     private NumberFormat gcTimeFormatter;
     private MemoryFormat sigmaMemoryFormatter;
+    private MemoryFormat promotionFormatter;
+    
     private SummaryTab summaryTab;
     private MemoryTab memoryTab;
     private PauseTab pauseTab;
+
 
     public ModelPanel() {
         //setBorder(new TitledBorder(localStrings.getString("data_panel_title")));
@@ -70,6 +73,8 @@ public class ModelPanel extends JTabbedPane {
         footprintSlopeFormatter = new MemoryFormat();
 
         freedMemoryPerMinFormatter = new MemoryFormat();
+        
+        promotionFormatter = new MemoryFormat();
 
         percentFormatter = NumberFormat.getInstance();
         percentFormatter.setMaximumFractionDigits(1);
@@ -226,6 +231,9 @@ public class ModelPanel extends JTabbedPane {
             addEntry(localStrings.getString("data_panel_slopeaftergc"));
             
             addEntry(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"));
+            
+            addEntry(localStrings.getString("data_panel_memory_promotion_avg"));
+            addEntry(localStrings.getString("data_panel_memory_promotion_total"));
        }
         
         public void setModel(GCModel model) {
@@ -234,6 +242,7 @@ public class ModelPanel extends JTabbedPane {
             final boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
             final boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
             final boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
+            final boolean promotionAvailable = model.getPromotion().getN() > 0;
 
             updateValue(localStrings.getString("data_panel_memory_min_max_heap"),
                     footprintFormatter.format(model.getHeapSizes().getMin()) + " / " + footprintFormatter.format(model.getHeapSizes().getMax()),
@@ -293,8 +302,19 @@ public class ModelPanel extends JTabbedPane {
         			gcSlopeDataAvailable);
         	
             updateValue(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"),
-        	        initiatingOccFractionAvailable ? percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%" : "n/a",
-        	        initiatingOccFractionAvailable);
+        	        initiatingOccFractionAvailable ? percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%" +
+        	        		" (\u03c3=" + sigmaMemoryFormat(model.getCmsInitiatingOccupancyFraction().standardDeviation()) + ")" : "n/a",
+        	        initiatingOccFractionAvailable && isSignificant(model.getCmsInitiatingOccupancyFraction().average(),
+                            model.getCmsInitiatingOccupancyFraction().standardDeviation()));
+
+            updateValue(localStrings.getString("data_panel_memory_promotion_avg"),
+                    promotionAvailable ? promotionFormatter.format(model.getPromotion().average()) + "/coll"+
+                            " (\u03c3=" + sigmaMemoryFormat(model.getPromotion().standardDeviation()) + ")" : "n/a",
+                    promotionAvailable && isSignificant(model.getPromotion().average(),
+                            model.getPromotion().standardDeviation()));
+            updateValue(localStrings.getString("data_panel_memory_promotion_total"),
+                    promotionAvailable ? promotionFormatter.format(model.getPromotion().getSum()) : "n/a",
+                    promotionAvailable);
         }
     }
 

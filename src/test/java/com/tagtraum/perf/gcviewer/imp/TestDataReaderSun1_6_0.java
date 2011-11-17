@@ -20,12 +20,12 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 		final DataReader reader = new DataReaderSun1_6_0(in);
 		GCModel model = reader.read();
 
-		assertEquals("gc pause", 0.0388082, model.getGCPause().getMax(), 0.000001);
 		assertTrue("hasDateStamp", model.hasDateStamp());
 		SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
 		assertEquals("DateStamp",
 				dateParser.parse("2011-10-05T04:23:39.427+0200"),
 				model.getFirstDateStamp());
+        assertEquals("gc pause", 0.0388082, model.getGCPause().getMax(), 0.000001);
 	}
 
 	public void testCMSPromotionFailed() throws Exception {
@@ -244,7 +244,7 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 
         assertEquals("GC count", 2, model.size());
         assertEquals("event pause", 0.0131346, model.getGCPause().getMax(), 0.0000001);
-
+        assertEquals("promotion", 2925, model.getPromotion().getMax());
     }
 
     public void testPrintTenuringDistribution() throws Exception {
@@ -260,6 +260,7 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 
         assertEquals("GC count", 1, model.size());
         assertEquals("event pause", 0.0533874, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("promotion", 0, model.getPromotion().getMax());
 
     }
                                                               
@@ -314,6 +315,8 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         assertEquals("perm min", 21248, model.getPermSizes().getMin());
         assertEquals("perm max", 21248, model.getPermSizes().getMax());
 
+        assertEquals("promotion avg", 16998.3846, model.getPromotion().average(), 0.0001);
+        assertEquals("promotion total", 220979, model.getPromotion().getSum());
     }
     
 }

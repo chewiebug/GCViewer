@@ -54,6 +54,8 @@ public class GCModel implements Serializable {
     private IntData youngSizes; // young size of every event that has this information
     private IntData permSizes; // perm size of every event that has this information
     
+    private IntData promotion; // promotion from young to tenured generation during young collections
+    
     private long footprint;
     private double runningTime;
     private DoubleData totalPause;
@@ -109,6 +111,8 @@ public class GCModel implements Serializable {
         this.permSizes = new IntData();
         this.tenuredSizes = new IntData();
         this.youngSizes = new IntData();
+        
+        this.promotion = new IntData();
     }
 
     public boolean isCountTenuredAsFull() {
@@ -320,35 +324,24 @@ public class GCModel implements Serializable {
         	// collect statistics about all stop the world events
             final GCEvent event = (GCEvent) abstractEvent;
             
-            updateHeapSizes(event);
-            
             DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
             pauses.add(event.getPause());
+            
+            updateHeapSizes(event);
+            
+            updatePauseInterval(event);
+            
+            updatePromotion(event);
+            
+            if (eventIsCmsInitialMark(event)) {
+                updateInitiatingOccupancyFraction(event);
+            }
             
             stopTheWorldEvents.add(event);
             footprint = Math.max(footprint, event.getTotal());
             runningTime = Math.max(runningTime, event.getTimestamp());
             freedMemory += event.getPreUsed() - event.getPostUsed();
             totalPause.add(event.getPause());
-            
-            if (lastPauseTimeStamp > 0) {
-                if (!event.isConcurrencyHelper()) {
-                    // JRockit sometimes has special timestamps that seem to go back in time,
-                    // omit them here
-                    if (event.getTimestamp() - lastPauseTimeStamp >= 0) {
-                        pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
-                    }
-                    lastPauseTimeStamp = event.getTimestamp();
-                }
-            } else {
-                // interval between startup of VM and first gc event should be omitted because
-                // startup time of VM is included.
-                lastPauseTimeStamp = event.getTimestamp();
-            }
-            
-            if (eventIsCmsInitialMark(event)) {
-                updateInitiatingOccupancyFraction(event);
-            }
             
             if (!event.isFull()) {
             	// make a difference between stop the world events, which only collect from some generations...
@@ -385,6 +378,49 @@ public class GCModel implements Serializable {
         }
     }
 
+    /**
+     * Promotion is the amount of memory that is promoted from young to tenured space during
+     * a collection of the young space.
+     * 
+     * @param event
+     */
+    private void updatePromotion(GCEvent event) {
+        if (event.getGeneration().equals(Generation.YOUNG) && event.hasDetails() && !event.isFull()) {
+            
+            GCEvent youngEvent = null;
+            for (Iterator<AbstractGCEvent> i = event.details(); i.hasNext(); ) {
+                AbstractGCEvent ev = i.next();
+                if (ev.getGeneration().equals(Generation.YOUNG)) {
+                    youngEvent = (GCEvent)ev;
+                    break;
+                }
+            }
+            
+            if (youngEvent != null) {
+                promotion.add((youngEvent.getPreUsed() - youngEvent.getPostUsed())
+                              - (event.getPreUsed() - event.getPostUsed())
+                             );
+            }
+        }
+    }
+
+    private void updatePauseInterval(final GCEvent event) {
+        if (lastPauseTimeStamp > 0) {
+            if (!event.isConcurrencyHelper()) {
+                // JRockit sometimes has special timestamps that seem to go back in time,
+                // omit them here
+                if (event.getTimestamp() - lastPauseTimeStamp >= 0) {
+                    pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
+                }
+                lastPauseTimeStamp = event.getTimestamp();
+            }
+        } else {
+            // interval between startup of VM and first gc event should be omitted because
+            // startup time of VM is included.
+            lastPauseTimeStamp = event.getTimestamp();
+        }
+    }
+
     private void updateInitiatingOccupancyFraction(GCEvent event) {
         GCEvent initialMarkEvent = null;
         Iterator<AbstractGCEvent> i = event.details();
@@ -405,7 +441,7 @@ public class GCModel implements Serializable {
     }
 
     private void updateHeapSizes(GCEvent event) {
-        // event contains always heap size
+        // event always contains heap size
         if (event.getTotal() > 0) {
             heapSizes.add(event.getTotal());
         }
@@ -582,6 +618,10 @@ public class GCModel implements Serializable {
      */
     public IntData getYoungSizes() {
         return youngSizes;
+    }
+    
+    public IntData getPromotion() {
+        return promotion;
     }
     
     /**

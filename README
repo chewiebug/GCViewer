@@ -149,6 +149,16 @@ Memory
        InitiatingOccupancyFraction tells you the avg value in % of the
        tenured generation, when CMS GC started (initial mark).
        This value can be set manually using -XX:CMSInitiatingOccupancyFraction. 
+- avg promotion
+     o Promotion means the size of objects that are promoted from young
+       to tenured generation during a young generation collection.
+       Avg promotion shows the average amount of memory that is promoted
+       from young to tenured with each young collection (only available
+       with PrintGCDetails)
+- total promotion
+     o Total promotion shows the total amount of memory that is promoted
+       from young to tenured with all young collections in a file (only 
+       available with PrintGCDetails)
 
 
 Pause
