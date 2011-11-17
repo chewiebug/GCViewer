@@ -35,6 +35,11 @@ public abstract class AbstractGCEvent implements Serializable {
         if (detail.getType().getGeneration() == Generation.TENURED) tenuredDetail = true;
     }
 
+    public boolean hasDetails() {
+        return details != null 
+                && details.size() > 0;
+    }
+    
     public boolean hasTenuredDetail() {
         return tenuredDetail;
     }
