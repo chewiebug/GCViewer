@@ -63,10 +63,8 @@ public class DesktopPane extends JDesktopPane {
         }));
     }
 
-    private ImageIcon logoIcon;
-    {
-        logoIcon = new ImageIcon(GCViewer.class.getResource("gcviewer_background.png"));
-    }
+    private ImageIcon logoIcon = new ImageIcon(GCViewer.class.getResource("gcviewer_background.png"));
+    
     public void paint(Graphics g) {
         Rectangle r = g.getClipBounds();
         g.setColor(Color.WHITE);
