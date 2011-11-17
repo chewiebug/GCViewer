@@ -2,9 +2,11 @@ package com.tagtraum.perf.gcviewer;
 
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -13,11 +15,15 @@ import java.net.URLDecoder;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.border.SoftBevelBorder;
 
 /**
@@ -28,12 +34,8 @@ import javax.swing.border.SoftBevelBorder;
  */
 public class AboutDialog extends JDialog implements ActionListener {
 
-    /**
-     * Source-Version
-     */
     public static String vcid = "$Id: AboutDialog.java,v 1.1.1.1 2002/01/15 19:48:45 hendriks73 Exp $";
-    private static ResourceBundle localStrings = ResourceBundle
-            .getBundle("com.tagtraum.perf.gcviewer.localStrings");
+    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
     private static final String GCVIEWER_HOMEPAGE = "https://github.com/chewiebug/gcviewer/";
 
     private Frame frame;
@@ -45,19 +47,18 @@ public class AboutDialog extends JDialog implements ActionListener {
         Panel logoPanel = new Panel();
         ImageIcon logoIcon = new ImageIcon(getClass().getResource(localStrings.getString("about_dialog_image")));
         JLabel la_icon = new JLabel(logoIcon);
-        // la_icon.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         la_icon.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
         logoPanel.add(la_icon);
 
-        Panel versionPanel = new Panel();
-        versionPanel.setLayout(new BoxLayout(versionPanel, BoxLayout.Y_AXIS));
-        JLabel version = new JLabel("chewiebug edition [Sun Java 1.6.x (CMS + G1)]");
-        version.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        JLabel version2 = new JLabel("version: " + loadVersion());
-        version2.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        JPanel versionPanel = new JPanel();
+        versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        versionPanel.setLayout(new GridLayout(2, 1));
+        JLabel version = new JLabel("\u00A9" + " 2011: Joerg Wuethrich", JLabel.CENTER);
+        JLabel version2 = new JLabel("version " + loadVersion(), JLabel.CENTER);
         versionPanel.add(version);
         versionPanel.add(version2);
 
+        
         Panel buttonPanel = new Panel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         if (ExternalViewer.isSupported()) {
@@ -104,17 +105,27 @@ public class AboutDialog extends JDialog implements ActionListener {
         return version;
     }
 
+    protected JRootPane createRootPane() {
+        KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        KeyStroke enterStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        
+        JRootPane rootPane = new JRootPane();
+        rootPane.registerKeyboardAction(this, escapeStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        rootPane.registerKeyboardAction(this, enterStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        
+        return rootPane;
+    }
+    
     public void actionPerformed(ActionEvent e) {
-        String cmd = e.getActionCommand();
-        if (cmd.equals("ok")) {
-            setVisible(false);
-        }
+        setVisible(false);
     }
 
     public void setVisible(boolean visible) {
-        if (visible)
+        if (visible) {
             setLocation((int) frame.getLocation().getX() + (frame.getWidth() / 2) - (getWidth() / 2), 
                     (int) frame.getLocation().getY() + (frame.getHeight() / 2) - (getHeight() / 2));
+        }
+        
         super.setVisible(visible);
     }
 
@@ -169,7 +180,7 @@ public class AboutDialog extends JDialog implements ActionListener {
                 }
                 // replace %20 with spaces
                 try {
-                    urlString = URLDecoder.decode(urlString);
+                    urlString = URLDecoder.decode(urlString, "UTF-8");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
