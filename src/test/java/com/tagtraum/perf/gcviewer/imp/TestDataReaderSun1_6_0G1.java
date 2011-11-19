@@ -21,7 +21,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
     	IMP_LOGGER.addHandler(handler);
     	DATA_READER_FACTORY_LOGGER.addHandler(handler);
     	
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1-gc_verbose.txt");
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_gc_verbose.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in);
         GCModel model = reader.read();
         
@@ -73,7 +73,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
     }
     
     public void testDetailedYoungCollectionMixed() throws Exception {
-        // parse one detailed event
+        // parse one detailed event with a mixed line (concurrent event starts in the middle of an stw collection)
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_Detailed-young-mixedLine.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in);
         GCModel model = reader.read();
@@ -84,6 +84,70 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("gc memory", 169*1024 - 162*1024, model.getFreedMemoryByGC().getMax());
     }
     
+    public void testFullGcMixed() throws Exception {
+        final InputStream in = new ByteArrayInputStream(("107.222: [Full GC107.248: [GC concurrent-mark-end, 0.0437048 sec]" +
+        		"\n 254M->59M(199M), 0.0687356 secs]" +
+        		"\n [Times: user=0.06 sys=0.02, real=0.07 secs]").getBytes());
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("number of events", 2, model.size());
+        assertEquals("number of full gc pauses", 1, model.getFullGCPause().getN());
+        assertEquals("full gc pause sum", 0.0687356, model.getFullGCPause().getSum(), 0.0000001);
+    }
+    
+    public void testYoungToSpaceOverflow() throws Exception {
+        // special type of GC: 0.838: "[GC pause (young) (to-space overflow)..."
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_young_toSpaceOverflow.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 1, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.04674512, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 228*1024 - 102*1024, model.getFreedMemoryByGC().getMax());
+        assertEquals("max memory", 256*1024, model.getFootprint());
+    }
+    
+    public void testPartialToSpaceOverflow() throws Exception {
+        // special type of GC: 0.838: "[GC pause (young) (to-space overflow)..."
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_partial_toSpaceOverflow.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 1, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.00271976, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 255*1024 - 181*1024, model.getFreedMemoryByGC().getMax());
+        assertEquals("max memory", 256*1024, model.getFootprint());
+    }
+    
+    public void testYoungToSpaceOverflowInitialMark() throws Exception {
+        // special type of GC: 0.838: "[GC pause (young) (to-space overflow) (initial-mark)..."
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_young_initialMarkToSpaceOverflow.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 1, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.00316185, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 254*1024 - 170*1024, model.getFreedMemoryByGC().getMax());
+        assertEquals("max memory", 256*1024, model.getFootprint());
+    }
+
+    public void testPartialToSpaceOverflowInitialMark() throws Exception {
+        // special type of GC: 0.838: "[GC pause (partial) (to-space overflow) (initial-mark)..."
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_partial_initialMarkToSpaceOverflow.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 1, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.00588343, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 255*1024 - 197*1024, model.getFreedMemoryByGC().getMax());
+        assertEquals("max memory", 256*1024, model.getFootprint());
+    }
+
     public void testGcPattern() throws Exception {
         final InputStream in = new ByteArrayInputStream(("0.452: [GC concurrent-count-start]").getBytes());
         

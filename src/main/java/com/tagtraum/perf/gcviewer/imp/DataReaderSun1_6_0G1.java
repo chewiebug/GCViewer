@@ -28,8 +28,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[KMG].*");
 
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
-    // the pattern is always "...)<timestamp>"
-    private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\))([0-9.]+.*)"); 
+    // the pattern is "...)<timestamp>..."
+    // or "...Full GC<timestamp>..."
+    private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)"); 
 
     private static final int GC_TIMESTAMP = 1;
     private static final int GC_TYPE = 2;
@@ -86,7 +87,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         gcPauseMatcher.reset(line);
                         if (gcPauseMatcher.matches()) {
                             AbstractGCEvent.Type type = AbstractGCEvent.Type.parse(gcPauseMatcher.group(GC_TYPE));
-                            if (type.getPattern().compareTo(GcPattern.GC_MEMORY_PAUSE) == 0) {
+                            if (type != null && type.getPattern().compareTo(GcPattern.GC_MEMORY_PAUSE) == 0) {
                                 // detailed G1 events start with GC_MEMORY pattern, but are of type GC_MEMORY_PAUSE
                                 isInDetailedEvent = true;
     

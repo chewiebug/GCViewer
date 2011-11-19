@@ -1,0 +1,26 @@
+4.010: [GC pause (partial) (to-space overflow), 0.00271976 secs]
+   [Parallel Time:   0.9 ms]
+      [GC Worker Start Time (ms):  4010.6  4010.6]
+      [Update RS (ms):  0.0  0.1
+       Avg:   0.1, Min:   0.0, Max:   0.1]
+         [Processed Buffers : 0 10
+          Sum: 10, Avg: 5, Min: 0, Max: 10]
+      [Ext Root Scanning (ms):  0.2  0.2
+       Avg:   0.2, Min:   0.2, Max:   0.2]
+      [Mark Stack Scanning (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Scan RS (ms):  0.0  0.2
+       Avg:   0.1, Min:   0.0, Max:   0.2]
+      [Object Copy (ms):  0.6  0.2
+       Avg:   0.4, Min:   0.2, Max:   0.6]
+      [Termination (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+         [Termination Attempts : 1 1
+          Sum: 2, Avg: 1, Min: 1, Max: 1]
+      [GC Worker End Time (ms):  4011.5  4011.5]
+      [Other:   0.1 ms]
+   [Clear CT:   0.1 ms]
+   [Other:   1.7 ms]
+      [Choose CSet:   0.0 ms]
+   [ 255M->181M(256M)]
+ [Times: user=0.00 sys=0.00, real=0.00 secs] 
