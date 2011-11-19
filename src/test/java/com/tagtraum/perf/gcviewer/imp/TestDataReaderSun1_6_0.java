@@ -318,14 +318,23 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         GCModel model = reader.read();
 
         assertEquals("GC count", 41, model.size());
-        assertEquals("heap min", 249088, model.getHeapSizes().getMin());
-        assertEquals("heap max", 249088, model.getHeapSizes().getMax());
-        assertEquals("young min", 118016, model.getYoungSizes().getMin());
-        assertEquals("young max", 118016, model.getYoungSizes().getMax());
-        assertEquals("tenured min", 131072, model.getTenuredSizes().getMin());
-        assertEquals("tenured max", 131072, model.getTenuredSizes().getMax());
-        assertEquals("perm min", 21248, model.getPermSizes().getMin());
-        assertEquals("perm max", 21248, model.getPermSizes().getMax());
+        assertEquals("heap min allocated", 249088, model.getHeapAllocatedSizes().getMin());
+        assertEquals("heap max allocated", 249088, model.getHeapAllocatedSizes().getMax());
+        assertEquals("young min allocated", 118016, model.getYoungAllocatedSizes().getMin());
+        assertEquals("young max allocated", 118016, model.getYoungAllocatedSizes().getMax());
+        assertEquals("tenured min allocated", 131072, model.getTenuredAllocatedSizes().getMin());
+        assertEquals("tenured max allocated", 131072, model.getTenuredAllocatedSizes().getMax());
+        assertEquals("perm min allocated", 21248, model.getPermAllocatedSizes().getMin());
+        assertEquals("perm max allocated", 21248, model.getPermAllocatedSizes().getMax());
+
+        assertEquals("heap min used", 80841, model.getHeapUsedSizes().getMin());
+        assertEquals("heap max used", 209896, model.getHeapUsedSizes().getMax());
+        assertEquals("young min used", 104960, model.getYoungUsedSizes().getMin());
+        assertEquals("young max used", 118010, model.getYoungUsedSizes().getMax());
+        assertEquals("tenured min used", 65665, model.getTenuredUsedSizes().getMin());
+        assertEquals("tenured max used", 115034, model.getTenuredUsedSizes().getMax());
+        assertEquals("perm min used", 2560, model.getPermUsedSizes().getMin());
+        assertEquals("perm max used", 2561, model.getPermUsedSizes().getMax());
 
         assertEquals("promotion avg", 16998.3846, model.getPromotion().average(), 0.0001);
         assertEquals("promotion total", 220979, model.getPromotion().getSum());

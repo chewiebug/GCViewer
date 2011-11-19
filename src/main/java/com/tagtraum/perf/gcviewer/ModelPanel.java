@@ -245,17 +245,17 @@ public class ModelPanel extends JTabbedPane {
             final boolean promotionAvailable = model.getPromotion().getN() > 0;
 
             updateValue(localStrings.getString("data_panel_memory_min_max_heap"),
-                    footprintFormatter.format(model.getHeapSizes().getMin()) + " / " + footprintFormatter.format(model.getHeapSizes().getMax()),
+                    footprintFormatter.format(model.getHeapAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getHeapAllocatedSizes().getMax()),
                     true);
             updateValue(localStrings.getString("data_panel_memory_min_max_tenured_heap"),
-                    model.getTenuredSizes().getN() > 0 ? footprintFormatter.format(model.getTenuredSizes().getMin()) + " / " + footprintFormatter.format(model.getTenuredSizes().getMax()) : "n/a",
-                    model.getTenuredSizes().getN() > 0);
+                    model.getTenuredAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getTenuredAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getTenuredAllocatedSizes().getMax()) : "n/a",
+                    model.getTenuredAllocatedSizes().getN() > 0);
             updateValue(localStrings.getString("data_panel_memory_min_max_young_heap"),
-                    model.getYoungSizes().getN() > 0 ? footprintFormatter.format(model.getYoungSizes().getMin()) + " / " + footprintFormatter.format(model.getYoungSizes().getMax()) : "n/a",
-                    model.getYoungSizes().getN() > 0);
+                    model.getYoungAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getYoungAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getYoungAllocatedSizes().getMax()) : "n/a",
+                    model.getYoungAllocatedSizes().getN() > 0);
             updateValue(localStrings.getString("data_panel_memory_min_max_perm_heap"),
-                    model.getPermSizes().getN() > 0 ? footprintFormatter.format(model.getPermSizes().getMin()) + " / " + footprintFormatter.format(model.getPermSizes().getMax()) : "n/a",
-                    model.getPermSizes().getN() > 0);
+                    model.getPermAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getPermAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getPermAllocatedSizes().getMax()) : "n/a",
+                    model.getPermAllocatedSizes().getN() > 0);
             updateValue(localStrings.getString("data_panel_footprintafterfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation()) +")" : "n/a",

@@ -49,10 +49,14 @@ public class GCModel implements Serializable {
     private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
     private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
     
-    private IntData heapSizes; // heap size of every event
-    private IntData tenuredSizes; // tenured size of every event that has this information
-    private IntData youngSizes; // young size of every event that has this information
-    private IntData permSizes; // perm size of every event that has this information
+    private IntData heapAllocatedSizes; // allocated heap size of every event
+    private IntData tenuredAllocatedSizes; // allocated tenured size of every event that has this information
+    private IntData youngAllocatedSizes; // allocated young size of every event that has this information
+    private IntData permAllocatedSizes; // allocated perm size of every event that has this information
+    private IntData heapUsedSizes; // used heap of every event
+    private IntData tenuredUsedSizes; // used tenured size of every event that has this information
+    private IntData youngUsedSizes; // used young size of every event that has this information
+    private IntData permUsedSizes; // used perm size of every event that has this information
     
     private IntData promotion; // promotion from young to tenured generation during young collections
     
@@ -107,10 +111,15 @@ public class GCModel implements Serializable {
         this.gcEventPauses = new TreeMap<String, DoubleData>();
         this.concurrentGcEventPauses = new TreeMap<String, DoubleData>();
         
-        this.heapSizes = new IntData();
-        this.permSizes = new IntData();
-        this.tenuredSizes = new IntData();
-        this.youngSizes = new IntData();
+        this.heapAllocatedSizes = new IntData();
+        this.permAllocatedSizes = new IntData();
+        this.tenuredAllocatedSizes = new IntData();
+        this.youngAllocatedSizes = new IntData();
+
+        this.heapUsedSizes = new IntData();
+        this.permUsedSizes = new IntData();
+        this.tenuredUsedSizes = new IntData();
+        this.youngUsedSizes = new IntData();
         
         this.promotion = new IntData();
     }
@@ -141,30 +150,16 @@ public class GCModel implements Serializable {
         }
     }
     
-    private void printDoubleData(String name, DoubleData data) {
-        try {
-            System.out.println(name + " (avg, min, max):\t" + data.average() + "\t" + data.getMin() + "\t" + data.getMax());
-        } catch (IllegalStateException e) {
-            System.out.println(name + "\t" + e.toString());
-        }
-    }
-    
-    public void printPauseMaps() {
+    public void printDetailedInformation() {
     	// TODO delete
     	printPauseMap(gcEventPauses);
     	printPauseMap(concurrentGcEventPauses);
-    	System.out.println("sum of pauses\t" + totalPause.getSum());
-    	System.out.println("sum of full gc pauses\t" + fullGCPause.getSum());
-    	System.out.println("sum of young gc pauses\t" + gcPause.getSum());
-    	printDoubleData("interval between pauses", pauseInterval);
-    	System.out.println("interval (runningTime / interval count): " + runningTime / (pauseInterval.getN()));
-    	printDoubleData("initiatingOccupancyFraction", initiatingOccupancyFraction);
     	
-    	printIntData("heap size", heapSizes);
-    	printIntData("perm size", permSizes);
-    	printIntData("tenured size", tenuredSizes);
-    	printIntData("young size", youngSizes);
-    }
+        printIntData("heap size used", heapUsedSizes);
+        printIntData("perm size used", permUsedSizes);
+        printIntData("tenured size used", tenuredUsedSizes);
+        printIntData("young size used", youngUsedSizes);
+}
     
     public void setURL(final URL url) {
         this.url = url;
@@ -443,7 +438,8 @@ public class GCModel implements Serializable {
     private void updateHeapSizes(GCEvent event) {
         // event always contains heap size
         if (event.getTotal() > 0) {
-            heapSizes.add(event.getTotal());
+            heapAllocatedSizes.add(event.getTotal());
+            heapUsedSizes.add(event.getPreUsed());
         }
         
         // if there are details, young, tenured and perm sizes can be extracted
@@ -459,16 +455,20 @@ public class GCModel implements Serializable {
     private void updateHeapSize(GCEvent event) {
         if (event.getTotal() > 0) {
             if (event.getGeneration().equals(Generation.ALL)) {
-                heapSizes.add(event.getTotal());
+                heapAllocatedSizes.add(event.getTotal());
+                heapUsedSizes.add(event.getPreUsed());
             }
             else if (event.getGeneration().equals(Generation.PERM)) {
-                permSizes.add(event.getTotal());
+                permAllocatedSizes.add(event.getTotal());
+                permUsedSizes.add(event.getPreUsed());
             }
             else if (event.getGeneration().equals(Generation.TENURED)) {
-                tenuredSizes.add(event.getTotal());
+                tenuredAllocatedSizes.add(event.getTotal());
+                tenuredUsedSizes.add(event.getPreUsed());
             }
             else if (event.getGeneration().equals(Generation.YOUNG)) {
-                youngSizes.add(event.getTotal());
+                youngAllocatedSizes.add(event.getTotal());
+                youngUsedSizes.add(event.getPreUsed());
             }
         }
     }
@@ -592,34 +592,66 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * max heap size for every event
+     * max heap allocated for every event
      */
-    public IntData getHeapSizes() {
-        return heapSizes;
+    public IntData getHeapAllocatedSizes() {
+        return heapAllocatedSizes;
+    }
+    
+    /**
+     * max heap used for every event
+     */
+    public IntData getHeapUsedSizes() {
+        return heapUsedSizes;
     }
 
     /**
-     * perm sizes for every event that contained one (only if detailed logging is active and
+     * perm sizes allocated for every event that contained one (only if detailed logging is active and
      * and all spaces were collected) 
      */
-    public IntData getPermSizes() {
-        return permSizes;
+    public IntData getPermAllocatedSizes() {
+        return permAllocatedSizes;
     }
     
     /**
-     * tenured sizes for every event that contained one (only if detailed logging is active) 
+     * perm sizes used for every event that has the information 
      */
-    public IntData getTenuredSizes() {
-        return tenuredSizes;
+    public IntData getPermUsedSizes() {
+        return permUsedSizes;
     }
     
     /**
-     * young sizes for every event that contained one (only if detailed logging is active) 
+     * tenured sizes allocated for every event that contained one (only if detailed logging is active) 
      */
-    public IntData getYoungSizes() {
-        return youngSizes;
+    public IntData getTenuredAllocatedSizes() {
+        return tenuredAllocatedSizes;
     }
     
+    /**
+     * tenured sizes used for every event that contained one (only if detailed logging is active) 
+     */
+    public IntData getTenuredUsedSizes() {
+        return tenuredUsedSizes;
+    }
+    
+    /**
+     * young sizes allocated for every event that contained one (only if detailed logging is active) 
+     */
+    public IntData getYoungAllocatedSizes() {
+        return youngAllocatedSizes;
+    }
+    
+    /**
+     * young sizes used for every event that contained one (only if detailed logging is active) 
+     */
+    public IntData getYoungUsedSizes() {
+        return youngUsedSizes;
+    }
+    
+    /**
+     * Returns promotion information for all young collections (how much memory was promoted to
+     * tenured space per young collection?)
+     */
     public IntData getPromotion() {
         return promotion;
     }

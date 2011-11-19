@@ -70,7 +70,7 @@ public class ChartPanelView {
         final GCModel model = loadModel(url);
         setModel(model);
         // TODO delete
-        model.printPauseMaps();
+        model.printDetailedInformation();
     }
 
     /**
