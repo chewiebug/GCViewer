@@ -28,8 +28,16 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[KMG].*");
 
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
-    // the pattern is always "...)<timestamp>"
-    private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\))([0-9.]+.*)"); 
+    // the pattern is "...)<timestamp>..."
+    // or "...Full GC<timestamp>..."
+    // or "...)<timestamp>:  (initial-mark)..." (where the timestamp including ":" belongs to a concurrent event and the rest not)
+    // or "...)<timestamp> (initial-mark)..." (where only the timestamp belongs to a concurrent event)
+    //private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)"); 
+    private static Pattern PATTERN_LINES_MIXED = Pattern.compile(
+            "(.*\\)|.*Full GC)" + // either starts with ")" or "Full GC"
+    		"([0-9.]+[:][ ][\\[].*|" + // 1st pattern: then continues either with "<timestamp>: [" where the timestamp is the start of the complete concurrent collection
+    		"([0-9.]+[: ]{2})([ ]?[\\(,].*)|" + // 2nd pattern: or with "<timestamp>:  (..." where only the timestamp is part of the concurrent collection
+    		"([0-9.]+)([ ][\\(].*))"); // 3rd pattern: or with "<timestamp> (" or "<timestamp> ," where only the timestamp is part of the concurrent collection  
 
     private static final int GC_TIMESTAMP = 1;
     private static final int GC_TYPE = 2;
@@ -68,12 +76,26 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         // -> the rest of the old line appears on the next line
                         linesMixedMatcher.reset(line); 
                         if (linesMixedMatcher.matches()) {
-                            beginningOfLine = linesMixedMatcher.group(1);
-                            model.add(parseLine(linesMixedMatcher.group(2), parsePosition));
-                            parsePosition.setIndex(0);
-                            continue;
+                            if (linesMixedMatcher.group(3) == null && linesMixedMatcher.group(5) == null) {
+                                // 1st pattern (complete concurrent collection follows)
+                                beginningOfLine = linesMixedMatcher.group(1);
+                                model.add(parseLine(linesMixedMatcher.group(2), parsePosition));
+                                parsePosition.setIndex(0);
+                                continue; // rest of collection is on the next line, so continue there
+                            }
+                            else if (linesMixedMatcher.group(5) == null) {
+                                // 2nd pattern; only timestamp is part of concurrent event
+                                beginningOfLine = linesMixedMatcher.group(3); // only timestamp
+                                line = linesMixedMatcher.group(1) + linesMixedMatcher.group(4);
+                            }
+                            else if (linesMixedMatcher.group(3) == null) {
+                                // 3rd pattern; again only timestamp is part of concurrent event
+                                beginningOfLine = linesMixedMatcher.group(5); // only timestamp
+                                line = linesMixedMatcher.group(1) + linesMixedMatcher.group(6);
+                            }
                         }
                         else if (beginningOfLine != null) {
+                            // not detailed log but mixed line
                             line = beginningOfLine + line;
                             beginningOfLine = null;
                         }
@@ -86,7 +108,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         gcPauseMatcher.reset(line);
                         if (gcPauseMatcher.matches()) {
                             AbstractGCEvent.Type type = AbstractGCEvent.Type.parse(gcPauseMatcher.group(GC_TYPE));
-                            if (type.getPattern().compareTo(GcPattern.GC_MEMORY_PAUSE) == 0) {
+                            if (type != null && type.getPattern().compareTo(GcPattern.GC_MEMORY_PAUSE) == 0) {
                                 // detailed G1 events start with GC_MEMORY pattern, but are of type GC_MEMORY_PAUSE
                                 isInDetailedEvent = true;
     
@@ -102,6 +124,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         else if (line.indexOf("Times") < 0) {
                             model.add(parseLine(line, parsePosition));
                         }
+                    }
+                    else if (beginningOfLine != null) {
+                        // detailed log and ugly mixed line -> 2nd part 
+                        // (only timestamp of concurrent collection in 1st line; 
+                        // rest of concurrent collection in 2nd line)
+                        line = beginningOfLine + line;
+                        beginningOfLine = null;
+                        model.add(parseLine(line, parsePosition));
                     }
                     else {
                         // now we parse details of a pause
