@@ -261,8 +261,8 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
         public static final Type GC = new Type("GC", Generation.YOUNG);
         public static final Type GC__ = new Type("GC--", Generation.YOUNG);
-        public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG);
-        public static final Type PAR_NEW = new Type("ParNew", "ParNew:", Generation.YOUNG);
+        public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG); // single threaded
+        public static final Type PAR_NEW = new Type("ParNew", "ParNew:", Generation.YOUNG); // parallel
         public static final Type PAR_OLD_GEN = new Type("ParOldGen", "ParOldGen:", Generation.TENURED);
         public static final Type PS_YOUNG_GEN = new Type("PSYoungGen", "PSYoungGen:", Generation.YOUNG);
         public static final Type PS_OLD_GEN = new Type("PSOldGen", "PSOldGen:", Generation.TENURED);

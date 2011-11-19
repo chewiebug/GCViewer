@@ -128,6 +128,18 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 		assertEquals("full gc pause", 8.0600619, model.getFullGCPause().getSum(), 0.00000001);
 	}
 
+    public void testCmsRemarkDatestamp() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-10-05T04:23:39.427+0200: 13455.879: [GC[YG occupancy: 325751 K (471872 K)]13455.879: [Rescan (parallel) , 1.0591220 secs]13456.939: [weak refs processing, 0.0794109 secs] [1 CMS-remark: 1023653K(1572864K)] 1349404K(2044736K), 1.1490033 secs] [Times: user=19.09 sys=0.26, real=1.15 secs]")
+                        .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+
+        assertEquals("gc pause", 1.1490033, model.getGCPause().getSum(), 0.00000001);
+    }
+
 	public void testCmsRemarkTimestamp() throws Exception {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				("13455.879: [GC[YG occupancy: 325751 K (471872 K)]13455.879: [Rescan (parallel) , 1.0591220 secs]13456.939: [weak refs processing, 0.0794109 secs] [1 CMS-remark: 1023653K(1572864K)] 1349404K(2044736K), 1.1490033 secs] [Times: user=19.09 sys=0.26, real=1.15 secs]")
@@ -139,6 +151,18 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 
 		assertEquals("gc pause", 1.1490033, model.getGCPause().getSum(), 0.00000001);
 	}
+
+    public void testCmsRemarkSerial() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("0.778: [GC[YG occupancy: 2179 K (19136 K)]0.778: [Rescan (non-parallel) 0.778: [grey object rescan, 0.0014243 secs]0.780: [root rescan, 0.0000909 secs], 0.0015484 secs]0.780: [weak refs processing, 0.0000066 secs] [1 CMS-remark: 444198K(444416K)] 446377K(463552K), 0.0015882 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+
+        assertEquals("gc pause", 0.0015882, model.getGCPause().getSum(), 0.00000001);
+    }
 
 	public void testFullGcIncrementalDatestamp() throws Exception {
 		ByteArrayInputStream in = new ByteArrayInputStream(
@@ -163,18 +187,6 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 		assertEquals("GC count", 1, model.size());
 
 		assertEquals("full gc pause", 8.0600619, model.getFullGCPause().getSum(), 0.00000001);
-	}
-
-	public void testCmsRemarkDatestamp() throws Exception {
-		ByteArrayInputStream in = new ByteArrayInputStream(
-				("2011-10-05T04:23:39.427+0200: 13455.879: [GC[YG occupancy: 325751 K (471872 K)]13455.879: [Rescan (parallel) , 1.0591220 secs]13456.939: [weak refs processing, 0.0794109 secs] [1 CMS-remark: 1023653K(1572864K)] 1349404K(2044736K), 1.1490033 secs] [Times: user=19.09 sys=0.26, real=1.15 secs]")
-						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in);
-		GCModel model = reader.read();
-
-		assertEquals("GC count", 1, model.size());
-
-		assertEquals("gc pause", 1.1490033, model.getGCPause().getSum(), 0.00000001);
 	}
 
 	public void testMixedLineTimestamp() throws Exception {
@@ -319,4 +331,5 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         assertEquals("promotion total", 220979, model.getPromotion().getSum());
     }
     
+     
 }

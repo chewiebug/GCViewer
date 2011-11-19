@@ -172,22 +172,19 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                 // now add detail gcevents, should they exist
                 while (hasNextDetail(line, pos)) {
                     final GCEvent detailEvent = new GCEvent();
-                    if (nextCharIsBracket(line, pos)) {
-                        detailEvent.setTimestamp(timestamp);
-                    } else {
-                        detailEvent.setTimestamp(parseTimestamp(line, pos));
-                    }
                     try {
+                        if (nextCharIsBracket(line, pos)) {
+                            detailEvent.setTimestamp(timestamp);
+                        } else {
+                            detailEvent.setTimestamp(parseTimestamp(line, pos));
+                        }
                         detailEvent.setType(parseType(line, pos));
                         setMemoryAndPauses(detailEvent, line, pos);
                         event.add(detailEvent);
                     } catch (UnknownGcTypeException e) {
-                    	// moving position to the end of this detail event -> skip it
-                    	pos.setIndex(line.indexOf("]", pos.getIndex())+1);
-                    	while (line.charAt(pos.getIndex()) == ' ') {
-                    		pos.setIndex(pos.getIndex()+1);
-                    	}
-                        if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
+                        skipUntilEndOfDetail(line, pos, e);
+                    } catch (NumberFormatException e) {
+                        skipUntilEndOfDetail(line, pos, e);
                     }
                     
                 }
@@ -212,6 +209,15 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
         } catch (RuntimeException rte) {
             throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
         }
+    }
+
+    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, Exception e) {
+        // moving position to the end of this detail event -> skip it
+        pos.setIndex(line.indexOf("]", pos.getIndex())+1);
+        while (line.charAt(pos.getIndex()) == ' ') {
+            pos.setIndex(pos.getIndex()+1);
+        }
+        if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
     }
 
     public Date parseDatestamp(String line, ParsePosition pos) throws ParseException {
