@@ -66,7 +66,7 @@ public class GCModel implements Serializable {
     private DoubleData gcPause; // not full gc but stop the world pause
     private double lastPauseTimeStamp = 0;
     private DoubleData pauseInterval; // interval between two stop the world pauses
-    private DoubleData initiatingOccupancyFraction; // CMS only
+    private DoubleData initiatingOccupancyFraction; // all concurrent collectors; start of concurrent collection
     private long freedMemory;
     private Format format;
     private IntData postGCUsedMemory;
@@ -149,10 +149,20 @@ public class GCModel implements Serializable {
         }
     }
     
+    private void printDoubleData(String name, DoubleData data) {
+        try {
+            System.out.println(name + " (avg, stddev, min, max):\t" + data.average() + "\t" + data.standardDeviation() + "\t" + data.getMin() + "\t" + data.getMax());
+        } catch (IllegalStateException e) {
+            System.out.println(name + "\t" + e.toString());
+        }
+    }
+    
     public void printDetailedInformation() {
     	// TODO delete
     	printPauseMap(gcEventPauses);
     	printPauseMap(concurrentGcEventPauses);
+
+    	printDoubleData("initiatingOccupancyFraction", initiatingOccupancyFraction);
     	
         printIntData("heap size used", heapUsedSizes);
         printIntData("perm size used", permUsedSizes);
