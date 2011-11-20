@@ -328,7 +328,7 @@ public class GCModel implements Serializable {
             
             updatePromotion(event);
             
-            if (eventIsCmsInitialMark(event)) {
+            if (event.isInitialMark()) {
                 updateInitiatingOccupancyFraction(event);
             }
             
@@ -418,21 +418,23 @@ public class GCModel implements Serializable {
 
     private void updateInitiatingOccupancyFraction(GCEvent event) {
         GCEvent initialMarkEvent = null;
-        Iterator<AbstractGCEvent> i = event.details();
-        while (i.hasNext() && initialMarkEvent == null) {
-            AbstractGCEvent gcEvent = i.next();
-            if (gcEvent.getType().toString().equals(Type.CMS_INITIAL_MARK.toString())) {
-                initialMarkEvent = (GCEvent)gcEvent;
+        
+        if (!event.hasDetails() && event.isInitialMark()) {
+            initialMarkEvent = event;
+        }
+        else {
+            Iterator<AbstractGCEvent> i = event.details();
+            while (i.hasNext() && initialMarkEvent == null) {
+                AbstractGCEvent gcEvent = i.next();
+                if (gcEvent.isInitialMark()) {
+                    initialMarkEvent = (GCEvent)gcEvent;
+                }
             }
         }
-        
+
         if (initialMarkEvent != null) {
             initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double)initialMarkEvent.getTotal());
         }
-    }
-
-    private boolean eventIsCmsInitialMark(GCEvent event) {
-        return event.getTypeAsString().indexOf(Type.CMS_INITIAL_MARK.toString()) >= 0;
     }
 
     private void updateHeapSizes(GCEvent event) {
