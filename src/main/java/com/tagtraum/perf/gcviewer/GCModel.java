@@ -1,26 +1,25 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
-import com.tagtraum.perf.gcviewer.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.math.DoubleData;
-import com.tagtraum.perf.gcviewer.math.IntData;
-import com.tagtraum.perf.gcviewer.math.RegressionLine;
-
 import java.io.File;
-import java.io.Serializable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.HttpURLConnection;
+import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.math.IntData;
+import com.tagtraum.perf.gcviewer.math.RegressionLine;
 
 /**
  * Collection of GCEvents.
