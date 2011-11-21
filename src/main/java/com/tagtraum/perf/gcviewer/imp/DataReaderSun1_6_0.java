@@ -46,7 +46,7 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
     }
     
-    private static final String CMS_ABORTING_PRECLEAN = " CMS: abort preclean due to time";
+    private static final String CMS_ABORT_PRECLEAN = " CMS: abort preclean due to time ";
     
     private static Pattern unloadingClassPattern = Pattern.compile(".*\\[Unloading class [^\\]]+\\]$");
 
@@ -82,6 +82,14 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                     for (String i : EXCLUDE_STRINGS) {
                         if (line.indexOf(i) == 0) continue OUTERLOOP;
                     }
+                    if (line.indexOf(CMS_ABORT_PRECLEAN) >= 0) {
+                        // line contains like " CMS: abort preclean due to time "
+                        // -> remove the text
+                        int indexOfStart = line.indexOf(CMS_ABORT_PRECLEAN);
+                        StringBuilder sb = new StringBuilder(line);
+                        sb.replace(indexOfStart, indexOfStart + CMS_ABORT_PRECLEAN.length(), "");
+                        line = sb.toString();
+                    }
                 	Matcher mixedLineMatcher = linesMixedPattern.matcher(line);
                     final int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassPattern.matcher(line).matches()) {
@@ -93,11 +101,6 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                         // here we want to skip "Desired survivor..." and "- age..." lines
                         beginningOfLine = line;
                         continue;
-                    }
-                    else if (line.startsWith(CMS_ABORTING_PRECLEAN)) {
-                    	// line looks like " CMS: abort preclean due to time 12467.886: [CMS-concurrent-abortable-preclean: 5.300/5.338 secs] [Times: user=10.70 sys=0.13, real=5.34 secs]"
-                    	// -> filter all before timestamp
-                    	line = line.substring(CMS_ABORTING_PRECLEAN.length() + 1);
                     }
                     else if (mixedLineMatcher.matches()) {
                     	beginningOfLine = mixedLineMatcher.group(1);

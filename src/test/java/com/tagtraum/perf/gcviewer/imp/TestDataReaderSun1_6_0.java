@@ -66,6 +66,20 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 		assertEquals("gc pause", 41.0904457, model.getFullGCPause().getMax(), 0.000001);
 	}
 
+    public void testCMSConcurrentModeFailureCmsAbortPreclean() throws Exception {
+        final ByteArrayInputStream in = new ByteArrayInputStream(
+                ("39323.400: [GC 39323.400: [ParNew (promotion failed): 471871K->457831K(471872K), 10.5045897 secs]39333.905: [CMS CMS: abort preclean due to time 39334.591: [CMS-concurrent-abortable-preclean: 4.924/15.546 secs] [Times: user=24.45 sys=9.40, real=15.55 secs]" +
+                "\n (concurrent mode failure): 1301661K->1299268K(1572864K), 43.3433234 secs] 1757009K->1299268K(2044736K), [CMS Perm : 64534K->63216K(110680K)], 53.8487115 secs] [Times: user=54.83 sys=9.22, real=53.85 secs]")
+                        .getBytes());
+                 
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+
+        assertEquals("gc pause", 53.8487115, model.getFullGCPause().getMax(), 0.000001);
+    }
+
 	public void testCMSFullGcCmsInterrupted() throws Exception {
 		// TODO CMS (concurrent mode interrupted) not recognised (ignored)
 		ByteArrayInputStream in = new ByteArrayInputStream(
