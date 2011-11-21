@@ -279,8 +279,22 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         usedHeapRenderer.setVisible(showUsedMemoryLine);
     }
 
-    public void setModel(GCModel model) {
+    public void setModel(GCModel model, GCPreferences preferences) {
         this.model = model;
+        
+        applyPreferences(preferences);
+    }
+    
+    private void applyPreferences(GCPreferences preferences) {
+        setAntiAlias(preferences.getGcLineProperty(GCPreferences.ANTI_ALIAS));
+        setShowTenured(preferences.getGcLineProperty(GCPreferences.TENURED_MEMORY));
+        setShowYoung(preferences.getGcLineProperty(GCPreferences.YOUNG_MEMORY));
+        setShowGCTimesLine(preferences.getGcLineProperty(GCPreferences.GC_LINES_LINE));
+        setShowGCTimesRectangles(preferences.getGcLineProperty(GCPreferences.GC_TIMES_RECTANGLES));
+        setShowFullGCLines(preferences.getGcLineProperty(GCPreferences.FULL_GC_LINES));
+        setShowIncGCLines(preferences.getGcLineProperty(GCPreferences.INC_GC_LINES));
+        setShowTotalMemoryLine(preferences.getGcLineProperty(GCPreferences.TOTAL_MEMORY));
+        setShowUsedMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_MEMORY));
     }
 
     public GCModel getModel() {

@@ -47,6 +47,8 @@ public class ChartPanelView {
     private static final ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
     private static final DataReaderFactory factory = new DataReaderFactory();
 
+    private GCPreferences preferences;
+    
     private ModelChartImpl modelChart;
     private ModelPanel modelPanel;
     private GCModel model;
@@ -62,6 +64,7 @@ public class ChartPanelView {
 
     public ChartPanelView(GCDocument gcDocument, URL url) throws IOException {
         this.gcDocument = gcDocument;
+        this.preferences = gcDocument.getPreferences();
         this.modelChart = new ModelChartImpl();
         this.modelPanel = new ModelPanel();
         this.viewBar = new ViewBar(this);
@@ -172,7 +175,7 @@ public class ChartPanelView {
     public void setModel(GCModel model) {
         this.model = model;
         this.modelPanel.setModel(model);
-        this.modelChart.setModel(model);
+        this.modelChart.setModel(model, preferences);
         this.viewBar.setTitle(model.getURL().toString());
     }
 

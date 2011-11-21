@@ -39,17 +39,19 @@ import javax.swing.event.ChangeListener;
 public class GCDocument extends JInternalFrame {
 
     private List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
-    private ModelChart modelChart;
+    private ModelChart modelChartListFacade;
     private boolean showModelPanel = true;
     private boolean watched;
     private RefreshWatchDog refreshWatchDog;
+    private GCPreferences preferences;
 
 
     public GCDocument(final GCViewer gcViewer, String s) {
         super(s, true, true, true, false);
         this.refreshWatchDog = new RefreshWatchDog();
         refreshWatchDog.setGcDocument(this);
-        modelChart = new MultiModelChartFacade();
+        preferences = gcViewer.getPreferences();
+        modelChartListFacade = new MultiModelChartFacade();
         GridBagLayout layout = new GridBagLayout();
         getContentPane().setLayout(layout);
         // TODO refactor; looks very similar to DesktopPane implementation
@@ -118,8 +120,8 @@ public class GCDocument extends JInternalFrame {
      */
     public boolean reloadModels(boolean background) throws IOException {
         boolean reloaded = false;
-        for (int i = 0; i < chartPanelViews.size(); i++) {
-            reloaded |= ((ChartPanelView) chartPanelViews.get(i)).reloadModel();
+        for (ChartPanelView chartPanelView : chartPanelViews) {
+            reloaded |= chartPanelView.reloadModel();
         }
         if (!background) {
             relayout();
@@ -128,9 +130,13 @@ public class GCDocument extends JInternalFrame {
     }
 
     public ModelChart getModelChart() {
-        return modelChart;
+        return modelChartListFacade;
     }
 
+    public GCPreferences getPreferences() {
+        return preferences;
+    }
+    
     public void add(final URL url) throws IOException {
         ChartPanelView chartPanelView = new ChartPanelView(this, url);
         chartPanelViews.add(chartPanelView);
@@ -141,13 +147,13 @@ public class GCDocument extends JInternalFrame {
         });
         // make sure all models in one document have the same display properties
         if (chartPanelViews.size() > 1) {
-            modelChart.setScaleFactor(modelChart.getScaleFactor());
-            modelChart.setShowFullGCLines(modelChart.isShowFullGCLines());
-            modelChart.setShowGCTimesLine(modelChart.isShowGCTimesLine());
-            modelChart.setShowGCTimesRectangles(modelChart.isShowGCTimesRectangles());
-            modelChart.setShowIncGCLines(modelChart.isShowIncGCLines());
-            modelChart.setShowTotalMemoryLine(modelChart.isShowTotalMemoryLine());
-            modelChart.setShowUsedMemoryLine(modelChart.isShowUsedMemoryLine());
+            modelChartListFacade.setScaleFactor(modelChartListFacade.getScaleFactor());
+            modelChartListFacade.setShowFullGCLines(modelChartListFacade.isShowFullGCLines());
+            modelChartListFacade.setShowGCTimesLine(modelChartListFacade.isShowGCTimesLine());
+            modelChartListFacade.setShowGCTimesRectangles(modelChartListFacade.isShowGCTimesRectangles());
+            modelChartListFacade.setShowIncGCLines(modelChartListFacade.isShowIncGCLines());
+            modelChartListFacade.setShowTotalMemoryLine(modelChartListFacade.isShowTotalMemoryLine());
+            modelChartListFacade.setShowUsedMemoryLine(modelChartListFacade.isShowUsedMemoryLine());
         }
         relayout();
     }
@@ -305,7 +311,7 @@ public class GCDocument extends JInternalFrame {
     }
 
     private static class MasterViewPortChangeListener implements ChangeListener {
-        private java.util.List slaveViewPorts = new ArrayList();
+        private List<JViewport> slaveViewPorts = new ArrayList<JViewport>();
 
         public void addSlaveViewport(JViewport viewPort) {
             slaveViewPorts.add(viewPort);
@@ -314,8 +320,7 @@ public class GCDocument extends JInternalFrame {
         public void stateChanged(ChangeEvent e) {
             JViewport master = (JViewport) e.getSource();
             final int x = master.getViewPosition().x;
-            for (int i = 0; i < slaveViewPorts.size(); i++) {
-                JViewport slave = (JViewport) slaveViewPorts.get(i);
+            for (JViewport slave : slaveViewPorts) {
                 slave.setViewPosition(new Point(x, slave.getViewPosition().y));
             }
         }
@@ -368,140 +373,140 @@ public class GCDocument extends JInternalFrame {
 
         public boolean isAntiAlias() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isAntiAlias();
+            return chartPanelViews.get(0).getModelChart().isAntiAlias();
         }
 
         public void setAntiAlias(boolean antiAlias) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setAntiAlias(antiAlias);
+                chartPanelViews.get(i).getModelChart().setAntiAlias(antiAlias);
             }
         }
 
         public long getFootprint() {
             if (chartPanelViews.isEmpty()) return 0;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().getFootprint();
+            return chartPanelViews.get(0).getModelChart().getFootprint();
         }
 
         public double getMaxPause() {
             if (chartPanelViews.isEmpty()) return 0;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().getMaxPause();
+            return chartPanelViews.get(0).getModelChart().getMaxPause();
         }
 
         public void setRunningTime(double runningTime) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setRunningTime(runningTime);
+                chartPanelViews.get(i).getModelChart().setRunningTime(runningTime);
             }
         }
 
         public void setFootprint(long footPrint) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setFootprint(footPrint);
+                chartPanelViews.get(i).getModelChart().setFootprint(footPrint);
             }
         }
 
         public void setMaxPause(double maxPause) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setMaxPause(maxPause);
+                chartPanelViews.get(i).getModelChart().setMaxPause(maxPause);
             }
         }
 
         public void setScaleFactor(double scaleFactor) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setScaleFactor(scaleFactor);
+                chartPanelViews.get(i).getModelChart().setScaleFactor(scaleFactor);
             }
         }
 
         public double getScaleFactor() {
             if (chartPanelViews.isEmpty()) return 1;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().getScaleFactor();
+            return chartPanelViews.get(0).getModelChart().getScaleFactor();
         }
 
         public boolean isShowGCTimesLine() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowGCTimesLine();
+            return chartPanelViews.get(0).getModelChart().isShowGCTimesLine();
         }
 
         public void setShowGCTimesLine(boolean showGCTimesLine) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowGCTimesLine(showGCTimesLine);
+                chartPanelViews.get(i).getModelChart().setShowGCTimesLine(showGCTimesLine);
             }
         }
 
         public boolean isShowGCTimesRectangles() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowGCTimesRectangles();
+            return chartPanelViews.get(0).getModelChart().isShowGCTimesRectangles();
         }
 
         public void setShowGCTimesRectangles(boolean showGCTimesRectangles) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowGCTimesRectangles(showGCTimesRectangles);
+                chartPanelViews.get(i).getModelChart().setShowGCTimesRectangles(showGCTimesRectangles);
             }
         }
 
         public boolean isShowFullGCLines() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowFullGCLines();
+            return chartPanelViews.get(0).getModelChart().isShowFullGCLines();
         }
 
         public void setShowFullGCLines(boolean showFullGCLines) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowFullGCLines(showFullGCLines);
+                chartPanelViews.get(i).getModelChart().setShowFullGCLines(showFullGCLines);
             }
         }
 
         public boolean isShowIncGCLines() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowIncGCLines();
+            return chartPanelViews.get(0).getModelChart().isShowIncGCLines();
         }
 
         public void setShowIncGCLines(boolean showIncGCLines) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowIncGCLines(showIncGCLines);
+                chartPanelViews.get(i).getModelChart().setShowIncGCLines(showIncGCLines);
             }
         }
 
         public boolean isShowTotalMemoryLine() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowTotalMemoryLine();
+            return chartPanelViews.get(0).getModelChart().isShowTotalMemoryLine();
         }
 
         public void setShowTotalMemoryLine(boolean showTotalMemoryLine) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowTotalMemoryLine(showTotalMemoryLine);
+                chartPanelViews.get(i).getModelChart().setShowTotalMemoryLine(showTotalMemoryLine);
             }
         }
 
         public boolean isShowUsedMemoryLine() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowUsedMemoryLine();
+            return chartPanelViews.get(0).getModelChart().isShowUsedMemoryLine();
         }
 
         public void setShowUsedMemoryLine(boolean showUsedMemoryLine) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowUsedMemoryLine(showUsedMemoryLine);
+                chartPanelViews.get(i).getModelChart().setShowUsedMemoryLine(showUsedMemoryLine);
             }
         }
 
         public void setShowTenured(boolean showTenured) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowTenured(showTenured);
+                chartPanelViews.get(i).getModelChart().setShowTenured(showTenured);
             }
         }
 
         public boolean isShowTenured() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowTenured();
+            return chartPanelViews.get(0).getModelChart().isShowTenured();
         }
 
         public void setShowYoung(boolean showYoung) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                ((ChartPanelView) chartPanelViews.get(i)).getModelChart().setShowYoung(showYoung);
+                chartPanelViews.get(i).getModelChart().setShowYoung(showYoung);
             }
         }
 
         public boolean isShowYoung() {
             if (chartPanelViews.isEmpty()) return false;
-            return ((ChartPanelView) chartPanelViews.get(0)).getModelChart().isShowYoung();
+            return chartPanelViews.get(0).getModelChart().isShowYoung();
         }
 
     }
