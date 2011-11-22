@@ -63,7 +63,7 @@ public class ModelPanel extends JTabbedPane {
         throughputFormatter.setMaximumFractionDigits(2);
 
         footprintFormatter = new MemoryFormat();
-        //footprintFormatter.setMaximumFractionDigits(0);
+        footprintFormatter.setMaximumFractionDigits(1);
 
         sigmaFormatter = NumberFormat.getInstance();
         sigmaFormatter.setMaximumFractionDigits(0);
@@ -211,10 +211,10 @@ public class ModelPanel extends JTabbedPane {
         public MemoryTab() {
             super();
             
-            addEntry(localStrings.getString("data_panel_memory_min_max_heap"));
-            addEntry(localStrings.getString("data_panel_memory_min_max_tenured_heap"));
-            addEntry(localStrings.getString("data_panel_memory_min_max_young_heap"));
-            addEntry(localStrings.getString("data_panel_memory_min_max_perm_heap"));
+            addEntry(localStrings.getString("data_panel_memory_heap_usage"));
+            addEntry(localStrings.getString("data_panel_memory_tenured_heap_usage"));
+            addEntry(localStrings.getString("data_panel_memory_young_heap_usage"));
+            addEntry(localStrings.getString("data_panel_memory_perm_heap_usage"));
             addEntry(localStrings.getString("data_panel_footprintafterfullgc"));
             addEntry(localStrings.getString("data_panel_footprintaftergc"));
             
@@ -244,17 +244,25 @@ public class ModelPanel extends JTabbedPane {
             final boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
             final boolean promotionAvailable = model.getPromotion().getN() > 0;
 
-            updateValue(localStrings.getString("data_panel_memory_min_max_heap"),
-                    footprintFormatter.format(model.getHeapAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getHeapAllocatedSizes().getMax()),
+            updateValue(localStrings.getString("data_panel_memory_heap_usage"),
+                    footprintFormatter.format(model.getHeapUsedSizes().getMax()) 
+                        + " (" + percentFormatter.format(model.getHeapUsedSizes().getMax() / (double)model.getHeapAllocatedSizes().getMax() * 100) + "%)"
+                        + " / " + footprintFormatter.format(model.getHeapAllocatedSizes().getMax()),
                     true);
-            updateValue(localStrings.getString("data_panel_memory_min_max_tenured_heap"),
-                    model.getTenuredAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getTenuredAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getTenuredAllocatedSizes().getMax()) : "n/a",
+            updateValue(localStrings.getString("data_panel_memory_tenured_heap_usage"),
+                    model.getTenuredAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getTenuredUsedSizes().getMax()) 
+                        + " (" + percentFormatter.format(model.getTenuredUsedSizes().getMax() / (double)model.getTenuredAllocatedSizes().getMax() * 100) + "%)"
+                        + " / " + footprintFormatter.format(model.getTenuredAllocatedSizes().getMax()) : "n/a",
                     model.getTenuredAllocatedSizes().getN() > 0);
-            updateValue(localStrings.getString("data_panel_memory_min_max_young_heap"),
-                    model.getYoungAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getYoungAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getYoungAllocatedSizes().getMax()) : "n/a",
+            updateValue(localStrings.getString("data_panel_memory_young_heap_usage"),
+                    model.getYoungUsedSizes().getN() > 0 ? footprintFormatter.format(model.getYoungUsedSizes().getMax()) 
+                        + " (" + percentFormatter.format(model.getYoungUsedSizes().getMax() / (double)model.getYoungAllocatedSizes().getMax() * 100) + "%)"
+                        + " / " + footprintFormatter.format(model.getYoungAllocatedSizes().getMax()) : "n/a",
                     model.getYoungAllocatedSizes().getN() > 0);
-            updateValue(localStrings.getString("data_panel_memory_min_max_perm_heap"),
-                    model.getPermAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getPermAllocatedSizes().getMin()) + " / " + footprintFormatter.format(model.getPermAllocatedSizes().getMax()) : "n/a",
+            updateValue(localStrings.getString("data_panel_memory_perm_heap_usage"),
+                    model.getPermUsedSizes().getN() > 0 ? footprintFormatter.format(model.getPermUsedSizes().getMax()) 
+                            + " (" + percentFormatter.format(model.getPermUsedSizes().getMax() / (double)model.getPermAllocatedSizes().getMax() * 100) + "%)"
+                            + " / " + footprintFormatter.format(model.getPermAllocatedSizes().getMax()) : "n/a",
                     model.getPermAllocatedSizes().getN() > 0);
             updateValue(localStrings.getString("data_panel_footprintafterfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
@@ -302,7 +310,9 @@ public class ModelPanel extends JTabbedPane {
         			gcSlopeDataAvailable);
         	
             updateValue(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"),
-        	        initiatingOccFractionAvailable ? percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%" : "n/a",
+        	        initiatingOccFractionAvailable ? 
+        	                percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%"
+        	                + " / " + percentFormatter.format(model.getCmsInitiatingOccupancyFraction().getMax()*100) + "%": "n/a",
         	        initiatingOccFractionAvailable);
 
             updateValue(localStrings.getString("data_panel_memory_promotion_avg"),

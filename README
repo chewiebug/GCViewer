@@ -90,14 +90,15 @@ Summary
 Memory
 ------
 
-- Total heap (min / max):
-     o Minimal / Maximal amount of memory allocated (max is same as "footprint" in Summary)
-- Tenured heap (min / max):
-     o Minimal / Maximal amount of memory allocated in tenured space
-- Young heap (min / max):
-     o Minimal / Maximal amount of memory allocated in young space
-- Perm heap (min / max):
-     o Minimal / Maximal amount of memory allocated in permanent space
+- Total heap (usage / alloc max):
+     o Max memory usage / allocation in total heap (the last is the 
+       same as "footprint" in Summary)
+- Tenured heap (usage / alloc max):
+     o Max memory usage / allocation in tenured space
+- Young heap (usage / alloc max):
+     o Max memory usage / allocation in young space
+- Perm heap (usage / alloc max):
+     o Max memory usage / allocation in perm space
 - Avg after full GC:
      o The average heap memory consumption after a full collection
 - Avg after GC:
@@ -144,11 +145,12 @@ Memory
        full collection. Then it will compute a weighted average (each
        slope wil be weighted with the number of measuring points it was
        computed with).
-- initiationgOccupancyFraction
+- initiatingOccFraction (avg / max)
      o CMS GC kicks in before tenured generation is filled.
-       InitiatingOccupancyFraction tells you the avg value in % of the
+       InitiatingOccupancyFraction tells you the avg / max usage in % of the
        tenured generation, when CMS GC started (initial mark).
-       This value can be set manually using -XX:CMSInitiatingOccupancyFraction. 
+       This value can be set manually using 
+       -XX:CMSInitiatingOccupancyFraction=<value>. 
 - avg promotion
      o Promotion means the size of objects that are promoted from young
        to tenured generation during a young generation collection.
