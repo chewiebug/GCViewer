@@ -35,7 +35,6 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
     private static final String SURVIVOR_AGE = "- age";
     private static final String TIMES_ALONE = " [Times";
     private static final Set<String> EXCLUDE_STRINGS = new HashSet<String>();
-    
 
     static {
         EXCLUDE_STRINGS.add(UNLOADING_CLASS);
@@ -173,7 +172,9 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                 event.setTimestamp(timestamp);
                 event.setType(type);
                 // now add detail gcevents, should they exist
-                while (hasNextDetail(line, pos)) {
+                int currentIndex = pos.getIndex();
+                boolean currentIndexHasChanged = true;
+                while (hasNextDetail(line, pos) && currentIndexHasChanged) {
                     final GCEvent detailEvent = new GCEvent();
                     try {
                         if (nextCharIsBracket(line, pos)) {
@@ -190,6 +191,9 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                         skipUntilEndOfDetail(line, pos, e);
                     }
                     
+                    // in a line with complete garbage the parser must not get stuck; use emergency exit...
+                    currentIndexHasChanged = currentIndex != pos.getIndex();
+                    currentIndex = pos.getIndex();
                 }
                 setMemoryAndPauses(event, line, pos);
                 if (event.getPause() == 0) {
@@ -216,9 +220,12 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
 
     private void skipUntilEndOfDetail(final String line, final ParsePosition pos, Exception e) {
         // moving position to the end of this detail event -> skip it
-        pos.setIndex(line.indexOf("]", pos.getIndex())+1);
-        while (line.charAt(pos.getIndex()) == ' ') {
-            pos.setIndex(pos.getIndex()+1);
+        int indexOfNextBracket = line.indexOf("]", pos.getIndex())+1;
+        if (indexOfNextBracket > pos.getIndex()) { 
+            pos.setIndex(indexOfNextBracket);
+            while (line.charAt(pos.getIndex()) == ' ') {
+                pos.setIndex(pos.getIndex()+1);
+            }
         }
         if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
     }

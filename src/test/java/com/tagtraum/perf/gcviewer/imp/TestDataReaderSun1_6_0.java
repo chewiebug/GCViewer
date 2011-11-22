@@ -354,5 +354,16 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         assertEquals("promotion total", 220979, model.getPromotion().getSum());
     }
     
+    public void testPrintCmsStatistics() throws Exception {
+        // will not be able to extract sense from this line, but must not loop
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("0.521: [GC[YG occupancy: 2234 K (14784 K)]0.522: [Rescan (parallel)  (Survivor:0chunks) Finished young gen rescan work in 1th thread: 0.000 sec")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 0, model.size());
+    }
+    
      
 }
