@@ -30,10 +30,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
-
 
 /**
  *
@@ -42,18 +42,19 @@ import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
  * Time: 2:14:36 PM</p>
  *
  */
-public class ChartPanelView {
+public class ChartPanelView extends JPanel {
 
+    public static final String EVENT_MINIMIZED = "minimized";
+    
+    private static final long serialVersionUID = -4259423581681643286L;
     private static final ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
     private static final DataReaderFactory factory = new DataReaderFactory();
 
     private GCPreferences preferences;
-    
     private ModelChartImpl modelChart;
     private ModelPanel modelPanel;
     private GCModel model;
     private ViewBar viewBar;
-    private boolean viewBarVisible;
     private boolean minimized;
     private SwingPropertyChangeSupport propertyChangeSupport;
     private GCDocument gcDocument;
@@ -70,12 +71,59 @@ public class ChartPanelView {
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
         this.textAreaLogHandler = new TextAreaLogHandler();
+        
+        addComponents();
+        
         final GCModel model = loadModel(url);
         setModel(model);
         // TODO delete
         model.printDetailedInformation();
     }
 
+    private void addComponents() {
+        GridBagLayout layout = new GridBagLayout();
+        setLayout(layout);
+
+        int row = 0;
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.NORTH;
+
+        // show viewbar if needed (GCDocument knows, when this is necessary
+        // -> more than one chartPanel is displayed in the same document)
+        constraints.gridy = row;
+        //if (isViewBarVisible()) {
+            viewBar.setVisible(false);
+            constraints.gridwidth = 2;
+            constraints.weightx = 2;
+            add(getViewBar(), constraints);
+            row++;
+        //}
+        
+        // show modelchart if not minimised
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridy = row;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.gridx = 0;
+        constraints.weightx = 2;
+        constraints.weighty = 2;
+        modelChart.setPreferredSize(new Dimension(800, 1024));
+        modelChart.setVisible(!isMinimized());
+        add(modelChart, constraints);
+
+        // show modelPanel if not minimised
+        constraints.gridy = row;
+        constraints.gridheight = 1;
+        constraints.gridx = 1;
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.SOUTH;
+        add(modelPanel, constraints);
+        modelPanel.setVisible(preferences.isShowDataPanel());
+    }
+    
     /**
      * @return true, if the files has been reloaded
      * @throws IOException
@@ -124,12 +172,32 @@ public class ChartPanelView {
     }
 
     public void invalidate() {
+        super.invalidate();
+        
         modelChart.invalidate();
         modelPanel.invalidate();
     }
 
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
         propertyChangeSupport.addPropertyChangeListener(propertyChangeListener);
+    }
+    
+    public void addChartScrollBarChangeListener(ChangeListener changeListener) {
+        modelChart.getViewport().addChangeListener(changeListener);
+    }
+    
+    public void removeChartScrollBarChangeListeners() {
+        for (ChangeListener listener : modelChart.getViewport().getChangeListeners()) {
+            if (listener instanceof ChartPanelView) {
+                modelChart.getViewport().removeChangeListener(listener);
+            }
+        }
+    }
+    
+    public void setScrollBarVisible(boolean scrollBarVisible) {
+        modelChart.setHorizontalScrollBarPolicy(scrollBarVisible 
+                ? JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+                        : JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
 
     public ViewBar getViewBar() {
@@ -141,11 +209,11 @@ public class ChartPanelView {
     }
 
     public boolean isViewBarVisible() {
-        return viewBarVisible;
+        return viewBar.isVisible();
     }
 
     public void setViewBarVisible(boolean viewBarVisible) {
-        this.viewBarVisible = viewBarVisible;
+        this.viewBar.setVisible(viewBarVisible);
     }
 
     public boolean isMinimized() {
@@ -156,7 +224,11 @@ public class ChartPanelView {
         boolean oldValue = this.minimized;
         if (minimized != this.minimized) {
             this.minimized = minimized;
-            propertyChangeSupport.firePropertyChange("minimized", oldValue, minimized);
+            
+            modelChart.setVisible(!minimized);
+            modelPanel.setVisible(preferences.isShowDataPanel() && !minimized);
+            
+            propertyChangeSupport.firePropertyChange(EVENT_MINIMIZED, oldValue, minimized);
         }
     }
 
@@ -175,6 +247,7 @@ public class ChartPanelView {
     public void setModel(GCModel model) {
         this.model = model;
         this.modelPanel.setModel(model);
+        this.modelPanel.setVisible(preferences.isShowDataPanel());
         this.modelChart.setModel(model, preferences);
         this.viewBar.setTitle(model.getURL().toString());
     }
@@ -184,6 +257,7 @@ public class ChartPanelView {
     }
 
     private static class ViewBar extends JPanel {
+        private static final long serialVersionUID = -5219100256784644319L;
         private JLabel title = new JLabel();
         private ViewBarButton closeButton = new ViewBarButton("images/close.png", "images/close_selected.png");
         private MinMaxButton minimizeButton = new MinMaxButton();
@@ -237,6 +311,8 @@ public class ChartPanelView {
         }
 
         private static class ViewBarButton extends JButton {
+            private static final long serialVersionUID = 587920510707520092L;
+
             public ViewBarButton(String image1, String image2) {
                 final ImageIcon imageIcon1 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(image1)));
                 final ImageIcon imageIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(image2)));
@@ -254,7 +330,9 @@ public class ChartPanelView {
             }
 
         }
+        
         private static class MinMaxButton extends JButton {
+            private static final long serialVersionUID = -6518226257396629789L;
             private final ImageIcon min1 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/minimize.png")));
             private final ImageIcon min2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/minimize_selected.png")));
             private final ImageIcon max1 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/maximize.png")));

@@ -2,7 +2,6 @@ package com.tagtraum.perf.gcviewer;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoundedRangeModel;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -51,8 +51,9 @@ public class GCDocument extends JInternalFrame {
         this.refreshWatchDog = new RefreshWatchDog();
         refreshWatchDog.setGcDocument(this);
         preferences = gcViewer.getPreferences();
+        showModelPanel = preferences.isShowDataPanel();
         modelChartListFacade = new MultiModelChartFacade();
-        GridBagLayout layout = new GridBagLayout();
+        BoxLayout layout = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
         getContentPane().setLayout(layout);
         // TODO refactor; looks very similar to DesktopPane implementation
         getContentPane().setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY, new DropTargetListener(){
@@ -142,7 +143,7 @@ public class GCDocument extends JInternalFrame {
         chartPanelViews.add(chartPanelView);
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if ("minimized".equals(event.getPropertyName())) relayout();
+                if (ChartPanelView.EVENT_MINIMIZED.equals(event.getPropertyName())) relayout();
             }
         });
         // make sure all models in one document have the same display properties
@@ -176,7 +177,7 @@ public class GCDocument extends JInternalFrame {
             setTitle(((ChartPanelView) chartPanelViews.get(0)).getModel().getURL().toString());
         else
             setTitle("");
-        int row = 0;
+        
         boolean noMaximizedChartPanelView = true;
         ChartPanelView lastMaximizedChartPanelView = getLastMaximizedChartPanelView();
         MasterViewPortChangeListener masterViewPortChangeListener = new MasterViewPortChangeListener();
@@ -184,57 +185,20 @@ public class GCDocument extends JInternalFrame {
         for (int i = 0; i < chartPanelViews.size(); i++) {
             final ChartPanelView chartPanelView = (ChartPanelView) chartPanelViews.get(i);
             final ModelChartImpl modelChart = (ModelChartImpl) chartPanelView.getModelChart();
-            final ModelPanel modelPanel = chartPanelView.getModelPanel();
-            //final JComponent parseLog = new JScrollPane(chartPanelView.getParseLog());
-            modelChart.invalidate();
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            constraints.anchor = GridBagConstraints.NORTH;
-
-            constraints.gridy = row;
-            if (chartPanelViews.size() > 1 || (chartPanelView.isMinimized() && chartPanelViews.size() == 1)) {
-                constraints.gridwidth = 2;
-                constraints.weightx = 2;
-                //constraints.weighty = 1;
-                getContentPane().add(chartPanelView.getViewBar(), constraints);
-                row++;
-            }
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.gridy = row;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1; //2
-            constraints.gridx = 0;
-            constraints.weightx = 2;
-            constraints.weighty = 2;
-            modelChart.setPreferredSize(new Dimension(800, 600));
-            modelChart.setVisible(!chartPanelView.isMinimized());
-            getContentPane().add(modelChart, constraints);
-
-            /*
-            constraints.gridheight = 1;
-            constraints.gridy = row;
-            constraints.gridx = 1;
-            constraints.weightx = 0;
-            constraints.weighty = 4;
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.anchor = GridBagConstraints.NORTH;
-            getContentPane().add(parseLog, constraints);
-            parseLog.setVisible(!chartPanelView.isMinimized());
-
-            row++;
-            */
-
-            constraints.gridy = row;
-            constraints.gridheight = 1;
-            constraints.gridx = 1;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            constraints.anchor = GridBagConstraints.SOUTH;
-            getContentPane().add(modelPanel, constraints);
-            modelPanel.setVisible(showModelPanel && (!chartPanelView.isMinimized()));
-
+            
+            //chartPanelView.invalidate();
+            getContentPane().add(chartPanelView);
+            
+            chartPanelView.setViewBarVisible(
+                    chartPanelViews.size() > 1 
+                    || (chartPanelView.isMinimized() && chartPanelViews.size() == 1));
+            
             if (!chartPanelView.isMinimized()) {
+                // if more than one chart is displayed, only the last visible has a scrollbar
+                // and all charts must scroll synchronously
+                // -> event.source for scrolling:
+                //    - user moves scrollbar
+                //    - model of last visible chart has changed and is watched 
                 noMaximizedChartPanelView = false;
                 final boolean isLastMaximizedChartPanelView = lastMaximizedChartPanelView == chartPanelView;
                 // lock viewports with each other...
@@ -257,16 +221,12 @@ public class GCDocument extends JInternalFrame {
                     horizontalScrollBar.setEnabled(!isWatched());
                 }
             }
-            row++;
         }
         if (noMaximizedChartPanelView) {
-            // add dummy panel
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.gridy = row;
-            constraints.weightx = 3;
-            constraints.weighty = 3;
-            getContentPane().add(new JPanel(), constraints);
+            // fill empty space below minimized chartPanelView
+            JPanel dummyPanel = new JPanel();
+            dummyPanel.setPreferredSize(new Dimension(100, 3000));
+            getContentPane().add(dummyPanel);
         }
         scaleModelChart();
         revalidate();
