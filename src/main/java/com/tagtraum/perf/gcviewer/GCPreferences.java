@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Stores preferences of GCViewer in a file.
@@ -27,6 +29,8 @@ public class GCPreferences {
     public static final String YOUNG_MEMORY = "youngmemory";
     public static final String ANTI_ALIAS = "antialias";
     
+    public static final String SHOW_DATA_PANEL = "showdatapanel";
+    
     private static final String GC_LINE_PREFIX = "view.";
     
     private static final String WINDOW_WIDTH = "window.width";
@@ -40,6 +44,8 @@ public class GCPreferences {
     private static final int WINDOW_HEIGHT_DEFAULT = 600;
     private static final int WINDOW_X_DEFAULT = 0;
     private static final int WINDOW_Y_DEFAULT = 0;
+    
+    private static final Logger LOGGER = Logger.getLogger(GCPreferences.class.getName());
 
     private Properties properties = new Properties();
     private boolean propertiesLoaded = false; 
@@ -61,7 +67,9 @@ public class GCPreferences {
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("could not store preferences (" + e.toString() + ")");
+            }
         }
     }
     
@@ -77,7 +85,9 @@ public class GCPreferences {
                     reader.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning("could not load preferences (" + e.toString() + ")");
+                }
             }
         }
     }
@@ -181,6 +191,14 @@ public class GCPreferences {
 
     private File getPreferencesFile() {
         return new File(System.getProperty("user.home") + "/gcviewer.properties");
+    }
+    
+    public void setShowDataPanel(boolean showDataPanel) {
+        setBooleanProperty(GC_LINE_PREFIX + SHOW_DATA_PANEL, showDataPanel);
+    }
+    
+    public boolean isShowDataPanel() {
+        return getBooleanProperty(GC_LINE_PREFIX + SHOW_DATA_PANEL);
     }
 
 }

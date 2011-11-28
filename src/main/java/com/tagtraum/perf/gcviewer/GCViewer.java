@@ -34,6 +34,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -174,7 +175,7 @@ public class GCViewer extends JFrame {
             // remove menuitem from menu and from button group
             for (int i=2; i<windowMenu.getItemCount(); i++) {
                 final JMenuItem item = windowMenu.getItem(i);
-                if (((WindowMenuItemAction)item.getAction()).getGcDocument() == e.getInternalFrame()) {
+                if (((WindowMenuItemAction)item.getAction()).getInternalFrame() == e.getInternalFrame()) {
                     windowMenu.remove(item);
                     windowCheckBoxGroup.remove(item);
                     break;
@@ -191,7 +192,7 @@ public class GCViewer extends JFrame {
         public void internalFrameActivated(final InternalFrameEvent e) {
             for (int i=2; i<windowMenu.getItemCount(); i++) {
                 final JMenuItem item = windowMenu.getItem(i);
-                if (((WindowMenuItemAction)item.getAction()).getGcDocument() == e.getInternalFrame()) {
+                if (((WindowMenuItemAction)item.getAction()).getInternalFrame() == e.getInternalFrame()) {
                     item.setSelected(true);
                     break;
                 }
@@ -418,10 +419,13 @@ public class GCViewer extends JFrame {
         viewMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_view").charAt(0));
         menuBar.add(viewMenu);
 
+        gcLineMenuItems = new HashMap<String, JCheckBoxMenuItem>();
+
         menuItemShowDataPanel = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_show_data_panel"), true);
         menuItemShowDataPanel.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_show_data_panel").charAt(0));
         menuItemShowDataPanel.setIcon(createEmptyImageIcon(20, 20));
         menuItemShowDataPanel.setToolTipText(localStrings.getString("main_frame_menuitem_hint_show_data_panel"));
+        menuItemShowDataPanel.setActionCommand(GCPreferences.SHOW_DATA_PANEL);
         menuItemShowDataPanel.addActionListener(new ActionListener(){
             public void actionPerformed(final ActionEvent e) {
                 final GCDocument gcDocument = getSelectedGCDocument();
@@ -432,8 +436,7 @@ public class GCViewer extends JFrame {
         });
         viewMenu.add(menuItemShowDataPanel);
         viewMenu.addSeparator();
-
-        gcLineMenuItems = new HashMap<String, JCheckBoxMenuItem>();
+        gcLineMenuItems.put(GCPreferences.SHOW_DATA_PANEL, menuItemShowDataPanel);
 
         menuItemAntiAlias = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_antialias"), true);
         menuItemAntiAlias.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_antialias").charAt(0));
@@ -672,28 +675,28 @@ public class GCViewer extends JFrame {
     }
 
     private static class WindowMenuItemAction extends AbstractAction implements PropertyChangeListener {
-        private GCDocument gcDocument;
+        private JInternalFrame internalFrame;
 
         public WindowMenuItemAction(final InternalFrameEvent e) {
-            this.gcDocument = (GCDocument)e.getInternalFrame();
-            putValue(Action.NAME, gcDocument.getTitle());
-            this.gcDocument.addPropertyChangeListener("title", this);
+            this.internalFrame = e.getInternalFrame();
+            putValue(Action.NAME, internalFrame.getTitle());
+            this.internalFrame.addPropertyChangeListener("title", this);
         }
 
         public void actionPerformed(final ActionEvent ae) {
             try {
-                gcDocument.setSelected(true);
+                internalFrame.setSelected(true);
             } catch (PropertyVetoException e1) {
                 e1.printStackTrace();
             }
         }
 
-        public GCDocument getGcDocument() {
-            return gcDocument;
+        public JInternalFrame getInternalFrame() {
+            return internalFrame;
         }
 
         public void propertyChange(final PropertyChangeEvent evt) {
-            putValue(Action.NAME, gcDocument.getTitle());
+            putValue(Action.NAME, internalFrame.getTitle());
         }
     }
 
