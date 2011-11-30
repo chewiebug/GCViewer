@@ -52,6 +52,12 @@ public class OpenFile extends AbstractAction {
         final boolean aDocumentIsAlreadyOpen = gcViewer.getSelectedGCDocument() != null;
         addURLCheckBox.setVisible(aDocumentIsAlreadyOpen);
         addURLCheckBox.setEnabled(aDocumentIsAlreadyOpen);
+        if (!aDocumentIsAlreadyOpen) {
+            // checkbox must never be selected, when no document is opened
+            // can happen if last file was added and whole document is closed afterwards
+            // -> state of checkbox still "selected" but not visible any more
+            addURLCheckBox.setSelected(false);
+        }
         final int val = openDialog.showOpenDialog(gcViewer);
         if (val == JFileChooser.APPROVE_OPTION) {
             lastSelectedFiles = openDialog.getSelectedFiles();
