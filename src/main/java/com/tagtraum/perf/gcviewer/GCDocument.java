@@ -45,7 +45,6 @@ public class GCDocument extends JInternalFrame {
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
 
-
     public GCDocument(final GCViewer gcViewer, String s) {
         super(s, true, true, true, false);
         this.refreshWatchDog = new RefreshWatchDog();
@@ -143,7 +142,9 @@ public class GCDocument extends JInternalFrame {
         chartPanelViews.add(chartPanelView);
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if (ChartPanelView.EVENT_MINIMIZED.equals(event.getPropertyName())) relayout();
+                if (ChartPanelView.EVENT_MINIMIZED.equals(event.getPropertyName())) {
+                    relayout();
+                }
             }
         });
         // make sure all models in one document have the same display properties
@@ -186,7 +187,6 @@ public class GCDocument extends JInternalFrame {
             final ChartPanelView chartPanelView = (ChartPanelView) chartPanelViews.get(i);
             final ModelChartImpl modelChart = (ModelChartImpl) chartPanelView.getModelChart();
             final ModelPanel modelPanel = chartPanelView.getModelPanel();
-            //final JComponent parseLog = new JScrollPane(chartPanelView.getParseLog());
             modelChart.invalidate();
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -210,20 +210,6 @@ public class GCDocument extends JInternalFrame {
             modelChart.setPreferredSize(new Dimension(800, 600));
             modelChart.setVisible(!chartPanelView.isMinimized());
             getContentPane().add(modelChart, constraints);
-
-            /*
-            constraints.gridheight = 1;
-            constraints.gridy = row;
-            constraints.gridx = 1;
-            constraints.weightx = 0;
-            constraints.weighty = 4;
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.anchor = GridBagConstraints.NORTH;
-            getContentPane().add(parseLog, constraints);
-            parseLog.setVisible(!chartPanelView.isMinimized());
-
-            row++;
-            */
 
             constraints.gridy = row;
             constraints.gridheight = 1;

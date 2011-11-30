@@ -91,7 +91,6 @@ public class GCViewer extends JFrame {
     private About aboutAction = new About(this);
     private OpenFile openFileAction = new OpenFile(this);
     private OpenURL openURLAction = new OpenURL(this);
-    //private AddFile addFileAction = new AddFile(this);
     private Refresh refreshAction = new Refresh(this);
     private Export exportAction = new Export(this);
     private Zoom zoomAction = new Zoom(this);
@@ -204,7 +203,6 @@ public class GCViewer extends JFrame {
             menuItemWatch.setSelected(getSelectedGCDocument().isWatched());
             getSelectedGCDocument().getRefreshWatchDog().setAction(watchAction);
             watchToggle.setSelected(getSelectedGCDocument().isWatched());
-            //addFileAction.setEnabled(true);
             zoomAction.setEnabled(true);
             arrangeAction.setEnabled(true);
             menuItemFullGCLines.setState(getSelectedGCDocument().getModelChart().isShowFullGCLines());
@@ -223,7 +221,6 @@ public class GCViewer extends JFrame {
             exportAction.setEnabled(false);
             refreshAction.setEnabled(false);
             watchAction.setEnabled(false);
-            //addFileAction.setEnabled(false);
             zoomAction.setEnabled(false);
             watchToggle.setSelected(false);
             menuItemWatch.setSelected(false);
@@ -251,9 +248,6 @@ public class GCViewer extends JFrame {
         // delegate to open(...)
         try {
             final URL[] urls = convertFilesToURLs(files);
-            if (files.length >= 1) {
-                //addFileAction.setSelectedFile(files[0]);
-            }
             open(urls);
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -330,7 +324,6 @@ public class GCViewer extends JFrame {
         toolBar.setFloatable(false);
         toolBar.add(openFileAction);
         toolBar.add(openURLAction);
-        //toolBar.add(addFileAction);
         toolBar.add(exportAction);
         toolBar.add(refreshAction);
         watchToggle = new JToggleButton();
@@ -396,11 +389,6 @@ public class GCViewer extends JFrame {
 
         recentURLsMenu.setIcon(createEmptyImageIcon(20, 20));
         fileMenu.add(recentURLsMenu);
-
-        /*
-        menuItem = new JMenuItem(addFileAction);
-        fileMenu.add(menuItem);
-        */
 
         exportMenuItem = new JMenuItem(exportAction);
         fileMenu.add(exportMenuItem);
