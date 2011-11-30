@@ -270,7 +270,7 @@ public class GCDocument extends JInternalFrame {
             getContentPane().add(new JPanel(), constraints);
         }
         scaleModelChart();
-        revalidate();
+        invalidate();
     }
 
     private void lockChartsToOneScrollbar(final JViewport viewport, final boolean lastMaximizedChartPanelView, final ModelChartImpl modelChart, MasterViewPortChangeListener masterViewPortChangeListener) {
