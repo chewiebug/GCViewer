@@ -51,6 +51,7 @@ public class GCDocument extends JInternalFrame {
         this.refreshWatchDog = new RefreshWatchDog();
         refreshWatchDog.setGcDocument(this);
         preferences = gcViewer.getPreferences();
+        showModelPanel = preferences.isShowDataPanel();
         modelChartListFacade = new MultiModelChartFacade();
         GridBagLayout layout = new GridBagLayout();
         getContentPane().setLayout(layout);
