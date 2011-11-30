@@ -1,6 +1,5 @@
-package com.tagtraum.perf.gcviewer.util;
+package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.RecentURLsModel;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;

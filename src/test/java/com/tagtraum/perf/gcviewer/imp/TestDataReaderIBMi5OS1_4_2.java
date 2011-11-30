@@ -5,7 +5,6 @@ import junit.framework.TestSuite;
 
 import java.io.InputStream;
 
-import com.tagtraum.perf.gcviewer.DataReader;
 
 /**
  *

@@ -6,10 +6,10 @@ import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.util.Iterator;
 
-import com.tagtraum.perf.gcviewer.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.ChartRenderer;
-import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 
 /**
  * ConcurrentGcLineRenderer draws lines for every concurrent GC event, which seems to be a bit much.

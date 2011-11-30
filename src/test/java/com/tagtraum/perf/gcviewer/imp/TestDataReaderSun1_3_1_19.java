@@ -4,8 +4,7 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import com.tagtraum.perf.gcviewer.DataReader;
-import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  *

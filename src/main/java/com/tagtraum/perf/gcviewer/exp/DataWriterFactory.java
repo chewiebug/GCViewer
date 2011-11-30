@@ -1,7 +1,5 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.exp;
 
-import com.tagtraum.perf.gcviewer.exp.CSVDataWriter;
-import com.tagtraum.perf.gcviewer.exp.PlainDataWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;

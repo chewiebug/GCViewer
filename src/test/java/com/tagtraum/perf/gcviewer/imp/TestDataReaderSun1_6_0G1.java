@@ -6,8 +6,7 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import com.tagtraum.perf.gcviewer.DataReader;
-import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 public class TestDataReaderSun1_6_0G1 extends TestCase {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");

@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.model;
 
 /**
  * G1GcEvent may contain lots of detail information which provide information about the

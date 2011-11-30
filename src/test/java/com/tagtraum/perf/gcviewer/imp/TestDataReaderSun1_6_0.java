@@ -6,9 +6,8 @@ import java.text.SimpleDateFormat;
 
 import junit.framework.TestCase;
 
-import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
-import com.tagtraum.perf.gcviewer.DataReader;
-import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 public class TestDataReaderSun1_6_0 extends TestCase {
 

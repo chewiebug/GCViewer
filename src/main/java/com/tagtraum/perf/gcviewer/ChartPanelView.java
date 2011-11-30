@@ -32,7 +32,10 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.SwingPropertyChangeSupport;
 
+import com.tagtraum.perf.gcviewer.imp.DataReader;
+import com.tagtraum.perf.gcviewer.imp.DataReaderFactory;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 
 /**

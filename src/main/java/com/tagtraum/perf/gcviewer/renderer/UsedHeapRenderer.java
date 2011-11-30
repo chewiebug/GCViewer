@@ -1,6 +1,8 @@
 package com.tagtraum.perf.gcviewer.renderer;
 
 import com.tagtraum.perf.gcviewer.*;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 import java.awt.*;
 import java.util.Iterator;

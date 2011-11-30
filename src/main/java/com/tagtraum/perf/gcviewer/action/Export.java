@@ -1,6 +1,9 @@
 package com.tagtraum.perf.gcviewer.action;
 
 import com.tagtraum.perf.gcviewer.*;
+import com.tagtraum.perf.gcviewer.exp.DataWriter;
+import com.tagtraum.perf.gcviewer.exp.DataWriterFactory;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 import javax.swing.*;
 import java.awt.*;

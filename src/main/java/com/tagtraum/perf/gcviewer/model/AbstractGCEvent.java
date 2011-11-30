@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

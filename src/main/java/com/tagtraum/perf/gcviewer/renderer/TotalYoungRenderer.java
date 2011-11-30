@@ -6,9 +6,9 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.util.Iterator;
 
-import com.tagtraum.perf.gcviewer.AbstractGCEvent.Generation;
-import com.tagtraum.perf.gcviewer.GCEvent;
-import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.ModelChart;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
 

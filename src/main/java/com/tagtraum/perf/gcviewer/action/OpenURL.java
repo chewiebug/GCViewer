@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.action;
 
+import com.tagtraum.perf.gcviewer.AutoCompletionComboBox;
 import com.tagtraum.perf.gcviewer.GCViewer;
 import com.tagtraum.perf.gcviewer.RecentURLsModel;
-import com.tagtraum.perf.gcviewer.util.AutoCompletionComboBox;
 
 import javax.swing.*;
 import java.awt.*;

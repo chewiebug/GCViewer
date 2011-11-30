@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.imp;
 
 import com.tagtraum.perf.gcviewer.imp.*;
 

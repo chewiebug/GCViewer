@@ -1,6 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.DataReader;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 

@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer;
 
+import com.tagtraum.perf.gcviewer.imp.DataReader;
 import com.tagtraum.perf.gcviewer.imp.DataReaderSun1_5_0;
 
 import java.io.FileInputStream;

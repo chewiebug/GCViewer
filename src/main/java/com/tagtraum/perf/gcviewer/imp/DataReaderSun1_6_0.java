@@ -12,12 +12,12 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.tagtraum.perf.gcviewer.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.AbstractGCEvent.Concurrency;
-import com.tagtraum.perf.gcviewer.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.ConcurrentGCEvent;
-import com.tagtraum.perf.gcviewer.GCEvent;
-import com.tagtraum.perf.gcviewer.GCModel;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
