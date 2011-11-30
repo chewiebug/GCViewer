@@ -44,6 +44,8 @@ import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
  */
 public class ChartPanelView {
 
+    public static final String EVENT_MINIMIZED = "minimized";
+    
     private static final ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
     private static final DataReaderFactory factory = new DataReaderFactory();
 
@@ -156,7 +158,7 @@ public class ChartPanelView {
         boolean oldValue = this.minimized;
         if (minimized != this.minimized) {
             this.minimized = minimized;
-            propertyChangeSupport.firePropertyChange("minimized", oldValue, minimized);
+            propertyChangeSupport.firePropertyChange(EVENT_MINIMIZED, oldValue, minimized);
         }
     }
 

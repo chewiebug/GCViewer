@@ -142,7 +142,7 @@ public class GCDocument extends JInternalFrame {
         chartPanelViews.add(chartPanelView);
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if ("minimized".equals(event.getPropertyName())) relayout();
+                if (ChartPanelView.EVENT_MINIMIZED.equals(event.getPropertyName())) relayout();
             }
         });
         // make sure all models in one document have the same display properties
