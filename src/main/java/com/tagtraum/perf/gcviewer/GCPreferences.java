@@ -27,6 +27,8 @@ public class GCPreferences {
     public static final String USED_MEMORY = "usedmemory";
     public static final String TENURED_MEMORY = "tenuredmemory";
     public static final String YOUNG_MEMORY = "youngmemory";
+    public static final String INITIAL_MARK_LEVEL = "initialmarklevel";
+    public static final String CONCURRENT_COLLECTION_BEGIN_END = "concurrentcollectionbeginend";
     public static final String ANTI_ALIAS = "antialias";
     
     public static final String SHOW_DATA_PANEL = "showdatapanel";

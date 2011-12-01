@@ -12,19 +12,17 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 
 /**
- * ConcurrentGcLineRenderer draws lines for every concurrent GC event, which seems to be a bit much.
- * Even every collection begin and end can be so much, that the whole chart is cyan.
+ * ConcurrentGcStardEndRenderer draws lines for every begin and end of a concurrent GC event. Start
+ * is cyan, end is pink.
  * 
  * @author <a href="mailto:jwu@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 30.10.2011</p>
  */
-public class ConcurrentGcLineRenderer extends ChartRenderer {
+public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
     public static final Paint CONCURRENT_COLLECTION_BEGIN = Color.CYAN;
     public static final Paint CONCURRENT_COLLECTION_END = Color.PINK;
     
-    private boolean lastEventWasStart = false;
-
-    public ConcurrentGcLineRenderer(ModelChartImpl modelChart) {
+    public ConcurrentGcBegionEndRenderer(ModelChartImpl modelChart) {
         super(modelChart);
         setLinePaint(CONCURRENT_COLLECTION_BEGIN);
     }

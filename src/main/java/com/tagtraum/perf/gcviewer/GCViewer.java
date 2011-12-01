@@ -55,10 +55,12 @@ import com.tagtraum.perf.gcviewer.action.OpenURL;
 import com.tagtraum.perf.gcviewer.action.Refresh;
 import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
+import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
+import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
@@ -105,6 +107,8 @@ public class GCViewer extends JFrame {
     private JCheckBoxMenuItem menuItemTotalMemory;
     private JCheckBoxMenuItem menuItemTenuredMemory;
     private JCheckBoxMenuItem menuItemYoungMemory;
+    private JCheckBoxMenuItem menuItemInitialMarkLevel;
+    private JCheckBoxMenuItem menuItemConcurrentGcBeginEnd;
     private JCheckBoxMenuItem menuItemWatch;
     private JCheckBoxMenuItem menuItemAntiAlias;
     private Map<String, JCheckBoxMenuItem> gcLineMenuItems;
@@ -213,6 +217,8 @@ public class GCViewer extends JFrame {
             menuItemUsedMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedMemoryLine());
             menuItemTenuredMemory.setState(getSelectedGCDocument().getModelChart().isShowTenured());
             menuItemYoungMemory.setState(getSelectedGCDocument().getModelChart().isShowYoung());
+            menuItemInitialMarkLevel.setState(getSelectedGCDocument().getModelChart().isShowInitialMarkLevel());
+            menuItemConcurrentGcBeginEnd.setState(getSelectedGCDocument().getModelChart().isShowConcurrentCollectionBeginEnd());
             menuItemShowDataPanel.setState(getSelectedGCDocument().isShowModelPanel());
             menuItemAntiAlias.setSelected(getSelectedGCDocument().getModelChart().isAntiAlias());
         }
@@ -517,6 +523,24 @@ public class GCViewer extends JFrame {
         viewMenu.add(menuItemUsedMemory);
         gcLineMenuItems.put(GCPreferences.USED_MEMORY, menuItemUsedMemory);
 
+        menuItemInitialMarkLevel = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_initial_mark_level"), true);
+        menuItemInitialMarkLevel.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_initial_mark_level").charAt(0));
+        menuItemInitialMarkLevel.setToolTipText(localStrings.getString("main_frame_menuitem_hint_initial_mark_level"));
+        menuItemInitialMarkLevel.setIcon(createMonoColoredImageIcon(InitialMarkLevelRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemInitialMarkLevel.setActionCommand(GCPreferences.INITIAL_MARK_LEVEL);
+        menuItemInitialMarkLevel.addActionListener(viewMenuActionListener);
+        viewMenu.add(menuItemInitialMarkLevel);
+        gcLineMenuItems.put(GCPreferences.INITIAL_MARK_LEVEL, menuItemInitialMarkLevel);
+
+        menuItemConcurrentGcBeginEnd = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_concurrent_collection_begin_end"), true);
+        menuItemConcurrentGcBeginEnd.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_concurrent_collection_begin_end").charAt(0));
+        menuItemConcurrentGcBeginEnd.setToolTipText(localStrings.getString("main_frame_menuitem_hint_concurrent_collection_begin_end"));
+        menuItemConcurrentGcBeginEnd.setIcon(createMonoColoredImageIcon(ConcurrentGcBegionEndRenderer.CONCURRENT_COLLECTION_BEGIN, 20, 20));
+        menuItemConcurrentGcBeginEnd.setActionCommand(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END);
+        menuItemConcurrentGcBeginEnd.addActionListener(viewMenuActionListener);
+        viewMenu.add(menuItemConcurrentGcBeginEnd);
+        gcLineMenuItems.put(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END, menuItemConcurrentGcBeginEnd);
+
         windowMenu = new JMenu(localStrings.getString("main_frame_menu_window"));
         windowMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_window").charAt(0));
         menuBar.add(windowMenu);
@@ -554,6 +578,10 @@ public class GCViewer extends JFrame {
                 getSelectedGCDocument().getModelChart().setShowTenured(((JCheckBoxMenuItem) e.getSource()).getState());
             } else if (e.getActionCommand() == GCPreferences.YOUNG_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowYoung(((JCheckBoxMenuItem) e.getSource()).getState());
+            } else if (e.getActionCommand() == GCPreferences.INITIAL_MARK_LEVEL) {
+                getSelectedGCDocument().getModelChart().setShowInitialMarkLevel(((JCheckBoxMenuItem) e.getSource()).getState());
+            } else if (e.getActionCommand() == GCPreferences.CONCURRENT_COLLECTION_BEGIN_END) {
+                getSelectedGCDocument().getModelChart().setShowConcurrentCollectionBeginEnd(((JCheckBoxMenuItem) e.getSource()).getState());
             }
         }
     }

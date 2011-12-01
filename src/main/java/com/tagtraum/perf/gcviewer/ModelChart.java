@@ -43,6 +43,14 @@ public interface ModelChart {
     void setShowYoung(boolean showYoung);
 
     boolean isShowYoung();
+    
+    void setShowInitialMarkLevel(boolean showInitialMarkLevel);
+    
+    boolean isShowInitialMarkLevel();
+    
+    void setShowConcurrentCollectionBeginEnd(boolean showConcurrentCollectionBeginEnd);
+    
+    boolean isShowConcurrentCollectionBeginEnd();
 
     void setRunningTime(double runningTime);
 

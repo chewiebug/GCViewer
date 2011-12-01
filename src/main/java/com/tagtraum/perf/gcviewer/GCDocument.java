@@ -78,7 +78,7 @@ public class GCDocument extends JInternalFrame {
                     Transferable tr = e.getTransferable();
                     if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                         e.acceptDrop(DnDConstants.ACTION_COPY);
-                        java.util.List list = (java.util.List)tr.getTransferData(DataFlavor.javaFileListFlavor);
+                        List<Object> list = (List<Object>)tr.getTransferData(DataFlavor.javaFileListFlavor);
                         File[] files = (File[])list.toArray(new File[list.size()]);
                         gcViewer.add(files);
                         GCDocument.this.getContentPane().invalidate();
@@ -358,142 +358,193 @@ public class GCDocument extends JInternalFrame {
 
     private class MultiModelChartFacade implements ModelChart {
 
+        @Override
         public boolean isAntiAlias() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isAntiAlias();
         }
 
+        @Override
         public void setAntiAlias(boolean antiAlias) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setAntiAlias(antiAlias);
             }
         }
 
+        @Override
         public long getFootprint() {
             if (chartPanelViews.isEmpty()) return 0;
             return chartPanelViews.get(0).getModelChart().getFootprint();
         }
 
+        @Override
         public double getMaxPause() {
             if (chartPanelViews.isEmpty()) return 0;
             return chartPanelViews.get(0).getModelChart().getMaxPause();
         }
 
+        @Override
         public void setRunningTime(double runningTime) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setRunningTime(runningTime);
             }
         }
 
+        @Override
         public void setFootprint(long footPrint) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setFootprint(footPrint);
             }
         }
 
+        @Override
         public void setMaxPause(double maxPause) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setMaxPause(maxPause);
             }
         }
 
+        @Override
         public void setScaleFactor(double scaleFactor) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setScaleFactor(scaleFactor);
             }
         }
 
+        @Override
         public double getScaleFactor() {
             if (chartPanelViews.isEmpty()) return 1;
             return chartPanelViews.get(0).getModelChart().getScaleFactor();
         }
 
+        @Override
         public boolean isShowGCTimesLine() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowGCTimesLine();
         }
 
+        @Override
         public void setShowGCTimesLine(boolean showGCTimesLine) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowGCTimesLine(showGCTimesLine);
             }
         }
 
+        @Override
         public boolean isShowGCTimesRectangles() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowGCTimesRectangles();
         }
 
+        @Override
         public void setShowGCTimesRectangles(boolean showGCTimesRectangles) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowGCTimesRectangles(showGCTimesRectangles);
             }
         }
 
+        @Override
         public boolean isShowFullGCLines() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowFullGCLines();
         }
 
+        @Override
         public void setShowFullGCLines(boolean showFullGCLines) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowFullGCLines(showFullGCLines);
             }
         }
 
+        @Override
         public boolean isShowIncGCLines() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowIncGCLines();
         }
 
+        @Override
         public void setShowIncGCLines(boolean showIncGCLines) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowIncGCLines(showIncGCLines);
             }
         }
 
+        @Override
         public boolean isShowTotalMemoryLine() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowTotalMemoryLine();
         }
 
+        @Override
         public void setShowTotalMemoryLine(boolean showTotalMemoryLine) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowTotalMemoryLine(showTotalMemoryLine);
             }
         }
 
+        @Override
         public boolean isShowUsedMemoryLine() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowUsedMemoryLine();
         }
 
+        @Override
         public void setShowUsedMemoryLine(boolean showUsedMemoryLine) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowUsedMemoryLine(showUsedMemoryLine);
             }
         }
 
+        @Override
         public void setShowTenured(boolean showTenured) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowTenured(showTenured);
             }
         }
 
+        @Override
         public boolean isShowTenured() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowTenured();
         }
 
+        @Override
         public void setShowYoung(boolean showYoung) {
             for (int i = 0; i < chartPanelViews.size(); i++) {
                 chartPanelViews.get(i).getModelChart().setShowYoung(showYoung);
             }
         }
 
+        @Override
         public boolean isShowYoung() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowYoung();
+        }
+
+        @Override
+        public void setShowInitialMarkLevel(boolean showInitialMarkLevel) {
+            for (int i = 0; i < chartPanelViews.size(); i++) {
+                chartPanelViews.get(i).getModelChart().setShowInitialMarkLevel(showInitialMarkLevel);
+            }
+        }
+
+        @Override
+        public boolean isShowInitialMarkLevel() {
+            if (chartPanelViews.isEmpty()) return false;
+            return chartPanelViews.get(0).getModelChart().isShowInitialMarkLevel();
+        }
+
+        @Override
+        public void setShowConcurrentCollectionBeginEnd(boolean showConcurrentCollectionBeginEnd) {
+            for (int i = 0; i < chartPanelViews.size(); i++) {
+                chartPanelViews.get(i).getModelChart().setShowConcurrentCollectionBeginEnd(showConcurrentCollectionBeginEnd);
+            }
+        }
+
+        @Override
+        public boolean isShowConcurrentCollectionBeginEnd() {
+            if (chartPanelViews.isEmpty()) return false;
+            return chartPanelViews.get(0).getModelChart().isShowConcurrentCollectionBeginEnd();
         }
 
     }

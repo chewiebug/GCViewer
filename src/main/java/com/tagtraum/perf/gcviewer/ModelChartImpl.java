@@ -30,9 +30,11 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
+import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
 import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
@@ -67,6 +69,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     private FullGCLineRenderer fullGCLineRenderer;
     private GCTimesRenderer gcTimesRenderer;
     private UsedHeapRenderer usedHeapRenderer;
+    private InitialMarkLevelRenderer initialMarkLevelRenderer;
+    private ConcurrentGcBegionEndRenderer concurrentGcLineRenderer;
     private boolean antiAlias;
     private TimeOffsetPanel timeOffsetPanel;
 
@@ -87,6 +91,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
 
+        initialMarkLevelRenderer = new InitialMarkLevelRenderer(this);
+        chart.add(initialMarkLevelRenderer, gridBagConstraints);
         usedHeapRenderer = new UsedHeapRenderer(this);
         chart.add(usedHeapRenderer, gridBagConstraints);
         gcTimesRenderer = new GCTimesRenderer(this);
@@ -97,6 +103,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         chart.add(gcRectanglesRenderer, gridBagConstraints);
         incLineRenderer = new IncLineRenderer(this);
         chart.add(incLineRenderer, gridBagConstraints);
+        concurrentGcLineRenderer = new ConcurrentGcBegionEndRenderer(this);
+        chart.add(concurrentGcLineRenderer, gridBagConstraints);
         totalTenuredRenderer = new TotalTenuredRenderer(this);
         chart.add(totalTenuredRenderer, gridBagConstraints);
         totalYoungRenderer = new TotalYoungRenderer(this);
@@ -210,76 +218,114 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         repaint();
     }
 
+    @Override
     public boolean isAntiAlias() {
         return antiAlias;
     }
 
+    @Override
     public void setAntiAlias(boolean antiAlias) {
         this.antiAlias = antiAlias;
     }
 
+    @Override
     public boolean isShowTenured() {
         return totalTenuredRenderer.isVisible();
     }
 
+    @Override
     public void setShowTenured(boolean showTenured) {
         totalTenuredRenderer.setVisible(showTenured);
     }
 
+    @Override
     public boolean isShowYoung() {
         return totalYoungRenderer.isVisible();
     }
 
+    @Override
     public void setShowYoung(boolean showYoung) {
         totalYoungRenderer.setVisible(showYoung);
     }
 
+    @Override
     public boolean isShowGCTimesLine() {
         return gcTimesRenderer.isVisible();
     }
 
+    @Override
     public void setShowGCTimesLine(boolean showGCTimesLine) {
         gcTimesRenderer.setVisible(showGCTimesLine);
     }
 
+    @Override
     public boolean isShowGCTimesRectangles() {
         return gcRectanglesRenderer.isVisible();
     }
 
+    @Override
     public void setShowGCTimesRectangles(boolean showGCTimesRectangles) {
         gcRectanglesRenderer.setVisible(showGCTimesRectangles);
     }
 
+    @Override
     public boolean isShowFullGCLines() {
         return fullGCLineRenderer.isVisible();
     }
 
+    @Override
     public void setShowFullGCLines(boolean showFullGCLines) {
         fullGCLineRenderer.setVisible(showFullGCLines);
     }
 
+    @Override
     public boolean isShowIncGCLines() {
         return incLineRenderer.isVisible();
     }
 
+    @Override
     public void setShowIncGCLines(boolean showIncGCLines) {
         incLineRenderer.setVisible(showIncGCLines);
     }
 
+    @Override
     public boolean isShowTotalMemoryLine() {
         return totalHeapRenderer.isVisible();
     }
 
+    @Override
     public void setShowTotalMemoryLine(boolean showTotalMemoryLine) {
         totalHeapRenderer.setVisible(showTotalMemoryLine);
     }
 
+    @Override
     public boolean isShowUsedMemoryLine() {
         return usedHeapRenderer.isVisible();
     }
 
+    @Override
     public void setShowUsedMemoryLine(boolean showUsedMemoryLine) {
         usedHeapRenderer.setVisible(showUsedMemoryLine);
+    }
+
+    @Override
+    public void setShowInitialMarkLevel(boolean showInitialMarkLevel) {
+        initialMarkLevelRenderer.setVisible(showInitialMarkLevel);
+    }
+
+    @Override
+    public boolean isShowInitialMarkLevel() {
+        return initialMarkLevelRenderer.isVisible();
+    }
+    
+    @Override
+    public void setShowConcurrentCollectionBeginEnd(boolean showConcurrentCollectionBeginEnd) {
+        concurrentGcLineRenderer.setVisible(showConcurrentCollectionBeginEnd);
+    }
+
+    @Override
+    public boolean isShowConcurrentCollectionBeginEnd() {
+        return concurrentGcLineRenderer.isVisible();
     }
 
     public void setModel(GCModel model, GCPreferences preferences) {
@@ -298,6 +344,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         setShowIncGCLines(preferences.getGcLineProperty(GCPreferences.INC_GC_LINES));
         setShowTotalMemoryLine(preferences.getGcLineProperty(GCPreferences.TOTAL_MEMORY));
         setShowUsedMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_MEMORY));
+        setShowInitialMarkLevel(preferences.getGcLineProperty(GCPreferences.INITIAL_MARK_LEVEL));
     }
 
     public GCModel getModel() {
@@ -616,4 +663,5 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
             this.unitName = unitName;
         }
     }
+
 }
