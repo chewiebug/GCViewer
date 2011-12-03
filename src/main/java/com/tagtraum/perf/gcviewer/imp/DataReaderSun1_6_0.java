@@ -48,23 +48,29 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final String CMS_ABORT_PRECLEAN = " CMS: abort preclean due to time ";
 
     private static final String HEAP_SIZING_START = "Heap";
-    // parnew + cms
-    private static final String HEAP_PARNEW = "par new generation";
-    private static final String HEAP_EDEN = "eden space";
-    private static final String HEAP_FROM = "from space";
-    private static final String HEAP_TO = "to   space";
-    private static final String HEAP_CONCURRENT_MARK_SWEEP_TOTAL = "concurrent mark-sweep generation total";
-    private static final String HEAP_CONCURRENT_MARK_SWEEP_PERM = "concurrent-mark-sweep perm gen";
-    private static final String HEAP_SIZING_END = "}";
-    static final List<String> HEAP_STRINGS = new LinkedList<String>();
+    
+    private static final List<String> HEAP_STRINGS = new LinkedList<String>();
     static {
-        HEAP_STRINGS.add(HEAP_PARNEW);
-        HEAP_STRINGS.add(HEAP_EDEN);
-        HEAP_STRINGS.add(HEAP_FROM);
-        HEAP_STRINGS.add(HEAP_TO);
-        HEAP_STRINGS.add(HEAP_CONCURRENT_MARK_SWEEP_TOTAL);
-        HEAP_STRINGS.add(HEAP_CONCURRENT_MARK_SWEEP_PERM);
-        HEAP_STRINGS.add(HEAP_SIZING_END);
+        HEAP_STRINGS.add("def new generation"); // serial young collection -XX:+UseSerialGC
+        HEAP_STRINGS.add("PSYoungGen"); // parallel young collection -XX:+UseParallelGC
+        HEAP_STRINGS.add("par new generation"); // parallel young (CMS)
+        HEAP_STRINGS.add("eden space");
+        HEAP_STRINGS.add("from space");
+        HEAP_STRINGS.add("to   space");
+        
+        HEAP_STRINGS.add("ParOldGen"); // parallel old collection -XX:+UseParallelOldGC
+        HEAP_STRINGS.add("PSOldGen"); // serial old collection -XX:+UseParallelGC without -XX:+UseParallelOldGC
+        HEAP_STRINGS.add("object space");
+        HEAP_STRINGS.add("PSPermGen"); // serial (?) perm collection
+        HEAP_STRINGS.add("tenured generation"); // serial old collection -XX:UseSerialGC
+        HEAP_STRINGS.add("the space");
+        HEAP_STRINGS.add("compacting perm gen"); // serial perm collection -XX:UseSerialGC
+        HEAP_STRINGS.add("concurrent mark-sweep generation total"); // CMS old collection
+        HEAP_STRINGS.add("concurrent-mark-sweep perm gen"); // CMS perm collection
+        
+        HEAP_STRINGS.add("No shared spaces configured.");
+        
+        HEAP_STRINGS.add("}");
     }
 
     private static Pattern unloadingClassPattern = Pattern.compile(".*\\[Unloading class [^\\]]+\\]$");
