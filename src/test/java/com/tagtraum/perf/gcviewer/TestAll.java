@@ -14,7 +14,6 @@ public class TestAll {
      */
     public static Test suite() {
         TestSuite suite = new TestSuite("all GCViewer Unittests");
-        suite.addTestSuite(TestDataReaderFactory.class);
         // subpackages
         suite.addTest(com.tagtraum.perf.gcviewer.imp.TestAll.suite());
         suite.addTest(com.tagtraum.perf.gcviewer.math.TestAll.suite());

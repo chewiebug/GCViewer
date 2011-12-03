@@ -14,6 +14,8 @@ public class TestAll {
      */
     public static Test suite() {
         TestSuite suite = new TestSuite("all datareader tests");
+        suite.addTestSuite(TestDataReaderFactory.class);
+
         suite.addTestSuite(TestDataReaderSun1_2_2.class);
         suite.addTestSuite(TestDataReaderSun1_3_1.class);
         // suite.addTestSuite(TestDataReaderSun1_3_1_19.class);
@@ -28,8 +30,7 @@ public class TestAll {
         suite.addTestSuite(TestDataReaderHPUX1_2.class);
         suite.addTestSuite(TestDataReaderJRockit1_4_2.class);
         suite.addTestSuite(TestDataReaderJRockit1_5_0.class);
-        // subpackages
-        //suite.addTest(com.tagtraum.perf.gcviewer.imp.TestAll.suite());
+
         return suite;
     }
 
