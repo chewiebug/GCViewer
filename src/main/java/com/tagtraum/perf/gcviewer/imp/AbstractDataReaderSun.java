@@ -1,9 +1,11 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -288,5 +290,41 @@ public abstract class AbstractDataReaderSun implements DataReader {
         if (index == 0) throw new ParseException("Failed to skip details.", line);
         if (line.charAt(index) == ' ') index++;
         pos.setIndex(index);
+    }
+
+    /**
+     * Reads a block containing heap sizes like they are printed at shutdown of the vm
+     * or with -XX:+PrintHeapAtGC
+     * 
+     * @param in inputStream of the current log to be read
+     * @param lineNumber current line number
+     * @return line number including lines read in this method
+     * @throws IOException problem with reading from the file
+     */
+    protected int skipHeapSizes(BufferedReader in, int lineNumber, List<String> heapStrings) throws IOException {
+        String line;
+        boolean containsHeapString = true;
+        while (containsHeapString && (line = in.readLine()) != null) {
+            ++lineNumber;
+            // for now just skip those lines
+            containsHeapString = containsHeapString(line, heapStrings);
+            if (containsHeapString) {
+                in.mark(200);
+            }
+        }
+        
+        // push last read line back into stream - it is the next event to be parsed
+        in.reset();
+        
+        return lineNumber;
+    }
+
+    private boolean containsHeapString(String line, List<String> heapStrings) {
+        boolean containsHeapString = false;
+        for (String heapString : heapStrings) {
+            containsHeapString |= line.trim().startsWith(heapString);
+        }
+        
+        return containsHeapString;
     }
 }

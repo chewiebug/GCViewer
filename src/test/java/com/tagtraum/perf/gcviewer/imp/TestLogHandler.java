@@ -1,19 +1,23 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 public class TestLogHandler extends Handler {
 
-	private int count;
+    private List<LogRecord> recordList = new LinkedList<LogRecord>();
 	
 	public int getCount() {
-		return count;
+		return recordList.size();
 	}
 	
 	@Override
 	public void publish(LogRecord record) {
-			++count;
+	    if (isLoggable(record)) {
+	        recordList.add(record);
+	    }
 	}
 
 	@Override

@@ -3,18 +3,20 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
@@ -43,6 +45,23 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final int GC_TYPE = 2;
     private static final int GC_PAUSE = 3;
 
+    private static final String HEAP_SIZING_START = "Heap";
+
+    private static final String HEAP_G1 = "garbage-first heap";
+    private static final String HEAP_G1_REGION_SIZE = "region size";
+    private static final String HEAP_COMPACTING_PERM = "compacting perm gen";
+    private static final String HEAP_THE_SPACE = "the space";
+    private static final String HEAP_SHARED_SPACES = "No shared spaces configured.";
+
+    private static final List<String> HEAP_STRINGS = new LinkedList<String>();
+    static {
+        HEAP_STRINGS.add(HEAP_G1);
+        HEAP_STRINGS.add(HEAP_G1_REGION_SIZE);
+        HEAP_STRINGS.add(HEAP_COMPACTING_PERM);
+        HEAP_STRINGS.add(HEAP_THE_SPACE);
+        HEAP_STRINGS.add(HEAP_SHARED_SPACES);
+    }
+    
     public DataReaderSun1_6_0G1(InputStream in) throws UnsupportedEncodingException {
         super(in);
     }
@@ -120,6 +139,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             else {
                                 model.add(parseLine(line, parsePosition));
                             }
+                        }
+                        else if (line.indexOf(HEAP_SIZING_START) >= 0) {
+                            // the next few lines will be the sizing of the heap
+                            lineNumber = skipHeapSizes(in, lineNumber, HEAP_STRINGS);
+                            continue;
                         }
                         else if (line.indexOf("Times") < 0) {
                             model.add(parseLine(line, parsePosition));

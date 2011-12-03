@@ -5,22 +5,22 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
-public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
+public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
     private static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
 	private static final int LENGTH_OF_DATESTAMP = 29;
@@ -34,7 +34,7 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
     private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:";
     private static final String SURVIVOR_AGE = "- age";
     private static final String TIMES_ALONE = " [Times";
-    private static final Set<String> EXCLUDE_STRINGS = new HashSet<String>();
+    private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
         EXCLUDE_STRINGS.add(UNLOADING_CLASS);
@@ -46,7 +46,27 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
     }
     
     private static final String CMS_ABORT_PRECLEAN = " CMS: abort preclean due to time ";
-    
+
+    private static final String HEAP_SIZING_START = "Heap";
+    // parnew + cms
+    private static final String HEAP_PARNEW = "par new generation";
+    private static final String HEAP_EDEN = "eden space";
+    private static final String HEAP_FROM = "from space";
+    private static final String HEAP_TO = "to   space";
+    private static final String HEAP_CONCURRENT_MARK_SWEEP_TOTAL = "concurrent mark-sweep generation total";
+    private static final String HEAP_CONCURRENT_MARK_SWEEP_PERM = "concurrent-mark-sweep perm gen";
+    private static final String HEAP_SIZING_END = "}";
+    static final List<String> HEAP_STRINGS = new LinkedList<String>();
+    static {
+        HEAP_STRINGS.add(HEAP_PARNEW);
+        HEAP_STRINGS.add(HEAP_EDEN);
+        HEAP_STRINGS.add(HEAP_FROM);
+        HEAP_STRINGS.add(HEAP_TO);
+        HEAP_STRINGS.add(HEAP_CONCURRENT_MARK_SWEEP_TOTAL);
+        HEAP_STRINGS.add(HEAP_CONCURRENT_MARK_SWEEP_PERM);
+        HEAP_STRINGS.add(HEAP_SIZING_END);
+    }
+
     private static Pattern unloadingClassPattern = Pattern.compile(".*\\[Unloading class [^\\]]+\\]$");
 
     // 1_6_0_u24 mixes lines, when outputing a "promotion failed" which leads to a "concurrent mode failure"
@@ -111,6 +131,11 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
                         line = beginningOfLine + line;
                         beginningOfLine = null;
                     }
+                    else if (line.indexOf(HEAP_SIZING_START) >= 0) {
+                        // the next few lines will be the sizing of the heap
+                        lineNumber = skipHeapSizes(in, lineNumber, HEAP_STRINGS);
+                        continue;
+                    }
                     model.add(parseLine(line, parsePosition));
                 } catch (ParseException pe) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
@@ -129,7 +154,6 @@ public class DataReaderSun1_6_0 extends DataReaderSun1_5_0 {
             if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
         }
     }
-
 
     protected AbstractGCEvent parseLine(final String line, final ParsePosition pos) throws ParseException {
         AbstractGCEvent ae = null;

@@ -3,6 +3,8 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -10,6 +12,8 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 public class TestDataReaderSun1_6_0 extends TestCase {
+    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
+    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
     public void testPrintGCDateStamps() throws Exception {
 		final ByteArrayInputStream in = new ByteArrayInputStream(
@@ -362,6 +366,22 @@ public class TestDataReaderSun1_6_0 extends TestCase {
         GCModel model = reader.read();
 
         assertEquals("GC count", 0, model.size());
+    }
+    
+    public void testPrintHeapAtGC() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0PrintHeapAtGC.txt");
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("GC pause", 0.0134287, model.getGCPause().getMin(), 0.000000001);
+        assertEquals("number of errors", 0, handler.getCount());
+
     }
     
      
