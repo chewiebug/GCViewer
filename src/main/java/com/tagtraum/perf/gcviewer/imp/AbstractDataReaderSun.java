@@ -304,17 +304,21 @@ public abstract class AbstractDataReaderSun implements DataReader {
     protected int skipHeapSizes(BufferedReader in, int lineNumber, List<String> heapStrings) throws IOException {
         String line;
         boolean containsHeapString = true;
+        boolean isMarked = false;
         while (containsHeapString && (line = in.readLine()) != null) {
             ++lineNumber;
             // for now just skip those lines
             containsHeapString = containsHeapString(line, heapStrings);
             if (containsHeapString) {
+                isMarked = true;
                 in.mark(200);
             }
         }
         
         // push last read line back into stream - it is the next event to be parsed
-        in.reset();
+        if (isMarked) {
+            in.reset();
+        }
         
         return lineNumber;
     }
