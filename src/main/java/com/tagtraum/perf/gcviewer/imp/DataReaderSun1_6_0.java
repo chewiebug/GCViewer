@@ -53,7 +53,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     static {
         HEAP_STRINGS.add("def new generation"); // serial young collection -XX:+UseSerialGC
         HEAP_STRINGS.add("PSYoungGen"); // parallel young collection -XX:+UseParallelGC
-        HEAP_STRINGS.add("par new generation"); // parallel young (CMS)
+        HEAP_STRINGS.add("par new generation"); // parallel young (CMS / -XX:+UseParNewGC)
         HEAP_STRINGS.add("eden space");
         HEAP_STRINGS.add("from space");
         HEAP_STRINGS.add("to   space");
@@ -139,7 +139,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     }
                     else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                         // the next few lines will be the sizing of the heap
-                        lineNumber = skipHeapSizes(in, lineNumber, HEAP_STRINGS);
+                        lineNumber = skipHeapSizes(in, parsePosition, lineNumber, HEAP_STRINGS);
                         continue;
                     }
                     model.add(parseLine(line, parsePosition));

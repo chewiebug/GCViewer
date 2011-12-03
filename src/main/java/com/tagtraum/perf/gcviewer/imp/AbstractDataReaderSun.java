@@ -301,23 +301,36 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @return line number including lines read in this method
      * @throws IOException problem with reading from the file
      */
-    protected int skipHeapSizes(BufferedReader in, int lineNumber, List<String> heapStrings) throws IOException {
-        String line;
+    protected int skipHeapSizes(BufferedReader in, ParsePosition pos, int lineNumber, List<String> heapStrings) throws IOException {
+        String line = "";
+        
+        if (!in.markSupported()) {
+            LOG.warning("input stream does not support marking!");
+        }
+        
         boolean containsHeapString = true;
         boolean isMarked = false;
         while (containsHeapString && (line = in.readLine()) != null) {
             ++lineNumber;
+            pos.setLineNumber(lineNumber);
             // for now just skip those lines
             containsHeapString = containsHeapString(line, heapStrings);
             if (containsHeapString) {
-                isMarked = true;
-                in.mark(200);
+                if (in.markSupported()) {
+                    isMarked = true;
+                    in.mark(200);
+                }
             }
         }
         
         // push last read line back into stream - it is the next event to be parsed
         if (isMarked) {
-            in.reset();
+            try {
+                in.reset();
+            }
+            catch (IOException e) {
+                throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
+            }
         }
         
         return lineNumber;

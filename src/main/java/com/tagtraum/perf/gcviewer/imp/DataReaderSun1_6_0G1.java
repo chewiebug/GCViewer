@@ -142,7 +142,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         }
                         else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                             // the next few lines will be the sizing of the heap
-                            lineNumber = skipHeapSizes(in, lineNumber, HEAP_STRINGS);
+                            lineNumber = skipHeapSizes(in, parsePosition, lineNumber, HEAP_STRINGS);
                             continue;
                         }
                         else if (line.indexOf("Times") < 0) {
