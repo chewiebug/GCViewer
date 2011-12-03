@@ -17,8 +17,7 @@ public class TestAll {
         suite.addTestSuite(TestRegressionLine.class);
         suite.addTestSuite(TestDoubleData.class);
         suite.addTestSuite(TestIntData.class);
-        // subpackages
-        //suite.addTest(com.tagtraum.perf.gcviewer.math.TestAll.suite());
+
         return suite;
     }
 
