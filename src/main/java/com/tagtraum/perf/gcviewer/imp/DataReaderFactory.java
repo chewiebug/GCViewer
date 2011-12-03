@@ -1,14 +1,12 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.imp.*;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -46,7 +44,7 @@ public class DataReaderFactory {
             return new DataReaderIBM1_3_0(in);
         } else if (s.indexOf("pause (young)") > 0) {
         	// G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
-            if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x");
+            if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x G1 collector");
             return new DataReaderSun1_6_0G1(in);
         } else if (s.indexOf("[Times:") > 0) {
         	// all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
