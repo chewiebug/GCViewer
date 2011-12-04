@@ -27,16 +27,13 @@ public class IncLineRenderer extends ChartRenderer {
         final double scaleFactor = getModelChart().getScaleFactor();
         final int height = getHeight();
         int lastScaledTimestamp = Integer.MIN_VALUE;
-        for (Iterator i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
-            final Object o = i.next();
-            if (o instanceof GCEvent) {
-                AbstractGCEvent event = (AbstractGCEvent) o;
-                if (event.isInc()) {
-                    final int scaledTimestamp = (int) (scaleFactor * event.getTimestamp());
-                    if (scaledTimestamp != lastScaledTimestamp) {
-                        g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
-                        lastScaledTimestamp = scaledTimestamp;
-                    }
+        for (Iterator<GCEvent> i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
+            final GCEvent event = i.next();
+            if (event.isInc()) {
+                final int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
+                if (scaledTimestamp != lastScaledTimestamp) {
+                    g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
+                    lastScaledTimestamp = scaledTimestamp;
                 }
             }
         }

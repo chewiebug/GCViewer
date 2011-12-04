@@ -34,7 +34,7 @@ public class FullGCLineRenderer extends ChartRenderer {
         int lastScaledTimestamp = Integer.MIN_VALUE;
         for (Iterator<GCEvent> i = getModelChart().getModel().getFullGCEvents(); i.hasNext();) {
             GCEvent event = i.next();
-            final int scaledTimestamp = (int)(scaleFactor * event.getTimestamp());
+            final int scaledTimestamp = (int)(scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
             if (scaledTimestamp != lastScaledTimestamp && scaledTimestamp >= minX && scaledTimestamp <= maxX) {
                 g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
                 lastScaledTimestamp = scaledTimestamp;

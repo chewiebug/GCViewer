@@ -6,11 +6,12 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.util.Iterator;
 
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.ModelChart;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  * TotalTenuredRenderer.
@@ -37,12 +38,12 @@ public class TotalTenuredRenderer extends PolygonChartRenderer {
         double lastTotal = 0.0d;
         double fallback = 0.0d;
         double lastTenuredTotal = 0;
-        for (Iterator i = model.getGCEvents(); i.hasNext();) {
+        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
             final GCEvent event = (GCEvent) i.next();
-            for (Iterator iterator=event.details(); iterator.hasNext();) {
-                final Object o = iterator.next();
-                if (o instanceof GCEvent) {
-                    final GCEvent detailEvent = (GCEvent)o;
+            for (Iterator<AbstractGCEvent> iterator=event.details(); iterator.hasNext();) {
+                final AbstractGCEvent abstractGcEvent = iterator.next();
+                if (abstractGcEvent instanceof GCEvent) {
+                    final GCEvent detailEvent = (GCEvent)abstractGcEvent;
                     if (detailEvent.getType().getGeneration() == Generation.TENURED) {
                         double total = detailEvent.getTotal();
                         if (total == 0) total = lastTenuredTotal;
@@ -52,8 +53,8 @@ public class TotalTenuredRenderer extends PolygonChartRenderer {
                             lastTotal = total;
                         }
 
-                        if (lastTotal != total) polygon.addPoint(detailEvent.getTimestamp(), lastTotal);
-                        polygon.addPoint(detailEvent.getTimestamp()+detailEvent.getPause(), total);
+                        if (lastTotal != total) polygon.addPoint(detailEvent.getTimestamp() - model.getFirstPauseTimeStamp(), lastTotal);
+                        polygon.addPoint(detailEvent.getTimestamp() - model.getFirstPauseTimeStamp() + detailEvent.getPause(), total);
                         lastTotal = total;
                     }
 

@@ -38,7 +38,7 @@ public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
         for (Iterator<ConcurrentGCEvent> i = getModelChart().getModel().getConcurrentGCEvents(); i.hasNext();) {
             final AbstractGCEvent event = i.next();
             if (event.isConcurrentCollectionStart()) {
-                final int scaledTimestamp = (int) (scaleFactor * event.getTimestamp());
+                final int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
                 if (scaledTimestamp != lastScaledTimestampBegin) {
                     g2d.setPaint(CONCURRENT_COLLECTION_BEGIN);
                     g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
@@ -46,7 +46,7 @@ public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
                 }
             }
             else if (event.isConcurrentCollectionEnd()) {
-                final int scaledTimestamp = (int) (scaleFactor * event.getTimestamp());
+                final int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
                 if (scaledTimestamp != lastScaledTimestampEnd) {
                     g2d.setPaint(CONCURRENT_COLLECTION_END);
                     g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);

@@ -32,13 +32,11 @@ public class InitialMarkLevelRenderer extends PolygonChartRenderer {
         for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
             GCEvent event = i.next();
             if (event.isInitialMark()) {
-                final double timestamp = event.getTimestamp();
-                polygon.addPoint(timestamp, event.getPreUsed());
+                polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getPreUsed());
             }
         }
         // dummy point to make the polygon complete
         polygon.addPoint(model.getRunningTime(), 0.0d);
-        //System.out.println("last x coord " + polygon.xpoints[polygon.npoints-1]);
         return polygon;
     }
 }

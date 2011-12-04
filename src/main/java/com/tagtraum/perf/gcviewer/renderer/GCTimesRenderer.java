@@ -26,9 +26,9 @@ public class GCTimesRenderer extends PolygonChartRenderer {
 
     public Polygon computePolygon(ModelChart modelChart, GCModel model) {
         ScaledPolygon polygon = createTimeScaledPolygon();
-        for (Iterator i = model.getGCEvents(); i.hasNext();) {
-            GCEvent event = (GCEvent) i.next();
-            polygon.addPoint(event.getTimestamp(), event.getPause());
+        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
+            GCEvent event = i.next();
+            polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getPause());
         }
         // dummy point to make the polygon complete
         polygon.addPoint(model.getRunningTime(), 0.0d);

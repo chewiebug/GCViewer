@@ -26,9 +26,9 @@ public class UsedHeapRenderer extends PolygonChartRenderer {
 
     public Polygon computePolygon(ModelChart modelChart, GCModel model) {
         ScaledPolygon polygon = createMemoryScaledPolygon();
-        for (Iterator i = model.getGCEvents(); i.hasNext();) {
+        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
             GCEvent event = (GCEvent) i.next();
-            final double timestamp = event.getTimestamp();
+            final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
             polygon.addPoint(timestamp, event.getPreUsed());
             polygon.addPoint(timestamp, event.getPostUsed());
         }

@@ -34,7 +34,7 @@ public class TotalHeapRenderer extends PolygonChartRenderer {
             if (event.getTotal() > 0) {
             	// there are events that don't have a heap size associated (like "GC remark" of G1)
             	// -> skip them
-            	polygon.addPoint(event.getTimestamp(), event.getTotal());
+            	polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getTotal());
             }
         }
         polygon.addPoint(model.getRunningTime(), 0.0d);

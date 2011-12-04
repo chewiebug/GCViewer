@@ -60,11 +60,12 @@ public class GCModel implements Serializable {
     private IntData promotion; // promotion from young to tenured generation during young collections
     
     private long footprint;
-    private double runningTime;
+    private double firstPauseTimeStamp = Double.MAX_VALUE;
+    private double lastPauseTimeStamp = 0;
     private DoubleData totalPause;
     private DoubleData fullGCPause;
     private DoubleData gcPause; // not full gc but stop the world pause
-    private double lastPauseTimeStamp = 0;
+    private double lastGcPauseTimeStamp = 0;
     private DoubleData pauseInterval; // interval between two stop the world pauses
     private DoubleData initiatingOccupancyFraction; // all concurrent collectors; start of concurrent collection
     private long freedMemory;
@@ -316,6 +317,10 @@ public class GCModel implements Serializable {
     
     public void add(final AbstractGCEvent abstractEvent) {
         allEvents.add(abstractEvent);
+        
+        firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
+        lastPauseTimeStamp = Math.max(lastPauseTimeStamp, abstractEvent.getTimestamp());
+
         if (abstractEvent instanceof ConcurrentGCEvent) {
         	final ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
             concurrentGCEvents.add(concEvent);
@@ -343,7 +348,6 @@ public class GCModel implements Serializable {
             
             stopTheWorldEvents.add(event);
             footprint = Math.max(footprint, event.getTotal());
-            runningTime = Math.max(runningTime, event.getTimestamp());
             freedMemory += event.getPreUsed() - event.getPostUsed();
             totalPause.add(event.getPause());
             
@@ -409,19 +413,19 @@ public class GCModel implements Serializable {
     }
 
     private void updatePauseInterval(final GCEvent event) {
-        if (lastPauseTimeStamp > 0) {
+        if (lastGcPauseTimeStamp > 0) {
             if (!event.isConcurrencyHelper()) {
                 // JRockit sometimes has special timestamps that seem to go back in time,
                 // omit them here
-                if (event.getTimestamp() - lastPauseTimeStamp >= 0) {
-                    pauseInterval.add(event.getTimestamp() - lastPauseTimeStamp);
+                if (event.getTimestamp() - lastGcPauseTimeStamp >= 0) {
+                    pauseInterval.add(event.getTimestamp() - lastGcPauseTimeStamp);
                 }
-                lastPauseTimeStamp = event.getTimestamp();
+                lastGcPauseTimeStamp = event.getTimestamp();
             }
         } else {
             // interval between startup of VM and first gc event should be omitted because
             // startup time of VM is included.
-            lastPauseTimeStamp = event.getTimestamp();
+            lastGcPauseTimeStamp = event.getTimestamp();
         }
     }
 
@@ -599,7 +603,7 @@ public class GCModel implements Serializable {
      * Throughput in percent.
      */
     public double getThroughput() {
-        return 100 * (runningTime - totalPause.getSum()) / runningTime;
+        return 100 * (getRunningTime() - totalPause.getSum()) / getRunningTime();
     }
 
     /**
@@ -678,9 +682,23 @@ public class GCModel implements Serializable {
      * Running time in sec.
      */
     public double getRunningTime() {
-        return runningTime;
+        return lastPauseTimeStamp - firstPauseTimeStamp;
     }
 
+    /**
+     * The timestamp of the first event in the log (which usually is probably never exactly 0)
+     */
+    public double getFirstPauseTimeStamp() {
+        return firstPauseTimeStamp;
+    }
+    
+    /**
+     * The timestamp of the last event in the log
+     */
+    public double getLastPauseTimeStamp() {
+        return lastPauseTimeStamp;
+    }
+    
     /**
      * Freed memory in KB.
      */

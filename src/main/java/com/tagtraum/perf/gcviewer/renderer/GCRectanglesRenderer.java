@@ -49,12 +49,12 @@ public class GCRectanglesRenderer extends ChartRenderer {
         int lastX = Integer.MIN_VALUE;
         int lastY = Integer.MIN_VALUE;
 
-        for (Iterator i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
-            GCEvent event = (GCEvent) i.next();
+        for (Iterator<GCEvent> i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
+            GCEvent event = i.next();
             final double pause = event.getPause();
             final int width = (int) Math.max(Math.abs(scaleFactor * pause), 1.0d);
             final int height = (int) (pause * scaledHeight);
-            final int x = (int) (scaleFactor * event.getTimestamp());
+            final int x = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
             final int y = getHeight() - (int) (pause * scaledHeight);
             if (lastX != x || lastY != y || lastWidth != width || lastHeight != height) {
                 if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
