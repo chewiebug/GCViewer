@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tagtraum</groupId>
 	<artifactId>gcviewer</artifactId>
-	<version>1.31-RC3-SNAPSHOT</version>
+	<version>1.31-RC3</version>
 	<packaging>jar</packaging>
 	<name>GCViewer</name>
 	<url>http://www.tagtraum.com/gcviewer.html</url>
