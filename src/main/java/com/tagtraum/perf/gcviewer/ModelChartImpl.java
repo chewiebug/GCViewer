@@ -7,7 +7,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
@@ -18,7 +17,6 @@ import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Date;
-import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -26,16 +24,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
-import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
 import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
+import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
@@ -383,7 +378,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     }
 
     private class Chart extends JPanel {
-        private double yMemScaleFactor = 1;
 
         public Chart() {
             setBackground(Color.white);
@@ -394,45 +388,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
             return new Dimension(scaleX(runningTime), getViewport().getHeight());
         }
 
-        public void setSize(int width, int height) {
-            super.setSize(width, height);
-            computeScaleFactors();
-        }
-
-        public void computeScaleFactors() {
-            yMemScaleFactor = (double) getViewport().getHeight() / (double) footprint;
-        }
-
-        private void drawUsedTenuredPolygon(Graphics g) {
-            Polygon tenured = computeUsedTenuredPolygon();
-            g.setColor(Color.ORANGE.darker());
-            g.fillPolygon(tenured);
-        }
-
-        private Polygon computeUsedTenuredPolygon() {
-            Polygon polygon = new Polygon();
-            final int zeroY = memScaleY(0);
-            polygon.addPoint(0, zeroY);
-            for (Iterator i = model.getGCEvents(); i.hasNext();) {
-                AbstractGCEvent event = (AbstractGCEvent) i.next();
-                for (Iterator iterator=event.details(); iterator.hasNext();) {
-                    GCEvent detailEvent = (GCEvent)iterator.next();
-                    if (detailEvent.getType().getGeneration() == Generation.TENURED) {
-                        polygon.addPoint(scaleX(detailEvent.getTimestamp()), memScaleY(detailEvent.getPreUsed()));
-                        polygon.addPoint(scaleX(detailEvent.getTimestamp()+detailEvent.getPause()), memScaleY(detailEvent.getPostUsed()));
-                    }
-                }
-            }
-            polygon.addPoint(scaleX(model.getRunningTime()), zeroY);
-            return polygon;
-        }
-
         private int scaleX(double d) {
             return (int) (d * getScaleFactor());
-        }
-
-        private int memScaleY(long l) {
-            return (int) getHeight() - (int) ((double) l * yMemScaleFactor);
         }
 
     }
