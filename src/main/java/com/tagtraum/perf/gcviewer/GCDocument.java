@@ -27,6 +27,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -187,6 +188,7 @@ public class GCDocument extends JInternalFrame {
             final ChartPanelView chartPanelView = (ChartPanelView) chartPanelViews.get(i);
             final ModelChartImpl modelChart = (ModelChartImpl) chartPanelView.getModelChart();
             final ModelPanel modelPanel = chartPanelView.getModelPanel();
+            final JTabbedPane modelChartAndDetails = chartPanelView.getModelChartAndDetails();
             modelChart.invalidate();
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -208,8 +210,8 @@ public class GCDocument extends JInternalFrame {
             constraints.weightx = 2;
             constraints.weighty = 2;
             modelChart.setPreferredSize(new Dimension(800, 600));
-            modelChart.setVisible(!chartPanelView.isMinimized());
-            getContentPane().add(modelChart, constraints);
+            modelChartAndDetails.setVisible(!chartPanelView.isMinimized());
+            getContentPane().add(modelChartAndDetails, constraints);
 
             constraints.gridy = row;
             constraints.gridheight = 1;

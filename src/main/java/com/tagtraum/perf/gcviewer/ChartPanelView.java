@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -56,6 +57,8 @@ public class ChartPanelView {
     
     private ModelChartImpl modelChart;
     private ModelPanel modelPanel;
+    private ModelDetailsPanel modelDetailsPanel;
+    private JTabbedPane modelChartAndDetailsPanel;
     private GCModel model;
     private ViewBar viewBar;
     private boolean viewBarVisible;
@@ -72,6 +75,12 @@ public class ChartPanelView {
         this.preferences = gcDocument.getPreferences();
         this.modelChart = new ModelChartImpl();
         this.modelPanel = new ModelPanel();
+        this.modelDetailsPanel = new ModelDetailsPanel();
+        
+        this.modelChartAndDetailsPanel = new JTabbedPane();
+        this.modelChartAndDetailsPanel.addTab("chart", modelChart);
+        this.modelChartAndDetailsPanel.addTab("details", modelDetailsPanel);
+        
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
         this.textAreaLogHandler = new TextAreaLogHandler();
@@ -131,6 +140,7 @@ public class ChartPanelView {
     public void invalidate() {
         modelChart.invalidate();
         modelPanel.invalidate();
+        modelDetailsPanel.invalidate();
     }
 
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
@@ -165,6 +175,10 @@ public class ChartPanelView {
         }
     }
 
+    public JTabbedPane getModelChartAndDetails() {
+        return modelChartAndDetailsPanel;
+    }
+    
     public ModelChart getModelChart() {
         return modelChart;
     }
@@ -181,6 +195,7 @@ public class ChartPanelView {
         this.model = model;
         this.modelPanel.setModel(model);
         this.modelChart.setModel(model, preferences);
+        this.modelDetailsPanel.setModel(model);
         this.viewBar.setTitle(model.getURL().toString());
     }
 

@@ -45,6 +45,7 @@ public class GCModel implements Serializable {
     private long lastModified;
     private long length;
 
+    private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
     private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
     private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
     
@@ -108,6 +109,7 @@ public class GCModel implements Serializable {
         this.relativePostGCIncrease = new DoubleData();
         this.relativePostFullGCIncrease = new RegressionLine();
         
+        this.fullGcEventPauses = new TreeMap<String, DoubleData>();
         this.gcEventPauses = new TreeMap<String, DoubleData>();
         this.concurrentGcEventPauses = new TreeMap<String, DoubleData>();
         
@@ -333,9 +335,6 @@ public class GCModel implements Serializable {
         	// collect statistics about all stop the world events
             final GCEvent event = (GCEvent) abstractEvent;
             
-            DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
-            pauses.add(event.getPause());
-            
             updateHeapSizes(event);
             
             updatePauseInterval(event);
@@ -353,6 +352,9 @@ public class GCModel implements Serializable {
             
             if (!event.isFull()) {
             	// make a difference between stop the world events, which only collect from some generations...
+                DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
+                pauses.add(event.getPause());
+                
                 gcEvents.add(event);
                 postGCUsedMemory.add(event.getPostUsed());
                 freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
@@ -363,6 +365,9 @@ public class GCModel implements Serializable {
 
             } else {
             	// ... as opposed to all generations
+                DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
+                pauses.add(event.getPause());
+                
                 fullGCEvents.add(event);
                 postFullGCUsedMemory.add(event.getPostUsed());
                 final int freed = event.getPreUsed() - event.getPostUsed();
@@ -599,6 +604,18 @@ public class GCModel implements Serializable {
         return totalPause;
     }
 
+    public Map<String, DoubleData> getGcEventPauses() {
+        return gcEventPauses;
+    }
+    
+    public Map<String, DoubleData> getFullGcEventPauses() {
+        return fullGcEventPauses;
+    }
+    
+    public Map<String, DoubleData> getConcurrentEventPauses() {
+        return concurrentGcEventPauses;
+    }
+    
     /**
      * Throughput in percent.
      */
