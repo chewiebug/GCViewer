@@ -345,6 +345,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         setShowTotalMemoryLine(preferences.getGcLineProperty(GCPreferences.TOTAL_MEMORY));
         setShowUsedMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_MEMORY));
         setShowInitialMarkLevel(preferences.getGcLineProperty(GCPreferences.INITIAL_MARK_LEVEL));
+        setShowConcurrentCollectionBeginEnd(preferences.getGcLineProperty(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END));
     }
 
     public GCModel getModel() {
