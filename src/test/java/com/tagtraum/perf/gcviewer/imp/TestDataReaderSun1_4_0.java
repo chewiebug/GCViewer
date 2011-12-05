@@ -49,7 +49,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         event = (AbstractGCEvent) i.next();
         assertEquals(event, event6);
         
-        assertEquals("throughput", 65.680144, model.getThroughput(), 0.0000001);
+        assertEquals("throughput", 65.680128659, model.getThroughput(), 0.0000001);
     }
 
     public void testNoFullGC() throws Exception {
