@@ -249,4 +249,17 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("memory", 0, model.getFreedMemoryByGC().getMax());
     }
 
+    public void testYoungJ7() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_Young.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("gc pause", 0.00631825, model.getPause().getMax(), 0.000000001);
+        assertEquals("heap", 64*1024, model.getHeapAllocatedSizes().getMax());
+    }
+    
 }

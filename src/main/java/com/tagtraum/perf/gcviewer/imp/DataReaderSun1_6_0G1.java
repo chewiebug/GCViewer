@@ -23,6 +23,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0G1.class .getName());
 
+    private static final String TIMES = "[Times";
+    
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
     // "0.295: [GC pause (young), 0.00594747 secs]"
     private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9.]+)[: \\[]{3}([A-Za-z- ()]+)[, ]+([0-9.]+)[ sec\\]]+$");
@@ -145,7 +147,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             lineNumber = skipHeapSizes(in, parsePosition, lineNumber, HEAP_STRINGS);
                             continue;
                         }
-                        else if (line.indexOf("Times") < 0) {
+                        else if (line.indexOf(TIMES) < 0) {
                             model.add(parseLine(line, parsePosition));
                         }
                     }
@@ -166,7 +168,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         }
                         
                     }
-                    if (line.indexOf("Times") >= 0) {
+                    if (line.indexOf(TIMES) >= 0) {
                         // detailed gc description ends with " [Times: user=...]" -> finalize gcEvent
                         // otherwise just ignore 
                         if (gcEvent != null) {
