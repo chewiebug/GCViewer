@@ -128,7 +128,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (mixedLineMatcher.matches()) {
-                    	beginningOfLine = mixedLineMatcher.group(1);
+                        if (beginningOfLine != null) {
+                            // if PrintTenuringDistribution is used and a line is mixed, 
+                            // beginningOfLine may already contain a value, which must be preserved
+                            beginningOfLine += mixedLineMatcher.group(1);
+                        }
+                        else {
+                            beginningOfLine = mixedLineMatcher.group(1);
+                        }
                     	model.add(parseLine(mixedLineMatcher.group(2), parsePosition));
                     	parsePosition.setIndex(0);
                     	continue;

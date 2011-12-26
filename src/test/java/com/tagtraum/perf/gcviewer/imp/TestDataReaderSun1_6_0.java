@@ -310,6 +310,23 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 
     }
 
+    public void testPrintTenuringDistributionPromotionFailedConcurrentModeFailure() throws Exception {
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-04-18T12:01:14.683+0200: 27401.763: [GC 27401.763: [ParNew (promotion failed)" +
+                        "\nDesired survivor size 557056 bytes, new threshold 1 (max 4)" +
+                        "\n- age   1:     906712 bytes,     906712 total" +
+                        "\n: 9768K->9877K(10240K), 0.0453585 secs]27401.808: [CMS2011-04-18T12:01:20.261+0200: 27407.340: [CMS-concurrent-sweep: 5.738/5.787 secs] [Times: user=6.40 sys=0.02, real=5.79 secs]" +
+                        "\n (concurrent mode failure): 858756K->670276K(932096K), 31.5781426 secs] 868036K->670276K(942336K), [CMS Perm : 54962K->51858K(91608K)], 31.6248756 secs] [Times: user=31.85 sys=0.03, real=31.63 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("event pause", 31.6248756, model.getFullGCPause().getMax(), 0.0000001);
+
+    }
+    
     public void testLineMixesPrintTenuringDistribution() throws Exception {
 
         ByteArrayInputStream in = new ByteArrayInputStream(
