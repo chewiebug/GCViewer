@@ -285,15 +285,16 @@ read from the gc log file.
 Bug reports
 -----------
 
-If you are a developer, you may fork the repository on 
-http://github.com/chewiebug/GCViewer and send me a pull request
-(http://help.github.com/send-pull-requests/). If you plan a bigger 
-change I'd appreciate an upfront notice.
+If you are a developer, you may fork (http://help.github.com/fork-a-repo/)
+the repository on http://github.com/chewiebug/GCViewer and send me a 
+pull request (http://help.github.com/send-pull-requests/). If you plan a bigger 
+change I'd appreciate a notice in advance.
 
 To file a bug report, please open an issue on 
-http://github.com/chewiebug/GCViewer/issues or send me an email with a 
-description of the error, the name of the JVM that produced the GC data 
-and all used flags along with a sample GC log file.
+http://github.com/chewiebug/GCViewer/issues or send an email to 
+gcviewer-info@googlegroups.com with a description of the error, the 
+name of the JVM that produced the GC data and all used flags along 
+with a sample GC log file.
 
 
 Building GCViewer from Source
