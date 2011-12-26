@@ -16,11 +16,13 @@ import java.util.Map;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public abstract class AbstractGCEvent implements Serializable {
+    @SuppressWarnings("unchecked")
     private static final Iterator<AbstractGCEvent> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
     private Date datestamp;
     private double timestamp;
     private Type type = Type.GC;
     private boolean tenuredDetail;
+    private String typeAsString;
     protected List<AbstractGCEvent> details;
 
     public Iterator<AbstractGCEvent> details() {
@@ -30,9 +32,14 @@ public abstract class AbstractGCEvent implements Serializable {
 
     public void add(AbstractGCEvent detail) {
         // most events have only one detail event
-        if (details == null) details = new ArrayList<AbstractGCEvent>(2);
+        if (details == null) {
+        	details = new ArrayList<AbstractGCEvent>(2);
+        }
         details.add(detail);
-        if (detail.getType().getGeneration() == Generation.TENURED) tenuredDetail = true;
+        typeAsString += " " + detail.getType();
+        if (detail.getType().getGeneration() == Generation.TENURED) {
+        	tenuredDetail = true;
+        }
     }
 
     public boolean hasDetails() {
@@ -54,13 +61,13 @@ public abstract class AbstractGCEvent implements Serializable {
 
     public void setType(Type type) {
         this.type = type;
+        this.typeAsString = type.getType();
+        if (details != null && details.size() > 0) {
+            this.typeAsString = buildTypeAsString();
+        }
     }
 
-    public Type getType() {
-        return type;
-    }
-    
-    public String getTypeAsString() {
+    private String buildTypeAsString() {
     	StringBuilder sb = new StringBuilder(getType().getType());
     	if (details != null) {
     		for (AbstractGCEvent detailType : details) {
@@ -69,6 +76,14 @@ public abstract class AbstractGCEvent implements Serializable {
     	}
     	
     	return sb.toString();
+    }
+    
+    public Type getType() {
+        return type;
+    }
+    
+    public String getTypeAsString() {
+    	return typeAsString;
     }
     
     public boolean isStopTheWorld() {
