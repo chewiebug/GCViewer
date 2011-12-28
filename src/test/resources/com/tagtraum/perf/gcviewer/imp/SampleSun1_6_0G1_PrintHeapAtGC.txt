@@ -1,0 +1,78 @@
+{Heap before GC invocations=0 (full 0):
+ garbage-first heap   total 65536K, used 8192K [0x0000000005f00000, 0x0000000009f00000, 0x000000000df00000)
+  region size 1024K, 8 young (8192K), 0 survivors (0K)
+ compacting perm gen  total 20480K, used 2680K [0x000000000df00000, 0x000000000f300000, 0x0000000013100000)
+   the space 20480K,  13% used [0x000000000df00000, 0x000000000e19e218, 0x000000000e19e400, 0x000000000f300000)
+No shared spaces configured.
+0.169: [GC pause (young), 0.00582962 secs]
+   [Parallel Time:   5.7 ms]
+      [GC Worker Start Time (ms):  168.6  168.6  168.6  168.6]
+      [Update RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+         [Processed Buffers : 0 9 0 0
+          Sum: 9, Avg: 2, Min: 0, Max: 9]
+      [Ext Root Scanning (ms):  0.6  0.5  0.7  0.6
+       Avg:   0.6, Min:   0.5, Max:   0.7]
+      [Mark Stack Scanning (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Scan RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Object Copy (ms):  4.9  5.0  4.9  4.9
+       Avg:   4.9, Min:   4.9, Max:   5.0]
+      [Termination (ms):  0.0  0.0  0.1  0.1
+       Avg:   0.0, Min:   0.0, Max:   0.1]
+         [Termination Attempts : 1 1 1 1
+          Sum: 4, Avg: 1, Min: 1, Max: 1]
+      [GC Worker End Time (ms):  174.3  174.3  174.3  174.3]
+      [Other:   0.1 ms]
+   [Clear CT:   0.0 ms]
+   [Other:   0.1 ms]
+      [Choose CSet:   0.0 ms]
+   [ 8192K->8096K(64M)]
+ [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Heap after GC invocations=1 (full 0):
+ garbage-first heap   total 65536K, used 8096K [0x0000000005f00000, 0x0000000009f00000, 0x000000000df00000)
+  region size 1024K, 1 young (1024K), 1 survivors (1024K)
+ compacting perm gen  total 20480K, used 2680K [0x000000000df00000, 0x000000000f300000, 0x0000000013100000)
+   the space 20480K,  13% used [0x000000000df00000, 0x000000000e19e218, 0x000000000e19e400, 0x000000000f300000)
+No shared spaces configured.
+}
+{Heap before GC invocations=1 (full 0):
+ garbage-first heap   total 65536K, used 10144K [0x0000000005f00000, 0x0000000009f00000, 0x000000000df00000)
+  region size 1024K, 3 young (3072K), 1 survivors (1024K)
+ compacting perm gen  total 20480K, used 2680K [0x000000000df00000, 0x000000000f300000, 0x0000000013100000)
+   the space 20480K,  13% used [0x000000000df00000, 0x000000000e19e218, 0x000000000e19e400, 0x000000000f300000)
+No shared spaces configured.
+0.176: [GC pause (young), 0.00228253 secs]
+   [Parallel Time:   2.2 ms]
+      [GC Worker Start Time (ms):  175.8  175.8  175.8  175.8]
+      [Update RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+         [Processed Buffers : 0 0 0 0
+          Sum: 0, Avg: 0, Min: 0, Max: 0]
+      [Ext Root Scanning (ms):  0.1  0.1  0.1  0.1
+       Avg:   0.1, Min:   0.1, Max:   0.1]
+      [Mark Stack Scanning (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Scan RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Object Copy (ms):  1.9  1.9  1.9  2.0
+       Avg:   1.9, Min:   1.9, Max:   2.0]
+      [Termination (ms):  0.1  0.1  0.1  0.0
+       Avg:   0.1, Min:   0.0, Max:   0.1]
+         [Termination Attempts : 1 1 1 1
+          Sum: 4, Avg: 1, Min: 1, Max: 1]
+      [GC Worker End Time (ms):  177.9  177.9  177.9  177.9]
+      [Other:   0.1 ms]
+   [Clear CT:   0.0 ms]
+   [Other:   0.0 ms]
+      [Choose CSet:   0.0 ms]
+   [ 10144K->10048K(64M)]
+ [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Heap after GC invocations=2 (full 0):
+ garbage-first heap   total 65536K, used 10048K [0x0000000005f00000, 0x0000000009f00000, 0x000000000df00000)
+  region size 1024K, 0 young (0K), 0 survivors (0K)
+ compacting perm gen  total 20480K, used 2680K [0x000000000df00000, 0x000000000f300000, 0x0000000013100000)
+   the space 20480K,  13% used [0x000000000df00000, 0x000000000e19e218, 0x000000000e19e400, 0x000000000f300000)
+No shared spaces configured.
+}

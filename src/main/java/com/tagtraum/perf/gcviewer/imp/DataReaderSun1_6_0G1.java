@@ -49,19 +49,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static final String HEAP_SIZING_START = "Heap";
 
-    private static final String HEAP_G1 = "garbage-first heap";
-    private static final String HEAP_G1_REGION_SIZE = "region size";
-    private static final String HEAP_COMPACTING_PERM = "compacting perm gen";
-    private static final String HEAP_THE_SPACE = "the space";
-    private static final String HEAP_SHARED_SPACES = "No shared spaces configured.";
-
     private static final List<String> HEAP_STRINGS = new LinkedList<String>();
     static {
-        HEAP_STRINGS.add(HEAP_G1);
-        HEAP_STRINGS.add(HEAP_G1_REGION_SIZE);
-        HEAP_STRINGS.add(HEAP_COMPACTING_PERM);
-        HEAP_STRINGS.add(HEAP_THE_SPACE);
-        HEAP_STRINGS.add(HEAP_SHARED_SPACES);
+        HEAP_STRINGS.add("garbage-first heap");
+        HEAP_STRINGS.add("region size");
+        HEAP_STRINGS.add("compacting perm gen");
+        HEAP_STRINGS.add("the space");
+        HEAP_STRINGS.add("No shared spaces configured.");
+        HEAP_STRINGS.add("}");
     }
     
     public DataReaderSun1_6_0G1(InputStream in) throws UnsupportedEncodingException {
