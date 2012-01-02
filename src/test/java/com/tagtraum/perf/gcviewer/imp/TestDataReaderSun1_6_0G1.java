@@ -255,7 +255,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_Young.txt");
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_young.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in);
         GCModel model = reader.read();
         
