@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -28,6 +29,8 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * <p>created on: 05.12.2011</p>
  */
 public class ModelDetailsPanel extends JPanel {
+    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
+
     private static NumberFormat pauseFormatter;
     private static NumberFormat percentFormatter;
     
@@ -52,11 +55,10 @@ public class ModelDetailsPanel extends JPanel {
         fullGcEventModel = new DoubleDataMapModel();
         concurrentGcEventModel = new DoubleDataMapModel();
         
-        // TODO i18n
-        DoubleDataMapTable gcTable = new DoubleDataMapTable("gc events", gcEventModel);
-        DoubleDataMapTable fullGcTable = new DoubleDataMapTable("full gc events", fullGcEventModel);
-        DoubleDataMapTable concurrentGcTable = new DoubleDataMapTable("concurrent gc events", concurrentGcEventModel);
-        
+        DoubleDataMapTable gcTable = new DoubleDataMapTable(localStrings.getString("data_panel_group_gc_pauses"), gcEventModel);
+        DoubleDataMapTable fullGcTable = new DoubleDataMapTable(localStrings.getString("data_panel_group_full_gc_pauses"), fullGcEventModel);
+        DoubleDataMapTable concurrentGcTable = new DoubleDataMapTable(localStrings.getString("data_panel_group_concurrent_gc_events"), concurrentGcEventModel);
+
         GridBagConstraints constraints = createGridBagConstraints();
         add(gcTable, constraints);
         
@@ -89,9 +91,9 @@ public class ModelDetailsPanel extends JPanel {
      * Sets the model to be displayed.
      */
     public void setModel(GCModel model) {
-        gcEventModel.setModel(model.getGcEventPauses(), model.getPause().getSum());
-        fullGcEventModel.setModel(model.getFullGcEventPauses(), model.getPause().getSum());
-        concurrentGcEventModel.setModel(model.getConcurrentEventPauses(), model.getPause().getSum());
+        gcEventModel.setModel(model.getGcEventPauses(), model.getPause().getSum(), true);
+        fullGcEventModel.setModel(model.getFullGcEventPauses(), model.getPause().getSum(), true);
+        concurrentGcEventModel.setModel(model.getConcurrentEventPauses(), model.getPause().getSum(), false);
         
         repaint();
     }
@@ -104,15 +106,19 @@ public class ModelDetailsPanel extends JPanel {
      */
     private static class DoubleDataMapTable extends JPanel implements TableModelListener {
 
-        private String title;
         private List<List<JLabel>> labelGrid = new ArrayList<List<JLabel>>();
         private List<JLabel> titleRow = new ArrayList<JLabel>();
         private DoubleDataMapModel model;
         
+        /**
+         * Create a table with the <code>title</code> and the <code>model</code> to display.
+         * 
+         * @param title Title to be used for this table.
+         * @param model data to be displayed
+         */
         public DoubleDataMapTable(String title, DoubleDataMapModel model) {
             super();
             
-            this.title = title;
             this.setModel(model);
             this.setLayout(new GridBagLayout());
             this.setBorder(BorderFactory.createCompoundBorder(
@@ -121,7 +127,9 @@ public class ModelDetailsPanel extends JPanel {
         }
         
         /**
-         * Sets the new model and makes sure, that its data will be displayed.
+         * Sets the new model and makes sure, that its data will be displayed. This table
+         * listens to data changes in the model and updates if necessary.
+         * 
          * @param model data to be displayed
          */
         public void setModel(DoubleDataMapModel model) {
@@ -160,6 +168,9 @@ public class ModelDetailsPanel extends JPanel {
             }
         }
 
+        /**
+         * Create a standard set of GridBagConstraints.
+         */
         private GridBagConstraints createGridBagConstraints() {
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.anchor = GridBagConstraints.WEST;
@@ -187,7 +198,7 @@ public class ModelDetailsPanel extends JPanel {
         }
         
         /**
-         * Creates the <code>titleRow</code>-labels.
+         * Creates the <code>titleRow</code>-labels (but doesn't add them to the table).
          * @param model data to be displayed
          */
         private List<JLabel> createTitleRow(DoubleDataMapModel model) {
@@ -200,7 +211,7 @@ public class ModelDetailsPanel extends JPanel {
         }
 
         /**
-         * Adds all labels of the grid to the panel.
+         * Adds all labels of the grid to the panel (builds the table).
          */
         private void addLabelGridToPanel(List<List<JLabel>> labelGrid) {
             GridBagConstraints constraints = createGridBagConstraints();
@@ -272,36 +283,52 @@ public class ModelDetailsPanel extends JPanel {
 
         private List<String> columnNames;
         private List<List<String>> data = new ArrayList<List<String>>();
-        private double totalPause;
         
+        /**
+         * Create the model.
+         */
         public DoubleDataMapModel() {
             super();
             
             this.columnNames = createColumnNamesList();
         }
         
+        /**
+         * Creates a list of names for the columns.
+         */
         private List<String> createColumnNamesList() {
             List<String> columnNames = new ArrayList<String>();
             
-            // TODO i18n
-            columnNames.add("name");
-            columnNames.add("n");
-            columnNames.add("min (s)");
-            columnNames.add("max (s)");
-            columnNames.add("avg (s)");
-            columnNames.add("stddev");
-            columnNames.add("sum (s)");
-            columnNames.add("sum (%)");
+            columnNames.add(localStrings.getString("data_panel_details_name"));
+            columnNames.add(localStrings.getString("data_panel_details_count"));
+            columnNames.add(localStrings.getString("data_panel_details_min"));
+            columnNames.add(localStrings.getString("data_panel_details_max"));
+            columnNames.add(localStrings.getString("data_panel_details_avg"));
+            columnNames.add(localStrings.getString("data_panel_details_stddev"));
+            columnNames.add(localStrings.getString("data_panel_details_sum"));
+            columnNames.add(localStrings.getString("data_panel_details_sum_percent"));
             
             return columnNames;
         }
         
-        public void setModel(Map<String, DoubleData> model, double totalPause) {
-            this.data = createDataList(model, totalPause);
-            this.totalPause = totalPause;
+        /**
+         * Sets the data for the model.
+         * 
+         * @param model data of the model formatted as map containing DoubleData-Objects identified with strings.
+         * @param totalPause total pause that occurred in this run
+         * @param showPercentOfTotalPause flag to indicate if the total pause in the DoubleData Object
+         * should be added as percentage of <code>totalPause</code> in the total line.
+         */
+        public void setModel(Map<String, DoubleData> model, double totalPause, boolean showPercentOfTotalPause) {
+            this.data = createDataList(model, totalPause, showPercentOfTotalPause);
             fireTableDataChanged();
         }
         
+        /**
+         * Calculates the total sum of the <code>DoubleData</code> objects in the set.
+         * @param entrySet data
+         * @return total sum of all <code>DoubleData</code> objects.
+         */
         private double getTotalSum(Set<Entry<String, DoubleData>> entrySet) {
             double totalSum = 0;
             for (Entry<String, DoubleData> entry : entrySet) {
@@ -311,7 +338,18 @@ public class ModelDetailsPanel extends JPanel {
             return totalSum;
         }
         
-        private List<List<String>> createDataList(Map<String, DoubleData> model, double totalPause) {
+        /**
+         * Creates the data list (sets a string in each "cell" of the grid).
+         * 
+         * @param model data to be displayed
+         * @param totalPause total pause of this gc file
+         * @param showPercentOfTotalPause flag to indicate if the total pause in the DoubleData Object
+         * should be added as percentage of <code>totalPause</code> in the total line.
+         * @return Datastructure containing all values as a "grid".
+         * 
+         * @see #setModel(Map, double, boolean)
+         */
+        private List<List<String>> createDataList(Map<String, DoubleData> model, double totalPause, boolean showPercentOfTotalPause) {
             double totalSum = getTotalSum(model.entrySet());
             int totalNumber = 0;
             
@@ -333,14 +371,14 @@ public class ModelDetailsPanel extends JPanel {
             }
             
             List<String> totalList = new ArrayList<String>();
-            totalList.add("total");
+            totalList.add(localStrings.getString("data_panel_details_total"));
             totalList.add(totalNumber + "");
             totalList.add("");
             totalList.add("");
             totalList.add("");
             totalList.add("");
             totalList.add(pauseFormatter.format(totalSum));
-            totalList.add(percentFormatter.format(totalSum / totalPause * 100));
+            totalList.add(showPercentOfTotalPause ? percentFormatter.format(totalSum / totalPause * 100) : "");
             
             dataList.add(totalList);
             
@@ -384,6 +422,9 @@ public class ModelDetailsPanel extends JPanel {
             return (name == null) ? super.getColumnName(column) : name;
         }
 
+        /**
+         * @see javax.swing.table.TableModel#getValueAt(int, int)
+         */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             return data.get(rowIndex).get(columnIndex);
