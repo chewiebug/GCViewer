@@ -23,7 +23,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
     private static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
-	private static final int LENGTH_OF_DATESTAMP = 29;
+    private static final int LENGTH_OF_DATESTAMP = 29;
 
     private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
     private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
@@ -72,6 +72,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         
         HEAP_STRINGS.add("}");
     }
+    
+    private static final List<String> ADAPTIVE_SIZE_POLICY_STRINGS = new LinkedList<String>();
+    static {
+        ADAPTIVE_SIZE_POLICY_STRINGS.add("PSAdaptiveSize");
+        ADAPTIVE_SIZE_POLICY_STRINGS.add("AdaptiveSize");
+        ADAPTIVE_SIZE_POLICY_STRINGS.add("avg_survived_padded_avg");
+    }
 
     private static Pattern unloadingClassPattern = Pattern.compile(".*\\[Unloading class [^\\]]+\\]$");
 
@@ -79,11 +86,25 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // pattern looks always like "...[CMS<datestamp>..." or "...[CMS<timestamp>..."
     // the next line starts with " (concurrent mode failure)" which in earlier releases followed "CMS" immediately
     // the same can happen with "...ParNew<timestamp|datestamp>..."
-    private static Pattern linesMixedPattern = Pattern.compile("(.*CMS|.*ParNew)([0-9]+[-.].*)"); 
+    private static Pattern linesMixedPattern = Pattern.compile("(.* \\[(CMS|ParNew))([0-9]+[-.].*)");
+    // Matcher group of start of line
+    private static final int LINES_MIXED_STARTOFLINE_GROUP = 1;
+    // Matcher group of end of line
+    private static final int LINES_MIXED_ENDOFLINE_GROUP = 3;
+    
+    // -XX:+PrintAdaptiveSizePolicy outputs the following lines:
+    // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1 
+    // PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0.059538 major_cost: 0.000000 mutator_cost: 0.940462 throughput_goal: 0.990000 live_space: 273821824 free_space: 33685504 old_promo_size: 16842752 old_eden_size: 16842752 desired_promo_size: 16842752 desired_eden_size: 33685504
+    // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512) 
+    // AdaptiveSizeStop: collection: 1 
+    //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+    // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
+    private static Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC)Adaptive.*");
+    private static final String ADAPTIVE_PATTERN = "GCAdaptive";
 
-	public DataReaderSun1_6_0(InputStream in) throws UnsupportedEncodingException {
-		super(in);
-	}
+    public DataReaderSun1_6_0(InputStream in) throws UnsupportedEncodingException {
+        super(in);
+    }
 
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x format...");
@@ -91,6 +112,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         try {
             final GCModel model = new GCModel(false);
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
+            Matcher mixedLineMatcher = linesMixedPattern.matcher("");
+            Matcher adaptiveSizePolicyMatcher = adaptiveSizePolicyPattern.matcher("");
             String line;
             String beginningOfLine = null;
             int lineNumber = 0;
@@ -115,14 +138,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         sb.replace(indexOfStart, indexOfStart + CMS_ABORT_PRECLEAN.length(), "");
                         line = sb.toString();
                     }
-                	Matcher mixedLineMatcher = linesMixedPattern.matcher(line);
+                    mixedLineMatcher.reset(line);
                     final int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassPattern.matcher(line).matches()) {
                         beginningOfLine = line.substring(0, unloadingClassIndex);
                         continue;
                     }
                     else if (line.endsWith("[DefNew") || line.endsWith("[ParNew") || line.endsWith("[ParNew (promotion failed)")) {
-                        // this is the case, when -XX:+PrintTenuringDistribution is used
+                        // this is the case, when e.g. -XX:+PrintTenuringDistribution is used
                         // here we want to skip "Desired survivor..." and "- age..." lines
                         beginningOfLine = line;
                         continue;
@@ -131,14 +154,24 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         if (beginningOfLine != null) {
                             // if PrintTenuringDistribution is used and a line is mixed, 
                             // beginningOfLine may already contain a value, which must be preserved
-                            beginningOfLine += mixedLineMatcher.group(1);
+                            beginningOfLine += mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP);
                         }
                         else {
-                            beginningOfLine = mixedLineMatcher.group(1);
+                            beginningOfLine = mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP);
                         }
-                    	model.add(parseLine(mixedLineMatcher.group(2), parsePosition));
-                    	parsePosition.setIndex(0);
-                    	continue;
+                        model.add(parseLine(mixedLineMatcher.group(LINES_MIXED_ENDOFLINE_GROUP), parsePosition));
+                        parsePosition.setIndex(0);
+                        continue;
+                    }
+                    else if (line.indexOf(ADAPTIVE_PATTERN) >= 0) {
+                        adaptiveSizePolicyMatcher.reset(line);
+                        if (!adaptiveSizePolicyMatcher.matches()) {
+                            LOG.severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            continue;
+                        }
+                        beginningOfLine = adaptiveSizePolicyMatcher.group(1);
+                        lineNumber = skipLines(in, parsePosition, lineNumber, ADAPTIVE_SIZE_POLICY_STRINGS);
+                        continue;
                     }
                     else if (beginningOfLine != null) {
                         line = beginningOfLine + line;
@@ -146,13 +179,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     }
                     else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                         // the next few lines will be the sizing of the heap
-                        lineNumber = skipHeapSizes(in, parsePosition, lineNumber, HEAP_STRINGS);
+                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
                         continue;
                     }
                     model.add(parseLine(line, parsePosition));
                 } catch (ParseException pe) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
+                    beginningOfLine = null;
                 }
                 // reset ParsePosition
                 parsePosition.setIndex(0);
@@ -172,11 +206,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         AbstractGCEvent ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
-        	// parse timestamp          "double:"
+            // parse timestamp          "double:"
             // parse collection type    "[TYPE"
             // either GC data or another collection type starting with timestamp
             // pre-used->post-used, total, time
-        	final Date datestamp = parseDatestamp(line, pos);
+            final Date datestamp = parseDatestamp(line, pos);
             final double timestamp = parseTimestamp(line, pos);
             final GCEvent.Type type = parseType(line, pos);
             // special provision for CMS events
@@ -268,18 +302,18 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     }
 
     public Date parseDatestamp(String line, ParsePosition pos) throws ParseException {
-    	Date date = null;
-    	if (nextIsDatestamp(line, pos)) {
-    		try {
-				date = dateParser.parse(line.substring(pos.getIndex(), LENGTH_OF_DATESTAMP-1));
-				pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
-			}
-    		catch (java.text.ParseException e) {
-    			throw new ParseException(e.toString(), line);
-			}
-    	}
-    	
-    	return date;
+        Date date = null;
+        if (nextIsDatestamp(line, pos)) {
+            try {
+                date = dateParser.parse(line.substring(pos.getIndex(), LENGTH_OF_DATESTAMP-1));
+                pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
+            }
+            catch (java.text.ParseException e) {
+                throw new ParseException(e.toString(), line);
+            }
+        }
+        
+        return date;
     }
     
     private boolean nextIsDatestamp(String line, ParsePosition pos) {
@@ -289,5 +323,5 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
         return line.indexOf("-", pos.getIndex()) == 4 && line.indexOf("-", pos.getIndex() + 5) == 7;
     }
-	
+    
 }

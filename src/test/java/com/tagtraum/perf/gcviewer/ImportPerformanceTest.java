@@ -1,10 +1,11 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.imp.DataReader;
-import com.tagtraum.perf.gcviewer.imp.DataReaderSun1_5_0;
-
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import com.tagtraum.perf.gcviewer.imp.DataReader;
+import com.tagtraum.perf.gcviewer.imp.DataReaderSun1_6_0;
+import com.tagtraum.perf.gcviewer.math.IntData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,15 +16,21 @@ import java.io.IOException;
  */
 public class ImportPerformanceTest {
     public static void main(String[] args) throws IOException, InterruptedException {
-        long start = System.currentTimeMillis();
-        for (int i=0; i<1; i++) {
-            DataReader dataReader = new DataReaderSun1_5_0(new FileInputStream(args[0]));
-            readModel(dataReader);
+        IntData performanceData = new IntData();
+        for (int i=0; i<50; i++) {
+            long start = System.currentTimeMillis();
+            DataReader dataReader = new DataReaderSun1_6_0(new FileInputStream(args[0]));
+            dataReader.read();
+            performanceData.add((int)(System.currentTimeMillis() - start));
         }
-        System.out.println((System.currentTimeMillis() - start));
+        
+        printIntData(args[0], performanceData);
     }
-
-    private static void readModel(DataReader dataReader) throws IOException, InterruptedException {
-        dataReader.read();
+    
+    private static void printIntData(String filename, IntData data) {
+        System.out.printf("results for %1$s in ms: %2$d runs%nmin, max, avg, stddev, sum%n" +
+        		"%3$s, %4$s, %5$s, %6$s, %7$s",
+        		filename, data.getN(), 
+        		data.getMin(), data.getMax(), data.average(), data.standardDeviation(), data.getSum());
     }
 }
