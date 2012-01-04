@@ -115,7 +115,7 @@
 							<outputDirectory>${basedir}/src/main/resources/com/tagtraum/perf/gcviewer</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${basedir}/src/main/resources</directory>
+									<directory>${basedir}/src/main/templates</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>version.properties</include>
