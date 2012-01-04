@@ -163,6 +163,7 @@ public class GCModel implements Serializable {
     public void printDetailedInformation() {
     	// TODO delete
     	printPauseMap(gcEventPauses);
+        printPauseMap(fullGcEventPauses);
     	printPauseMap(concurrentGcEventPauses);
 
     	printDoubleData("initiatingOccupancyFraction", initiatingOccupancyFraction);
