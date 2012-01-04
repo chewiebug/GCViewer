@@ -40,11 +40,12 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 
 
 /**
+ * This class holds all chart and model data panels and provides them to {@link GCDocument}
+ * for layouting.
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * <p>Date: May 5, 2005<br/>
  * Time: 2:14:36 PM</p>
- *
  */
 public class ChartPanelView {
 
@@ -78,8 +79,8 @@ public class ChartPanelView {
         this.modelDetailsPanel = new ModelDetailsPanel();
         
         this.modelChartAndDetailsPanel = new JTabbedPane();
-        this.modelChartAndDetailsPanel.addTab("chart", modelChart);
-        this.modelChartAndDetailsPanel.addTab("details", modelDetailsPanel);
+        this.modelChartAndDetailsPanel.addTab(localStrings.getString("data_panel_tab_chart"), modelChart);
+        this.modelChartAndDetailsPanel.addTab(localStrings.getString("data_panel_tab_details"), modelDetailsPanel);
         
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
