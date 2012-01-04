@@ -36,7 +36,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 
     public static String vcid = "$Id: AboutDialog.java,v 1.1.1.1 2002/01/15 19:48:45 hendriks73 Exp $";
     private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
-    private static final String GCVIEWER_HOMEPAGE = "https://github.com/chewiebug/gcviewer/";
+    private static final String GCVIEWER_HOMEPAGE = "https://github.com/chewiebug/gcviewer/wiki";
 
     private Frame frame;
 
@@ -52,10 +52,13 @@ public class AboutDialog extends JDialog implements ActionListener {
 
         JPanel versionPanel = new JPanel();
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        versionPanel.setLayout(new GridLayout(2, 1));
-        JLabel version = new JLabel("\u00A9" + " 2011: Joerg Wuethrich", JLabel.CENTER);
-        JLabel version2 = new JLabel("version " + loadVersion(), JLabel.CENTER);
-        versionPanel.add(version);
+        versionPanel.setLayout(new GridLayout(4, 1));
+        JLabel copyright2011 = new JLabel("\u00A9" + " 2011: Joerg Wuethrich", JLabel.CENTER);
+        JLabel copyright2012 = new JLabel("\u00A9" + " 2012: Joerg Wuethrich, Serafin Sedano", JLabel.CENTER);
+        JLabel version2 = new JLabel("version: " + loadVersion(), JLabel.CENTER);
+        versionPanel.add(copyright2011);
+        versionPanel.add(copyright2012);
+        versionPanel.add(new JLabel());
         versionPanel.add(version2);
 
         
