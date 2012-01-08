@@ -52,12 +52,15 @@ public class AboutDialog extends JDialog implements ActionListener {
 
         JPanel versionPanel = new JPanel();
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        versionPanel.setLayout(new GridLayout(4, 1));
-        JLabel copyright2011 = new JLabel("\u00A9" + " 2011: Joerg Wuethrich", JLabel.CENTER);
-        JLabel copyright2012 = new JLabel("\u00A9" + " 2012: Joerg Wuethrich, Serafin Sedano", JLabel.CENTER);
+        versionPanel.setLayout(new GridLayout(6, 1));
+        JLabel copyright = new JLabel("\u00A9" + " 2011-2012: Joerg Wuethrich", JLabel.CENTER);
+        JLabel contributorsLabel = new JLabel("contributor:", JLabel.CENTER);
+        JLabel contributors = new JLabel("Serafín Sedano", JLabel.CENTER);
         JLabel version2 = new JLabel("version: " + loadVersion(), JLabel.CENTER);
-        versionPanel.add(copyright2011);
-        versionPanel.add(copyright2012);
+        versionPanel.add(copyright);
+        versionPanel.add(new JLabel());
+        versionPanel.add(contributorsLabel);
+        versionPanel.add(contributors);
         versionPanel.add(new JLabel());
         versionPanel.add(version2);
 

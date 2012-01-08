@@ -3,8 +3,7 @@ License $Id: $
 GCViewer helps you to analyse java garbage collection log files. 
 
 Copyright (c) 2002-2008 tagtraum industries incorporated.
-Copyright (c) 2011 Joerg Wuethrich
-Copyright (c) 2012 Joerg Wuethrich, Serafin Sedano
+Copyright (c) 2011-2012 Joerg Wuethrich
 
 LGPL
 ====
