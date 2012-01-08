@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -78,9 +79,18 @@ public class ChartPanelView {
         this.modelPanel = new ModelPanel();
         this.modelDetailsPanel = new ModelDetailsPanel();
         
+        JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        
+        JScrollBar hScrollBar = modelDetailsScrollPane.getHorizontalScrollBar();
+        hScrollBar.setUnitIncrement(10);
+        JScrollBar vScrollBar = modelDetailsScrollPane.getVerticalScrollBar();
+        vScrollBar.setUnitIncrement(10);
+        
         this.modelChartAndDetailsPanel = new JTabbedPane();
         this.modelChartAndDetailsPanel.addTab(localStrings.getString("data_panel_tab_chart"), modelChart);
-        this.modelChartAndDetailsPanel.addTab(localStrings.getString("data_panel_tab_details"), modelDetailsPanel);
+        this.modelChartAndDetailsPanel.addTab(localStrings.getString("data_panel_tab_details"), modelDetailsScrollPane);
         
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
