@@ -63,7 +63,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 
         
         Panel buttonPanel = new Panel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         if (ExternalViewer.isSupported()) {
             try {
                 JButton homepageButton = new JButton("Homepage");
