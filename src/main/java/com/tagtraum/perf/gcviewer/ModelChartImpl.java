@@ -22,6 +22,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -49,6 +50,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
 
     private GCModel model;
     private Chart chart;
+    private JScrollBar horizontalScrollBar;
     private Ruler timestampRuler;
     private Ruler memoryRuler;
     private Ruler pauseRuler;
@@ -76,6 +78,11 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         this.chart.setPreferredSize(new Dimension(0, 0));
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        
+        // set scrolling speed
+        horizontalScrollBar = getHorizontalScrollBar();
+        horizontalScrollBar.setUnitIncrement(50);
+        horizontalScrollBar.setBlockIncrement(500);
 
         // order of the renderers determines what is painted first and last
         // we start with what's painted last
@@ -210,6 +217,9 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         memoryRuler.setSize((int)memoryRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         pauseRuler.setSize((int)pauseRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         timestampRuler.setSize((int)(getViewport().getWidth()*getScaleFactor()), (int)timestampRuler.getPreferredSize().getHeight());
+        
+        horizontalScrollBar.setBlockIncrement((int)(scaleFactor * 5000));
+        
         repaint();
     }
 
