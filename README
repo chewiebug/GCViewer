@@ -29,7 +29,7 @@ In detail descriptions of most JVM parameters relevant to garbage collection
 can be found at http://www.tagtraum.com/gcviewer-vmflags.html
 
 
-GCViewer shows a number of lines etc. These are:
+GCViewer shows a number of lines etc. in a chart (first tab). These are:
 
 - Full GC Lines:
      o Black vertical line at every Full GC
@@ -59,6 +59,29 @@ GCViewer shows a number of lines etc. These are:
      o Cyan vertical line for every begin (concurrent-mark-start) and
        pink vertical line for every end (CMS-concurrent-reset /
        G1: concurrent-cleanup-end) of a concurrent collection cycle
+
+In the second tab ("Event details") it shows details about the events it parsed:
+E.g. events like the following
+
+24.187: [GC 24.188: [ParNew: 93184K->5464K(104832K), 0.0442895 secs] \
+93184K->5464K(1036928K), 0.0447149 secs] \
+[Times: user=0.39 sys=0.07, real=0.05 secs]
+
+are shown in one line as
+GC ParNew: <number of events parsed>, <min duration>, <max duration>...
+
+Events like these
+
+4183.962: [Full GC 4183.962: [CMS: 32957K->40326K(932096K), 2.3313389 secs] \
+76067K->40326K(1036928K), [CMS Perm : 43837K->43453K(43880K)], 2.3339606 secs] \
+[Times: user=2.33 sys=0.01, real=2.33 secs] 
+ 
+are shown as
+Full GC CMS: CMS Perm : <number of events parsed> ...
+
+So for every line the text is extracted (not always every part of it). This allows
+a user which is familiar with the text log files to find out more details about
+the events that occurred.
 
 Metrics
 =======
