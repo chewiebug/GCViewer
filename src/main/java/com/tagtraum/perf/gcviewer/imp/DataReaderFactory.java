@@ -51,11 +51,13 @@ public class DataReaderFactory {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x");
             return new DataReaderSun1_6_0(in);
         } else if (s.indexOf("CMS-initial-mark") != -1 || s.indexOf("PSYoungGen") != -1) {
+            // format is 1.5, but datareader for 1_6_0 can handle it
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.5.x");
-            return new DataReaderSun1_5_0(in);
+            return new DataReaderSun1_6_0(in);
         } else if (s.indexOf(": [") != -1) {
+            // format is 1.4, but datareader for 1_6_0 can handle it
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.4.x");
-            return new DataReaderSun1_4_0(in);
+            return new DataReaderSun1_6_0(in);
         } else if (s.indexOf("[GC") != -1 || s.indexOf("[Full GC") != -1 || s.indexOf("[Inc GC")!=-1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.3.1");
             return new DataReaderSun1_3_1(in);

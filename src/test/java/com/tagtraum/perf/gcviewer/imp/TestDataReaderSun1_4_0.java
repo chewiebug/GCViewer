@@ -1,17 +1,17 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import junit.framework.TestCase;
+
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+
 /**
+ * Tests some cases for java 1.4 (using DataReaderSun1_6_0).
  *
  * Date: Jan 30, 2002
  * Time: 5:53:55 PM
@@ -32,7 +32,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         AbstractGCEvent event5 = new GCEvent(4, 10753, 6046, 10912, 0.3146707d, AbstractGCEvent.Type.INC_GC);
         AbstractGCEvent event6 = new GCEvent(5, 52471, 22991, 75776, 1.0754938d, AbstractGCEvent.Type.GC);
         ByteArrayInputStream in = new ByteArrayInputStream("2.23492e-006: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n1.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n2.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n3.0: [Full GC 10753K->6046K(10912K), 0.3146707 secs]\r\n4.0: [Inc GC 10753K->6046K(10912K), 0.3146707 secs]\r\n5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]".getBytes());
-        DataReader reader = new DataReaderSun1_4_0(in);
+        DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         assertTrue(model.size() == 6);
         Iterator i = model.getGCEvents();
@@ -54,7 +54,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
 
     public void testNoFullGC() throws Exception {
         InputStream in = getClass().getResourceAsStream("SampleSun1_4_2NoFullGC.txt");
-        DataReader reader = new DataReaderSun1_4_0(in);
+        DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         // we just look at the first six...
         /*
@@ -93,7 +93,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
 
     public void testPrintGCDetails() throws Exception {
         InputStream in = getClass().getResourceAsStream("SampleSun1_4_2PrintGCDetails.txt");
-        DataReader reader = new DataReaderSun1_4_0(in);
+        DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         /*
         0.000: [GC 0.000: [DefNew: 1534K->128K(1664K), 0.0082759 secs] 1534K->276K(16256K), 0.0084272 secs]
@@ -125,11 +125,4 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals("throughput", 93.984703347, model.getThroughput(), 0.000001);
     }
 
-    public static TestSuite suite() {
-        return new TestSuite(TestDataReaderSun1_4_0.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
 }

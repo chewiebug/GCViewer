@@ -3,11 +3,11 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
+ * Tests some cases for java 1.5 (using DataReaderSun1_6_0).
  *
  * Date: Jan 30, 2002
  * Time: 5:53:55 PM
@@ -22,19 +22,19 @@ public class TestDataReaderSun1_5_0 extends TestCase {
 
     public void testCMSPrintGCDetails() throws Exception {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0CMS_PrintGCDetails.txt");
-        final DataReader reader = new DataReaderSun1_5_0(in);
+        final DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         
         assertEquals("size", 515, model.size());
         assertEquals("throughput", 88.28044896, model.getThroughput(), 0.00000001);
         assertEquals("sum of pauses", model.getPause().getSum(), model.getFullGCPause().getSum() + model.getGCPause().getSum(), 0.0000001);
         assertEquals("total pause", 9.1337492, model.getPause().getSum(), 0.0000001);
-        assertEquals("full gc pause", 5.1633541, model.getFullGCPause().getSum(), 0.00000001);
+        assertEquals("full gc pause", 7.4672903, model.getFullGCPause().getSum(), 0.00000001);
     }
 
     public void testParallelOldGC() throws Exception {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0ParallelOldGC.txt");
-        final DataReader reader = new DataReaderSun1_5_0(in);
+        final DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         
         assertEquals("size", 1, model.size());
@@ -43,7 +43,7 @@ public class TestDataReaderSun1_5_0 extends TestCase {
 
     public void testCMSIncrementalPacing() throws Exception {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0CMS_IncrementalPacing.txt");
-        final DataReader reader = new DataReaderSun1_5_0(in);
+        final DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
 
         assertEquals("size", 810, model.size());
@@ -55,7 +55,7 @@ public class TestDataReaderSun1_5_0 extends TestCase {
 
     public void testPromotionFailure() throws Exception {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0PromotionFailure.txt");
-        final DataReader reader = new DataReaderSun1_5_0(in);
+        final DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         
         assertEquals("size", 6, model.size());
@@ -65,7 +65,7 @@ public class TestDataReaderSun1_5_0 extends TestCase {
 
     public void testCMSConcurrentModeFailure() throws Exception {
         final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0ConcurrentModeFailure.txt");
-        final DataReader reader = new DataReaderSun1_5_0(in);
+        final DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         
         assertEquals("size", 3417, model.size());
@@ -73,11 +73,4 @@ public class TestDataReaderSun1_5_0 extends TestCase {
         assertEquals("gc pause", 181.8116798, model.getPause().getSum(), 0.000000001);
     }
 
-    public static TestSuite suite() {
-        return new TestSuite(TestDataReaderSun1_5_0.class);
-    }
-
-    public static void main(final String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
 }

@@ -20,14 +20,44 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
+/**
+ * <p>Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7
+ * <br>Supports the following gc algorithms:
+ * <ul>
+ * <li>-XX:+UseSerialGC</li>
+ * <li>-XX:+UseParallelGC</li>
+ * <li>-XX:+UseParNewGC</li>
+ * <li>-XX:+UseParallelOldGC</li>
+ * <li>-XX:+UseConcMarkSweepGC</li>
+ * <li>-Xincgc (1.4 / 1.5)</li>
+ * </ul>
+ * </p>
+ * <p>-XX:+UseG1GC is not supported by this class, but by {@link DataReaderSun1_6_0G1}
+ * </p>
+ * <p>Supports the following options:
+ * <ul>
+ * <li>-XX:+PrintGCDetails</li>
+ * <li>-XX:+PrintGCTimeStamps</li>
+ * <li>-XX:+PrintGCDateStamps</li>
+ * <li>-XX:+PrintHeapAtGC (output ignored)</li>
+ * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
+ * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
+ * </ul>
+ * </p>
+ * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
+ * <p>created on: 23.10.2011 (copied from 1.5 implementation)</p>
+ * @see DataReaderSun1_6_0G1
+ */
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
+    // format written by -XX:+PrintGCDateStamps
     private static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
     private static final int LENGTH_OF_DATESTAMP = 29;
-
-    private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
     private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
 
+    private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
+    
     private static final String UNLOADING_CLASS = "[Unloading class ";
     private static final String DESIRED_SURVIVOR = "Desired survivor";
     private static final String APPLICATION_TIME = "Application time:";
@@ -62,9 +92,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("PSOldGen"); // serial old collection -XX:+UseParallelGC without -XX:+UseParallelOldGC
         HEAP_STRINGS.add("object space");
         HEAP_STRINGS.add("PSPermGen"); // serial (?) perm collection
-        HEAP_STRINGS.add("tenured generation"); // serial old collection -XX:UseSerialGC
+        HEAP_STRINGS.add("tenured generation"); // serial old collection -XX:+UseSerialGC
         HEAP_STRINGS.add("the space");
-        HEAP_STRINGS.add("compacting perm gen"); // serial perm collection -XX:UseSerialGC
+        HEAP_STRINGS.add("ro space");
+        HEAP_STRINGS.add("rw space");
+        HEAP_STRINGS.add("compacting perm gen"); // serial perm collection -XX:+UseSerialGC
         HEAP_STRINGS.add("concurrent mark-sweep generation total"); // CMS old collection
         HEAP_STRINGS.add("concurrent-mark-sweep perm gen"); // CMS perm collection
         
@@ -107,7 +139,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x format...");
+        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x format...");
         
         try {
             final GCModel model = new GCModel(false);
@@ -146,7 +178,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     }
                     else if (line.endsWith("[DefNew") || line.endsWith("[ParNew") || line.endsWith("[ParNew (promotion failed)")) {
                         // this is the case, when e.g. -XX:+PrintTenuringDistribution is used
-                        // here we want to skip "Desired survivor..." and "- age..." lines
+                        // where we want to skip "Desired survivor..." and "- age..." lines
                         beginningOfLine = line;
                         continue;
                     }
