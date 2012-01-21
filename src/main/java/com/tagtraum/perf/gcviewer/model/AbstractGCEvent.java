@@ -143,8 +143,10 @@ public abstract class AbstractGCEvent implements Serializable {
         }
         
         if (details != null) {
-            // this is probably only right for SUN garbage collectors
-            return details.size() == 3;
+            // the assumption is, that a full collection is everything, that collects from more 
+            // than one generation.
+            // Probably this is not always strictly right, but often enough a good assumption
+            return details.size() > 1;
         }
         else {
             return false;
@@ -284,7 +286,7 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
         public static final Type GC = new Type("GC", Generation.YOUNG);
         public static final Type GC__ = new Type("GC--", Generation.YOUNG);
-        public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG); // single threaded
+        public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG, Concurrency.SERIAL); // single threaded
         public static final Type PAR_NEW = new Type("ParNew", "ParNew:", Generation.YOUNG); // parallel
         public static final Type PAR_OLD_GEN = new Type("ParOldGen", "ParOldGen:", Generation.TENURED);
         public static final Type PS_YOUNG_GEN = new Type("PSYoungGen", "PSYoungGen:", Generation.YOUNG);
