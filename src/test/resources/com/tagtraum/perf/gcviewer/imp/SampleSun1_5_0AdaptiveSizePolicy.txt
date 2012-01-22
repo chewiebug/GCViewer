@@ -1,0 +1,30 @@
+0.162: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 901552  promoted: 4462720  overflow: trueAdaptiveSizeStart: 0.166 collection: 1 
+AdaptiveSizePolicy::compute_generation_free_space:  minor_time: 0.028492 major_cost: 0.000000 mutator_cost: 0.971508 throughput_goal: 0.990000 live_space: 270865488 free_space: 65273856 old_promo_size: 59703296 old_eden_size: 5570560 desired_promo_size: 59703296 desired_eden_size: 11141120
+AdaptiveSizePolicy::survivor space sizes: collection: 1 (917504, 917504) -> (917504, 917504) 
+AdaptiveSizeStop: collection: 1 
+ [PSYoungGen: 5437K->880K(6336K)] 5437K->5238K(64640K), 0.0045523 secs]
+0.168: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 893688  promoted: 5540496  overflow: falseAdaptiveSizeStart: 0.173 collection: 2 
+AdaptiveSizePolicy::compute_generation_free_space:  minor_time: 0.394467 major_cost: 0.000000 mutator_cost: 0.605533 throughput_goal: 0.990000 live_space: 270864596 free_space: 70844416 old_promo_size: 59703296 old_eden_size: 11141120 desired_promo_size: 59703296 desired_eden_size: 11141120
+AdaptiveSizePolicy::survivor space sizes: collection: 2 (917504, 917504) -> (917504, 917504) 
+AdaptiveSizeStop: collection: 2 
+ [PSYoungGen: 6314K->872K(11776K)] 10672K->10641K(70080K), 0.0049714 secs]
+0.177: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 901552  promoted: 11113776  overflow: falseAdaptiveSizeStart: 0.185 collection: 3 
+AdaptiveSizePolicy::compute_generation_free_space:  minor_time: 0.491445 major_cost: 0.000000 mutator_cost: 0.508555 throughput_goal: 0.990000 live_space: 270866885 free_space: 70844416 old_promo_size: 59703296 old_eden_size: 11141120 desired_promo_size: 59703296 desired_eden_size: 22282240
+AdaptiveSizePolicy::survivor space sizes: collection: 3 (917504, 917504) -> (917504, 917504) 
+AdaptiveSizeStop: collection: 3 
+ [PSYoungGen: 11734K->880K(11776K)] 21503K->21502K(70080K), 0.0088388 secs]
+0.188: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 885168  promoted: 11113776  overflow: falseAdaptiveSizeStart: 0.197 collection: 4 
+AdaptiveSizePolicy::compute_generation_free_space:  minor_time: 0.559848 major_cost: 0.000000 mutator_cost: 0.440152 throughput_goal: 0.990000 live_space: 270863960 free_space: 81985536 old_promo_size: 59703296 old_eden_size: 22282240 desired_promo_size: 59703296 desired_eden_size: 22282240
+AdaptiveSizePolicy::survivor space sizes: collection: 4 (917504, 917504) -> (917504, 917504) 
+AdaptiveSizeStop: collection: 4 
+ [PSYoungGen: 11749K->864K(22656K)] 32371K->32339K(80960K), 0.0087867 secs]
+0.205: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 909760  promoted: 22227552  overflow: falseAdaptiveSizeStart: 0.221 collection: 5 
+  avg_survived_padded_avg: 5239986.000000  avg_promoted_padded_avg: 22288594.000000  avg_pretenured_padded_avg: 0.000000  tenuring_thresh: 6  target_size: 5242880AdaptiveSizePolicy::compute_generation_free_space:  minor_time: 0.590882 major_cost: 0.000000 mutator_cost: 0.409118 throughput_goal: 0.990000 live_space: 270867136 free_space: 81985536 old_promo_size: 59703296 old_eden_size: 22282240 desired_promo_size: 59703296 desired_eden_size: 44564480
+AdaptiveSizePolicy::survivor space sizes: collection: 5 (917504, 917504) -> (917504, 5242880) 
+AdaptiveSizeStop: collection: 5 
+ [PSYoungGen: 22601K->888K(22656K)] 54077K->54070K(80960K), 0.0169295 secs]
+0.222: [Full GCAdaptiveSizeStart: 0.280 collection: 6 
+AdaptiveSizePolicy::compute_generation_free_space:  minor_time: 0.590882 major_cost: 0.215154 mutator_cost: 0.193964 throughput_goal: 0.990000 live_space: 326050458 free_space: 104267776 old_promo_size: 59703296 old_eden_size: 44564480 desired_promo_size: 75694080 desired_eden_size: 38666240
+AdaptiveSizePolicy::old generation size: collection: 6 (59703296) -> (153354240) 
+AdaptiveSizeStop: collection: 6 
+ [PSYoungGen: 888K->0K(22656K)] [ParOldGen: 53181K->54030K(149760K)] 54070K->54030K(172416K) [PSPermGen: 1498K->1497K(16384K)], 0.0583435 secs]

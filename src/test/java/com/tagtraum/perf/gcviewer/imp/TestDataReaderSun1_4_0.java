@@ -24,6 +24,22 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         super(name);
     }
 
+    /**
+     * Test output for -XX:+PrintAdaptiveSizePolicy 
+     */
+    public void testAdaptiveSizePolicy() throws Exception {
+        InputStream in = getClass().getResourceAsStream("SampleSun1_4_0AdaptiveSizePolicy.txt");
+        DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+        
+        assertEquals("number of events", 9, model.getPause().getN());
+        assertEquals("number of full gcs", 3, model.getFullGCPause().getN());
+        assertEquals("number of gcs", 6, model.getGCPause().getN());
+        assertEquals("total pause", 0.1978746, model.getPause().getSum(), 0.000001);
+        assertEquals("full gc pause", 0.026889, model.getFullGCPause().getSum(), 0.000001);
+        assertEquals("gc pause", 0.1709856, model.getGCPause().getSum(), 0.000001);
+    }
+    
     public void testParse1() throws Exception {
         AbstractGCEvent event1 = new GCEvent(2.23492e-006d, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
         AbstractGCEvent event2 = new GCEvent(1, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
