@@ -18,6 +18,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
      */
     public void testG1GcVerbose() throws Exception {
     	TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
     	IMP_LOGGER.addHandler(handler);
     	DATA_READER_FACTORY_LOGGER.addHandler(handler);
     	
@@ -29,7 +30,7 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("throughput", 47.75795226, model.getThroughput(), 0.000000001);
         assertEquals("longest pause", 0.1581177, model.getPause().getMax(), 0.000001);
         assertEquals("total runtime", 119.859, model.getRunningTime(), 0.000001);
-        assertEquals("number of errors", 2, handler.getCount());
+        assertEquals("number of errors", 0, handler.getCount());
         
         assertEquals("max interval", 0.211, model.getPauseInterval().getMax(), 0.000001);
         assertEquals("avg interval", 0.048291297, model.getPauseInterval().average(), 0.0000001);
@@ -250,19 +251,6 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("memory", 0, model.getFreedMemoryByGC().getMax());
     }
 
-    public void testYoungJ7() throws Exception {
-        TestLogHandler handler = new TestLogHandler();
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
-        
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_young.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
-        GCModel model = reader.read();
-        
-        assertEquals("gc pause", 0.00631825, model.getPause().getMax(), 0.000000001);
-        assertEquals("heap", 64*1024, model.getHeapAllocatedSizes().getMax());
-    }
-    
     public void testPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
