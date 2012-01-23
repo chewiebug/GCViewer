@@ -222,18 +222,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // special provision for concurrent events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 final ConcurrentGCEvent event = new ConcurrentGCEvent();
-                if (type.getPattern() == GcPattern.GC) {
-                    event.setTimestamp(timestamp);
-                    event.setType(type);
-                    // nothing more to parse...
-                } 
-                else {
-                    event.setTimestamp(timestamp);
-                    event.setType(type);
-
+                
+                // simple concurrent events (ending with -start) just are of type GcPattern.GC
+                event.setTimestamp(timestamp);
+                event.setType(type);
+                if (type.getPattern() == GcPattern.GC_PAUSE) {
+                    // the -end events contain a pause as well
                     event.setPause(parsePause(line, pos));
                     event.setDuration(event.getPause());
-                    // nothing more to parse
                 }
                 ae = event;
             } else {
