@@ -19,6 +19,26 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
+/**
+ * <p>Parses log output from Sun / Oracle Java 1.6. / 1.7
+ * <br>Supports the following gc algorithms:
+ * <ul>
+ * <li>-XX:+UseG1GC</li>
+ * </ul>
+ * </p>
+ * <p>All other algorithms for 1.6 / 1.7 are supported by {@link DataReaderSun1_6_0G1}
+ * </p>
+ * <p>Supports the following options:
+ * <ul>
+ * <li>-XX:+PrintGCDetails</li>
+ * <li>-XX:+PrintGCTimeStamps</li>
+ * <li>-XX:+PrintHeapAtGC (output ignored)</li>
+ * </ul>
+ * </p>
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
+ * <p>created on: 23.10.2011</p>
+ * @see DataReaderSun1_6_0
+ */
 public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0G1.class .getName());
