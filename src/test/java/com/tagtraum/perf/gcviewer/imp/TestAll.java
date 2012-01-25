@@ -1,45 +1,32 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+/**
+ * TestSuite in JUnit 4 style; points to all testcases, that should be run.
+ * 
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
+ * <p>created on: 25.01.2012</p>
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestDataReaderFactory.class,
+    TestDataReaderSun1_2_2.class,
+    TestDataReaderSun1_3_1.class,
+    // TestDataReaderSun1_3_1_19.class,
+    TestDataReaderSun1_4_0.class,
+    TestDataReaderSun1_5_0.class,
+    TestDataReaderSun1_6_0.class,
+    TestDataReaderSun1_6_0G1.class,
+    TestDataReaderSun1_7_0G1.class,
+
+    TestDataReaderIBM1_2_2.class,
+    TestDataReaderIBM1_3_1.class,
+    TestDataReaderIBMi5OS1_4_2.class,
+    TestDataReaderHPUX1_2.class,
+    TestDataReaderJRockit1_4_2.class,
+    TestDataReaderJRockit1_5_0.class,
+})
 public class TestAll {
-
-    /** Source-Version: <code>$Id: TestAll.java,v 1.2 2002/01/20 02:08:41 hendriks73 Exp $</code> */
-    public static String vcid = "$Id: TestAll.java,v 1.2 2002/01/20 02:08:41 hendriks73 Exp $";
-
-    /**
-     * Returns the TestSuite for TestAll.
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite("all datareader tests");
-        suite.addTestSuite(TestDataReaderFactory.class);
-
-        suite.addTestSuite(TestDataReaderSun1_2_2.class);
-        suite.addTestSuite(TestDataReaderSun1_3_1.class);
-        // suite.addTestSuite(TestDataReaderSun1_3_1_19.class);
-        suite.addTestSuite(TestDataReaderSun1_4_0.class);
-        suite.addTestSuite(TestDataReaderSun1_5_0.class);
-        suite.addTestSuite(TestDataReaderSun1_6_0.class);
-        suite.addTestSuite(TestDataReaderSun1_6_0G1.class);
-        suite.addTestSuite(TestDataReaderSun1_7_0G1.class);
-
-        suite.addTestSuite(TestDataReaderIBM1_2_2.class);
-        suite.addTestSuite(TestDataReaderIBM1_3_1.class);
-        suite.addTestSuite(TestDataReaderIBMi5OS1_4_2.class);
-        suite.addTestSuite(TestDataReaderHPUX1_2.class);
-        suite.addTestSuite(TestDataReaderJRockit1_4_2.class);
-        suite.addTestSuite(TestDataReaderJRockit1_5_0.class);
-
-        return suite;
-    }
-
-    /**
-     * Runs the textui JUnit-TestRunner for TestAll.
-     */
-    public static void main(String[] args) {
-        TestRunner.run(suite());
-    }
-
 }
