@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,9 +10,9 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 
 public class TestDataReaderSun1_7_0G1 {
 
@@ -52,6 +53,20 @@ public class TestDataReaderSun1_7_0G1 {
         
         DoubleData initiatingOccupancyFraction = model.getCmsInitiatingOccupancyFraction();
         assertEquals("fraction", 0, initiatingOccupancyFraction.getSum(), 0.1);
+    }
+    
+    @Test
+    public void GcRemark() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("0.197: [GC remark 0.197: [GC ref-proc, 0.0000070 secs], 0.0005297 secs]" +
+                		"\n [Times: user=0.00 sys=0.00, real=0.00 secs]")
+                .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("gc pause", 0.0005297, model.getGCPause().getMax(), 0.000001);
     }
     
 }

@@ -236,6 +236,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 final GCEvent event = new GCEvent();
                 event.setTimestamp(timestamp);
                 event.setType(type);
+                if (isTimestamp(line, pos)) {
+                    event.add(parseLine(line, pos));
+                }
                 if (event.getType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
                     setMemoryAndPauses((GCEvent)event, line, pos);
                 }
