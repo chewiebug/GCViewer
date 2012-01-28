@@ -146,7 +146,7 @@ public class GCModel implements Serializable {
     
     private void printIntData(String name, IntData data) {
         try {
-            System.out.println(name + " (avg, min, max):\t" + data.average() + "\t" + data.getMin() + "\t" + data.getMax());
+            System.out.println(name + " (n, avg, stddev, min, max):\t" + data.getN() + "\t" + data.average() + "\t" + data.standardDeviation() + "\t" + data.getMin() + "\t" + data.getMax());
         } catch (IllegalStateException e) {
             System.out.println(name + "\t" + e.toString());
         }
@@ -154,7 +154,7 @@ public class GCModel implements Serializable {
     
     private void printDoubleData(String name, DoubleData data) {
         try {
-            System.out.println(name + " (avg, stddev, min, max):\t" + data.average() + "\t" + data.standardDeviation() + "\t" + data.getMin() + "\t" + data.getMax());
+            System.out.println(name + " (n, avg, stddev, min, max):\t" + data.getN() + "\t" + data.average() + "\t" + data.standardDeviation() + "\t" + data.getMin() + "\t" + data.getMax());
         } catch (IllegalStateException e) {
             System.out.println(name + "\t" + e.toString());
         }
@@ -451,7 +451,9 @@ public class GCModel implements Serializable {
             }
         }
 
-        if (initialMarkEvent != null) {
+        // getTotal() returns 0 only if just the memory information could not be parsed
+        // which can be the case with java 7 G1 algorithm (mixed with concurrent event)
+        if (initialMarkEvent != null && initialMarkEvent.getTotal() > 0) {
             initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double)initialMarkEvent.getTotal());
         }
     }

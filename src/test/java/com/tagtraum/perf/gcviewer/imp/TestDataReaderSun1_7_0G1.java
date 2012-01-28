@@ -1,19 +1,25 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.Test;
+
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 
-import junit.framework.TestCase;
-
-public class TestDataReaderSun1_7_0G1 extends TestCase {
+public class TestDataReaderSun1_7_0G1 {
 
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
-    public void testYoungJ7() throws Exception {
+    @Test
+    public void youngPause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
@@ -26,6 +32,26 @@ public class TestDataReaderSun1_7_0G1 extends TestCase {
         assertEquals("gc pause", 0.00631825, model.getPause().getMax(), 0.000000001);
         assertEquals("heap", 64*1024, model.getHeapAllocatedSizes().getMax());
         assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    @Test
+    public void eventNoMemory() throws Exception {
+        // there are (rarely) events, where the memory information could not be parsed,
+        // because the line with the memory information was mixed with another event
+        // looks like this:    [251.448:  213M->174M(256M)[GC concurrent-mark-start]
+        // (produced using -XX:+PrintGcDetails -XX:+PrintHeapAtGC)
+
+        GCEvent event = new GCEvent();
+        event.setType(Type.G1_YOUNG_INITIAL_MARK);
+        event.setTimestamp(0.5);
+        event.setPause(0.2);
+        // but no memory information -> all values zero there
+        
+        GCModel model = new GCModel(false);
+        model.add(event);
+        
+        DoubleData initiatingOccupancyFraction = model.getCmsInitiatingOccupancyFraction();
+        assertEquals("fraction", 0, initiatingOccupancyFraction.getSum(), 0.1);
     }
     
 }
