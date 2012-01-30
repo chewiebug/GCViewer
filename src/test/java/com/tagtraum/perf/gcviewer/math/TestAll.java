@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     TestRegressionLine.class,
     TestDoubleData.class,
-    TestIntData.class,
+    TestIntData.class
 })
 public class TestAll {
 }

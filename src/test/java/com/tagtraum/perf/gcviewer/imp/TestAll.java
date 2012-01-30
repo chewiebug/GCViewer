@@ -26,7 +26,7 @@ import org.junit.runners.Suite;
     TestDataReaderIBMi5OS1_4_2.class,
     TestDataReaderHPUX1_2.class,
     TestDataReaderJRockit1_4_2.class,
-    TestDataReaderJRockit1_5_0.class,
+    TestDataReaderJRockit1_5_0.class
 })
 public class TestAll {
 }
