@@ -264,7 +264,22 @@ public class TestDataReaderSun1_6_0G1 extends TestCase {
         assertEquals("GC count", 2, model.size());
         assertEquals("GC pause", 0.00582962 + 0.00228253, model.getGCPause().getSum(), 0.000000001);
         assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    public void testMarkStackFull() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_MarkStackFull.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
 
+        assertEquals("GC count", 1, model.size());
+        assertEquals("GC pause", 0.08032150, model.getGCPause().getSum(), 0.000000001);
+        assertEquals("heap size", 3985 * 1024, model.getHeapAllocatedSizes().getMax());
+        assertEquals("number of errors", 0, handler.getCount());
     }
     
 }

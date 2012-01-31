@@ -47,10 +47,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String TIMES = "[Times";
     
     private static final String TIMES_ALONE = " " + TIMES;
+    private static final String MARK_STACK_IS_FULL = "Mark stack is full";
+    private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
+        EXCLUDE_STRINGS.add(MARK_STACK_IS_FULL);
+        EXCLUDE_STRINGS.add(SETTING_ABORT_IN);
     }
     
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
@@ -147,8 +151,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         beginningOfLine = null;
                     }
 
+                    if (line.indexOf(MARK_STACK_IS_FULL) > 0) {
+                        beginningOfLine = line.substring(0, line.indexOf(MARK_STACK_IS_FULL));
+                        continue;
+                    }
+                    
                     // the following case is special for -XX:+PrintGCDetails and must be treated
-                    // different from the other cases occuring in G1 standard mode
+                    // different from the other cases occurring in G1 standard mode
                     // 0.356: [GC pause (young), 0.00219944 secs] -> GC_PAUSE pattern but GC_MEMORY_PAUSE 
                     //   event (has extensive details)
                     // all other GC types are the same as in standard G1 mode.
