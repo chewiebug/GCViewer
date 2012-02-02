@@ -327,6 +327,7 @@ public abstract class AbstractGCEvent implements Serializable {
         
         // only young collection
         public static final Type G1_YOUNG = new Type("GC pause (young)", "GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_YOUNG_MARK_STAC_FULL = new Type("GC pause (young)Mark stack is full.", "GC pause (young) Mark stack is full", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         // young collections with problems (to-space overflow)
         public static final Type G1_YOUNG__ = new Type("GC pause (young)--", "GC pause (young)--", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         // the same as above but more verbose in detailed mode

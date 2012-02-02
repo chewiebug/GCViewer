@@ -47,7 +47,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String TIMES = "[Times";
     
     private static final String TIMES_ALONE = " " + TIMES;
-    private static final String MARK_STACK_IS_FULL = "Mark stack is full";
+    private static final String MARK_STACK_IS_FULL = "Mark stack is full.";
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
@@ -59,7 +59,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
     // "0.295: [GC pause (young), 0.00594747 secs]"
-    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9.]+)[: \\[]{3}([A-Za-z- ()]+)[, ]+([0-9.]+)[ sec\\]]+$");
+    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9.]+)[: \\[]{3}([A-Za-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
     // "   [ 4096K->3936K(16M)]"
     private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[KMG].*");
 
@@ -150,9 +150,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         line = beginningOfLine + line;
                         beginningOfLine = null;
                     }
-
-                    if (line.indexOf(MARK_STACK_IS_FULL) > 0) {
-                        beginningOfLine = line.substring(0, line.indexOf(MARK_STACK_IS_FULL));
+                    
+                    if (line.endsWith(MARK_STACK_IS_FULL)) {
+                        // "Mark stack is full" message is treated as part of the event name
+                        beginningOfLine = line;
                         continue;
                     }
                     
