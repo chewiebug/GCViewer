@@ -234,8 +234,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
     }
 
-    protected AbstractGCEvent parseLine(final String line, final ParsePosition pos) throws ParseException {
-        AbstractGCEvent ae = null;
+    protected AbstractGCEvent<?> parseLine(final String line, final ParsePosition pos) throws ParseException {
+        AbstractGCEvent<?> ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
             // parse timestamp          "double:"

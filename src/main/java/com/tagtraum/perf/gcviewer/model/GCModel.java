@@ -36,7 +36,7 @@ public class GCModel implements Serializable {
 
 	private static Logger LOG = Logger.getLogger(GCModel.class.getName());
 
-    private List<AbstractGCEvent> allEvents;
+    private List<AbstractGCEvent<?>> allEvents;
     private List<GCEvent> stopTheWorldEvents;
     private List<GCEvent> gcEvents;
     private List<ConcurrentGCEvent> concurrentGCEvents;
@@ -87,7 +87,7 @@ public class GCModel implements Serializable {
     public GCModel(boolean countTenuredAsFull) {
         this.countTenuredAsFull = countTenuredAsFull;
         
-        this.allEvents = new ArrayList<AbstractGCEvent>();
+        this.allEvents = new ArrayList<AbstractGCEvent<?>>();
         this.stopTheWorldEvents = new ArrayList<GCEvent>();
         this.gcEvents = new ArrayList<GCEvent>();
         this.concurrentGCEvents = new ArrayList<ConcurrentGCEvent>();
@@ -300,7 +300,7 @@ public class GCModel implements Serializable {
         return concurrentGCEvents.iterator();
     }
 
-    public Iterator<AbstractGCEvent> getEvents() {
+    public Iterator<AbstractGCEvent<?>> getEvents() {
         return allEvents.iterator();
     }
     
@@ -318,7 +318,7 @@ public class GCModel implements Serializable {
     	return data;
     }
     
-    public void add(final AbstractGCEvent abstractEvent) {
+    public void add(final AbstractGCEvent<?> abstractEvent) {
         allEvents.add(abstractEvent);
         
         firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
@@ -498,8 +498,8 @@ public class GCModel implements Serializable {
         return allEvents.size();
     }
 
-    public AbstractGCEvent get(final int index) {
-        return (AbstractGCEvent) allEvents.get(index);
+    public AbstractGCEvent<?> get(final int index) {
+        return allEvents.get(index);
     }
 
 

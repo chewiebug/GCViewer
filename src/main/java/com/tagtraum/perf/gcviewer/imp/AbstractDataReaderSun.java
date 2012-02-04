@@ -283,7 +283,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
         return timestamp;
     }
 
-    protected abstract AbstractGCEvent parseLine(String line, ParsePosition pos) throws ParseException;
+    protected abstract AbstractGCEvent<?> parseLine(String line, ParsePosition pos) throws ParseException;
 
     protected void skipDetails(String line, ParsePosition pos) throws ParseException {
         int index = line.lastIndexOf(']', line.length()-2) + 1;

@@ -36,7 +36,7 @@ public class DataReaderIBM1_3_0 implements DataReader {
             model.setFormat(GCModel.Format.IBM_VERBOSE_GC);
             int state = 0;
             String line = null;
-            AbstractGCEvent lastEvent = new GCEvent();
+            AbstractGCEvent<GCEvent> lastEvent = new GCEvent();
             GCEvent event = null;
             while ((line = in.readLine()) != null) {
                 String trimmedLine = line.trim();

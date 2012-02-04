@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 import com.tagtraum.perf.gcviewer.ChartRenderer;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 
 /**
@@ -36,7 +35,7 @@ public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
         int lastScaledTimestampBegin = Integer.MIN_VALUE;
         int lastScaledTimestampEnd = Integer.MIN_VALUE;
         for (Iterator<ConcurrentGCEvent> i = getModelChart().getModel().getConcurrentGCEvents(); i.hasNext();) {
-            final AbstractGCEvent event = i.next();
+            final ConcurrentGCEvent event = i.next();
             if (event.isConcurrentCollectionStart()) {
                 final int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
                 if (scaledTimestamp != lastScaledTimestampBegin) {

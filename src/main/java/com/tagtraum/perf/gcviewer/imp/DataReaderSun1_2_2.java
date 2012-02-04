@@ -36,7 +36,7 @@ public class DataReaderSun1_2_2 implements DataReader {
             model.setFormat(GCModel.Format.SUN_1_2_2VERBOSE_GC);
             String line = null;
             boolean timeline = false;
-            AbstractGCEvent lastEvent = new GCEvent();
+            AbstractGCEvent<GCEvent> lastEvent = new GCEvent();
             GCEvent event = null;
             while ((line = in.readLine()) != null) {
                 if (!timeline) {

@@ -269,10 +269,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         return lineNumber;
     }
     
-    @SuppressWarnings("rawtypes")
     @Override
-    protected AbstractGCEvent parseLine(final String line, final ParsePosition pos) throws ParseException {
-        AbstractGCEvent ae = null;
+    protected AbstractGCEvent<?> parseLine(final String line, final ParsePosition pos) throws ParseException {
+        AbstractGCEvent<?> ae = null;
         try {
             // parse timestamp          "double:"
             // parse collection type    "[TYPE"
