@@ -269,6 +269,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         return lineNumber;
     }
     
+    @SuppressWarnings("rawtypes")
     @Override
     protected AbstractGCEvent parseLine(final String line, final ParsePosition pos) throws ParseException {
         AbstractGCEvent ae = null;
@@ -298,7 +299,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 // Java 7 can have detailed event at this position like this
                 // 0.197: [GC remark 0.197: [GC ref-proc, 0.0000070 secs], 0.0005297 secs]
                 if (isTimestamp(line, pos)) {
-                    event.add(parseLine(line, pos));
+                    event.add((GCEvent) parseLine(line, pos));
                 }
                 
                 if (event.getType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {

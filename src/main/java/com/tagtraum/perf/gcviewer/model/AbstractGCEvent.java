@@ -15,25 +15,25 @@ import java.util.Map;
  * Time: 1:47:32 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public abstract class AbstractGCEvent implements Serializable {
+public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable {
     @SuppressWarnings("unchecked")
-    private static final Iterator<AbstractGCEvent> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+    private final Iterator<T> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
     private Date datestamp;
     private double timestamp;
     private Type type = Type.GC;
     private boolean tenuredDetail;
     private String typeAsString;
-    protected List<AbstractGCEvent> details;
+    protected List<T> details;
 
-    public Iterator<AbstractGCEvent> details() {
+    public Iterator<T> details() {
         if (details == null) return EMPTY_ITERATOR;
         return details.iterator();
     }
 
-    public void add(AbstractGCEvent detail) {
+    public void add(T detail) {
         // most events have only one detail event
         if (details == null) {
-        	details = new ArrayList<AbstractGCEvent>(2);
+        	details = new ArrayList<T>(2);
         }
         details.add(detail);
         typeAsString += " " + detail.getType();
@@ -70,7 +70,7 @@ public abstract class AbstractGCEvent implements Serializable {
     private String buildTypeAsString() {
     	StringBuilder sb = new StringBuilder(getType().getType());
     	if (details != null) {
-    		for (AbstractGCEvent detailType : details) {
+    		for (T detailType : details) {
     			sb.append(" ").append(detailType.getType());
     		}
     	}
@@ -89,7 +89,7 @@ public abstract class AbstractGCEvent implements Serializable {
     public boolean isStopTheWorld() {
     	boolean isStopTheWorld = getType().getConcurrency() == Concurrency.SERIAL;
     	if (details != null) {
-    		for (AbstractGCEvent detailEvent : details) {
+    		for (T detailEvent : details) {
     			if (!isStopTheWorld) {
     				isStopTheWorld = detailEvent.getType().getConcurrency() == Concurrency.SERIAL;
     			}

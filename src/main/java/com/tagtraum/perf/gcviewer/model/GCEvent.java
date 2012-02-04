@@ -9,7 +9,7 @@ package com.tagtraum.perf.gcviewer.model;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @version $Id: $
  */
-public class GCEvent extends AbstractGCEvent {
+public class GCEvent extends AbstractGCEvent<GCEvent> {
 
     /**
      * Used before GC in KB.
@@ -69,7 +69,7 @@ public class GCEvent extends AbstractGCEvent {
         sb.append(getType());
         sb.append(' ');
         if (details != null) {
-            for (AbstractGCEvent event : details) {
+            for (GCEvent event : details) {
                 event.toStringBuffer(sb);
             }
         }

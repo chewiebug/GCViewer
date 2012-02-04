@@ -402,10 +402,10 @@ public class GCModel implements Serializable {
         if (event.getGeneration().equals(Generation.YOUNG) && event.hasDetails() && !event.isFull()) {
             
             GCEvent youngEvent = null;
-            for (Iterator<AbstractGCEvent> i = event.details(); i.hasNext(); ) {
-                AbstractGCEvent ev = i.next();
+            for (Iterator<GCEvent> i = event.details(); i.hasNext(); ) {
+                GCEvent ev = i.next();
                 if (ev.getGeneration().equals(Generation.YOUNG)) {
-                    youngEvent = (GCEvent)ev;
+                    youngEvent = ev;
                     break;
                 }
             }
@@ -442,9 +442,9 @@ public class GCModel implements Serializable {
             initialMarkEvent = event;
         }
         else {
-            Iterator<AbstractGCEvent> i = event.details();
+            Iterator<GCEvent> i = event.details();
             while (i.hasNext() && initialMarkEvent == null) {
-                AbstractGCEvent gcEvent = i.next();
+                GCEvent gcEvent = i.next();
                 if (gcEvent.isInitialMark()) {
                     initialMarkEvent = (GCEvent)gcEvent;
                 }
@@ -466,12 +466,10 @@ public class GCModel implements Serializable {
         }
         
         // if there are details, young, tenured and perm sizes can be extracted
-        Iterator<AbstractGCEvent> i = event.details();
+        Iterator<GCEvent> i = event.details();
         while (i.hasNext()) {
-            AbstractGCEvent abstractGCEvent = (AbstractGCEvent)i.next();
-            if (abstractGCEvent instanceof GCEvent) {
-                updateHeapSize((GCEvent)abstractGCEvent);
-            }
+            GCEvent abstractGCEvent = i.next();
+            updateHeapSize((GCEvent)abstractGCEvent);
         }
     }
     

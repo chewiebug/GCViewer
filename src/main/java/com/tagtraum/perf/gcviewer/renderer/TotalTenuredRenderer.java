@@ -39,9 +39,9 @@ public class TotalTenuredRenderer extends PolygonChartRenderer {
         double fallback = 0.0d;
         double lastTenuredTotal = 0;
         for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
-            final GCEvent event = (GCEvent) i.next();
-            for (Iterator<AbstractGCEvent> iterator=event.details(); iterator.hasNext();) {
-                final AbstractGCEvent abstractGcEvent = iterator.next();
+            final GCEvent event = i.next();
+            for (Iterator<GCEvent> iterator=event.details(); iterator.hasNext();) {
+                final GCEvent abstractGcEvent = iterator.next();
                 if (abstractGcEvent instanceof GCEvent) {
                     final GCEvent detailEvent = (GCEvent)abstractGcEvent;
                     if (detailEvent.getType().getGeneration() == Generation.TENURED) {
