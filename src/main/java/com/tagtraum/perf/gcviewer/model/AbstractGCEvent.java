@@ -20,7 +20,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     private final Iterator<T> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
     private Date datestamp;
     private double timestamp;
-    private Type type = Type.GC;
+    private Type type = Type.UNDEFINED;
     private boolean tenuredDetail;
     private String typeAsString;
     protected List<T> details;
@@ -276,6 +276,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public String toString() {
             return rep;
         }
+
+        public static final Type UNDEFINED = new Type("undefined", Generation.YOUNG);
 
         // TODO: is jrockit GC really of type Generation.ALL or rather Generation.TENURED ?
         public static final Type JROCKIT_GC = new Type("jrockit.GC", Generation.TENURED);
