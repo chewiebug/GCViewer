@@ -10,10 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * The abstract gc event is the base class for all types of events. All sorts of general
+ * information can be queried from it and it provides the possibility to add detail events.
  *
  * Date: Jun 1, 2005
  * Time: 1:47:32 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable {
     @SuppressWarnings("unchecked")
