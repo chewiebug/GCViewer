@@ -1,0 +1,32 @@
+0.175: [GC pause (young), 0.00623837 secs]
+   [Parallel Time:   6.1 ms]
+      [GC Worker Start Time (ms):  175.0  175.0  175.0  175.0
+       Avg: 175.0, Min: 175.0, Max: 175.0, Diff:   0.0]
+      [Update RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+         [Processed Buffers : 6 0 0 0
+          Sum: 6, Avg: 1, Min: 0, Max: 6, Diff: 6]
+      [Ext Root Scanning (ms):  0.5  0.6  0.5  0.5
+       Avg:   0.5, Min:   0.5, Max:   0.6, Diff:   0.1]
+      [Mark Stack Scanning (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+      [Scan RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+      [Object Copy (ms):  5.4  5.4  5.5  5.4
+       Avg:   5.4, Min:   5.4, Max:   5.5, Diff:   0.1]
+      [Termination (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+         [Termination Attempts : 1 1 1 1
+          Sum: 4, Avg: 1, Min: 1, Max: 1, Diff: 0]
+      [GC Worker End Time (ms):  181.0  181.0  181.0  181.0
+       Avg: 181.0, Min: 181.0, Max: 181.0, Diff:   0.0]
+      [GC Worker Times (ms):  6.0  6.0  6.0  6.0
+       Avg:   6.0, Min:   6.0, Max:   6.0, Diff:   0.0]
+      [Parallel Other:   0.1 ms]
+   [Clear CT:   0.0 ms]
+   [Other:   0.1 ms]
+      [Choose CSet:   0.0 ms]
+      [Ref Proc:   0.1 ms]
+      [Ref Enq:   0.0 ms]
+   [Eden: 8192K(8192K)->0B(8192K) Survivors: 0B->8192K Heap: 8192K(16M)->7895K(16M)]
+ [Times: user=0.00 sys=0.00, real=0.01 secs] 
