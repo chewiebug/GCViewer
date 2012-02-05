@@ -268,7 +268,8 @@ Sun / Oracle JDK 1.7 (a.k.a. Java 7)
 ---------------------------
 
 Logs generated with -XX:+UseG1GC -XX:+PrintGCDetails can only be parsed
-up to 1.7.0_01. Jdk 1.7.0_02 switched the format, which can't be parsed yet. 
+up to 1.7.0_01. Jdk 1.7.0_02 switched the format of the memory print out
+in the detailed events - a lot of warnings are displayed.
 
 BEA JRockit 1.4.2/1.5
 ---------------------

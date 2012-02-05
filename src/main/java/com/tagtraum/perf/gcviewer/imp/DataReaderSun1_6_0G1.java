@@ -264,6 +264,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             }
         }
         
+        if (event.getTotal() == 0) {
+            // is currently the case for jdk 1.7.0_02 which changed the memory format
+            LOG.warning("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
+        }
         model.add(event);
 
         return lineNumber;
