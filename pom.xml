@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tagtraum</groupId>
 	<artifactId>gcviewer</artifactId>
-	<version>1.31-SNAPSHOT</version>
+	<version>1.31-RC5</version>
 	<packaging>jar</packaging>
 	<name>GCViewer</name>
-	<url>http://www.tagtraum.com/gcviewer.html</url>
+	<url>http://github.com/chewiebug/GCViewer/wiki</url>
 	<developers>
 		<developer>
 			<name>Hendrik Schreiber</name>
@@ -35,6 +35,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
