@@ -23,7 +23,7 @@ public class Arrange extends AbstractAction {
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_arrange"));
         putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_arrange").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "arrange");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('G', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('G', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         setEnabled(false);
     }
 

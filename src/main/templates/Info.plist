@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>CFBundleAllowMixedLocalizations</key>
+    <string>true</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundleExecutable</key>
+    <string>JavaApplicationStub</string>
+    <key>CFBundleIconFile</key>
+    <string>GCViewer.icns</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>GCViewer</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleVersion</key>
+    <string>${project.version}</string>
+    <key>Java</key>
+    <dict>
+      <key>VMOptions</key>
+      <string></string>
+      <key>ClassPath</key>
+      <array>
+        <string>$APP_PACKAGE/Contents/Resources/gcviewer-${project.version}.jar</string>
+      </array>
+      <key>JVMVersion</key>
+      <string>1.6*</string>
+      <key>MainClass</key>
+      <string>com.tagtraum.perf.gcviewer.GCViewer</string>
+      <key>WorkingDirectory</key>
+      <string>$APP_PACKAGE</string>
+    </dict>
+  </dict>
+</plist>
