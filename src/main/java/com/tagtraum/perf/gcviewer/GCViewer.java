@@ -3,8 +3,8 @@ package com.tagtraum.perf.gcviewer;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Paint;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -49,6 +51,7 @@ import com.tagtraum.perf.gcviewer.action.About;
 import com.tagtraum.perf.gcviewer.action.Arrange;
 import com.tagtraum.perf.gcviewer.action.Exit;
 import com.tagtraum.perf.gcviewer.action.Export;
+import com.tagtraum.perf.gcviewer.action.OSXFullScreen;
 import com.tagtraum.perf.gcviewer.action.OpenFile;
 import com.tagtraum.perf.gcviewer.action.OpenRecent;
 import com.tagtraum.perf.gcviewer.action.OpenURL;
@@ -65,6 +68,7 @@ import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.util.OSXSupport;
 
 /**
  * Main class.
@@ -88,6 +92,7 @@ public class GCViewer extends JFrame {
     private ButtonGroup windowCheckBoxGroup = new ButtonGroup();
     private JDesktopPane desktopPane;
     private JComboBox zoomComboBox;
+    private Image iconImage;
     // actions
     private Exit exitAction = new Exit(this);
     private About aboutAction = new About(this);
@@ -98,6 +103,7 @@ public class GCViewer extends JFrame {
     private Zoom zoomAction = new Zoom(this);
     private Arrange arrangeAction = new Arrange(this);
     private Watch watchAction = new Watch(this);
+    private OSXFullScreen osxFullScreenAction;
     private JCheckBoxMenuItem menuItemShowDataPanel;
     private JCheckBoxMenuItem menuItemFullGCLines;
     private JCheckBoxMenuItem menuItemIncGCLines;
@@ -120,7 +126,14 @@ public class GCViewer extends JFrame {
 
     public GCViewer() {
         super("tagtraum industries incorporated - GCViewer");
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("gcviewericon.gif")));
+
+        try {
+            iconImage = ImageIO.read(getClass().getResource("gcviewericon.gif"));
+            setIconImage(iconImage);
+        } catch (IOException e) {
+            System.err.println("Could not load icon");
+            e.printStackTrace();
+        }
         desktopPane = new DesktopPane(this);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(final WindowEvent e) {
@@ -130,6 +143,13 @@ public class GCViewer extends JFrame {
         viewMenuActionListener = new ViewMenuActionListener();
         recentURLsMenu = new RecentURLsMenu(this);
         openURLAction.setRecentURLsModel(recentURLsMenu.getRecentURLsModel());
+
+        if (OSXSupport.isOSX()) {
+            OSXSupport.initializeMacOSX(aboutAction, exitAction, null, iconImage, this);
+            if (OSXSupport.hasOSXFullScreenSupport()) {
+                osxFullScreenAction = new OSXFullScreen(this);
+            }
+        }
 
         setJMenuBar(initMenuBar());
         toolBar = initToolBar();
@@ -405,8 +425,10 @@ public class GCViewer extends JFrame {
         menuItemWatch = new JCheckBoxMenuItem(watchAction);
         fileMenu.add(menuItemWatch);
 
-        menuItem = new JMenuItem(exitAction);
-        fileMenu.add(menuItem);
+        if ( ! OSXSupport.isOSX()) {
+            menuItem = new JMenuItem(exitAction);
+            fileMenu.add(menuItem);
+        }
 
         final JMenu viewMenu = new JMenu(localStrings.getString("main_frame_menu_view"));
 
@@ -541,6 +563,11 @@ public class GCViewer extends JFrame {
         viewMenu.add(menuItemConcurrentGcBeginEnd);
         gcLineMenuItems.put(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END, menuItemConcurrentGcBeginEnd);
 
+        if (OSXSupport.hasOSXFullScreenSupport()) {
+            viewMenu.addSeparator();
+            viewMenu.add(new JMenuItem(osxFullScreenAction));
+        }
+        
         windowMenu = new JMenu(localStrings.getString("main_frame_menu_window"));
         windowMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_window").charAt(0));
         menuBar.add(windowMenu);
@@ -549,12 +576,15 @@ public class GCViewer extends JFrame {
         windowMenu.add(menuItem);
         windowMenu.addSeparator();
 
-        final JMenu helpMenu = new JMenu(localStrings.getString("main_frame_menu_help"));
-        helpMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_help").charAt(0));
-        menuBar.add(helpMenu);
+        if ( ! OSXSupport.isOSX()) {
 
-        menuItem = new JMenuItem(aboutAction);
-        helpMenu.add(menuItem);
+            final JMenu helpMenu = new JMenu(localStrings.getString("main_frame_menu_help"));
+            helpMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_help").charAt(0));
+            menuBar.add(helpMenu);
+
+            menuItem = new JMenuItem(aboutAction);
+            helpMenu.add(menuItem);
+        }
 
         return menuBar;
     }

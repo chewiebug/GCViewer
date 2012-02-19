@@ -23,7 +23,7 @@ public class Zoom extends AbstractAction {
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("action_zoom_hint"));
         //putValue(Action.MNEMONIC_KEY, new Integer(localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "zoom");
-        //putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', java.awt.Event.CTRL_MASK ));
+        //putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         setEnabled(false);
     }
 

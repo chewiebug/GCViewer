@@ -29,7 +29,7 @@ public class OpenURL extends AbstractAction {
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_open_url"));
         putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_open_url").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "open_url");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('U', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('U', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/open_url.png"))));
     }
 

@@ -28,7 +28,7 @@ public class OpenFile extends AbstractAction {
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_open_file"));
         putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_open_file").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "open");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/open.png"))));
         openDialog = new JFileChooser();
         openDialog.setDialogTitle(GCViewer.localStrings.getString("fileopen_dialog_title"));

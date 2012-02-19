@@ -22,11 +22,16 @@ public class Exit extends AbstractAction {
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_exit"));
         putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_exit").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "exit");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('X', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/exit.png"))));
     }
 
     public void actionPerformed(final ActionEvent e) {
         gcViewer.exit();
+    }
+
+    // Used by OS X adaptations
+    public void quit() {
+        actionPerformed(null);
     }
 }
