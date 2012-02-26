@@ -29,7 +29,7 @@ public class Export extends AbstractAction {
         putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_export"));
         putValue(ACTION_COMMAND_KEY, "export");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/save.png"))));
         setEnabled(false);
         saveDialog = new JFileChooser();

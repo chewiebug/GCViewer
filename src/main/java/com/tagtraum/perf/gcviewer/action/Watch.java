@@ -24,7 +24,7 @@ public class Watch extends AbstractAction {
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_watch"));
         putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_watch").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "watch");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('W', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('W', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, WATCH_ICON);
         setEnabled(false);
     }

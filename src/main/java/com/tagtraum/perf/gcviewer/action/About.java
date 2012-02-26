@@ -29,4 +29,9 @@ public class About extends AbstractAction {
     public void actionPerformed(final ActionEvent e) {
         aboutDialog.setVisible(true);
     }
+
+    // Used by OS X adaptations
+    public void about() {
+        actionPerformed(null);
+    }
 }
