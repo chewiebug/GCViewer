@@ -68,6 +68,7 @@ import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 import com.tagtraum.perf.gcviewer.util.OSXSupport;
 
 /**
@@ -127,13 +128,9 @@ public class GCViewer extends JFrame {
     public GCViewer() {
         super("tagtraum industries incorporated - GCViewer");
 
-        try {
-            iconImage = ImageIO.read(getClass().getResource("gcviewericon.gif"));
-            setIconImage(iconImage);
-        } catch (IOException e) {
-            System.err.println("Could not load icon");
-            e.printStackTrace();
-        }
+        iconImage = loadImage("gcviewericon.gif");
+        setIconImage(iconImage);
+        
         desktopPane = new DesktopPane(this);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(final WindowEvent e) {
@@ -172,6 +169,31 @@ public class GCViewer extends JFrame {
         preferences = new GCPreferences();
         loadPreferences(preferences);
         setVisible(true);
+    }
+
+    /**
+     * Loads an image if <code>imageName</code> can be found. If not, a warning is logged.
+     * 
+     * @param imageName name of the image to be found in this classes classpath.
+     * @return loaded image or <code>null</code> if it could not be loaded.
+     */
+    private Image loadImage(String imageName) {
+        URL imageUrl = null;
+        Image image = null;
+        try {
+            imageUrl = getClass().getResource(imageName);
+            image = ImageIO.read(imageUrl);
+        } 
+        catch (IOException e) {
+            LoggerHelper.logException(LOGGER, Level.WARNING, "could not load icon (imageName='" 
+                    + imageName + "'; url='" + imageUrl + "')", e);
+        } 
+        catch (IllegalArgumentException e) {
+            LoggerHelper.logException(LOGGER, Level.WARNING, "could not load icon (imageName='" 
+                    + imageName + "'; url='" + imageUrl + "')", e);
+        }
+        
+        return image;
     }
 
     public RecentURLsMenu getRecentFilesMenu() {
@@ -258,7 +280,7 @@ public class GCViewer extends JFrame {
         return (GCDocument)desktopPane.getSelectedFrame();
     }
 
-    private static URL[] convertFilesToURLs(final File[] files) throws MalformedURLException {
+    private URL[] convertFilesToURLs(final File[] files) throws MalformedURLException {
         final URL[] urls = new URL[files.length];
         for (int i=0; i<files.length; i++) {
             urls[i] = files[i].getAbsoluteFile().toURL();

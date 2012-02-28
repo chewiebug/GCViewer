@@ -6,6 +6,8 @@ import java.awt.Window;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Handles Mac OS X specific stuff.
@@ -14,6 +16,8 @@ import java.lang.reflect.Proxy;
  */
 public class OSXSupport {
 
+    private static final Logger LOGGER = Logger.getLogger(OSXSupport.class.getName());
+    
     private static Object application = null;
 
     /**
@@ -81,8 +85,7 @@ public class OSXSupport {
                 setDockIconImageMethod.invoke(application, iconImage);
             }
         } catch (Exception e) {
-            System.err.println("Failed to perform OS X initialization");
-            e.printStackTrace();
+            LoggerHelper.logException(LOGGER, Level.SEVERE, "Failed to perform OS X initialization", e);
         }
     }
 
@@ -103,7 +106,7 @@ public class OSXSupport {
         try {
             Object application = getOSXApplication();
 
-            Class handlerClass = Class.forName(handlerClassName);
+            Class<?> handlerClass = Class.forName(handlerClassName);
             if (action != null) {
                 Object aboutHandlerProxy =
                     Proxy.newProxyInstance(OSXSupport.class.getClassLoader(),
@@ -122,7 +125,7 @@ public class OSXSupport {
                 application.getClass().getMethod(handlerSetterMethodName, handlerClass).invoke(application, (Object) null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerHelper.logException(LOGGER, Level.SEVERE, "addOSXHandler() failed", e);
         }
     }
 
@@ -134,11 +137,11 @@ public class OSXSupport {
     public static Object getOSXApplication() {
         if (application == null) {
             try {
-                Class applicationClass = Class.forName("com.apple.eawt.Application");
+                Class<?> applicationClass = Class.forName("com.apple.eawt.Application");
                 Method method = applicationClass.getMethod("getApplication");
                 application = method.invoke(applicationClass);
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerHelper.logException(LOGGER, Level.SEVERE, "getOSXApplication() failed", e);
             }
         }
         
@@ -203,6 +206,7 @@ public class OSXSupport {
             }
         } catch (NumberFormatException e) {
             // was not an integer
+            LoggerHelper.logException(LOGGER, Level.FINE, "minorVers or updateFragments was not a number", e);
         }
 
         return false;
@@ -247,6 +251,7 @@ public class OSXSupport {
             }
         } catch (NumberFormatException e) {
             // was not an integer
+            LoggerHelper.logException(LOGGER, Level.FINE, "minorVers or updateFragments was not a number", e);
         }
 
         return false;
