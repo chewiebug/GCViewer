@@ -159,7 +159,7 @@
             <configuration>
               <target>
                 <mkdir dir="target" />
-                <zip destfile="target/gcviewer_mac.zip">
+                <zip destfile="target/gcviewer_mac_${project.version}.zip">
                   <zipfileset dir="src/main/mac" excludes="**/JavaApplicationStub" />
                   <zipfileset dir="src/main/mac/GCViewer.app/Contents/MacOS/" prefix="GCViewer.app/Contents/MacOS/" filemode="755" /> 
                   <zipfileset dir="target" includes="gcviewer-${project.version}.jar" prefix="GCViewer.app/Contents/Resources/"/>
