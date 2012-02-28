@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.math.DoubleData;
@@ -38,9 +37,8 @@ public class TestDataReaderSun1_7_0G1 {
     
 
     /**
-     * Format of memory output changed from 1_7_0_u1 to u2.
+     * Parse memory format of java 1.7.0_u2.
      */
-    @Ignore
     @Test
     public void youngPause_u2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -52,9 +50,25 @@ public class TestDataReaderSun1_7_0G1 {
         final DataReader reader = new DataReaderSun1_6_0G1(in);
         GCModel model = reader.read();
         
-        assertEquals("gc pause", 0.00631825, model.getPause().getMax(), 0.000000001);
-        assertEquals("heap", 64*1024, model.getHeapAllocatedSizes().getMax());
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals("gc pause", 0.00623837, model.getPause().getMax(), 0.000000001);
+        GCEvent heap = (GCEvent) model.getEvents().next();
+        assertEquals("heap", 8192, heap.getPreUsed());
+        assertEquals("heap", 7895, heap.getPostUsed());
+        assertEquals("heap", 16*1024, heap.getTotal());
+        
+        
+        // TODO 1.7.0_02: parse all information
+//        GCEvent young = model.getGCEvents().next().getYoung();
+//        assertEquals("young before", 8192, young.getPreUsed());
+//        assertEquals("young after", 0, young.getPostUsed());
+//        assertEquals("young total", 8192, young.getTotal());
+//        
+//        GCEvent tenured = model.getGCEvents().next().getYoung();
+//        assertEquals("tenured before", 0, tenured.getPreUsed());
+//        assertEquals("tenured after", 7895, tenured.getPostUsed());
+//        assertEquals("tenured total", 7895, tenured.getTotal());
+//        
+//        assertEquals("number of errors", 0, handler.getCount());
     }
     
     

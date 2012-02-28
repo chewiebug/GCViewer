@@ -11,6 +11,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    TestAbstractDataReaderSun.class,
+    
     TestDataReaderFactory.class,
     TestDataReaderSun1_2_2.class,
     TestDataReaderSun1_3_1.class,
