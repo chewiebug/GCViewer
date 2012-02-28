@@ -62,6 +62,53 @@ public abstract class AbstractDataReaderSun implements DataReader {
         setMemory(event, line, new ParsePosition(0));
     }
     
+    /**
+     * Parses a memory information with the following form: 8192K[(16M)]->7895K(16M) ("[...]" means
+     * optional.
+     * 
+     * @param event event, where parsed information should be stored
+     * @param line line to be parsed
+     * @param pos current parse position; all characters between current position and next digits
+     * will be skipped
+     * @throws ParseException parsing was not possible
+     */
+    protected void setMemorySimple(GCEvent event, String line, ParsePosition pos) throws ParseException {
+        int startPos = pos.getIndex();
+        boolean lineHasMoreChars = true;
+        int currentPos = startPos;
+        // skip "not digits" until first digit is found
+        while (!Character.isDigit(line.charAt(currentPos)) && lineHasMoreChars) {
+            ++currentPos;
+            lineHasMoreChars = currentPos < line.length();
+        }
+        if (!lineHasMoreChars) {
+            pos.setIndex(currentPos);
+            throw new ParseException("unexpected memory format found", line, pos);
+        }
+        
+        int nextParentesis = line.indexOf("(", currentPos);
+        event.setPreUsed(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1) 
+                * getMemoryUnitMultiplier(line, line.charAt(nextParentesis-1)));
+        
+        // skip until after "->"
+        currentPos = line.indexOf("->", nextParentesis) + 2;
+        
+        
+        nextParentesis = line.indexOf("(", currentPos);
+        event.setPostUsed(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1) 
+                * getMemoryUnitMultiplier(line, line.charAt(nextParentesis-1)));
+        currentPos = nextParentesis;
+        
+        // skip "(" and read heap size
+        ++currentPos;
+        nextParentesis = line.indexOf(")", currentPos);
+        event.setTotal(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1) 
+                * getMemoryUnitMultiplier(line, line.charAt(nextParentesis-1)));
+        currentPos = nextParentesis;
+        
+        pos.setIndex(currentPos);
+    }
+    
     protected void setMemory(GCEvent event, String line, ParsePosition pos) throws ParseException {
         int start = pos.getIndex();
         int end = line.indexOf("->", pos.getIndex()) - 1;

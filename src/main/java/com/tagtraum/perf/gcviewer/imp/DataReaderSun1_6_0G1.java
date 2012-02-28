@@ -61,7 +61,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     // "0.295: [GC pause (young), 0.00594747 secs]"
     private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9.]+)[: \\[]{3}([A-Za-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
     // "   [ 4096K->3936K(16M)]"
-    private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[KMG].*");
+    private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[BKMG].*");
 
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
     // the pattern is "...)<timestamp>..."
@@ -250,12 +250,28 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 continue;
             }
             
+            
             // now we parse details of a pause
             // currently everything except memory is skipped
-            memoryMatcher.reset(line);
-            if (memoryMatcher.matches()) {
-                setMemory(event, line, pos);
+            if (line.indexOf("Eden") >= 0) {
+                // it is java 1.7_u2
+                // memory part looks like
+                //    [Eden: 8192K(8192K)->0B(8192K) Survivors: 0B->8192K Heap: 8192K(16M)->7895K(16M)]
+                
+                // just parse heap size
+                pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
+                setMemorySimple(event, line, pos);
                 pos.setIndex(0);
+            }
+            else {
+                memoryMatcher.reset(line);
+                if (memoryMatcher.matches()) {
+                    // it is java 1.7_u1 or earlier (including java 1.6)
+                    // memory part looks like
+                    //    [ 8192K->8128K(64M)]
+                    setMemory(event, line, pos);
+                    pos.setIndex(0);
+                }
             }
 
             if (line.indexOf(TIMES) >= 0) {
