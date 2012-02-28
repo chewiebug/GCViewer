@@ -269,7 +269,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     // it is java 1.7_u1 or earlier (including java 1.6)
                     // memory part looks like
                     //    [ 8192K->8128K(64M)]
-                    setMemory(event, line, pos);
+                    setMemorySimple(event, line, pos);
                     pos.setIndex(0);
                 }
             }

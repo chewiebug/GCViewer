@@ -87,6 +87,11 @@ public abstract class AbstractDataReaderSun implements DataReader {
         }
         
         int nextParentesis = line.indexOf("(", currentPos);
+        int separatorPos = line.indexOf("->", currentPos);
+        if (nextParentesis > separatorPos) {
+            // if format is "before"->"after"("total"), the next parentesis is the one of the "total"
+            nextParentesis = separatorPos;
+        }
         event.setPreUsed(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1) 
                 * getMemoryUnitMultiplier(line, line.charAt(nextParentesis-1)));
         
