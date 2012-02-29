@@ -3,7 +3,6 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,11 +49,6 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * @see DataReaderSun1_6_0G1
  */
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
-
-    // format written by -XX:+PrintGCDateStamps
-    private static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
-    private static final int LENGTH_OF_DATESTAMP = 29;
-    private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
 
     private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
     
@@ -331,29 +325,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             }
         }
         if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
-    }
-
-    public Date parseDatestamp(String line, ParsePosition pos) throws ParseException {
-        Date date = null;
-        if (nextIsDatestamp(line, pos)) {
-            try {
-                date = dateParser.parse(line.substring(pos.getIndex(), LENGTH_OF_DATESTAMP-1));
-                pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
-            }
-            catch (java.text.ParseException e) {
-                throw new ParseException(e.toString(), line);
-            }
-        }
-        
-        return date;
-    }
-    
-    private boolean nextIsDatestamp(String line, ParsePosition pos) {
-        if (line.length() < 10) {
-            return false;
-        }
-
-        return line.indexOf("-", pos.getIndex()) == 4 && line.indexOf("-", pos.getIndex() + 5) == 7;
     }
     
 }

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,8 +59,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     }
     
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
-    // "0.295: [GC pause (young), 0.00594747 secs]"
-    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9.]+)[: \\[]{3}([A-Za-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
+    // "[<datestamp>: ]0.295: [GC pause (young), 0.00594747 secs]"
+    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9-T:.+]{29})?[ ]?([0-9.]+)[: \\[]{3}([A-Za-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
     // "   [ 4096K->3936K(16M)]"
     private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[BKMG].*");
 
@@ -75,9 +76,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     		"([0-9.]+[: ]{2})([ ]?[\\(,].*)|" + // 2nd pattern: or with "<timestamp>:  (..." where only the timestamp is part of the concurrent collection
     		"([0-9.]+)([ ][\\(].*))"); // 3rd pattern: or with "<timestamp> (" or "<timestamp> ," where only the timestamp is part of the concurrent collection  
 
-    private static final int GC_TIMESTAMP = 1;
-    private static final int GC_TYPE = 2;
-    private static final int GC_PAUSE = 3;
+    private static final int GC_DATESTAMP = 1;
+    private static final int GC_TIMESTAMP = 2;
+    private static final int GC_TYPE = 3;
+    private static final int GC_PAUSE = 4;
 
     private static final String HEAP_SIZING_START = "Heap";
 
@@ -293,9 +295,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     protected AbstractGCEvent<?> parseLine(final String line, final ParsePosition pos) throws ParseException {
         AbstractGCEvent<?> ae = null;
         try {
+            // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
             // parse timestamp          "double:"
             // parse collection type    "[TYPE"
             // pre-used->post-used, total, time
+            final Date datestamp = parseDatestamp(line, pos);
             final double timestamp = parseTimestamp(line, pos);
             final GCEvent.Type type = parseType(line, pos);
             // special provision for concurrent events
@@ -303,6 +307,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 final ConcurrentGCEvent event = new ConcurrentGCEvent();
                 
                 // simple concurrent events (ending with -start) just are of type GcPattern.GC
+                event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
                 event.setType(type);
                 if (type.getPattern() == GcPattern.GC_PAUSE) {
@@ -313,6 +318,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 ae = event;
             } else {
                 final GCEvent event = new GCEvent();
+                event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
                 event.setType(type);
                 // Java 7 can have detailed event at this position like this

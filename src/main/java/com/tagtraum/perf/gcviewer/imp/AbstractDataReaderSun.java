@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +25,11 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public abstract class AbstractDataReaderSun implements DataReader {
 
+    private static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
+    private static final int LENGTH_OF_DATESTAMP = 29;
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
+    private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
+    
     protected BufferedReader in;
 
     public AbstractDataReaderSun(InputStream in) throws UnsupportedEncodingException {
@@ -399,5 +405,43 @@ public abstract class AbstractDataReaderSun implements DataReader {
         }
         
         return containsString;
+    }
+
+    /**
+     * Parses a datestamp in <code>line</code> at <code>pos</code>.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @return returns parsed datestamp if found one, <code>null</code> otherwise
+     * @throws ParseException datestamp could not be parsed
+     */
+    protected Date parseDatestamp(String line, ParsePosition pos) throws ParseException {
+        Date date = null;
+        if (nextIsDatestamp(line, pos)) {
+            try {
+                date = dateParser.parse(line.substring(pos.getIndex(), LENGTH_OF_DATESTAMP-1));
+                pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
+            }
+            catch (java.text.ParseException e) {
+                throw new ParseException(e.toString(), line);
+            }
+        }
+        
+        return date;
+    }
+
+    /**
+     * Returns <code>true</code> if text at parsePosition is a datestamp.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @return <code>true</code> if in current line at current parse position we have a datestamp
+     */
+    private boolean nextIsDatestamp(String line, ParsePosition pos) {
+        if (line.length() < 10) {
+            return false;
+        }
+    
+        return line.indexOf("-", pos.getIndex()) == 4 && line.indexOf("-", pos.getIndex() + 5) == 7;
     }
 }

@@ -71,6 +71,24 @@ public class TestDataReaderSun1_7_0G1 {
 //        assertEquals("number of errors", 0, handler.getCount());
     }
     
+    @Test
+    public void youngPauseDateStamp_u2() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0_02_G1_young_datestamp.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("gc pause", 0.14482200, model.getPause().getMax(), 0.000000001);
+        GCEvent heap = (GCEvent) model.getEvents().next();
+        assertEquals("heap", 1105*1024, heap.getPreUsed());
+        assertEquals("heap", 380*1024, heap.getPostUsed());
+        assertEquals("heap", 2048*1024, heap.getTotal());
+        
+    }
     
     @Test
     public void eventNoMemory() throws Exception {
