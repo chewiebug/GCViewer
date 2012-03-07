@@ -15,6 +15,8 @@ public class TestDataReaderSun1_6_0 extends TestCase {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
+    private static final SimpleDateFormat dateParser = new SimpleDateFormat(AbstractDataReaderSun.DATE_STAMP_FORMAT);
+
     public void testPrintGCDateStamps() throws Exception {
 		final ByteArrayInputStream in = new ByteArrayInputStream(
 				("2011-10-05T04:23:39.427+0200: 19.845: [GC 19.845: [ParNew: 93184K->5483K(104832K), 0.0384413 secs] 93184K->5483K(1036928K), 0.0388082 secs] [Times: user=0.41 sys=0.06, real=0.04 secs]")
@@ -24,7 +26,6 @@ public class TestDataReaderSun1_6_0 extends TestCase {
 		GCModel model = reader.read();
 
 		assertTrue("hasDateStamp", model.hasDateStamp());
-		SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
 		assertEquals("DateStamp",
 				dateParser.parse("2011-10-05T04:23:39.427+0200"),
 				model.getFirstDateStamp());

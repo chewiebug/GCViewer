@@ -16,8 +16,7 @@ public class TestDataReaderSun1_6_0G1 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
     
-    private static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SZ";
-    private static final SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
+    private static final SimpleDateFormat dateParser = new SimpleDateFormat(AbstractDataReaderSun.DATE_STAMP_FORMAT);
 
     /**
      * Test G1 parser with a gc verbose file (not -XX:+PrintGCDetails)
@@ -55,8 +54,8 @@ public class TestDataReaderSun1_6_0G1 {
         assertEquals("count", 1, model.size());
         assertEquals("gc pause", 0.0032067, model.getGCPause().getMax(), 0.000001);
         assertEquals("datestamp", 
-                "2012-02-29T13:41:00.721+0100", 
-                dateParser.format(model.getGCEvents().next().getDatestamp()));
+                dateParser.parse("2012-02-29T13:41:00.721+0100"), 
+                model.getGCEvents().next().getDatestamp());
     }
     
     @Test
