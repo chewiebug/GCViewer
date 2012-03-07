@@ -25,7 +25,12 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public abstract class AbstractDataReaderSun implements DataReader {
 
-    private static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
+    /**
+     * Datestamps are parsed without timezone information. I assume that if two people
+     * discuss a gc log, it is easier for them to use the same timestamps without 
+     * timezone adjustments.
+     */
+    public static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
     private static final int LENGTH_OF_DATESTAMP = 29;
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
     private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
@@ -438,7 +443,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @return <code>true</code> if in current line at current parse position we have a datestamp
      */
     private boolean nextIsDatestamp(String line, ParsePosition pos) {
-        if (line.length() < 10) {
+        if (line == null || line.length() < 10) {
             return false;
         }
     

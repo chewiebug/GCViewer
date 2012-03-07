@@ -171,6 +171,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             // detailed G1 events start with GC_MEMORY pattern, but are of type GC_MEMORY_PAUSE
 
                             gcEvent = new G1GcEvent();
+                            gcEvent.setDateStamp(parseDatestamp(gcPauseMatcher.group(GC_DATESTAMP), parsePosition));
                             gcEvent.setTimestamp(Double.parseDouble(gcPauseMatcher.group(GC_TIMESTAMP)));
                             gcEvent.setType(type);
                             gcEvent.setPause(Double.parseDouble(gcPauseMatcher.group(GC_PAUSE)));
