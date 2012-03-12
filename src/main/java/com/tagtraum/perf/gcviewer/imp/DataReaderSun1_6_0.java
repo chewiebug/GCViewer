@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,6 +39,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintGCDetails</li>
  * <li>-XX:+PrintGCTimeStamps</li>
  * <li>-XX:+PrintGCDateStamps</li>
+ * <li>-XX:+CMSScavengeBeforeRemark</li>
  * <li>-XX:+PrintHeapAtGC (output ignored)</li>
  * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
@@ -68,6 +70,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(SURVIVOR_AGE);
         EXCLUDE_STRINGS.add(TIMES_ALONE);
     }
+    
+    private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
+    // TODO is combination with DefNew also possible?
+    private static final String EVENT_PARNEW = "ParNew";
+    private static final String EVENT_DEFNEW = "DefNew";
     
     private static final String CMS_ABORT_PRECLEAN = " CMS: abort preclean due to time ";
 
@@ -141,7 +148,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             Matcher mixedLineMatcher = linesMixedPattern.matcher("");
             Matcher adaptiveSizePolicyMatcher = adaptiveSizePolicyPattern.matcher("");
             String line;
-            String beginningOfLine = null;
+            // beginningOfLine must be a stack because more than one beginningOfLine might be needed
+            Deque<String> beginningOfLine = new LinkedList<String>();
             int lineNumber = 0;
             final ParsePosition parsePosition = new ParsePosition(0);
             OUTERLOOP:
@@ -164,27 +172,45 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         sb.replace(indexOfStart, indexOfStart + CMS_ABORT_PRECLEAN.length(), "");
                         line = sb.toString();
                     }
+
+                    if (isCmsScavengeBeforeRemark(line)) {
+                        // This is the case, when option -XX:+CMSScavengeBeforeRemark is used.
+                        // we have two events in the first line -> split it
+                        // if this option is combined with -XX:+PrintTenuringDistribution, the
+                        // first event is also distributed over more than one line
+                        int startOf2ndEvent = line.indexOf("]", line.indexOf(EVENT_YG_OCCUPANCY)) + 1;
+                        beginningOfLine.addFirst(line.substring(0, startOf2ndEvent));
+                        if (!isPrintTenuringDistribution(line)) {
+                            model.add(parseLine(line.substring(startOf2ndEvent), parsePosition));
+                            parsePosition.setIndex(0);
+                            continue;
+                        }
+                        else {
+                            beginningOfLine.addFirst(line.substring(startOf2ndEvent));
+                            continue;
+                        }
+                    }
                     mixedLineMatcher.reset(line);
                     final int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassPattern.matcher(line).matches()) {
-                        beginningOfLine = line.substring(0, unloadingClassIndex);
+                        beginningOfLine.addFirst(line.substring(0, unloadingClassIndex));
                         continue;
                     }
-                    else if (line.endsWith("[DefNew") || line.endsWith("[ParNew") || line.endsWith("[ParNew (promotion failed)")) {
+                    else if (isPrintTenuringDistribution(line)) {
                         // this is the case, when e.g. -XX:+PrintTenuringDistribution is used
                         // where we want to skip "Desired survivor..." and "- age..." lines
-                        beginningOfLine = line;
+                        beginningOfLine.addFirst(line);
                         continue;
                     }
                     else if (mixedLineMatcher.matches()) {
-                        if (beginningOfLine != null) {
-                            // if PrintTenuringDistribution is used and a line is mixed, 
-                            // beginningOfLine may already contain a value, which must be preserved
-                            beginningOfLine += mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP);
+                        // if PrintTenuringDistribution is used and a line is mixed, 
+                        // beginningOfLine may already contain a value, which must be preserved
+                        String firstPartOfBeginningOfLine = beginningOfLine.pollFirst();
+                        if (firstPartOfBeginningOfLine == null) {
+                            firstPartOfBeginningOfLine = "";
                         }
-                        else {
-                            beginningOfLine = mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP);
-                        }
+                        beginningOfLine.addFirst(firstPartOfBeginningOfLine + mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP));
+                        
                         model.add(parseLine(mixedLineMatcher.group(LINES_MIXED_ENDOFLINE_GROUP), parsePosition));
                         parsePosition.setIndex(0);
                         continue;
@@ -195,13 +221,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             LOG.severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
                             continue;
                         }
-                        beginningOfLine = adaptiveSizePolicyMatcher.group(1);
+                        beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
                         lineNumber = skipLines(in, parsePosition, lineNumber, ADAPTIVE_SIZE_POLICY_STRINGS);
                         continue;
                     }
-                    else if (beginningOfLine != null) {
-                        line = beginningOfLine + line;
-                        beginningOfLine = null;
+                    else if (beginningOfLine.size() > 0) {
+                        line = beginningOfLine.removeFirst() + line;
                     }
                     else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                         // the next few lines will be the sizing of the heap
@@ -226,6 +251,15 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 }
             if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
         }
+    }
+
+    private boolean isPrintTenuringDistribution(String line) {
+        return line.endsWith("[DefNew") || line.endsWith("[ParNew") || line.endsWith("[ParNew (promotion failed)");
+    }
+
+    private boolean isCmsScavengeBeforeRemark(String line) {
+        return line.indexOf(EVENT_YG_OCCUPANCY) >= 0 
+                && (line.indexOf(EVENT_PARNEW) >= 0 || line.indexOf(EVENT_DEFNEW) >= 0);
     }
 
     protected AbstractGCEvent<?> parseLine(final String line, final ParsePosition pos) throws ParseException {

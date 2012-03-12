@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 public class TestDataReaderSun1_6_0 {
@@ -449,4 +450,50 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("Full GC pause", 0.0204436, model.getFullGCPause().getMax(), 0.00000001);
     }
     
+    @Test
+    public void testCMSScavengeBeforeRemarkTimeStamp() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2.036: [GC[YG occupancy: 235954 K (235968 K)]2.036: [GC 2.036: [ParNew: 235954K->30K(235968K), 0.0004961 secs] 317153K->81260K(395712K), 0.0005481 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
+                 "\n2.037: [Rescan (parallel) , 0.0002425 secs]2.037: [weak refs processing, 0.0000041 secs]2.037: [class unloading, 0.0000938 secs]2.037: [scrub symbol & string tables, 0.0003138 secs] [1 CMS-remark: 81230K(159744K)] 81260K(395712K), 0.0013653 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("1st event", "GC ParNew:", model.get(0).getTypeAsString());
+        assertEquals("2nd event", "GC CMS-remark:", model.get(1).getTypeAsString());
+    }
+
+    @Test
+    public void testCMSScavengeBeforeRemarkDateStamp() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-03-07T22:19:49.110+0100: 2.479: [GC[YG occupancy: 227872 K (235968 K)]2012-03-07T22:19:49.110+0100: 2.479: [GC 2.479: [ParNew: 227872K->30K(235968K), 0.0005432 secs] 296104K->68322K(395712K), 0.0005809 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
+                 "\n2.480: [Rescan (parallel) , 0.0001934 secs]2.480: [weak refs processing, 0.0000061 secs]2.480: [class unloading, 0.0001131 secs]2.480: [scrub symbol & string tables, 0.0003175 secs] [1 CMS-remark: 68292K(159744K)] 68322K(395712K), 0.0013506 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("1st event", "GC ParNew:", model.get(0).getTypeAsString());
+        assertEquals("2nd event", "GC CMS-remark:", model.get(1).getTypeAsString());
+    }
+    
+    @Test
+    public void testCMSScavengeBeforeRemarkWithPrintTenuringDistribution() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-03-07T22:19:48.736+0100: 2.104: [GC[YG occupancy: 235952 K (235968 K)]2012-03-07T22:19:48.736+0100: 2.104: [GC 2.104: [ParNew" +
+                 "\nDesired survivor size 13402112 bytes, new threshold 4 (max 4)" +
+                 "\n- age   1:      24816 bytes,      24816 total" +
+                 "\n: 235952K->30K(235968K), 0.0005641 secs] 317151K->81260K(395712K), 0.0006030 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
+                 "\n2.105: [Rescan (parallel) , 0.0002003 secs]2.105: [weak refs processing, 0.0000041 secs]2.105: [class unloading, 0.0000946 secs]2.105: [scrub symbol & string tables, 0.0003146 secs] [1 CMS-remark: 81230K(159744K)] 81260K(395712K), 0.0013199 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("1st event", "GC ParNew:", model.get(0).getTypeAsString());
+        assertEquals("1st event pause", 0.0006030, ((GCEvent)model.get(0)).getPause(), 0.00000001);
+        assertEquals("2nd event", "GC CMS-remark:", model.get(1).getTypeAsString());
+        assertEquals("2nd event pause", 0.0013199, ((GCEvent)model.get(1)).getPause(), 0.00000001);
+    }
 }
