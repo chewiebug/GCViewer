@@ -452,11 +452,6 @@ public class TestDataReaderSun1_6_0 {
     
     @Test
     public void testAdaptiveSizePolicyFullSystemGc() throws Exception {
-        // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1 
-        // PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0.059538 major_cost: 0.000000 mutator_cost: 0.940462 throughput_goal: 0.990000 live_space: 273821824 free_space: 33685504 old_promo_size: 16842752 old_eden_size: 16842752 desired_promo_size: 16842752 desired_eden_size: 33685504
-        // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512) 
-        // AdaptiveSizeStop: collection: 1 
-        //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2012-03-21T20:49:09.624+0100: 9.993: [Full GC (System)AdaptiveSizeStart: 10.000 collection: 61" +
                  "\nAdaptiveSizeStop: collection: 61" +
