@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -56,17 +57,18 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("heap", 7895, heap.getPostUsed());
         assertEquals("heap", 16*1024, heap.getTotal());
         
-        
         // TODO 1.7.0_02: parse all information
 //        GCEvent young = model.getGCEvents().next().getYoung();
+//        assertNotNull("young", young);
 //        assertEquals("young before", 8192, young.getPreUsed());
 //        assertEquals("young after", 0, young.getPostUsed());
 //        assertEquals("young total", 8192, young.getTotal());
 //        
-//        GCEvent tenured = model.getGCEvents().next().getYoung();
+//        GCEvent tenured = model.getGCEvents().next().getTenured();
+//        assertNotNull("tenured", tenured);
 //        assertEquals("tenured before", 0, tenured.getPreUsed());
 //        assertEquals("tenured after", 7895, tenured.getPostUsed());
-//        assertEquals("tenured total", 7895, tenured.getTotal());
+//        assertEquals("tenured total", 16*1024 - 8192, tenured.getTotal());
 //        
 //        assertEquals("number of errors", 0, handler.getCount());
     }

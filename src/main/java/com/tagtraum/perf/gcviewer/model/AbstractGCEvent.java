@@ -350,6 +350,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         // Java 7; detail event inside G1_REMARK
         public static final Type G1_GC_REFPROC = new Type("GC ref-proc", "GC ref-proc", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.CONCURRENCY_HELPER);
         public static final Type G1_CLEANUP = new Type("GC cleanup", "GC cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        // Java 7_u2; detailed info in all detailed events
+        public static final Type G1_EDEN = new Type("Eden", "Eden:", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         
         // G1 concurrent types
         public static final Type G1_CONCURRENT_MARK_START = new Type("GC concurrent-mark-start", "GC concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
