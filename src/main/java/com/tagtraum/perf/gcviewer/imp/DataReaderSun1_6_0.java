@@ -112,8 +112,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         ADAPTIVE_SIZE_POLICY_STRINGS.add("avg_survived_padded_avg");
     }
 
-    private static Pattern unloadingClassPattern = Pattern.compile(".*\\[Unloading class [^\\]]+\\]$");
-
     // 1_6_0_u24 mixes lines, when outputing a "promotion failed" which leads to a "concurrent mode failure"
     // pattern looks always like "...[CMS<datestamp>..." or "...[CMS<timestamp>..."
     // the next line starts with " (concurrent mode failure)" which in earlier releases followed "CMS" immediately
@@ -189,9 +187,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             continue;
                         }
                     }
-                    mixedLineMatcher.reset(line);
                     final int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
-                    if (unloadingClassPattern.matcher(line).matches()) {
+                    if (unloadingClassIndex > 0) {
                         beginningOfLine.addFirst(line.substring(0, unloadingClassIndex));
                         continue;
                     }
@@ -201,7 +198,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         beginningOfLine.addFirst(line);
                         continue;
                     }
-                    else if (mixedLineMatcher.matches()) {
+                    else if (isMixedLine(line, mixedLineMatcher)) {
                         // if PrintTenuringDistribution is used and a line is mixed, 
                         // beginningOfLine may already contain a value, which must be preserved
                         String firstPartOfBeginningOfLine = beginningOfLine.pollFirst();
@@ -252,6 +249,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
     }
 
+    private boolean isMixedLine(String line, Matcher mixedLineMatcher) {
+        mixedLineMatcher.reset(line);
+        return mixedLineMatcher.matches();
+    }
+    
     private boolean isPrintTenuringDistribution(String line) {
         return line.endsWith("[DefNew") || line.endsWith("[ParNew") || line.endsWith("[ParNew (promotion failed)");
     }
