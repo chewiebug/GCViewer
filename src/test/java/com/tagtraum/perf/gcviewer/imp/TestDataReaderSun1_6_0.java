@@ -451,6 +451,26 @@ public class TestDataReaderSun1_6_0 {
     }
     
     @Test
+    public void testAdaptiveSizePolicyFullSystemGc() throws Exception {
+        // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1 
+        // PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0.059538 major_cost: 0.000000 mutator_cost: 0.940462 throughput_goal: 0.990000 live_space: 273821824 free_space: 33685504 old_promo_size: 16842752 old_eden_size: 16842752 desired_promo_size: 16842752 desired_eden_size: 33685504
+        // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512) 
+        // AdaptiveSizeStop: collection: 1 
+        //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-03-21T20:49:09.624+0100: 9.993: [Full GC (System)AdaptiveSizeStart: 10.000 collection: 61" +
+                 "\nAdaptiveSizeStop: collection: 61" +
+                 "\n[PSYoungGen: 480K->0K(270976K)] [PSOldGen: 89711K->671K(145536K)] 90191K->671K(416512K) [PSPermGen: 2614K->2614K(21248K)], 0.0070749 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]")
+                       .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("Full GC pause", 0.0070749, model.getFullGCPause().getMax(), 0.00000001);
+    }
+    
+    @Test
     public void testCMSScavengeBeforeRemarkTimeStamp() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2.036: [GC[YG occupancy: 235954 K (235968 K)]2.036: [GC 2.036: [ParNew: 235954K->30K(235968K), 0.0004961 secs] 317153K->81260K(395712K), 0.0005481 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +

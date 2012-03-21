@@ -131,8 +131,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // AdaptiveSizeStop: collection: 1 
     //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
-    private static Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC)Adaptive.*");
-    private static final String ADAPTIVE_PATTERN = "GCAdaptive";
+    private static Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\(System\\))Adaptive.*");
+    private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
 
     public DataReaderSun1_6_0(InputStream in) throws UnsupportedEncodingException {
         super(in);
