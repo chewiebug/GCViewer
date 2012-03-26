@@ -32,6 +32,9 @@ public abstract class AbstractDataReaderSun implements DataReader {
      */
     public static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
     private static final int LENGTH_OF_DATESTAMP = 29;
+    
+    private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
+    
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
     private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
     
@@ -280,17 +283,32 @@ public abstract class AbstractDataReaderSun implements DataReader {
             //if (startNumbers != i) sb.append(lineChars, startNumbers, i);
             // append all chars, but no numbers, colons, [ or ]
             final int startType = i;
+            boolean isInParantesis = false;
             for (; i<lineLength; c = lineChars[++i]) {
+                if (c == '(' || isInParantesis || c == ')') {
+                    // option "-XX:+PrintPromotionFailure" inserts text in parentheses between "ParNew" and "(promotion failed)"
+                    // [ParNew (0: promotion failure size = 4098)  (1: promotion failure size = 4098)  (2: promotion failure size = 4098) (promotion failed):
+                    // parsing must not stop until end of (promotion failed)...
+                    isInParantesis = (c != ')');
+                    continue;
+                }
                 if (c == ':' || c == '[' || c == ']' || c== ',' || Character.isDigit(c)) break;
             }
             sb.append(lineChars, startType, i-startType);
+            if (sb.indexOf(CMS_PRINT_PROMOTION_FAILURE) > 0) {
+                // ... now remove the "promotion failure size" parts inside parentheses
+                while (sb.indexOf(CMS_PRINT_PROMOTION_FAILURE) > 0) {
+                    int firstParenthesis = sb.indexOf("(");
+                    sb.delete(firstParenthesis, sb.indexOf(")", firstParenthesis) + 3);
+                }
+            }
             for (; i<lineLength; c = lineChars[++i]) {
                 if (c == '[' || c == ']' || Character.isDigit(c)) break;
             }
             final String s = sb.toString();
             GCEvent.Type gcType = AbstractGCEvent.Type.parse(s);
-            // special case: 5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]
             if (gcType == null) {
+                // special case: 5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]
                 String type = s.trim();
                 if (type.startsWith(AbstractGCEvent.Type.GC.getType()) && type.indexOf("Desired survivor") != -1) {
                     i = line.indexOf("total", i);

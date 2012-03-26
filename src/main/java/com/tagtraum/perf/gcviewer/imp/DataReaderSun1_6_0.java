@@ -43,6 +43,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintHeapAtGC (output ignored)</li>
  * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
+ * <li>-XX:+PrintPromotionFailure (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>

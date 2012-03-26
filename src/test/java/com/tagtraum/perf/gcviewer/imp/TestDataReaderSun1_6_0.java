@@ -50,6 +50,19 @@ public class TestDataReaderSun1_6_0 {
 	}
 
     @Test
+    public void testCMSPromotionFailedPrintPromotionFailure() throws Exception {
+        final ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-03-26T21:46:32.546+0200: 2.204: [GC 2.204: [ParNew (0: promotion failure size = 4098)  (1: promotion failure size = 4098)  (2: promotion failure size = 4098)  (3: promotion failure size = 4098)  (promotion failed): 39277K->39255K(39296K), 0.0175749 secs]2.221: [CMS: 87276K->43438K(87424K), 0.0276222 secs] 95765K->43438K(126720K), [CMS Perm : 2612K->2612K(21248K)], 0.0453577 secs] [Times: user=0.08 sys=0.00, real=0.05 secs]")
+                        .getBytes());
+
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("gc type", "GC ParNew (promotion failed): CMS: CMS Perm :", model.getFullGCEvents().next().getTypeAsString());
+    }
+     
+
+    @Test
 	public void testCMSConcurrentModeFailureDate() throws Exception {
 		final ByteArrayInputStream in = new ByteArrayInputStream(
 				("2011-10-05T15:53:24.119+0200: 41403.025: [GC 41403.025: [ParNew (promotion failed): 104960K->101572K(104960K), 0.3275017 secs]41403.353: [CMS2011-10-05T15:53:24.629+0200: 41403.534: [CMS-concurrent-abortable-preclean: 1.992/2.650 secs] [Times: user=4.40 sys=0.06, real=2.65 secs]" +
