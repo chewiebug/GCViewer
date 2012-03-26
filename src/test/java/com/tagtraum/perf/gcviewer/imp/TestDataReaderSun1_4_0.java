@@ -50,20 +50,20 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         ByteArrayInputStream in = new ByteArrayInputStream("2.23492e-006: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n1.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n2.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n3.0: [Full GC 10753K->6046K(10912K), 0.3146707 secs]\r\n4.0: [Inc GC 10753K->6046K(10912K), 0.3146707 secs]\r\n5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]".getBytes());
         DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
-        assertTrue(model.size() == 6);
+        assertEquals("model size", 6, model.size());
         Iterator<GCEvent> i = model.getGCEvents();
         AbstractGCEvent<GCEvent> event = i.next();
-        assertEquals(event, event1);
+        assertEquals("event 1", event, event1);
         event = i.next();
-        assertEquals(event, event2);
+        assertEquals("event 2", event, event2);
         event = i.next();
-        assertEquals(event, event3);
+        assertEquals("event 3", event, event3);
         event = i.next();
-        assertEquals(event, event4);
+        assertEquals("event 4", event, event4);
         event = i.next();
-        assertEquals(event, event5);
+        assertEquals("event 5", event, event5);
         event = i.next();
-        assertEquals(event, event6);
+        assertEquals("event 6", event, event6);
         
         assertEquals("throughput", 65.680128659, model.getThroughput(), 0.0000001);
     }
@@ -88,20 +88,20 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         AbstractGCEvent<GCEvent> event5 = new GCEvent(2.499d, 964, 690, 1984, 0.0108058d, AbstractGCEvent.Type.GC);
         AbstractGCEvent<GCEvent> event6 = new GCEvent(2.831d, 1202, 856, 1984, 0.0122599d, AbstractGCEvent.Type.GC);
 
-        assertTrue(model.size() == 12);
+        assertEquals("model size", 12, model.size());
         Iterator<GCEvent> i = model.getGCEvents();
         AbstractGCEvent<GCEvent> event = i.next();
-        assertEquals(event, event1);
+        assertEquals("event 1", event, event1);
         event = i.next();
-        assertEquals(event, event2);
+        assertEquals("event 2", event, event2);
         event = i.next();
-        assertEquals(event, event3);
+        assertEquals("event 3", event, event3);
         event = i.next();
-        assertEquals(event, event4);
+        assertEquals("event 4", event, event4);
         event = i.next();
-        assertEquals(event, event5);
+        assertEquals("event 5", event, event5);
         event = i.next();
-        assertEquals(event, event6);
+        assertEquals("event 6", event, event6);
         
         assertEquals("throughput", 98.92780024997158, model.getThroughput(), 0.00000000001);
     }
@@ -130,13 +130,13 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals("model.size()", 4, model.size());
         Iterator<GCEvent> i = model.getGCEvents();
         AbstractGCEvent<GCEvent> event = i.next();
-        assertEquals(event1, event);
+        assertEquals("event 1", event1, event);
         event = i.next();
-        assertEquals(event2, event);
+        assertEquals("event 2", event2, event);
         event = i.next();
-        assertEquals(event3, event);
+        assertEquals("event 3", event3, event);
         event = i.next();
-        assertEquals(event4, event);
+        assertEquals("event 4", event4, event);
 
         assertEquals("throughput", 93.984703347, model.getThroughput(), 0.000001);
     }
