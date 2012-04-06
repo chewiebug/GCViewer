@@ -44,6 +44,8 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
  * <li>-XX:+PrintPromotionFailure (output ignored)</li>
+ * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
+ * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -56,10 +58,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
     
     private static final String UNLOADING_CLASS = "[Unloading class ";
-    private static final String DESIRED_SURVIVOR = "Desired survivor";
-    private static final String APPLICATION_TIME = "Application time:";
-    private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:";
-    private static final String SURVIVOR_AGE = "- age";
+    private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
+    private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:"; // -XX:+PrintGCApplicationStoppedTime
+    private static final String DESIRED_SURVIVOR = "Desired survivor"; // -XX:+PrintTenuringDistribution
+    private static final String SURVIVOR_AGE = "- age"; // -XX:+PrintTenuringDistribution
     private static final String TIMES_ALONE = " [Times";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
