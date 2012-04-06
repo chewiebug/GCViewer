@@ -41,13 +41,16 @@ public class TestDataReaderSun1_4_0 extends TestCase {
     }
     
     public void testParse1() throws Exception {
-        AbstractGCEvent<GCEvent> event1 = new GCEvent(2.23492e-006d, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
+        // original testcase was written with timestamp "2.23492e-006d" as first timestamp
+        // I have never seen a timestamp writte in scientific format in the logfiles, so
+        // I assume, that was some experiment here in the unittest
+        AbstractGCEvent<GCEvent> event1 = new GCEvent(0, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
         AbstractGCEvent<GCEvent> event2 = new GCEvent(1, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
         AbstractGCEvent<GCEvent> event3 = new GCEvent(2, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
         AbstractGCEvent<GCEvent> event4 = new GCEvent(3, 10753, 6046, 10912, 0.3146707d, AbstractGCEvent.Type.FULL_GC);
         AbstractGCEvent<GCEvent> event5 = new GCEvent(4, 10753, 6046, 10912, 0.3146707d, AbstractGCEvent.Type.INC_GC);
         AbstractGCEvent<GCEvent> event6 = new GCEvent(5, 52471, 22991, 75776, 1.0754938d, AbstractGCEvent.Type.GC);
-        ByteArrayInputStream in = new ByteArrayInputStream("2.23492e-006: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n1.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n2.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n3.0: [Full GC 10753K->6046K(10912K), 0.3146707 secs]\r\n4.0: [Inc GC 10753K->6046K(10912K), 0.3146707 secs]\r\n5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]".getBytes());
+        ByteArrayInputStream in = new ByteArrayInputStream("0.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n1.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n2.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n3.0: [Full GC 10753K->6046K(10912K), 0.3146707 secs]\r\n4.0: [Inc GC 10753K->6046K(10912K), 0.3146707 secs]\r\n5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]".getBytes());
         DataReader reader = new DataReaderSun1_6_0(in);
         GCModel model = reader.read();
         assertEquals("model size", 6, model.size());
@@ -65,7 +68,8 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         event = i.next();
         assertEquals("event 6", event, event6);
         
-        assertEquals("throughput", 65.680128659, model.getThroughput(), 0.0000001);
+        assertEquals("running time", 5, model.getRunningTime(), 0.0001);
+        assertEquals("throughput", 65.680144, model.getThroughput(), 0.0000001);
     }
 
     public void testNoFullGC() throws Exception {
