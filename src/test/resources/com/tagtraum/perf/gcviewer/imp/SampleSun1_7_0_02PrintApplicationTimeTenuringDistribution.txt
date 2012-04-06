@@ -1,0 +1,82 @@
+Application time: 0.1160820 seconds
+2012-04-06T23:42:46.515+0200: 0.188: [GC pause (young)
+Desired survivor size 1048576 bytes, new threshold 15 (max 15)
+, 0.00784501 secs]
+   [Parallel Time:   7.5 ms]
+      [GC Worker Start Time (ms):  187.8  187.8  187.8  187.8
+       Avg: 187.8, Min: 187.8, Max: 187.8, Diff:   0.0]
+      [Update RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+         [Processed Buffers : 0 1 5 0
+          Sum: 6, Avg: 1, Min: 0, Max: 5, Diff: 5]
+      [Ext Root Scanning (ms):  0.4  0.5  0.5  0.5
+       Avg:   0.5, Min:   0.4, Max:   0.5, Diff:   0.1]
+      [Mark Stack Scanning (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+      [Scan RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+      [Object Copy (ms):  7.0  6.9  6.9  6.9
+       Avg:   6.9, Min:   6.9, Max:   7.0, Diff:   0.1]
+      [Termination (ms):  0.0  0.0  0.0  0.1
+       Avg:   0.0, Min:   0.0, Max:   0.1, Diff:   0.1]
+         [Termination Attempts : 1 1 1 1
+          Sum: 4, Avg: 1, Min: 1, Max: 1, Diff: 0]
+      [GC Worker End Time (ms):  195.2  195.2  195.2  195.3
+       Avg: 195.3, Min: 195.2, Max: 195.3, Diff:   0.0]
+      [GC Worker Times (ms):  7.5  7.5  7.5  7.5
+       Avg:   7.5, Min:   7.5, Max:   7.5, Diff:   0.0]
+      [Parallel Other:   0.1 ms]
+   [Clear CT:   0.0 ms]
+   [Other:   0.3 ms]
+      [Choose CSet:   0.0 ms]
+      [Ref Proc:   0.2 ms]
+      [Ref Enq:   0.0 ms]
+   [Eden: 10M(10M)->0B(4096K) Survivors: 0B->2048K Heap: 10M(16M)->10096K(20M)]
+ [Times: user=0.06 sys=0.00, real=0.01 secs] 
+Total time for which application threads were stopped: 0.0081637 seconds
+Application time: 0.0013498 seconds
+Total time for which application threads were stopped: 0.0103000 seconds
+2012-04-06T23:42:46.734+0200: 0.403: [GC concurrent-mark-end, 0.0024435 sec]
+Application time: 0.0022977 seconds
+2012-04-06T23:42:46.734+0200: 0.403: [GC remark 0.403: [GC ref-proc, 0.0000070 secs], 0.0005542 secs]
+ [Times: user=0.01 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0007062 seconds
+2012-04-06T23:42:46.735+0200: 0.404: [GC concurrent-count-start]
+Application time: 0.0009422 seconds
+2012-04-06T23:42:46.672+0200: 0.342: [GC pause (partial)
+Desired survivor size 524288 bytes, new threshold 1 (max 15)
+- age   1:    3048912 bytes,    3048912 total
+, 0.02648319 secs]
+   [Parallel Time:  26.0 ms]
+      [GC Worker Start Time (ms):  342.6  342.6  342.6  342.6
+       Avg: 342.6, Min: 342.6, Max: 342.6, Diff:   0.0]
+      [Update RS (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+         [Processed Buffers : 0 0 0 4
+          Sum: 4, Avg: 1, Min: 0, Max: 4, Diff: 4]
+      [Ext Root Scanning (ms):  0.5  0.3  0.4  0.3
+       Avg:   0.4, Min:   0.3, Max:   0.5, Diff:   0.2]
+      [Mark Stack Scanning (ms):  0.0  0.0  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+      [Scan RS (ms):  0.0  0.0  0.0  0.1
+       Avg:   0.0, Min:   0.0, Max:   0.1, Diff:   0.1]
+      [Object Copy (ms):  25.3  25.5  25.5  25.4
+       Avg:  25.4, Min:  25.3, Max:  25.5, Diff:   0.2]
+      [Termination (ms):  0.1  0.1  0.0  0.1
+       Avg:   0.1, Min:   0.0, Max:   0.1, Diff:   0.1]
+         [Termination Attempts : 1 1 1 1
+          Sum: 4, Avg: 1, Min: 1, Max: 1, Diff: 0]
+      [GC Worker End Time (ms):  368.5  368.5  368.5  368.5
+       Avg: 368.5, Min: 368.5, Max: 368.5, Diff:   0.0]
+      [GC Worker Times (ms):  26.0  25.9  25.9  25.9
+       Avg:  25.9, Min:  25.9, Max:  26.0, Diff:   0.0]
+      [Parallel Other:   0.1 ms]
+   [Clear CT:   0.0 ms]
+   [Other:   0.4 ms]
+      [Choose CSet:   0.0 ms]
+      [Ref Proc:   0.1 ms]
+      [Ref Enq:   0.0 ms]
+   [Eden: 3072K(3072K)->0B(28M) Survivors: 1024K->1024K Heap: 62M(128M)->58M(128M)]
+ [Times: user=0.06 sys=0.00, real=0.03 secs] 
+Total time for which application threads were stopped: 0.0267794 seconds
+Application time: 0.0072551 seconds

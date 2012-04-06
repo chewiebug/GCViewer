@@ -1,7 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -90,6 +89,7 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("heap", 380*1024, heap.getPostUsed());
         assertEquals("heap", 2048*1024, heap.getTotal());
         
+        assertEquals("number of errors", 0, handler.getCount());
     }
     
     @Test
@@ -113,7 +113,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
     
     @Test
-    public void GcRemark() throws Exception {
+    public void gcRemark() throws Exception {
         final InputStream in = new ByteArrayInputStream(
                 ("0.197: [GC remark 0.197: [GC ref-proc, 0.0000070 secs], 0.0005297 secs]" +
                 		"\n [Times: user=0.00 sys=0.00, real=0.00 secs]")
@@ -126,4 +126,32 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("gc pause", 0.0005297, model.getGCPause().getMax(), 0.000001);
     }
     
+    @Test
+    public void printApplicationTimePrintTenuringDistribution() throws Exception {
+        // test parsing when the following options are set:
+        // -XX:+PrintTenuringDistribution (output ignored)
+        // -XX:+PrintGCApplicationStoppedTime (output ignored)
+        // -XX:+PrintGCApplicationConcurrentTime (output ignored)
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0_02PrintApplicationTimeTenuringDistribution.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("number of events", 5, model.size());
+        assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
+        
+        GCEvent youngEvent = (GCEvent) model.get(0);
+        assertEquals("gc pause (young)", 0.00784501, youngEvent.getPause(), 0.000000001);
+        assertEquals("heap (young)", 20 * 1024, youngEvent.getTotal());
+
+        GCEvent partialEvent = (GCEvent) model.get(4);
+        assertEquals("gc pause (partial)", 0.02648319, partialEvent.getPause(), 0.000000001);
+        assertEquals("heap (partial)", 128 * 1024, partialEvent.getTotal());
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
 }

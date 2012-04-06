@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
@@ -35,6 +36,9 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintGCDetails</li>
  * <li>-XX:+PrintGCTimeStamps</li>
  * <li>-XX:+PrintHeapAtGC (output ignored)</li>
+ * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
+ * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
+ * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
@@ -48,12 +52,20 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String TIMES = "[Times";
     
     private static final String TIMES_ALONE = " " + TIMES;
+    private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
+    private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:"; // -XX:+PrintGCApplicationStoppedTime
+    private static final String DESIRED_SURVIVOR = "Desired survivor"; // -XX:+PrintTenuringDistribution
+    private static final String SURVIVOR_AGE = "- age"; // -XX:+PrintTenuringDistribution
     private static final String MARK_STACK_IS_FULL = "Mark stack is full.";
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
+        EXCLUDE_STRINGS.add(APPLICATION_TIME);
+        EXCLUDE_STRINGS.add(TOTAL_TIME_THREADS_STOPPED);
+        EXCLUDE_STRINGS.add(DESIRED_SURVIVOR);
+        EXCLUDE_STRINGS.add(SURVIVOR_AGE);
         EXCLUDE_STRINGS.add(MARK_STACK_IS_FULL);
         EXCLUDE_STRINGS.add(SETTING_ABORT_IN);
     }
@@ -158,6 +170,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         beginningOfLine = line;
                         continue;
                     }
+                    else if (isPrintTenuringDistribution(line)) {
+                        beginningOfLine = line;
+                        continue;
+                    }
                     
                     // the following case is special for -XX:+PrintGCDetails and must be treated
                     // different from the other cases occurring in G1 standard mode
@@ -210,6 +226,21 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             if (LOG.isLoggable(Level.INFO))
                 LOG.info("Done reading.");
         }
+    }
+
+    /**
+     * Returns true, if <code>line</code> ends with one of the detailed event types.
+     * 
+     * @param line current line
+     * @return <code>true</code>, if <code>-XX:+PrintTenuringDistribution</code> was used
+     */
+    private boolean isPrintTenuringDistribution(String line) {
+        return line.endsWith(Type.G1_YOUNG.getType()) 
+                || line.endsWith(Type.G1_YOUNG__.getType()) 
+                || line.endsWith(Type.G1_YOUNG_MARK_STAC_FULL.getType()) 
+                || line.endsWith(Type.G1_YOUNG_TO_SPACE_OVERFLOW.getType()) 
+                || line.endsWith(Type.G1_PARTIAL.getType()) 
+                || line.endsWith(Type.G1_PARTIAL_TO_SPACE_OVERFLOW.getType()); 
     }
 
     /**
