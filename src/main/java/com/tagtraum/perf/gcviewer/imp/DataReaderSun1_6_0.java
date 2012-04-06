@@ -117,7 +117,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // pattern looks always like "...[CMS<datestamp>..." or "...[CMS<timestamp>..."
     // the next line starts with " (concurrent mode failure)" which in earlier releases followed "CMS" immediately
     // the same can happen with "...ParNew<timestamp|datestamp>..."
-    private static Pattern linesMixedPattern = Pattern.compile("(.* \\[(CMS|ParNew|DefNew))([0-9]+[-.].*)");
+    private static Pattern linesMixedPattern = Pattern.compile("(.*\\[(CMS|ParNew|DefNew))([0-9]+[-.].*)");
     // Matcher group of start of line
     private static final int LINES_MIXED_STARTOFLINE_GROUP = 1;
     // Matcher group of end of line
@@ -132,6 +132,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
     private static Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\(System\\))Adaptive.*");
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
+    private Date firstDateStamp = null;
 
     public DataReaderSun1_6_0(InputStream in) throws UnsupportedEncodingException {
         super(in);
@@ -273,7 +274,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             // either GC data or another collection type starting with timestamp
             // pre-used->post-used, total, time
             final Date datestamp = parseDatestamp(line, pos);
-            final double timestamp = parseTimestamp(line, pos);
+            if (firstDateStamp == null) {
+                firstDateStamp = datestamp;
+            }
+            
+            double timestamp = getTimeStamp(line, pos, datestamp);
             final GCEvent.Type type = parseType(line, pos);
             // special provision for CMS events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
@@ -351,16 +356,71 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
     }
 
-    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, Exception e) {
-        // moving position to the end of this detail event -> skip it
-        int indexOfNextBracket = line.indexOf("]", pos.getIndex())+1;
-        if (indexOfNextBracket > pos.getIndex()) { 
-            pos.setIndex(indexOfNextBracket);
-            while (line.charAt(pos.getIndex()) == ' ') {
-                pos.setIndex(pos.getIndex()+1);
-            }
+    /**
+     * If the next thing in <code>line</code> is a timestamp, it is parsed and returned.
+     * 
+     * @param line current line
+     * @param pos current parse positition
+     * @param datestamp datestamp that may have been parsed
+     * @return timestamp (either parsed or derived from datestamp)
+     * @throws ParseException it seemed to be a timestamp but still couldn't be parsed
+     */
+    private double getTimeStamp(final String line, final ParsePosition pos, final Date datestamp) 
+            throws ParseException {
+        
+        double timestamp = 0;
+        if (nextIsTimestamp(line, pos)) {
+            timestamp = parseTimestamp(line, pos);
         }
+        else if (firstDateStamp != null) {
+            // if no timestamp was present, calculate difference between last and this date
+            timestamp = (datestamp.getTime() - firstDateStamp.getTime()) / (double)1000; 
+        }
+        return timestamp;
+    }
+
+    /**
+     * Skips until the end of the current detail event.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @param e exception that made skipping necessary
+     */
+    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, Exception e) {
+        skipUntilEndOfDetail(line, pos, 1);
+        
         if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
+    }
+    
+    /**
+     * Skips until end of current detail event. If the detail event contains detail events
+     * itself, those are skipped as well.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @param levelOfDetailEvent level of nesting within detail event
+     */
+    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, int levelOfDetailEvent) {
+        // moving position to the end of this detail event -> skip it
+        // if it contains other detail events, skip those as well (recursion)
+        int indexOfNextOpeningBracket = line.indexOf("[", pos.getIndex());
+        int indexOfNextClosingBracket = line.indexOf("]", pos.getIndex());
+        if (indexOfNextOpeningBracket > 0 && indexOfNextOpeningBracket < indexOfNextClosingBracket) {
+            ++levelOfDetailEvent;
+            pos.setIndex(indexOfNextOpeningBracket + 1);
+        }
+        else if (indexOfNextClosingBracket > 0) {
+            --levelOfDetailEvent;
+            pos.setIndex(indexOfNextClosingBracket + 1);
+        }
+        else {
+            // unexpected: no opening and no closing bracket -> skip out
+            --levelOfDetailEvent;
+        }
+        
+        if (levelOfDetailEvent > 0) {
+            skipUntilEndOfDetail(line, pos, levelOfDetailEvent);
+        }
     }
     
 }

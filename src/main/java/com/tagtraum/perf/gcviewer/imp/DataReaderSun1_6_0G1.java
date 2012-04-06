@@ -335,7 +335,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 event.setType(type);
                 // Java 7 can have detailed event at this position like this
                 // 0.197: [GC remark 0.197: [GC ref-proc, 0.0000070 secs], 0.0005297 secs]
-                if (isTimestamp(line, pos)) {
+                if (nextIsTimestamp(line, pos)) {
                     event.add((GCEvent) parseLine(line, pos));
                 }
                 

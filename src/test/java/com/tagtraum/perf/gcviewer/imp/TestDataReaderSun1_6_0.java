@@ -524,4 +524,48 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("2nd event", "GC CMS-remark:", model.get(1).getTypeAsString());
         assertEquals("2nd event pause", 0.0013199, ((GCEvent)model.get(1)).getPause(), 0.00000001);
     }
+     
+    @Test
+    public void testPSWithoutPrintTimeStamp() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-04-03T20:35:40.033+0200: [GC [PSYoungGen: 16420K->2657K(19136K)] 16420K->15887K(62848K), 0.0143603 secs] [Times: user=0.02 sys=0.02, real=0.01 secs]" +
+                 "\n2012-04-03T20:35:40.056+0200: [GC [PSYoungGen: 19084K->2657K(35584K)] 32314K->32279K(79296K), 0.0236295 secs] [Times: user=0.01 sys=0.00, real=0.02 secs]" +
+                 "\n2012-04-03T20:35:40.079+0200: [Full GC [PSYoungGen: 2657K->0K(35584K)] [PSOldGen: 29622K->32262K(67392K)] 32279K->32262K(102976K) [PSPermGen: 2603K->2603K(21248K)], 0.0095147 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 3, model.size());
+        assertEquals("heap", 102976, model.getHeapAllocatedSizes().getMax());
+        assertEquals("pause", 0.0236295, model.getGCPause().getMax(), 0.00000001);
+        assertEquals("2nd pause, timeStamp", 0.056 - 0.033, ((GCEvent)model.get(1)).getTimestamp(), 0.00001);
+        assertEquals("3nd pause, timeStamp", 0.079 - 0.033, ((GCEvent)model.get(2)).getTimestamp(), 0.00001);
+    }
+
+    @Test
+    public void testCMSWithoutPrintTimeStamp() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-04-03T20:36:35.035+0200: [GC [ParNew: 16993K->2105K(19136K), 0.0270541 secs] 16993K->16424K(83008K), 0.0272020 secs] [Times: user=0.02 sys=0.05, real=0.03 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("heap", 83008, model.getHeapAllocatedSizes().getMax());
+        assertEquals("pause", 0.0272020, model.getGCPause().getMax(), 0.00000001);
+    }
+
+    @Test
+    public void testCMSWithoutPrintTimeStampConcurrentModeFailure() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-04-03T20:36:35.284+0200: [GC [ParNew: 19081K->19081K(19136K), 0.0000205 secs][CMS2012-04-03T20:36:35.285+0200: [CMS-concurrent-abortable-preclean: 0.005/0.150 secs] [Times: user=0.14 sys=0.14, real=0.15 secs]" 
+                 + "\n (concurrent mode failure): 98182K->3832K(98624K), 0.0195864 secs] 117264K->3832K(117760K), [CMS Perm : 2614K->2613K(21248K)], 0.0199322 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("heap", 117760, model.getHeapAllocatedSizes().getMax());
+        assertEquals("pause", 0.0199322, model.getFullGCPause().getMax(), 0.00000001);
+    }
 }

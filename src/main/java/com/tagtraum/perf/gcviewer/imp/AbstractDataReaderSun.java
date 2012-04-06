@@ -254,7 +254,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
     
     protected boolean hasNextDetail(String line, ParsePosition pos) {
-        return isTimestamp(line, pos) || nextCharIsBracket(line, pos);
+        return nextIsTimestamp(line, pos) || nextCharIsBracket(line, pos);
     }
 
     protected boolean nextCharIsBracket(String line, ParsePosition pos) {
@@ -327,21 +327,53 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
 
     /**
-     * Determines whether there is a timestamp coming up earlier than a
-     * footprint value.
-     *
-     * @param line
-     * @param pos
-     * @return true if we will encounter a timestamp earlier than a footprint
+     * Returns <code>true</code>, if next "token" is a timestamp.
+     * 
+     * @param line line to be parsed
+     * @param pos current position in line
+     * @return <code>true</code> if next is timestamp, <code>false</code> otherwise
      */
-    protected boolean isTimestamp(String line, ParsePosition pos) {
-        // timestamps end with colons
-        // footprint values end with K's
-        int colonIndex = line.indexOf(':', pos.getIndex());
-        int kIndex = line.indexOf('K', pos.getIndex());
-        if (colonIndex < 0) return false;
-        if (kIndex < 0) return true;
-        return colonIndex < kIndex;
+    protected boolean nextIsTimestamp(String line, ParsePosition pos) {
+        // format of a timestamp is the following: "0.013:"
+        // make sure that after the next blanks a timestamp follows
+        
+        if (line.indexOf(':', pos.getIndex()) < 0) {
+            return false;
+        }
+        
+        int index = pos.getIndex();
+        // skip blanks
+        while (Character.isSpaceChar(line.charAt(index))) {
+            ++index;
+        }
+        
+        boolean hasDigitsBeforeDot = false;
+        boolean hasDot = false;
+        boolean hasDigitsAfterDot = false;
+        boolean hasColon = false;
+        
+        // digits before "."
+        int startIndex = index;
+        while (Character.isDigit(line.charAt(index))) {
+            ++index;
+            hasDigitsBeforeDot = true;
+        }
+        
+        // "."
+        if (line.charAt(index) == '.') {
+            ++index;
+            hasDot = true;
+        }
+        
+        // digits after "."
+        while (Character.isDigit(line.charAt(index))) {
+            ++index;
+            hasDigitsAfterDot = true;
+        }
+        
+        hasColon = line.charAt(index) == ':';
+        
+        return index > startIndex && hasDigitsBeforeDot && hasDot && hasDigitsAfterDot && hasColon;
     }
 
     /**
