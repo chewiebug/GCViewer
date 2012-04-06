@@ -282,70 +282,35 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             final GCEvent.Type type = parseType(line, pos);
             // special provision for CMS events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
-                if (type.getPattern() == GcPattern.GC) {
-                    final ConcurrentGCEvent event = new ConcurrentGCEvent();
-                    event.setDateStamp(datestamp);
-                    event.setTimestamp(timestamp);
-                    event.setType(type);
-                    ae = event;
-                    // nothing more to parse...
-                } else {
-                    final ConcurrentGCEvent event = new ConcurrentGCEvent();
-                    event.setDateStamp(datestamp);
-                    event.setTimestamp(timestamp);
-                    event.setType(type);
+                final ConcurrentGCEvent event = new ConcurrentGCEvent();
 
+                // simple concurrent events (ending with -start) just are of type GcPattern.GC
+                event.setDateStamp(datestamp);
+                event.setTimestamp(timestamp);
+                event.setType(type);
+                if (type.getPattern() == GcPattern.GC_PAUSE_DURATION) {
+                    // the -end events contain a pause and duration as well
                     int start = pos.getIndex();
                     int end = line.indexOf('/', pos.getIndex());
                     event.setPause(Double.parseDouble(line.substring(start, end)));
                     start = end + 1;
                     end = line.indexOf(' ', start);
                     event.setDuration(Double.parseDouble(line.substring(start, end)));
-                    // nothing more to parse
-                    ae = event;
                 }
+                ae = event;
+                // nothing more to parse...
             } else {
                 final GCEvent event = new GCEvent();
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
                 event.setType(type);
                 // now add detail gcevents, should they exist
-                int currentIndex = pos.getIndex();
-                boolean currentIndexHasChanged = true;
-                while (hasNextDetail(line, pos) && currentIndexHasChanged) {
-                    final GCEvent detailEvent = new GCEvent();
-                    try {
-                        if (nextCharIsBracket(line, pos)) {
-                            detailEvent.setTimestamp(timestamp);
-                        } else {
-                            detailEvent.setTimestamp(parseTimestamp(line, pos));
-                        }
-                        detailEvent.setType(parseType(line, pos));
-                        setMemoryAndPauses(detailEvent, line, pos);
-                        event.add(detailEvent);
-                    } catch (UnknownGcTypeException e) {
-                        skipUntilEndOfDetail(line, pos, e);
-                    } catch (NumberFormatException e) {
-                        skipUntilEndOfDetail(line, pos, e);
-                    }
-                    
-                    // in a line with complete garbage the parser must not get stuck; use emergency exit...
-                    currentIndexHasChanged = currentIndex != pos.getIndex();
-                    currentIndex = pos.getIndex();
-                }
+                parseDetailEventsIfExist(line, pos, event);
                 setMemoryAndPauses(event, line, pos);
                 if (event.getPause() == 0) {
-                    if (hasNextDetail(line, pos)) {
-                        final GCEvent detailEvent = new GCEvent();
-                        if (nextCharIsBracket(line, pos)) {
-                            detailEvent.setTimestamp(timestamp);
-                        } else {
-                            detailEvent.setTimestamp(parseTimestamp(line, pos));
-                        }
-                        detailEvent.setType(parseType(line, pos));
-                        setMemoryAndPauses(detailEvent, line, pos);
-                        event.add(detailEvent);
-                    }
+                    // this is usually the case for full collections
+                    // there the "perm" collection is inserted between memory and pause part of main event
+                    parseDetailEventsIfExist(line, pos, event);
                     parsePause(event, line, pos);
                 }
                 ae = event;
@@ -353,6 +318,42 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             return ae;
         } catch (RuntimeException rte) {
             throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
+        }
+    }
+
+    /**
+     * Parses detail events if any exist at current <code>pos</code> in <code>line</code>.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @param event enclosing event
+     * @throws ParseException some problem when parsing the detail event
+     */
+    private void parseDetailEventsIfExist(final String line, final ParsePosition pos, final GCEvent event)
+            throws ParseException {
+        
+        int currentIndex = pos.getIndex();
+        boolean currentIndexHasChanged = true;
+        while (hasNextDetail(line, pos) && currentIndexHasChanged) {
+            final GCEvent detailEvent = new GCEvent();
+            try {
+                if (nextCharIsBracket(line, pos)) {
+                    detailEvent.setTimestamp(event.getTimestamp());
+                } else {
+                    detailEvent.setTimestamp(parseTimestamp(line, pos));
+                }
+                detailEvent.setType(parseType(line, pos));
+                setMemoryAndPauses(detailEvent, line, pos);
+                event.add(detailEvent);
+            } catch (UnknownGcTypeException e) {
+                skipUntilEndOfDetail(line, pos, e);
+            } catch (NumberFormatException e) {
+                skipUntilEndOfDetail(line, pos, e);
+            }
+            
+            // in a line with complete garbage the parser must not get stuck; just stop parsing.
+            currentIndexHasChanged = currentIndex != pos.getIndex();
+            currentIndex = pos.getIndex();
         }
     }
 
