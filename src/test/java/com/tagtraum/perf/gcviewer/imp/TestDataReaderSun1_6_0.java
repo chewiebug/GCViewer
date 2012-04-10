@@ -568,4 +568,22 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("heap", 117760, model.getHeapAllocatedSizes().getMax());
         assertEquals("pause", 0.0199322, model.getFullGCPause().getMax(), 0.00000001);
     }
+    
+    /**
+     * Tests -XX:+PrintTenuringDistribution with -XX:+UseParallelGC
+     */
+    @Test
+    public void testPSPrintTenuringDistribution() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-04-10T20:58:43.009+0200: 0.690: [GC" 
+                 + "\nDesired survivor size 89456640 bytes, new threshold 7 (max 15)"
+                 + "\n [PSYoungGen: 524288K->35633K(611648K)] 524288K->35633K(2009792K), 0.0240717 secs] [Times: user=0.01 sys=0.03, real=0.02 secs]")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("heap", 2009792, model.getHeapAllocatedSizes().getMax());
+        assertEquals("pause", 0.0240717, model.getGCPause().getMax(), 0.00000001);
+    }
 }

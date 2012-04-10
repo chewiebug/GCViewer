@@ -259,7 +259,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     }
     
     private boolean isPrintTenuringDistribution(String line) {
-        return line.endsWith("[DefNew") || line.endsWith("[ParNew") || line.endsWith("[ParNew (promotion failed)");
+        return line.endsWith("[DefNew") // serial young (CMS, Serial GC)
+                || line.endsWith("[ParNew") // parallel young (CMS, parallel GC) 
+                || line.endsWith("[ParNew (promotion failed)") // CMS
+                || line.endsWith("[GC"); // PSYoungGen (parallel sweep)
     }
 
     private boolean isCmsScavengeBeforeRemark(String line) {
