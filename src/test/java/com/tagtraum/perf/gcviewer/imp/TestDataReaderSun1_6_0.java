@@ -586,4 +586,49 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("heap", 2009792, model.getHeapAllocatedSizes().getMax());
         assertEquals("pause", 0.0240717, model.getGCPause().getMax(), 0.00000001);
     }
+
+    @Test
+    public void testCMSAdaptiveSizePolicy() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0CMSAdaptiveSizePolicy.txt");
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("event count", 24, model.size());
+        assertEquals("young gc count", 11, model.getGCPause().getN());
+        assertEquals("full gc count", 1, model.getFullGCPause().getN());
+        assertEquals("number of errors", 0, handler.getCount());
+
+    }
+     
+    @Test
+    public void testCMSAdaptiveSizePolicyPrintHeapAtGC() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-04-18T14:48:31.855+0200: 29.592: [GC 29.592: [ASParNew: 52825K->6499K(59008K), 0.0268761 secs] 120805K->120749K(517760K), 0.0269605 secs] [Times: user=0.05 sys=0.00, real=0.03 secs]" 
+                 + "\nHeap"
+                 + "\nadaptive size par new generation total 59008K, used 15368K [0x00000000d8000000, 0x00000000dc000000, 0x00000000dc000000)"
+                 + "\n eden space 52480K,  16% used [0x00000000d8000000, 0x00000000d88a95a0, 0x00000000db340000)"
+                 + "\n from space 6528K,  99% used [0x00000000db340000, 0x00000000db998cb0, 0x00000000db9a0000)"
+                 + "\n to   space 6528K,   0% used [0x00000000db9a0000, 0x00000000db9a0000, 0x00000000dc000000)"
+                 + "\nconcurrent mark-sweep generation total 458752K, used 259541K [0x00000000dc000000, 0x00000000f8000000, 0x00000000f8000000)"
+                 + "\nconcurrent-mark-sweep perm gen total 65536K, used 2621K [0x00000000f8000000, 0x00000000fc000000, 0x0000000100000000)")
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("GC pause", 0.0269605, model.getGCPause().getMin(), 0.000000001);
+        assertEquals("number of errors", 0, handler.getCount());
+
+    }
+     
 }

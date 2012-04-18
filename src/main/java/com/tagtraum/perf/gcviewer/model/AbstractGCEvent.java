@@ -170,16 +170,19 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     
     public boolean isConcurrentCollectionStart() {
         return getType().getType().equals(Type.CMS_CONCURRENT_MARK_START.getType()) // CMS
+                || getType().getType().equals(Type.ASCMS_CONCURRENT_MARK_START.getType()) // CMS AdaptiveSizePolicy
                 || getType().getType().equals(Type.G1_CONCURRENT_MARK_START.getType());// G1
     }
     
     public boolean isConcurrentCollectionEnd() {
         return getType().getType().equals(Type.CMS_CONCURRENT_RESET.getType()) // CMS
+                || getType().getType().equals(Type.ASCMS_CONCURRENT_RESET.getType()) // CMS AdaptiveSizePolicy
                 || getType().getType().equals(Type.G1_CONCURRENT_CLEANUP_END.getType()); // G1
     }
     
     public boolean isInitialMark() {
         return getTypeAsString().indexOf(Type.CMS_INITIAL_MARK.getType()) >= 0
+                || getTypeAsString().indexOf(Type.ASCMS_INITIAL_MARK.getType()) >= 0
                 || getTypeAsString().indexOf(Type.G1_YOUNG_INITIAL_MARK.getType()) >= 0
                 || getTypeAsString().indexOf(Type.G1_YOUNG_INITIAL_MARK_TO_SPACE_OVERFLOW.getType()) >= 0
                 || getTypeAsString().indexOf(Type.G1_PARTIAL_INITIAL_MARK.getType()) >= 0
@@ -293,6 +296,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type GC__ = new Type("GC--", Generation.YOUNG);
         public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG, Concurrency.SERIAL); // single threaded
         public static final Type PAR_NEW = new Type("ParNew", "ParNew:", Generation.YOUNG); // parallel
+        public static final Type ASPAR_NEW = new Type("ASParNew", "ASParNew:", Generation.YOUNG); // parallel (CMS AdaptiveSizePolicy)
         public static final Type PAR_OLD_GEN = new Type("ParOldGen", "ParOldGen:", Generation.TENURED);
         public static final Type PS_YOUNG_GEN = new Type("PSYoungGen", "PSYoungGen:", Generation.YOUNG);
         public static final Type PS_OLD_GEN = new Type("PSOldGen", "PSOldGen:", Generation.TENURED);
@@ -302,6 +306,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type TRAIN = new Type("Train", "Train:", Generation.TENURED);
         public static final Type TRAIN_MSC = new Type("Train MSC", "Train MSC:", Generation.TENURED);
         public static final Type PERM = new Type("Perm", "Perm:", Generation.PERM);
+
+        // CMS types
         public static final Type CMS = new Type("CMS", "CMS:", Generation.TENURED);
         public static final Type CMS_PERM = new Type("CMS Perm", "CMS Perm :", Generation.PERM);
         
@@ -326,6 +332,30 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
         public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", "CMS-initial-mark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type CMS_REMARK = new Type("CMS-remark", "CMS-remark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        
+        // CMS (Concurrent Mark Sweep) AdaptiveSizePolicy Event Types
+        public static final Type ASCMS = new Type("ASCMS", "ASCMS:", Generation.TENURED);
+
+        // Parnew (promotion failed) AdaptiveSizePolicy
+        public static final Type ASPAR_NEW_PROMOTION_FAILED = new Type("ASParNew (promotion failed)", "ASParNew (promotion failed):", Generation.YOUNG, Concurrency.SERIAL);
+        
+        // CMS (concurrent mode failure / interrupted) AdaptiveSizePolicy
+        public static final Type ASCMS_CMF = new Type("ASCMS (concurrent mode failure)", "ASCMS (concurrent mode failure):", Generation.TENURED, Concurrency.SERIAL);
+        public static final Type ASCMS_CMI = new Type("ASCMS (concurrent mode interrupted)", "ASCMS (concurrent mode interrupted):", Generation.TENURED, Concurrency.SERIAL);
+
+        public static final Type ASCMS_CONCURRENT_MARK_START = new Type("ASCMS-concurrent-mark-start", "ASCMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_MARK = new Type("ASCMS-concurrent-mark", "ASCMS-concurrent-mark:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_PRECLEAN_START = new Type("ASCMS-concurrent-preclean-start", "ASCMS-concurrent-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_PRECLEAN = new Type("ASCMS-concurrent-preclean", "ASCMS-concurrent-preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_SWEEP_START = new Type("ASCMS-concurrent-sweep-start", "ASCMS-concurrent-sweep-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_SWEEP = new Type("ASCMS-concurrent-sweep", "ASCMS-concurrent-sweep:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_RESET_START = new Type("ASCMS-concurrent-reset-start", "ASCMS-concurrent-reset-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_RESET = new Type("ASCMS-concurrent-reset", "ASCMS-concurrent-reset:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("ASCMS-concurrent-abortable-preclean-start", "ASCMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("ASCMS-concurrent-abortable-preclean", "ASCMS-concurrent-abortable-preclean:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+
+        public static final Type ASCMS_INITIAL_MARK = new Type("ASCMS-initial-mark", "ASCMS-initial-mark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type ASCMS_REMARK = new Type("ASCMS-remark", "ASCMS-remark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         
         // G1 stop the world types
         public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", "Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);

@@ -87,6 +87,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("def new generation"); // serial young collection -XX:+UseSerialGC
         HEAP_STRINGS.add("PSYoungGen"); // parallel young collection -XX:+UseParallelGC
         HEAP_STRINGS.add("par new generation"); // parallel young (CMS / -XX:+UseParNewGC)
+        HEAP_STRINGS.add("adaptive size par new generation"); // parallel young (CMS / -XX:+UseParNewGC / -XX:+PrintAdaptiveSizePolicy)
         HEAP_STRINGS.add("eden");
         HEAP_STRINGS.add("from");
         HEAP_STRINGS.add("to");
@@ -119,7 +120,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // pattern looks always like "...[CMS<datestamp>..." or "...[CMS<timestamp>..."
     // the next line starts with " (concurrent mode failure)" which in earlier releases followed "CMS" immediately
     // the same can happen with "...ParNew<timestamp|datestamp>..."
-    private static Pattern linesMixedPattern = Pattern.compile("(.*\\[(CMS|ParNew|DefNew))([0-9]+[-.].*)");
+    private static Pattern linesMixedPattern = Pattern.compile("(.*\\[(CMS|ParNew|DefNew|ASCMS|ASParNew))([0-9]+[-.].*)");
     // Matcher group of start of line
     private static final int LINES_MIXED_STARTOFLINE_GROUP = 1;
     // Matcher group of end of line
