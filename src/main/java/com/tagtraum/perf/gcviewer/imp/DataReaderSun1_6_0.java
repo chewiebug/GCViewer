@@ -87,13 +87,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("def new generation"); // serial young collection -XX:+UseSerialGC
         HEAP_STRINGS.add("PSYoungGen"); // parallel young collection -XX:+UseParallelGC
         HEAP_STRINGS.add("par new generation"); // parallel young (CMS / -XX:+UseParNewGC)
-        HEAP_STRINGS.add("eden space");
-        HEAP_STRINGS.add("from space");
-        HEAP_STRINGS.add("to   space");
+        HEAP_STRINGS.add("eden");
+        HEAP_STRINGS.add("from");
+        HEAP_STRINGS.add("to");
         
         HEAP_STRINGS.add("ParOldGen"); // parallel old collection -XX:+UseParallelOldGC
         HEAP_STRINGS.add("PSOldGen"); // serial old collection -XX:+UseParallelGC without -XX:+UseParallelOldGC
-        HEAP_STRINGS.add("object space");
+        HEAP_STRINGS.add("object");
         HEAP_STRINGS.add("PSPermGen"); // serial (?) perm collection
         HEAP_STRINGS.add("tenured generation"); // serial old collection -XX:+UseSerialGC
         HEAP_STRINGS.add("the space");

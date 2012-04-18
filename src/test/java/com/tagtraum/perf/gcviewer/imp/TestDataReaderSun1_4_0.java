@@ -1,10 +1,14 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
@@ -18,15 +22,13 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @version $Id: $
  */
-public class TestDataReaderSun1_4_0 extends TestCase {
-
-    public TestDataReaderSun1_4_0(String name) {
-        super(name);
-    }
+public class TestDataReaderSun1_4_0 {
+    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
 
     /**
      * Test output for -XX:+PrintAdaptiveSizePolicy 
      */
+    @Test
     public void testAdaptiveSizePolicy() throws Exception {
         InputStream in = getClass().getResourceAsStream("SampleSun1_4_0AdaptiveSizePolicy.txt");
         DataReader reader = new DataReaderSun1_6_0(in);
@@ -40,6 +42,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals("gc pause", 0.1709856, model.getGCPause().getSum(), 0.000001);
     }
     
+    @Test
     public void testParse1() throws Exception {
         // original testcase was written with timestamp "2.23492e-006d" as first timestamp
         // I have never seen a timestamp writte in scientific format in the logfiles, so
@@ -72,6 +75,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals("throughput", 65.680144, model.getThroughput(), 0.0000001);
     }
 
+    @Test
     public void testNoFullGC() throws Exception {
         InputStream in = getClass().getResourceAsStream("SampleSun1_4_2NoFullGC.txt");
         DataReader reader = new DataReaderSun1_6_0(in);
@@ -110,7 +114,7 @@ public class TestDataReaderSun1_4_0 extends TestCase {
         assertEquals("throughput", 98.92780024997158, model.getThroughput(), 0.00000000001);
     }
 
-
+    @Test
     public void testPrintGCDetails() throws Exception {
         InputStream in = getClass().getResourceAsStream("SampleSun1_4_2PrintGCDetails.txt");
         DataReader reader = new DataReaderSun1_6_0(in);
@@ -144,5 +148,22 @@ public class TestDataReaderSun1_4_0 extends TestCase {
 
         assertEquals("throughput", 93.984703347, model.getThroughput(), 0.000001);
     }
+
+    @Test
+    public void testPrintHeapAtGC() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+
+        InputStream in = getClass().getResourceAsStream("SampleSun1_4_0PSPrintHeapAtGC.txt");
+        DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+        
+        assertEquals("GC count", 2, model.size());
+        assertEquals("GC pause", 0.0083579, model.getGCPause().getMax(), 0.00000001);
+        assertEquals("Full GC pause", 0.0299536, model.getFullGCPause().getMax(), 0.00000001);
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+
 
 }
