@@ -48,23 +48,33 @@ public abstract class AbstractDataReaderSun implements DataReader {
         setMemoryAndPauses(event, line, new ParsePosition(0));
     }
 
-    // Suns G1 log output uses K, M and G for memory sizes; I only want K, so I have to change M and G values
-    private int getMemoryUnitMultiplier(String line, char memUnit) {
-    	if ('K' == memUnit) {
-    		return 1;
-    	}
-    	else if ('M' == memUnit) {
-    		return 1024;
-    	}
-    	else if ('G' == memUnit) {
-    		return 1024*1024;
-    	}
-    	else {
-    		if (LOG.isLoggable(Level.WARNING)) {
-    			LOG.warning("unknown memoryunit '" + memUnit + "' in line " + line);
-    		}
-    		return 1;
-    	}
+    /**
+     * Returns the amount of memory in kilobyte. Depending on <code>memUnit</code>, input is
+     * converted to kilobyte.
+     * @param memoryValue amount of memory
+     * @param memUnit memory unit
+     * @param line line that is parsed
+     * @return amount of memory in kilobyte
+     */
+    private int getMemoryInKiloByte(int memoryValue, char memUnit, String line) {
+        if ('B' == memUnit) {
+            return memoryValue / 1024;
+        }
+        else if ('K' == memUnit) {
+            return memoryValue;
+        }
+        else if ('M' == memUnit) {
+            return memoryValue * 1024;
+        }
+        else if ('G' == memUnit) {
+            return memoryValue * 1024*1024;
+        }
+        else {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.warning("unknown memoryunit '" + memUnit + "' in line " + line);
+            }
+            return 1;
+        }
     }
     
     protected void setMemoryAndPauses(GCEvent event, String line, ParsePosition pos) throws ParseException {
@@ -72,10 +82,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
         parsePause(event, line, pos);
     }
 
-    protected void setMemory(GCEvent event, String line) throws ParseException {
-        setMemory(event, line, new ParsePosition(0));
-    }
-    
     /**
      * Parses a memory information with the following form: 8192K[(16M)]->7895K(16M) ("[...]" means
      * optional.
@@ -106,23 +112,26 @@ public abstract class AbstractDataReaderSun implements DataReader {
             // if format is "before"->"after"("total"), the next parentesis is the one of the "total"
             nextParentesis = separatorPos;
         }
-        event.setPreUsed(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1) 
-                * getMemoryUnitMultiplier(line, line.charAt(nextParentesis-1)));
+        event.setPreUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1),
+                line.charAt(nextParentesis-1),
+                line));
         
         // skip until after "->"
         currentPos = line.indexOf("->", nextParentesis) + 2;
         
         
         nextParentesis = line.indexOf("(", currentPos);
-        event.setPostUsed(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1) 
-                * getMemoryUnitMultiplier(line, line.charAt(nextParentesis-1)));
+        event.setPostUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1),
+                line.charAt(nextParentesis-1),
+                line));
         currentPos = nextParentesis;
         
         // skip "(" and read heap size
         ++currentPos;
         nextParentesis = line.indexOf(")", currentPos);
-        event.setTotal(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1) 
-                * getMemoryUnitMultiplier(line, line.charAt(nextParentesis-1)));
+        event.setTotal(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1),
+                line.charAt(nextParentesis-1),
+                line));
         currentPos = nextParentesis;
         
         pos.setIndex(currentPos);
@@ -136,18 +145,24 @@ public abstract class AbstractDataReaderSun implements DataReader {
         boolean foundPreUsed = end != -2 && parenthesis > end;
         if (foundPreUsed) {
             start = line.lastIndexOf(' ', end) + 1;
-            event.setPreUsed(NumberParser.parseInt(line, start, end-start) * getMemoryUnitMultiplier(line, line.charAt(end)));
+            event.setPreUsed(getMemoryInKiloByte(NumberParser.parseInt(line, start, end-start),
+                    line.charAt(end),
+                    line));
             start = end + 3;
         }
         for (end = start; Character.isDigit(line.charAt(end)); ++end);
-        event.setPostUsed(NumberParser.parseInt(line, start, end-start) * getMemoryUnitMultiplier(line, line.charAt(end)));
+        event.setPostUsed(getMemoryInKiloByte(NumberParser.parseInt(line, start, end-start),
+                line.charAt(end),
+                line));
         if (!foundPreUsed) {
             event.setPreUsed(event.getPostUsed());
         }
 
         start = end + 2;
         end = line.indexOf(')', start) - 1;
-        event.setTotal(NumberParser.parseInt(line, start, end-start) * getMemoryUnitMultiplier(line, line.charAt(end)));
+        event.setTotal(getMemoryInKiloByte(NumberParser.parseInt(line, start, end-start),
+                line.charAt(end),
+                line));
         if (line.charAt(end + 1) == ')') pos.setIndex(end+2);
         else pos.setIndex(end+1);
 
