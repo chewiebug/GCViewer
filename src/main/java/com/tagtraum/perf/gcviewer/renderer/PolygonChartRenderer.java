@@ -3,6 +3,8 @@ package com.tagtraum.perf.gcviewer.renderer;
 import com.tagtraum.perf.gcviewer.ChartRenderer;
 import com.tagtraum.perf.gcviewer.ModelChart;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 import java.awt.*;
@@ -74,6 +76,17 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
 
     protected ScaledPolygon createMemoryScaledPolygon() {
         return new ScaledPolygon(getModelChart().getScaleFactor(), getHeight()/((double)getModelChart().getFootprint()), getHeight());
+    }
+
+    /**
+     * Returns <code>true</code> if <code>event</code> is of a type that contains memory information.
+     * 
+     * @param event event to be analysed
+     * @return <code>true</code> if <code>event</code> contains memory information
+     */
+    protected boolean hasMemoryInformation(GCEvent event) {
+        return event.getType().getPattern().equals(GcPattern.GC_MEMORY)
+                || event.getType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE); 
     }
 
     private static int getLowestY(Polygon polygon) {

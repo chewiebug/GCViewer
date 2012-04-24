@@ -42,7 +42,7 @@ public class TotalYoungRenderer extends PolygonChartRenderer {
             double youngSize = 0;
             GCEvent young = event.getYoung();
             GCEvent tenured = event.getTenured();
-            if (young != null && tenured != null) {
+            if (hasMemoryInformation(event) && young != null && tenured != null) {
                 if (modelChart.isShowTenured()) {
                     tenuredSize = tenured.getTotal();
                 }

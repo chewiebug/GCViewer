@@ -38,7 +38,7 @@ public class TotalTenuredRenderer extends PolygonChartRenderer {
         for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
             final GCEvent event = i.next();
             final GCEvent tenured = event.getTenured();
-            if (tenured != null) {
+            if (hasMemoryInformation(event) && tenured != null) {
                 double total = tenured.getTotal();
                 if (polygon.npoints == 1) {
                     // first point needs to be treated different from the rest,
