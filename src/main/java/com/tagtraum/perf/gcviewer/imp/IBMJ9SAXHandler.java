@@ -29,7 +29,9 @@ import java.util.logging.Logger;
  */
 public class IBMJ9SAXHandler extends DefaultHandler {
 	private GCModel model;
-	private DateFormat cycleStartGCFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
+	private DateFormat cycleStartGCFormat5 = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
+	private DateFormat cycleStartGCFormat6 = new SimpleDateFormat("MMM dd HH:mm:ss yyyy", Locale.US);
+	private DateFormat current = cycleStartGCFormat5;
 	protected AF currentAF;
 	int currentTenured = 0; // 0 = none, 1=pre, 2=mid, 3=end
 	private static Logger LOG = Logger.getLogger(IBMJ9SAXHandler.class.getName());
@@ -37,8 +39,21 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 	
 	public IBMJ9SAXHandler(GCModel model) {
 		this.model = model;
+		
 	}
 
+	protected Date parseTime(String ts) throws ParseException{
+		try{
+			return current.parse(ts);
+		}catch(ParseException e){
+			if(current != cycleStartGCFormat6){
+				current = cycleStartGCFormat6;
+				return parseTime(ts);
+			}
+			throw e;
+		}
+	}
+	
 	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		try {
 		//System.out.println("START: [" + qName + "]");
@@ -52,7 +67,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 			String ts = attrs.getValue("timestamp");
 			currentAF.id = id;
 			currentAF.type = type;
-			final Date date = cycleStartGCFormat.parse(ts);
+			final Date date = parseTime(ts);
 			currentAF.timestamp = date;
 			if(begin == null) {
 				begin = date;
