@@ -21,6 +21,7 @@ import java.awt.geom.Point2D;
 public abstract class PolygonChartRenderer extends ChartRenderer {
     private boolean drawPolygon;
     private Paint fillPaint;
+    private Polygon polygon;
 
     public PolygonChartRenderer(ModelChartImpl modelChart) {
         super(modelChart);
@@ -35,9 +36,20 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         this.fillPaint = fillPaint;
     }
 
+    /**
+     * Reset the internally cached polygon. Should always be done when scale of chart is changed,
+     * but not more often.
+     */
+    public void resetPolygon() {
+        polygon = null;
+    }
+    
     public void paintComponent(Graphics2D g2d) {
         if ((!drawPolygon) && (!isDrawLine())) return;
-        Polygon polygon = computePolygon(getModelChart(), getModelChart().getModel());
+        if (polygon == null) {
+            // don't recompute polygon for each paint event
+            polygon = computePolygon(getModelChart(), getModelChart().getModel());
+        }
         if (drawPolygon) {
             // don't antialias the polygon, if we are going to antialias the bounding lines
             Object oldAAHint = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);

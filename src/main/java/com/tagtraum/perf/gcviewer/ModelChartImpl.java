@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -32,6 +33,7 @@ import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
+import com.tagtraum.perf.gcviewer.renderer.PolygonChartRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
@@ -214,6 +216,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     public void setScaleFactor(double scaleFactor) {
         this.scaleFactor = scaleFactor;
         chart.setSize(chart.getPreferredSize());
+        chart.resetPolygons();
         memoryRuler.setSize((int)memoryRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         pauseRuler.setSize((int)pauseRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         timestampRuler.setSize((int)(getViewport().getWidth()*getScaleFactor()), (int)timestampRuler.getPreferredSize().getHeight());
@@ -400,6 +403,17 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
 
         private int scaleX(double d) {
             return (int) (d * getScaleFactor());
+        }
+        
+        /**
+         * Reset the cached polygons of all {@link PolygonChartRenderer}s stored in this chart.
+         */
+        public void resetPolygons() {
+            for (Component component : getComponents()) {
+                if (component instanceof PolygonChartRenderer) {
+                    ((PolygonChartRenderer)component).resetPolygon();
+                }
+            }
         }
 
     }
