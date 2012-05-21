@@ -390,11 +390,12 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         return maxPause;
     }
 
-    private class Chart extends JPanel {
+    private class Chart extends JPanel implements ComponentListener {
 
         public Chart() {
             setBackground(Color.white);
             setLayout(new GridBagLayout());
+            addComponentListener(this);
         }
 
         public Dimension getPreferredSize() {
@@ -414,6 +415,26 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
                     ((PolygonChartRenderer)component).resetPolygon();
                 }
             }
+        }
+
+        @Override
+        public void componentResized(ComponentEvent e) {
+            resetPolygons();
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+            // not interested
+        }
+
+        @Override
+        public void componentShown(ComponentEvent e) {
+            // not interested
+        }
+
+        @Override
+        public void componentHidden(ComponentEvent e) {
+            // not interested
         }
 
     }
