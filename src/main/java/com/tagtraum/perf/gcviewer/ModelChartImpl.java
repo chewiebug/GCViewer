@@ -209,6 +209,13 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         chart.invalidate();
     }
 
+    /**
+     * Resets the internal cache of the chart.
+     */
+    public void resetPolygonCache() {
+        chart.resetPolygons();
+    }
+    
     public double getScaleFactor() {
         return scaleFactor;
     }
