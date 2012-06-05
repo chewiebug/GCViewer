@@ -203,7 +203,9 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         private double xScaleFactor;
         private double yScaleFactor;
         private int yOffset;
-
+        private Point lastPointOfOptimisation = new Point();
+        private boolean lastPointWasOptimised = false;
+        
         public ScaledPolygon(double xScaleFactor, double yScaleFactor, int yOffset) {
             this.xScaleFactor = xScaleFactor;
             this.yScaleFactor = yScaleFactor;
@@ -213,28 +215,48 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         public void addPoint(double x, double y) {
             int scaledY = yOffset - (int)(yScaleFactor * y);
             int scaledX = (int)(xScaleFactor * x);
-            final int n = npoints;
             // optimize the polygon as we add points.
-            if (n>2 && ypoints[n-2] == scaledY && ypoints[n-1] == ypoints[n-2]) {
-                xpoints[n-1] = scaledX;
+            if (!lastPointWasOptimised 
+                    && npoints>2 
+                    && ypoints[npoints-2] == scaledY 
+                    && ypoints[npoints-1] == ypoints[npoints-2]) {
+                
+                xpoints[npoints-1] = scaledX;
             }
-            // TODO find clean reduction of number of points -> will improve performance in overviews 
-//            else if (n>2 && xpoints[n-2] == scaledX && xpoints[n-1] == xpoints[n-2]) {
-//                if (ypoints[n-2] < ypoints[n-1]) {
-//                    ypoints[n-2] = Math.min(ypoints[n-2], scaledY);
-//                    ypoints[n-1] = Math.max(ypoints[n-1], scaledY);
-//                }
-//                else {
-//                    ypoints[n-2] = Math.max(ypoints[n-2], scaledY);
-//                    ypoints[n-1] = Math.min(ypoints[n-1], scaledY);
-//                }
-//            }
+            else if (npoints>2 && xpoints[npoints-2] == scaledX && xpoints[npoints-1] == xpoints[npoints-2]) {
+                if (!lastPointWasOptimised) {
+                    // first point to be optimised in this sequence
+                    // duplicate second last point to make sure that the connecting line ends right
+                    addPoint(xpoints[npoints-1], ypoints[npoints-1]);
+                    ypoints[npoints-2] = ypoints[npoints-3];
+                }
+                
+                // optimise the subsequent points to make sure the resulting vertical line is 
+                // as long as the greatest distance between any two points of the sequence
+                if (ypoints[npoints-2] < ypoints[npoints-1]) {
+                    ypoints[npoints-2] = Math.min(ypoints[npoints-2], scaledY);
+                    ypoints[npoints-1] = Math.max(ypoints[npoints-1], scaledY);
+                }
+                else {
+                    ypoints[npoints-2] = Math.max(ypoints[npoints-2], scaledY);
+                    ypoints[npoints-1] = Math.min(ypoints[npoints-1], scaledY);
+                }
+                lastPointOfOptimisation.setLocation(scaledX, scaledY);
+                lastPointWasOptimised = true;
+            }
             else {
+                if (lastPointWasOptimised) {
+                    // the last point of the sequence must be exactly the last point before
+                    // this optimisation sequence stops; again to make sure that the connecting
+                    // line starting from this point will start from the right position
+                    addPoint(lastPointOfOptimisation.x, lastPointOfOptimisation.y);
+                }
                 addPoint(scaledX, scaledY);
+                lastPointWasOptimised = false;
             }
         }
     }
-    
+
     /**
      * InsertionBoundary holds the boundaries (index in polygon.xpoints) in a polygon array.
      * This class makes sure that the boundary indexes are allways within the size of the
