@@ -190,7 +190,6 @@ public class GCDocument extends JInternalFrame {
             final ModelPanel modelPanel = chartPanelView.getModelPanel();
             final JTabbedPane modelChartAndDetails = chartPanelView.getModelChartAndDetails();
             modelChart.resetPolygonCache();
-            modelChart.invalidate();
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.fill = GridBagConstraints.HORIZONTAL;
             constraints.anchor = GridBagConstraints.NORTH;

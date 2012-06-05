@@ -206,7 +206,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
 
     public void invalidate() {
         super.invalidate();
-        chart.invalidate();
     }
 
     /**
