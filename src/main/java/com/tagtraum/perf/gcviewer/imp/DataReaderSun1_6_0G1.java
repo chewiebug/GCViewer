@@ -293,13 +293,12 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 //    [Eden: 8192K(8192K)->0B(8192K) Survivors: 0B->8192K Heap: 8192K(16M)->7895K(16M)]
                 
                 // parse Eden
-                // TODO makes graph extremely slow...
-//                GCEvent edenEvent = new GCEvent();
-//                edenEvent.setDateStamp(event.getDatestamp());
-//                edenEvent.setTimestamp(event.getTimestamp());
-//                edenEvent.setType(parseType(line, pos));
-//                setMemorySimple(edenEvent, line, pos);
-//                event.add(edenEvent);
+                GCEvent edenEvent = new GCEvent();
+                edenEvent.setDateStamp(event.getDatestamp());
+                edenEvent.setTimestamp(event.getTimestamp());
+                edenEvent.setType(parseType(line, pos));
+                setMemorySimple(edenEvent, line, pos);
+                event.add(edenEvent);
                 
                 // omit Survivors -> don't know yet the meaning of the entry
                 
@@ -371,7 +370,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 }
                 
                 if (event.getType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
-                    setMemoryAndPauses((GCEvent)event, line, pos);
+                    setMemoryAndPauses(event, line, pos);
                 }
                 else {
                     parsePause(event, line, pos);
