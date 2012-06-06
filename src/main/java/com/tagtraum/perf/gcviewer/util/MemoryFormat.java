@@ -14,11 +14,12 @@ import java.text.ParsePosition;
  */
 public class MemoryFormat extends NumberFormat {
 
-    private static final long ONE_KB = 1024;
-    private static final long TEN_KB = ONE_KB * 10l;
-    private static final long ONE_MB = 1024l * ONE_KB;
-    private static final long TEN_MB = ONE_MB * 10;
-    private NumberFormat format = NumberFormat.getInstance();
+	private static final long serialVersionUID = 7269835290617687327L;
+	protected static final long ONE_KB = 1024;
+	protected static final long TEN_KB = ONE_KB * 10l;
+	protected static final long ONE_MB = 1024l * ONE_KB;
+	protected static final long TEN_MB = ONE_MB * 10;
+    protected NumberFormat format = NumberFormat.getInstance();
 
     public MemoryFormat() {
         format.setMaximumFractionDigits(3);
@@ -71,4 +72,8 @@ public class MemoryFormat extends NumberFormat {
     public Number parse(String source, ParsePosition parsePosition) {
         throw new RuntimeException("Not implemented.");
     }
+    
+    
+
+
 }
