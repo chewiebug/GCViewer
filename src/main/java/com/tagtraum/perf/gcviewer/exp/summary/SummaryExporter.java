@@ -4,6 +4,7 @@
 package com.tagtraum.perf.gcviewer.exp.summary;
 
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.Date;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -31,15 +32,15 @@ public class SummaryExporter {
 	/*
 	 * field formatters
 	 * */
-	private NumberFormatNoCommas pauseFormatter;
-	private MemoryFormatNoCommas footprintSlopeFormatter;
-	private NumberFormatNoCommas percentFormatter;
-	private NumberFormatNoCommas gcTimeFormatter;
-	private MemoryFormatNoCommas footprintFormatter;
-	private NumberFormatNoCommas throughputFormatter;
+	private NumberFormat pauseFormatter;
+	private MemoryFormat footprintSlopeFormatter;
+	private NumberFormat percentFormatter;
+	private NumberFormat gcTimeFormatter;
+	private MemoryFormat footprintFormatter;
+	private NumberFormat throughputFormatter;
 	private TimeFormat totalTimeFormatter;
-	private MemoryFormatNoCommas freedMemoryPerMinFormatter;
-	private MemoryFormatNoCommas sigmaMemoryFormatter;
+	private MemoryFormat freedMemoryPerMinFormatter;
+	private MemoryFormat sigmaMemoryFormatter;
 
 	public SummaryExporter()
 	{
@@ -55,26 +56,26 @@ public class SummaryExporter {
 	}
 
 	private void initialiseFormatters() {
-		pauseFormatter = new NumberFormatNoCommas();
+		pauseFormatter = NumberFormat.getInstance();
 		pauseFormatter.setMaximumFractionDigits(5);
 
 		totalTimeFormatter = new TimeFormat();
 		
-		gcTimeFormatter = new NumberFormatNoCommas();
+		gcTimeFormatter = NumberFormat.getInstance();
 		gcTimeFormatter.setMaximumFractionDigits(2);
 
-		throughputFormatter = new NumberFormatNoCommas();
+		throughputFormatter = NumberFormat.getInstance();
 		throughputFormatter.setMaximumFractionDigits(2);
 
-		footprintFormatter = new MemoryFormatNoCommas();
+		footprintFormatter = new MemoryFormat();
 
-		sigmaMemoryFormatter = new MemoryFormatNoCommas();
+		sigmaMemoryFormatter = new MemoryFormat();
 
-		footprintSlopeFormatter = new MemoryFormatNoCommas();
+		footprintSlopeFormatter = new MemoryFormat();
 
-		freedMemoryPerMinFormatter = new MemoryFormatNoCommas();
+		freedMemoryPerMinFormatter = new MemoryFormat();
 
-		percentFormatter = new NumberFormatNoCommas();
+		percentFormatter = NumberFormat.getInstance();
 		percentFormatter.setMaximumFractionDigits(1);
 		percentFormatter.setMinimumFractionDigits(1);
 	}
@@ -106,7 +107,7 @@ public class SummaryExporter {
 	}
 
 	private void exportOverallSummary(PrintWriter out, GCModel model) {
-		exportValue(out, "accumPause", gcTimeFormatter.formatDouble(model.getPause().getSum()), "s");
+		exportValue(out, "accumPause", gcTimeFormatter.format(model.getPause().getSum()), "s");
 		
 		Formatted formed = footprintFormatter.formatToFormatted(model.getFootprint());
 		exportValue(out, "footprint", formed.getValue(), formed.getUnits());
@@ -115,7 +116,7 @@ public class SummaryExporter {
 		exportValue(out, "freedMemory", formed.getValue(), formed.getUnits());
 		
 		if (model.hasCorrectTimestamp()) {
-			exportValue(out, "throughput", throughputFormatter.formatDouble(model.getThroughput()), "%");
+			exportValue(out, "throughput", throughputFormatter.format(model.getThroughput()), "%");
 			formed = totalTimeFormatter.formatToFormatted(new Date((long)model.getRunningTime()*1000l));
 			exportValue(out, "totalTime", formed.getValue(), formed.getUnits());
 			
@@ -154,16 +155,16 @@ public class SummaryExporter {
 
 		if (pauseDataAvailable) {
 			exportValue(out, "avgPauseIsSig", isSignificant(model.getPause().average(), model.getPause().standardDeviation()) );
-			exportValue(out, "avgPause", pauseFormatter.formatDouble(model.getPause().average()), "s");
-			exportValue(out, "avgPause\u03c3", pauseFormatter.formatDouble(model.getPause().standardDeviation()), "s");
+			exportValue(out, "avgPause", pauseFormatter.format(model.getPause().average()), "s");
+			exportValue(out, "avgPause\u03c3", pauseFormatter.format(model.getPause().standardDeviation()), "s");
 
-			exportValue(out, "minPause", pauseFormatter.formatDouble(model.getPause().getMin()), "s");
-			exportValue(out, "maxPause", pauseFormatter.formatDouble(model.getPause().getMax()), "s");
+			exportValue(out, "minPause", pauseFormatter.format(model.getPause().getMin()), "s");
+			exportValue(out, "maxPause", pauseFormatter.format(model.getPause().getMax()), "s");
 
 			if (gcDataAvailable) {
 				exportValue(out, "avgGCPauseIsSig", isSignificant(model.getGCPause().average(), model.getGCPause().standardDeviation()) );
-				exportValue(out, "avgGCPause", pauseFormatter.formatDouble(model.getGCPause().average()), "s");
-				exportValue(out, "avgGCPause\u03c3", pauseFormatter.formatDouble(model.getGCPause().standardDeviation()), "s");
+				exportValue(out, "avgGCPause", pauseFormatter.format(model.getGCPause().average()), "s");
+				exportValue(out, "avgGCPause\u03c3", pauseFormatter.format(model.getGCPause().standardDeviation()), "s");
 			}
 			else {
 				exportValue(out, "avgGCPause", "n.a.", "s");
@@ -171,8 +172,8 @@ public class SummaryExporter {
 
 			if (fullGCDataAvailable) {
 				exportValue(out, "avgFullGCPauseIsSig", isSignificant(model.getFullGCPause().average(), model.getPause().standardDeviation()));
-				exportValue(out, "avgFullGCPause", pauseFormatter.formatDouble(model.getFullGCPause().average()), "s");
-				exportValue(out, "avgFullGCPause\u03c3", pauseFormatter.formatDouble(model.getFullGCPause().standardDeviation()), "s");
+				exportValue(out, "avgFullGCPause", pauseFormatter.format(model.getFullGCPause().average()), "s");
+				exportValue(out, "avgFullGCPause\u03c3", pauseFormatter.format(model.getFullGCPause().standardDeviation()), "s");
 			}
 			else {
 				exportValue(out, "avgFullGCPause", "n.a.", "s");
@@ -185,11 +186,11 @@ public class SummaryExporter {
 			exportValue(out, "avgGCPause", "n.a.", "s");
 			exportValue(out, "avgFullGCPause", "n.a.", "s");
 		}
-		exportValue(out, "accumPause", gcTimeFormatter.formatDouble(model.getPause().getSum()), "s");
-		exportValue(out, "fullGCPause", gcTimeFormatter.formatDouble(model.getFullGCPause().getSum()), "s");
-		exportValue(out, "fullGCPausePc", percentFormatter.formatDouble(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()), "%");
-		exportValue(out, "gcPause", gcTimeFormatter.formatDouble(model.getGCPause().getSum()), "s");
-		exportValue(out, "gcPausePc", percentFormatter.formatDouble(model.getGCPause().getSum()*100.0/model.getPause().getSum()), "%");
+		exportValue(out, "accumPause", gcTimeFormatter.format(model.getPause().getSum()), "s");
+		exportValue(out, "fullGCPause", gcTimeFormatter.format(model.getFullGCPause().getSum()), "s");
+		exportValue(out, "fullGCPausePc", percentFormatter.format(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()), "%");
+		exportValue(out, "gcPause", gcTimeFormatter.format(model.getGCPause().getSum()), "s");
+		exportValue(out, "gcPausePc", percentFormatter.format(model.getGCPause().getSum()*100.0/model.getPause().getSum()), "%");
 	}
 
 	private boolean isSignificant(final double average, final double standardDeviation) {
@@ -223,7 +224,7 @@ public class SummaryExporter {
 					model.getFootprintAfterFullGC().standardDeviation()));
 			formed = footprintFormatter.formatToFormatted(model.getFreedMemoryByFullGC().getSum());
 			exportValue(out, "freedMemoryByFullGC", formed.getValue(), formed.getUnits());
-			exportValue(out, "freedMemoryByFullGCpc", percentFormatter.formatDouble(model.getFreedMemoryByFullGC().getSum()*100.0/model.getFreedMemory()), "%");
+			exportValue(out, "freedMemoryByFullGCpc", percentFormatter.format(model.getFreedMemoryByFullGC().getSum()*100.0/model.getFreedMemory()), "%");
 			
 			formed = footprintFormatter.formatToFormatted(model.getFreedMemoryByFullGC().average());
 			exportValue(out, "avgFreedMemoryByFullGC", formed.getValue(), formed.getUnits() + "/coll");
@@ -276,7 +277,7 @@ public class SummaryExporter {
 			formed = footprintFormatter.formatToFormatted(model.getFreedMemoryByGC().getSum());
 			exportValue(out, "freedMemoryByGC", formed.getValue(), formed.getUnits());
 			
-			exportValue(out, "freedMemoryByGCpc", percentFormatter.formatDouble(model.getFreedMemoryByGC().getSum()*100.0/model.getFreedMemory()), "%");
+			exportValue(out, "freedMemoryByGCpc", percentFormatter.format(model.getFreedMemoryByGC().getSum()*100.0/model.getFreedMemory()), "%");
 			
 			formed = footprintFormatter.formatToFormatted(model.getFreedMemoryByGC().average());
 			exportValue(out, "avgFreedMemoryByGC", formed.getValue(), formed.getUnits() + "/coll");

@@ -9,7 +9,7 @@ package com.tagtraum.perf.gcviewer.exp.summary;
  */
 public class CsvSummaryExportFormatter implements ISummaryExportFormatter {
 
-	private String separator = ", ";
+	private String separator = "; ";
 	
 	/* (non-Javadoc)
 	 * @see com.tagtraum.perf.gcviewer.exp.ISummaryExportFormatter#exportValue(java.lang.String, java.lang.String)
