@@ -83,7 +83,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
 
     /**
-     * Parses a memory information with the following form: 8192K[(16M)]->7895K(16M) ("[...]" means
+     * Parses a memory information with the following form: 8192K[(16M)]->7895K[(16M)] ("[...]" means
      * optional.
      * 
      * @param event event, where parsed information should be stored
@@ -92,7 +92,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * will be skipped
      * @throws ParseException parsing was not possible
      */
-    protected void setMemorySimple(GCEvent event, String line, ParsePosition pos) throws ParseException {
+    protected void setMemoryExtended(GCEvent event, String line, ParsePosition pos) throws ParseException {
         int startPos = pos.getIndex();
         boolean lineHasMoreChars = true;
         int currentPos = startPos;
@@ -106,33 +106,48 @@ public abstract class AbstractDataReaderSun implements DataReader {
             throw new ParseException("unexpected memory format found", line, pos);
         }
         
-        int nextParentesis = line.indexOf("(", currentPos);
+        int endOfNextNumber = line.indexOf("(", currentPos);
         int separatorPos = line.indexOf("->", currentPos);
-        if (nextParentesis > separatorPos) {
+        if (endOfNextNumber > separatorPos) {
             // if format is "before"->"after"("total"), the next parentesis is the one of the "total"
-            nextParentesis = separatorPos;
+            endOfNextNumber = separatorPos;
         }
-        event.setPreUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1),
-                line.charAt(nextParentesis-1),
+        event.setPreUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, endOfNextNumber-currentPos-1),
+                line.charAt(endOfNextNumber-1),
                 line));
         
         // skip until after "->"
-        currentPos = line.indexOf("->", nextParentesis) + 2;
+        currentPos = line.indexOf("->", endOfNextNumber) + 2;
         
         
-        nextParentesis = line.indexOf("(", currentPos);
-        event.setPostUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1),
-                line.charAt(nextParentesis-1),
+        boolean hasTotalHeap = true;
+        endOfNextNumber = line.indexOf("(", currentPos);
+        if (endOfNextNumber == -1 || endOfNextNumber-currentPos > 10) {
+            // there is no total heap information, only after (like in "Survivors" of G1)
+            hasTotalHeap = false;
+            endOfNextNumber = currentPos;
+            // goto end of next number
+            
+            while (Character.isDigit(line.charAt(endOfNextNumber))) {
+                ++endOfNextNumber;
+            }
+            
+            ++endOfNextNumber;
+        }
+        event.setPostUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, endOfNextNumber-currentPos-1),
+                line.charAt(endOfNextNumber-1),
                 line));
-        currentPos = nextParentesis;
+        currentPos = endOfNextNumber;
         
-        // skip "(" and read heap size
-        ++currentPos;
-        nextParentesis = line.indexOf(")", currentPos);
-        event.setTotal(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, nextParentesis-currentPos-1),
-                line.charAt(nextParentesis-1),
-                line));
-        currentPos = nextParentesis;
+        if (hasTotalHeap) {
+            // skip "(" and read heap size
+            ++currentPos;
+            endOfNextNumber = line.indexOf(")", currentPos);
+            event.setTotal(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, endOfNextNumber-currentPos-1),
+                    line.charAt(endOfNextNumber-1),
+                    line));
+            currentPos = endOfNextNumber;
+        }
         
         pos.setIndex(currentPos);
     }

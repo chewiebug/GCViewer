@@ -35,6 +35,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <ul>
  * <li>-XX:+PrintGCDetails</li>
  * <li>-XX:+PrintGCTimeStamps</li>
+ * <li>-XX:+PrintGCDateStamps</li>
  * <li>-XX:+PrintHeapAtGC (output ignored)</li>
  * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
  * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
@@ -76,17 +77,15 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     // "   [ 4096K->3936K(16M)]"
     private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[BKMG].*");
 
+    private static final String INITIAL_MARK = "(initial-mark)";
+    private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
+    
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
     // the pattern is "...)<timestamp>..."
     // or "...Full GC<timestamp>..."
     // or "...)<timestamp>:  (initial-mark)..." (where the timestamp including ":" belongs to a concurrent event and the rest not)
     // or "...)<timestamp> (initial-mark)..." (where only the timestamp belongs to a concurrent event)
-    //private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)"); 
-    private static Pattern PATTERN_LINES_MIXED = Pattern.compile(
-            "(.*\\)|.*Full GC)" + // either starts with ")" or "Full GC"
-    		"([0-9.]+[:][ ][\\[].*|" + // 1st pattern: then continues either with "<timestamp>: [" where the timestamp is the start of the complete concurrent collection
-    		"([0-9.]+[: ]{2})([ ]?[\\(,].*)|" + // 2nd pattern: or with "<timestamp>:  (..." where only the timestamp is part of the concurrent collection
-    		"([0-9.]+)([ ][\\(].*))"); // 3rd pattern: or with "<timestamp> (" or "<timestamp> ," where only the timestamp is part of the concurrent collection  
+    private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)"); 
 
     private static final int GC_DATESTAMP = 1;
     private static final int GC_TIMESTAMP = 2;
@@ -141,22 +140,31 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     // -> the rest of the old line appears on the next line
                     linesMixedMatcher.reset(line); 
                     if (linesMixedMatcher.matches()) {
-                        if (linesMixedMatcher.group(3) == null && linesMixedMatcher.group(5) == null) {
+                        if (line.indexOf("concurrent") > 0) {
                             // 1st pattern (complete concurrent collection follows)
-                            beginningOfLine = linesMixedMatcher.group(1);
-                            model.add(parseLine(linesMixedMatcher.group(2), parsePosition));
-                            parsePosition.setIndex(0);
-                            continue; // rest of collection is on the next line, so continue there
+                          beginningOfLine = linesMixedMatcher.group(1);
+                          model.add(parseLine(linesMixedMatcher.group(2), parsePosition));
+                          parsePosition.setIndex(0);
+                          continue; // rest of collection is on the next line, so continue there
                         }
-                        else if (linesMixedMatcher.group(5) == null) {
-                            // 2nd pattern; only timestamp is part of concurrent event
-                            beginningOfLine = linesMixedMatcher.group(3); // only timestamp
-                            line = linesMixedMatcher.group(1) + linesMixedMatcher.group(4);
+                        else if (line.endsWith("secs]")) {
+                            // all other patterns: some timestamps follow that are part of a concurrent collection
+                            // but the rest of the line is the rest of the same collection
+                            StringBuilder realLine = new StringBuilder();
+                            realLine.append(linesMixedMatcher.group(1));
+                            int toSpaceIndex = line.indexOf(TO_SPACE_OVERFLOW); 
+                            int initialMarkIndex = line.indexOf(INITIAL_MARK); 
+                            if (toSpaceIndex > 0 && realLine.length() < toSpaceIndex) {
+                                realLine.append(" ").append(TO_SPACE_OVERFLOW);
+                            }
+                            if (initialMarkIndex > 0 && realLine.length() < initialMarkIndex) {
+                                realLine.append(" ").append(INITIAL_MARK);
+                            }
+                            realLine.append(line.substring(line.lastIndexOf(",")));
+                            line = realLine.toString();
                         }
-                        else if (linesMixedMatcher.group(3) == null) {
-                            // 3rd pattern; again only timestamp is part of concurrent event
-                            beginningOfLine = linesMixedMatcher.group(5); // only timestamp
-                            line = linesMixedMatcher.group(1) + linesMixedMatcher.group(6);
+                        else {
+                            throw new ParseException("unexpected mixed line", line, parsePosition);
                         }
                     }
                     else if (beginningOfLine != null) {
@@ -293,18 +301,23 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 //    [Eden: 8192K(8192K)->0B(8192K) Survivors: 0B->8192K Heap: 8192K(16M)->7895K(16M)]
                 
                 // parse Eden
+                pos.setIndex(line.indexOf("Eden:"));
                 GCEvent edenEvent = new GCEvent();
                 edenEvent.setDateStamp(event.getDatestamp());
                 edenEvent.setTimestamp(event.getTimestamp());
                 edenEvent.setType(parseType(line, pos));
-                setMemorySimple(edenEvent, line, pos);
+                setMemoryExtended(edenEvent, line, pos);
                 event.add(edenEvent);
                 
                 // omit Survivors -> don't know yet the meaning of the entry
+//                pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
+//                GCEvent survivorsEvent = new GCEvent();
+//                setMemorySimple(survivorsEvent, line, pos);
+//                edenEvent.setTotal(edenEvent.getTotal() + survivorsEvent.getPostUsed());
                 
                 // parse heap size
                 pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
-                setMemorySimple(event, line, pos);
+                setMemoryExtended(event, line, pos);
                 pos.setIndex(0);
             }
             else {
@@ -313,7 +326,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     // it is java 1.7_u1 or earlier (including java 1.6)
                     // memory part looks like
                     //    [ 8192K->8128K(64M)]
-                    setMemorySimple(event, line, pos);
+                    setMemoryExtended(event, line, pos);
                     pos.setIndex(0);
                 }
             }

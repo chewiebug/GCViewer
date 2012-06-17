@@ -35,7 +35,7 @@ public class TestAbstractDataReaderSun {
         pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
         
         GCEvent event = new GCEvent();
-        dataReader.setMemorySimple(event, line, pos);
+        dataReader.setMemoryExtended(event, line, pos);
         
         assertEquals("heap before", 5000, event.getPreUsed());
         assertEquals("heap after", 6000, event.getPostUsed());
@@ -53,11 +53,28 @@ public class TestAbstractDataReaderSun {
         pos.setIndex(line.indexOf("[") + 1);
         
         GCEvent event = new GCEvent();
-        dataReader.setMemorySimple(event, line, pos);
+        dataReader.setMemoryExtended(event, line, pos);
         
         assertEquals("heap before", 8192, event.getPreUsed());
         assertEquals("heap after", 8128, event.getPostUsed());
         assertEquals("heap total", 64*1024, event.getTotal());
+    }
+    
+    /**
+     * Tests parsing of memory information like 8192K->7895K (usually found in G1 Survivors block)
+     */
+    @Test
+    public void setMemorySimplePreHeap_postHeap() throws ParseException {
+        String line = "   [Eden: 1000K(2000K)->0B(3000K) Survivors: 1024B->4000K Heap: 5000K(16M)->6000K(16M)]";
+        
+        ParsePosition pos = new ParsePosition(0);
+        pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
+        
+        GCEvent event = new GCEvent();
+        dataReader.setMemoryExtended(event, line, pos);
+        
+        assertEquals("heap before", 1, event.getPreUsed());
+        assertEquals("heap after", 4000, event.getPostUsed());
     }
     
     /**
@@ -73,8 +90,8 @@ public class TestAbstractDataReaderSun {
         }
     
         @Override
-        public void setMemorySimple(GCEvent event, String line, ParsePosition pos) throws ParseException {
-            super.setMemorySimple(event, line, pos);
+        public void setMemoryExtended(GCEvent event, String line, ParsePosition pos) throws ParseException {
+            super.setMemoryExtended(event, line, pos);
         }
         
         @Override

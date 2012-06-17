@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -57,19 +58,19 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("heap", 16*1024, heap.getTotal());
         
         // TODO 1.7.0_02: parse all information
-//        GCEvent young = model.getGCEvents().next().getYoung();
-//        assertNotNull("young", young);
-//        assertEquals("young before", 8192, young.getPreUsed());
-//        assertEquals("young after", 0, young.getPostUsed());
-//        assertEquals("young total", 8192, young.getTotal());
-//        
-//        GCEvent tenured = model.getGCEvents().next().getTenured();
-//        assertNotNull("tenured", tenured);
-//        assertEquals("tenured before", 0, tenured.getPreUsed());
-//        assertEquals("tenured after", 7895, tenured.getPostUsed());
-//        assertEquals("tenured total", 16*1024 - 8192, tenured.getTotal());
-//        
-//        assertEquals("number of errors", 0, handler.getCount());
+        GCEvent young = model.getGCEvents().next().getYoung();
+        assertNotNull("young", young);
+        assertEquals("young before", 8192, young.getPreUsed());
+        assertEquals("young after", 0, young.getPostUsed());
+        assertEquals("young total", 8*1024, young.getTotal());
+        
+        GCEvent tenured = model.getGCEvents().next().getTenured();
+        assertNotNull("tenured", tenured);
+        assertEquals("tenured before", 0, tenured.getPreUsed());
+        assertEquals("tenured after", 7895, tenured.getPostUsed());
+        assertEquals("tenured total", 16*1024 - 8192, tenured.getTotal());
+        
+        assertEquals("number of errors", 0, handler.getCount());
     }
     
     @Test
@@ -90,6 +91,53 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("heap", 2048*1024, heap.getTotal());
         
         assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    @Test
+    public void testDetailedCollectionDatestampMixed1() throws Exception {
+        // parse one detailed event with a mixed line (concurrent event starts in the middle of an stw collection)
+        // 2012-02-24T03:49:09.100-0800: 312.402: [GC pause (young)2012-02-24T03:49:09.378-0800: 312.680: [GC concurrent-mark-start]
+        //  (initial-mark), 0.28645100 secs]
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine1.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 2, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.28645100, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 17786*1024 - 17147*1024, model.getFreedMemoryByGC().getMax());
+    }
+    
+    @Test
+    public void testDetailedCollectionDatestampMixed2() throws Exception {
+        // parse one detailed event with a mixed line (concurrent event starts in the middle of an stw collection)
+        // 2012-02-24T03:50:08.274-0800: 371.576: [GC pause (young)2012-02-24T03:50:08.554-0800:  (initial-mark), 0.28031200 secs]
+        // 371.856:    [Parallel Time: 268.0 ms]
+        // [GC concurrent-mark-start]
+
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine2.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 1, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.28031200, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 20701*1024 - 20017*1024, model.getFreedMemoryByGC().getMax());
+    }
+    
+    @Test
+    public void testDetailedCollectionDatestampMixed3() throws Exception {
+        // parse one detailed event with a mixed line
+        // -> concurrent event occurs somewhere in the detail lines below the stw event
+
+        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine3.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+        
+        assertEquals("nummber of events", 1, model.size());
+        assertEquals("number of pauses", 1, model.getPause().getN());
+        assertEquals("gc pause sum", 0.08894900, model.getPause().getSum(), 0.000000001);
+        assertEquals("gc memory", 29672*1024 - 28733*1024, model.getFreedMemoryByGC().getMax());
     }
     
     @Test
