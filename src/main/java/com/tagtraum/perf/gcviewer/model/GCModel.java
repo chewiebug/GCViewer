@@ -172,7 +172,7 @@ public class GCModel implements Serializable {
         printIntData("perm size used", permUsedSizes);
         printIntData("tenured size used", tenuredUsedSizes);
         printIntData("young size used", youngUsedSizes);
-}
+    }
     
     public void setURL(final URL url) {
         this.url = url;
@@ -292,6 +292,19 @@ public class GCModel implements Serializable {
         return this.lastModified != otherLastModified || this.length != otherLength;
     }
 
+    /**
+     * Returns the event that was last added or <code>null</code> if there is none yet.
+     * @return last event or <code>null</code>
+     */
+    public AbstractGCEvent<?> getLastEventAdded() {
+        if (allEvents.size() > 0) {
+            return allEvents.get(allEvents.size()-1);
+        }
+        else {
+            return null;
+        }
+    }
+    
     public Iterator<GCEvent> getGCEvents() {
         return stopTheWorldEvents.iterator();
     }

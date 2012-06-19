@@ -48,6 +48,8 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
+    private static final String INCOMPLETE_CONCURRENT_MARK_INDICATOR = "concurrent-mark";
+
     private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0G1.class .getName());
 
     private static final String TIMES = "[Times";
@@ -215,6 +217,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
                         continue;
                     }
+                    else if (line.indexOf(INCOMPLETE_CONCURRENT_MARK_INDICATOR) >= 0) {
+                        parseIncompleteConcurrentEvent(model, model.getLastEventAdded(), line);
+                    }
                     else {
                         model.add(parseLine(line, parsePosition));
                     }
@@ -292,7 +297,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 continue;
             }
             
-            
             // now we parse details of a pause
             // currently everything except memory is skipped
             if (line.indexOf("Eden") >= 0) {
@@ -320,6 +324,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 setMemoryExtended(event, line, pos);
                 pos.setIndex(0);
             }
+            else if (line.indexOf(INCOMPLETE_CONCURRENT_MARK_INDICATOR) >= 0) {
+                parseIncompleteConcurrentEvent(model, event, line);
+            }
             else {
                 memoryMatcher.reset(line);
                 if (memoryMatcher.matches()) {
@@ -344,6 +351,27 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         model.add(event);
 
         return lineNumber;
+    }
+
+    /**
+     * Parses an incomplete line containing a concurrent-mark-start / -end event. The timestamp
+     * is taken from the previous event.
+     *  
+     * @param model model where event should be added
+     * @param previousEvent last complete event that occurred 
+     * @param line line containing the incomplete concurrent event
+     */
+    private void parseIncompleteConcurrentEvent(GCModel model, AbstractGCEvent<?> previousEvent, String line) {
+        // some concurrent event is mixed in -> extract it
+        int startIndex = line.indexOf("GC conc");
+        Type type = Type.parse(line.substring(startIndex, line.indexOf("]", startIndex)));
+        ConcurrentGCEvent concurrentEvent = new ConcurrentGCEvent();
+        // usually the concurrent event is close to the enclosing event -> just use its timestamp
+        // which is not entirely correct but a reasonable assumption
+        concurrentEvent.setDateStamp(previousEvent.getDatestamp());
+        concurrentEvent.setTimestamp(previousEvent.getTimestamp());
+        concurrentEvent.setType(type);
+        model.add(concurrentEvent);
     }
     
     @Override
