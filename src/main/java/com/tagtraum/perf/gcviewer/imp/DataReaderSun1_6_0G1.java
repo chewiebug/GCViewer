@@ -218,7 +218,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (line.indexOf(INCOMPLETE_CONCURRENT_MARK_INDICATOR) >= 0) {
-                        parseIncompleteConcurrentEvent(model, model.getLastEventAdded(), line);
+                        parseIncompleteConcurrentEvent(model, model.getLastEventAdded(), line, parsePosition);
                     }
                     else {
                         model.add(parseLine(line, parsePosition));
@@ -287,13 +287,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         while (isInDetailedEvent && (line = in.readLine()) != null) {
             ++lineNumber;
             pos.setLineNumber(lineNumber);
+            pos.setIndex(0);
             
             // we might have had a mixed line before; then we just parsed the second part of the mixed line
             if (beginningOfLine != null) {
                 line = beginningOfLine + line;
                 beginningOfLine = null;
                 model.add(parseLine(line, pos));
-                pos.setIndex(0);
                 continue;
             }
             
@@ -322,10 +322,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 // parse heap size
                 pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
                 setMemoryExtended(event, line, pos);
-                pos.setIndex(0);
             }
             else if (line.indexOf(INCOMPLETE_CONCURRENT_MARK_INDICATOR) >= 0) {
-                parseIncompleteConcurrentEvent(model, event, line);
+                parseIncompleteConcurrentEvent(model, event, line, pos);
             }
             else {
                 memoryMatcher.reset(line);
@@ -334,7 +333,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     // memory part looks like
                     //    [ 8192K->8128K(64M)]
                     setMemoryExtended(event, line, pos);
-                    pos.setIndex(0);
                 }
             }
 
@@ -360,18 +358,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @param model model where event should be added
      * @param previousEvent last complete event that occurred 
      * @param line line containing the incomplete concurrent event
+     * @throws ParseException 
      */
-    private void parseIncompleteConcurrentEvent(GCModel model, AbstractGCEvent<?> previousEvent, String line) {
+    private void parseIncompleteConcurrentEvent(GCModel model, AbstractGCEvent<?> previousEvent, String line, ParsePosition pos) throws ParseException {
         // some concurrent event is mixed in -> extract it
-        int startIndex = line.indexOf("GC conc");
-        Type type = Type.parse(line.substring(startIndex, line.indexOf("]", startIndex)));
-        ConcurrentGCEvent concurrentEvent = new ConcurrentGCEvent();
-        // usually the concurrent event is close to the enclosing event -> just use its timestamp
-        // which is not entirely correct but a reasonable assumption
-        concurrentEvent.setDateStamp(previousEvent.getDatestamp());
-        concurrentEvent.setTimestamp(previousEvent.getTimestamp());
-        concurrentEvent.setType(type);
-        model.add(concurrentEvent);
+        pos.setIndex(line.indexOf("GC conc"));
+        Type type = parseType(line, pos);
+        model.add(parseConcurrentEvent(line, pos, previousEvent.getDatestamp(), previousEvent.getTimestamp(), type));
     }
     
     @Override
@@ -387,18 +380,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             final GCEvent.Type type = parseType(line, pos);
             // special provision for concurrent events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
-                final ConcurrentGCEvent event = new ConcurrentGCEvent();
-                
-                // simple concurrent events (ending with -start) just are of type GcPattern.GC
-                event.setDateStamp(datestamp);
-                event.setTimestamp(timestamp);
-                event.setType(type);
-                if (type.getPattern() == GcPattern.GC_PAUSE) {
-                    // the -end events contain a pause as well
-                    event.setPause(parsePause(line, pos));
-                    event.setDuration(event.getPause());
-                }
-                ae = event;
+                ae = parseConcurrentEvent(line, pos, datestamp, timestamp, type);
             } else {
                 final GCEvent event = new GCEvent();
                 event.setDateStamp(datestamp);
@@ -422,6 +404,34 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         } catch (RuntimeException rte) {
             throw new ParseException(rte.toString(), line, pos);
         }
+    }
+
+    /**
+     * Parse concurrent event
+     * 
+     * @param line line containing concurrent event
+     * @param pos position where event starts
+     * @param datestamp datestamp
+     * @param timestamp timestamp
+     * @param type type of event
+     * @return complete concurrent event
+     */
+    private AbstractGCEvent<?> parseConcurrentEvent(final String line,
+            final ParsePosition pos, final Date datestamp,
+            final double timestamp, final GCEvent.Type type) {
+        
+        final ConcurrentGCEvent event = new ConcurrentGCEvent();
+        
+        // simple concurrent events (ending with -start) just are of type GcPattern.GC
+        event.setDateStamp(datestamp);
+        event.setTimestamp(timestamp);
+        event.setType(type);
+        if (type.getPattern() == GcPattern.GC_PAUSE) {
+            // the -end events contain a pause as well
+            event.setPause(parsePause(line, pos));
+            event.setDuration(event.getPause());
+        }
+        return event;
     }
     
 }
