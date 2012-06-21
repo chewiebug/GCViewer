@@ -20,19 +20,20 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class DataReaderJRockit1_4_2 implements DataReader {
-    private static Logger LOG = Logger.getLogger(DataReaderJRockit1_4_2.class.getName());
+public class DataReaderJRockit1_6_0 implements DataReader {
+    private static Logger LOG = Logger.getLogger(DataReaderJRockit1_6_0.class.getName());
 
     private LineNumberReader in;
     private static final String MEMORY_MARKER = "[memory ] ";
     private static final String NURSERY_SIZE = "nursery size: ";
+    private static final String PAUSE_MARKER = "longest pause ";
 
-    public DataReaderJRockit1_4_2(InputStream in) {
+    public DataReaderJRockit1_6_0(InputStream in) {
         this.in = new LineNumberReader(new InputStreamReader(in));
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading JRockit 1.4.2 format...");
+        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading JRockit 1.6.0 format...");
         boolean gcSummary = false;
         try {
             GCModel model = new GCModel(true);
@@ -41,6 +42,13 @@ public class DataReaderJRockit1_4_2 implements DataReader {
             GCEvent event = null;
             int nurserySize = -1;
             while ((line = in.readLine()) != null) {
+                // Log entry types to be parsed:
+                //
+                // [INFO ][memory ] GC mode: Garbage collection optimized for throughput, strategy: Generational Parallel Mark & Sweep
+                // [INFO ][memory ] Heap size: 8388608KB, maximal heap size: 8388608KB, nursery size: 4194304KB
+                // [INFO ][memory ] <start>-<end>: <type>..
+                // [INFO ][memory ] [OC#2] 34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.
+                
                 final int memoryIndex = line.indexOf(MEMORY_MARKER);
                 if (memoryIndex == -1) {
                     if (LOG.isLoggable(Level.FINE)) LOG.fine("Ignoring line " + in.getLineNumber() + ". Missing \"[memory ]\" marker: " + line);
@@ -49,26 +57,27 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                 if (line.endsWith(MEMORY_MARKER)) {
                     continue;
                 }
-                final int startTimeIndex = memoryIndex + MEMORY_MARKER.length();
+                final int startLog = memoryIndex + MEMORY_MARKER.length();                
+                // Skip "[INFO ][memory ] "
 
-                // print some special statements to the log.
+                // print some special JRockit summary statements to the log.
                 if (!gcSummary) {
                     gcSummary = line.endsWith("Memory usage report");
                 }
                 if (gcSummary) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     continue;
                 }
-                else if (line.indexOf("Prefetch distance") != -1) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                else if (line.indexOf("Prefetch distance") != -1) {                    
+                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     continue;
                 }
-                else if (line.indexOf("GC strategy") != -1) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                else if (line.indexOf("GC mode") != -1) {
+                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     continue;
                 }
                 else if (line.toLowerCase().indexOf("heap size:") != -1) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     final int nurserySizeStart = line.indexOf(NURSERY_SIZE);
                     final int nurserySizeEnd = line.indexOf('K', nurserySizeStart + NURSERY_SIZE.length());
                     if (nurserySizeStart != -1) {
@@ -76,18 +85,35 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                     }
                     continue;
                 }
-                else if (line.substring(startTimeIndex).startsWith("<")) {
+                else if (line.substring(startLog).startsWith("<")) {
                     // ignore
-                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startTimeIndex));
+                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
                     continue;
                 }
-
+                else if (line.indexOf("strategy") != -1) {
+                    // ignore logs like:
+                    // [INFO ][memory ] [OC#3] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
+                    continue;
+                }
+                else if ((line.indexOf("->") == -1) || (line.indexOf(']') == -1)) {
+                    // ignore logs like:
+                    // [INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases
+                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
+                    continue;
+                }
+                // Assume this is an actual GC log. Look for time string, skip ahead of [OC#2]]
+                // [OC#2] 34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.
+                final int startTimeIndex = line.indexOf(']', startLog) + 1; // go to end of "[OC#2]" in above example                                 
+                
                 final int colon = line.indexOf(':', startTimeIndex);
                 if (colon == -1) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning("Malformed line (" + in.getLineNumber() + "). Missing colon after start time: " + line);
                     continue;
                 }
                 event = new GCEvent();
+                
+                //34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.                
 
                 // set timestamp
                 final String timestampString = line.substring(startTimeIndex, colon);
@@ -110,13 +136,14 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                 }
                 event.setType(type);
 
+                // Parse GC before/after sizes: "460781KB->214044KB (524288KB)"
                 // before
                 final int startBefore = typeEnd;
                 final int endBefore = line.indexOf('K', startBefore);
                 event.setPreUsed(Integer.parseInt(line.substring(startBefore, endBefore)));
 
                 // after
-                final int startAfter = endBefore+3;
+                final int startAfter = endBefore+4;
                 final int endAfter = line.indexOf('K', startAfter);
                 event.setPostUsed(Integer.parseInt(line.substring(startAfter, endAfter)));
 
@@ -126,7 +153,8 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                 event.setTotal(Integer.parseInt(line.substring(startTotal, endTotal)));
 
                 // pause
-                final int startPause = line.indexOf(',', endTotal) + 2;
+                // 7786210KB->3242204KB (8388608KB), 0.911 s, sum of pauses 865.900 ms, longest pause 865.900 ms.
+                final int startPause = line.indexOf(PAUSE_MARKER, endTotal) + PAUSE_MARKER.length();
                 final int endPause = line.indexOf(' ', startPause);
                 event.setPause(Double.parseDouble(line.substring(startPause, endPause)) / 1000.0d);
                 model.add(event);

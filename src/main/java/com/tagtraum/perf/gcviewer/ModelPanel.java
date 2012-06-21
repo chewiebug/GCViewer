@@ -357,6 +357,7 @@ public class ModelPanel extends JTabbedPane {
             final boolean pauseDataAvailable = model.getPause().getN() != 0;
             final boolean gcDataAvailable = model.getGCPause().getN() > 0;
             final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
+            final boolean pauseIntervalDataAvailable = model.getPauseInterval().getN() > 0; // fix bug - Exception if only one GC log line in file
             
             updateValue(localStrings.getString("data_panel_acc_pauses"), 
             		gcTimeFormatter.format(model.getPause().getSum()) + "s", 
@@ -371,11 +372,11 @@ public class ModelPanel extends JTabbedPane {
             		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMin()) + "s / " +pauseFormatter.format(model.getPause().getMax()) + "s" : "n/a", 
             		pauseDataAvailable);
             updateValue(localStrings.getString("data_panel_avg_pause_interval"), 
-                    pauseDataAvailable ? pauseFormatter.format(model.getPauseInterval().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPauseInterval().standardDeviation()) +")" : "n/a", 
-                    pauseDataAvailable ? isSignificant(model.getPauseInterval().average(), model.getPauseInterval().standardDeviation()) : false);
+                    pauseIntervalDataAvailable ? pauseFormatter.format(model.getPauseInterval().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPauseInterval().standardDeviation()) +")" : "n/a", 
+                    pauseIntervalDataAvailable ? isSignificant(model.getPauseInterval().average(), model.getPauseInterval().standardDeviation()) : false);
             updateValue(localStrings.getString("data_panel_min_max_pause_interval"), 
-                    pauseDataAvailable ? pauseFormatter.format(model.getPauseInterval().getMin()) + "s / " +pauseFormatter.format(model.getPauseInterval().getMax()) + "s" : "n/a", 
-                    pauseDataAvailable);
+                    pauseIntervalDataAvailable ? pauseFormatter.format(model.getPauseInterval().getMin()) + "s / " +pauseFormatter.format(model.getPauseInterval().getMax()) + "s" : "n/a", 
+                    pauseIntervalDataAvailable);
 
             updateValue(localStrings.getString("data_panel_acc_fullgcpauses"), 
             		gcTimeFormatter.format(model.getFullGCPause().getSum())+ "s (" + percentFormatter.format(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 

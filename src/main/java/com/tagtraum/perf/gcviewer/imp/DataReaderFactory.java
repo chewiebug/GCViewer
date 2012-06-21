@@ -29,9 +29,14 @@ public class DataReaderFactory {
         int length = in.read(buf);
         in.reset();
         String s = new String(buf, 0, length, "ASCII");
-        if (s.indexOf("[memory ]") != -1) {
-            if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.4.2");
-            return new DataReaderJRockit1_4_2(in);
+        if (s.indexOf("[memory ] ") != -1) {
+            if ((s.indexOf("[memory ] [YC") != -1) ||(s.indexOf("[memory ] [OC") != -1)) {
+                if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.6");
+                return new DataReaderJRockit1_6_0(in);
+            } else {
+                if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.4.2");
+                return new DataReaderJRockit1_4_2(in);
+            }
         } else if (s.indexOf("since last AF or CON>") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM 1.4.2");
             return new DataReaderIBM1_4_2(in);
