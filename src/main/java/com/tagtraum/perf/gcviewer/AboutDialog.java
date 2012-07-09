@@ -55,7 +55,7 @@ public class AboutDialog extends JDialog implements ActionListener {
         versionPanel.setLayout(new GridLayout(6, 1));
         JLabel copyright = new JLabel("\u00A9" + " 2011-2012: Joerg Wuethrich", JLabel.CENTER);
         JLabel contributorsLabel = new JLabel("contributors:", JLabel.CENTER);
-        JLabel contributors = new JLabel("Johan Kaving | Carl Meyer | Serafín Sedano", JLabel.CENTER);
+        JLabel contributors = new JLabel("Johan Kaving | Carl Meyer | Cka3o4Huk | Serafín Sedano", JLabel.CENTER);
         JLabel version2 = new JLabel("version: " + loadVersion(), JLabel.CENTER);
         versionPanel.add(copyright);
         versionPanel.add(new JLabel());
