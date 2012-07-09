@@ -563,8 +563,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
                 s = ((NumberFormat)formatter).format(offsetValue);
             }
             else if (formatter instanceof DateFormat) {
-                final Date date = new Date(((long)offsetValue) * 1000l);
-                //final Date date = new Date((long)Math.ceil(val * 1000.0d));
+                final Date date = new Date(Math.round(offsetValue) * 1000);
                 s = ((DateFormat)formatter).format(date);
             }
             return s;
