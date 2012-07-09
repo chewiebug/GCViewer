@@ -64,8 +64,8 @@ public class TotalYoungRenderer extends PolygonChartRenderer {
                 lastTenured = tenuredSize;
             }
         }
-        polygon.addPoint(model.getRunningTime(), lastTenured + lastYoung);
-        polygon.addPoint(model.getRunningTime(), 0.0d);
+        polygon.addPointNotOptimised(model.getRunningTime(), lastTenured + lastYoung);
+        polygon.addPointNotOptimised(model.getRunningTime(), 0.0d);
         return polygon;
     }
 }

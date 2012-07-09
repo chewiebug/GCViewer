@@ -212,9 +212,16 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
             this.yOffset = yOffset;
         }
 
+        /**
+         * Adds Point to the polygon optimising the polygon so as not to add points that can't
+         * be seen in the graph because they are on the same pixel after scaling.
+         * 
+         * @param x x-value
+         * @param y y-value
+         */
         public void addPoint(double x, double y) {
-            int scaledY = yOffset - (int)(yScaleFactor * y);
-            int scaledX = (int)(xScaleFactor * x);
+            int scaledY = getScaledYValue(y);
+            int scaledX = getScaledXValue(x);
             // optimize the polygon as we add points.
             if (!lastPointWasOptimised 
                     && npoints>2 
@@ -255,6 +262,25 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                 lastPointWasOptimised = false;
             }
         }
+
+        /**
+         * Adds the given point without optimisation.
+         * 
+         * @param x x-Value
+         * @param y y-Value
+         */
+        public void addPointNotOptimised(double x, double y) {
+            addPoint(getScaledXValue(x), getScaledYValue(y));
+        }
+
+        private int getScaledXValue(double x) {
+            return (int)(xScaleFactor * x);
+        }
+
+        private int getScaledYValue(double y) {
+            return yOffset - (int)(yScaleFactor * y);
+        }
+        
     }
 
     /**

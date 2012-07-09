@@ -56,8 +56,8 @@ public class TotalTenuredRenderer extends PolygonChartRenderer {
             }
             
         }
-        polygon.addPoint(model.getRunningTime(), lastTotal);
-        polygon.addPoint(model.getRunningTime(), 0.0d);
+        polygon.addPointNotOptimised(model.getRunningTime(), lastTotal);
+        polygon.addPointNotOptimised(model.getRunningTime(), 0.0d);
         return polygon;
     }
 }
