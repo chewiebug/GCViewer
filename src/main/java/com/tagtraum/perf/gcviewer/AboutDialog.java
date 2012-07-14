@@ -8,11 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -25,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.SoftBevelBorder;
+
 
 /**
  * About dialog.
@@ -56,7 +55,7 @@ public class AboutDialog extends JDialog implements ActionListener {
         JLabel copyright = new JLabel("\u00A9" + " 2011-2012: Joerg Wuethrich", JLabel.CENTER);
         JLabel contributorsLabel = new JLabel("contributors:", JLabel.CENTER);
         JLabel contributors = new JLabel("Johan Kaving | Carl Meyer | Cka3o4Huk | Serafín Sedano", JLabel.CENTER);
-        JLabel version2 = new JLabel("version: " + loadVersion(), JLabel.CENTER);
+        JLabel version2 = new JLabel("version: " + VersionReader.getVersion(), JLabel.CENTER);
         versionPanel.add(copyright);
         versionPanel.add(new JLabel());
         versionPanel.add(contributorsLabel);
@@ -89,26 +88,6 @@ public class AboutDialog extends JDialog implements ActionListener {
         pack();
         setResizable(false);
         setVisible(false);
-    }
-
-    private String loadVersion() {
-        String version = "n/a";
-        InputStream in = getClass().getResourceAsStream("version.properties");
-        if (in != null) {
-            Properties props = new Properties();
-            try {
-                try {
-                    props.load(in);
-                    version = props.getProperty("build.version");
-                } finally {
-                    in.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return version;
     }
 
     protected JRootPane createRootPane() {

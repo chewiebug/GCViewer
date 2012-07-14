@@ -1,17 +1,29 @@
 package com.tagtraum.perf.gcviewer;
 
-import javax.swing.*;
-import java.awt.dnd.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.*;
-import java.util.List;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JDesktopPane;
 
 /**
- * DesktopPane.
+ * DesktopPane is the "background" of the application after opening.
  * <p/>
  * Date: Sep 27, 2005
  * Time: 9:41:33 AM
@@ -66,6 +78,44 @@ public class DesktopPane extends JDesktopPane {
     private ImageIcon logoIcon = new ImageIcon(GCViewer.class.getResource("gcviewer_background.png"));
     
     public void paint(Graphics g) {
+        fillBackground(g);
+        
+        // draw logo
+        g.drawImage(logoIcon.getImage(), 
+                getWidth()/2 - logoIcon.getIconWidth()/2, 
+                getHeight()/2 - logoIcon.getIconHeight()/2, 
+                logoIcon.getIconWidth(), 
+                logoIcon.getIconHeight(), 
+                logoIcon.getImageObserver());
+        
+        drawVersionString(g, logoIcon);
+
+        super.paint(g);
+    }
+
+    /**
+     * Adds version string below <code>logoImage</code>.
+     * 
+     * @param g
+     */
+    private void drawVersionString(Graphics g, ImageIcon logoImage) {
+        g.setColor(Color.LIGHT_GRAY);
+        g.setFont(new Font("Serif", Font.BOLD, 12));
+        
+        // use anti aliasing to draw string
+        Graphics2D g2d = (Graphics2D)g;
+        Object oldAAHint = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        String versionString = "version: " + VersionReader.getVersion();
+        g.drawString(versionString, 
+                getWidth()/2 - g.getFontMetrics().stringWidth(versionString)/2,
+                getHeight()/2 + logoImage.getIconHeight()/2 + 25);
+        
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAHint);
+    }
+
+    private void fillBackground(Graphics g) {
         Rectangle r = g.getClipBounds();
         g.setColor(Color.WHITE);
         if (r != null) {
@@ -74,8 +124,6 @@ public class DesktopPane extends JDesktopPane {
         else {
             g.fillRect(0, 0, getWidth(), getHeight());
         }
-        g.drawImage(logoIcon.getImage(), getWidth()/2 - logoIcon.getIconWidth()/2, getHeight()/2 - logoIcon.getIconHeight()/2, logoIcon.getIconWidth(), logoIcon.getIconHeight(), logoIcon.getImageObserver());
-        super.paint(g);
     }
 
     public boolean isOpaque() {
