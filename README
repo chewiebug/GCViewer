@@ -257,19 +257,13 @@ Therefore values like 'Total Time', 'Throughput', and 'Freed Mem/Min'
 cannot be calculated.
 
 
-Sun /Oracle JDK 1.6 (a.k.a. Java 6)
+Sun / Oracle JDK 1.6 / 1.7 (a.k.a. Java 6 / 7)
 ---------------------------
 
 CMS and G1 collector sometimes mix concurrent events with stop the world 
-collections in the output. In a few cases the parser can recover from 
+collections in the output. In some cases the parser can recover from 
 such mixed lines, sometimes it can't and will show an error message.
 
-Sun / Oracle JDK 1.7 (a.k.a. Java 7)
----------------------------
-
-Logs generated with -XX:+UseG1GC -XX:+PrintGCDetails can only be parsed
-up to 1.7.0_01. Jdk 1.7.0_02 switched the format of the memory print out
-in the detailed events - a lot of warnings are displayed.
 
 BEA JRockit 1.4.2/1.5
 ---------------------
@@ -301,7 +295,7 @@ Start of log / absolute times
 If you happen to know when the application and GC log was started, you
 can specify this time by right-clicking on the time ruler and entering
 a start time.
-Sun VMs: IF -XX:+PrintGCDateStamps was used, the proposed start time is 
+Sun / Oracle VMs: If -XX:+PrintGCDateStamps was used, the proposed start time is 
 read from the gc log file.
 
 Bug reports
