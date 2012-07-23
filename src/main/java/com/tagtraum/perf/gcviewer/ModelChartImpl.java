@@ -38,10 +38,13 @@ import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedTenuredRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedYoungRenderer;
 import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
 /**
- * Graphical chart of the gc file.
+ * Graphical chart of the gc file. It contains the chart and all rulers surrounding it but not
+ * the model details on the right side.
  *
  * Date: Jan 30, 2002
  * Time: 7:50:42 PM
@@ -68,6 +71,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     private FullGCLineRenderer fullGCLineRenderer;
     private GCTimesRenderer gcTimesRenderer;
     private UsedHeapRenderer usedHeapRenderer;
+    private UsedTenuredRenderer usedTenuredRenderer;
+    private UsedYoungRenderer usedYoungRenderer;
     private InitialMarkLevelRenderer initialMarkLevelRenderer;
     private ConcurrentGcBegionEndRenderer concurrentGcLineRenderer;
     private boolean antiAlias;
@@ -99,6 +104,10 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         chart.add(initialMarkLevelRenderer, gridBagConstraints);
         usedHeapRenderer = new UsedHeapRenderer(this);
         chart.add(usedHeapRenderer, gridBagConstraints);
+        usedTenuredRenderer = new UsedTenuredRenderer(this);
+        chart.add(usedTenuredRenderer, gridBagConstraints);
+        usedYoungRenderer = new UsedYoungRenderer(this);
+        chart.add(usedYoungRenderer, gridBagConstraints);
         gcTimesRenderer = new GCTimesRenderer(this);
         chart.add(gcTimesRenderer, gridBagConstraints);
         fullGCLineRenderer = new FullGCLineRenderer(this);
@@ -130,7 +139,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         constraints.gridheight = 2;
         constraints.gridx = 0;
         constraints.gridy = 1;
-        this.memoryRuler = new Ruler(true, 0, model.getFootprint(), "K");
+        this.memoryRuler = new Ruler(true, 0, model.getFootprint() / 1024, "M");
         this.pauseRuler = new Ruler(true, 0, model.getPause().getMax(), "s");
         layout.setConstraints(memoryRuler, constraints);
         rowHeaderPanel.add(memoryRuler);
@@ -250,6 +259,9 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     @Override
     public void setShowTenured(boolean showTenured) {
         totalTenuredRenderer.setVisible(showTenured);
+        
+        // reset cache because young generation needs to be repainted
+        resetPolygonCache();
     }
 
     @Override
@@ -375,7 +387,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     }
 
     public void setFootprint(long footprint) {
-        this.memoryRuler.setMaxUnit(footprint);
+        this.memoryRuler.setMaxUnit(footprint / 1024);
         this.footprint = footprint;
         getColumnHeader().revalidate();
         chart.revalidate();
