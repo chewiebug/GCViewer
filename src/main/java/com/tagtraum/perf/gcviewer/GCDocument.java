@@ -488,19 +488,6 @@ public class GCDocument extends JInternalFrame {
         }
 
         @Override
-        public boolean isShowUsedMemoryLine() {
-            if (chartPanelViews.isEmpty()) return false;
-            return chartPanelViews.get(0).getModelChart().isShowUsedMemoryLine();
-        }
-
-        @Override
-        public void setShowUsedMemoryLine(boolean showUsedMemoryLine) {
-            for (ChartPanelView chartPanelView : chartPanelViews) {
-                chartPanelView.getModelChart().setShowUsedMemoryLine(showUsedMemoryLine);
-            }
-        }
-
-        @Override
         public void setShowTenured(boolean showTenured) {
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowTenured(showTenured);
@@ -524,6 +511,45 @@ public class GCDocument extends JInternalFrame {
         public boolean isShowYoung() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isShowYoung();
+        }
+
+        @Override
+        public boolean isShowUsedMemoryLine() {
+            if (chartPanelViews.isEmpty()) return false;
+            return chartPanelViews.get(0).getModelChart().isShowUsedMemoryLine();
+        }
+
+        @Override
+        public void setShowUsedMemoryLine(boolean showUsedMemoryLine) {
+            for (ChartPanelView chartPanelView : chartPanelViews) {
+                chartPanelView.getModelChart().setShowUsedMemoryLine(showUsedMemoryLine);
+            }
+        }
+
+        @Override
+        public boolean isShowUsedTenuredMemoryLine() {
+            if (chartPanelViews.isEmpty()) return false;
+            return chartPanelViews.get(0).getModelChart().isShowUsedTenuredMemoryLine();
+        }
+
+        @Override
+        public void setShowUsedTenuredMemoryLine(boolean showUsedTenuredMemoryLine) {
+            for (ChartPanelView chartPanelView : chartPanelViews) {
+                chartPanelView.getModelChart().setShowUsedTenuredMemoryLine(showUsedTenuredMemoryLine);
+            }
+        }
+
+        @Override
+        public boolean isShowUsedYoungMemoryLine() {
+            if (chartPanelViews.isEmpty()) return false;
+            return chartPanelViews.get(0).getModelChart().isShowUsedYoungMemoryLine();
+        }
+
+        @Override
+        public void setShowUsedYoungMemoryLine(boolean showUsedYoungMemoryLine) {
+            for (ChartPanelView chartPanelView : chartPanelViews) {
+                chartPanelView.getModelChart().setShowUsedYoungMemoryLine(showUsedYoungMemoryLine);
+            }
         }
 
         @Override

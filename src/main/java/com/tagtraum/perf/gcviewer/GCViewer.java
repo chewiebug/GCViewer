@@ -68,6 +68,8 @@ import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedTenuredRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedYoungRenderer;
 import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 import com.tagtraum.perf.gcviewer.util.OSXSupport;
 
@@ -111,6 +113,8 @@ public class GCViewer extends JFrame {
     private JCheckBoxMenuItem menuItemGcTimesLine;
     private JCheckBoxMenuItem menuItemGcTimesRectangle;
     private JCheckBoxMenuItem menuItemUsedMemory;
+    private JCheckBoxMenuItem menuItemUsedTenuredMemory;
+    private JCheckBoxMenuItem menuItemUsedYoungMemory;
     private JCheckBoxMenuItem menuItemTotalMemory;
     private JCheckBoxMenuItem menuItemTenuredMemory;
     private JCheckBoxMenuItem menuItemYoungMemory;
@@ -256,9 +260,11 @@ public class GCViewer extends JFrame {
             menuItemGcTimesLine.setState(getSelectedGCDocument().getModelChart().isShowGCTimesLine());
             menuItemGcTimesRectangle.setState(getSelectedGCDocument().getModelChart().isShowGCTimesRectangles());
             menuItemTotalMemory.setState(getSelectedGCDocument().getModelChart().isShowTotalMemoryLine());
-            menuItemUsedMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedMemoryLine());
             menuItemTenuredMemory.setState(getSelectedGCDocument().getModelChart().isShowTenured());
             menuItemYoungMemory.setState(getSelectedGCDocument().getModelChart().isShowYoung());
+            menuItemUsedMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedMemoryLine());
+            menuItemUsedTenuredMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedTenuredMemoryLine());
+            menuItemUsedYoungMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedYoungMemoryLine());
             menuItemInitialMarkLevel.setState(getSelectedGCDocument().getModelChart().isShowInitialMarkLevel());
             menuItemConcurrentGcBeginEnd.setState(getSelectedGCDocument().getModelChart().isShowConcurrentCollectionBeginEnd());
             menuItemShowDataPanel.setState(getSelectedGCDocument().isShowModelPanel());
@@ -567,6 +573,24 @@ public class GCViewer extends JFrame {
         viewMenu.add(menuItemUsedMemory);
         gcLineMenuItems.put(GCPreferences.USED_MEMORY, menuItemUsedMemory);
 
+        menuItemUsedTenuredMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_used_tenured_memory"), true);
+        menuItemUsedTenuredMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_used_tenured_memory").charAt(0));
+        menuItemUsedTenuredMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_used_tenured_memory"));
+        menuItemUsedTenuredMemory.setIcon(createMonoColoredImageIcon(UsedTenuredRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemUsedTenuredMemory.setActionCommand(GCPreferences.USED_TENURED_MEMORY);
+        menuItemUsedTenuredMemory.addActionListener(viewMenuActionListener);
+        viewMenu.add(menuItemUsedTenuredMemory);
+        gcLineMenuItems.put(GCPreferences.USED_TENURED_MEMORY, menuItemUsedTenuredMemory);
+
+        menuItemUsedYoungMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_used_young_memory"), true);
+        menuItemUsedYoungMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_used_young_memory").charAt(0));
+        menuItemUsedYoungMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_used_young_memory"));
+        menuItemUsedYoungMemory.setIcon(createMonoColoredImageIcon(UsedYoungRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemUsedYoungMemory.setActionCommand(GCPreferences.USED_YOUNG_MEMORY);
+        menuItemUsedYoungMemory.addActionListener(viewMenuActionListener);
+        viewMenu.add(menuItemUsedYoungMemory);
+        gcLineMenuItems.put(GCPreferences.USED_YOUNG_MEMORY, menuItemUsedYoungMemory);
+
         menuItemInitialMarkLevel = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_initial_mark_level"), true);
         menuItemInitialMarkLevel.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_initial_mark_level").charAt(0));
         menuItemInitialMarkLevel.setToolTipText(localStrings.getString("main_frame_menuitem_hint_initial_mark_level"));
@@ -626,6 +650,10 @@ public class GCViewer extends JFrame {
                 getSelectedGCDocument().getModelChart().setShowTotalMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
             } else if (e.getActionCommand() == GCPreferences.USED_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowUsedMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
+            } else if (e.getActionCommand() == GCPreferences.USED_TENURED_MEMORY) {
+                getSelectedGCDocument().getModelChart().setShowUsedTenuredMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
+            } else if (e.getActionCommand() == GCPreferences.USED_YOUNG_MEMORY) {
+                getSelectedGCDocument().getModelChart().setShowUsedYoungMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
             } else if (e.getActionCommand() == GCPreferences.TENURED_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowTenured(((JCheckBoxMenuItem) e.getSource()).getState());
             } else if (e.getActionCommand() == GCPreferences.YOUNG_MEMORY) {

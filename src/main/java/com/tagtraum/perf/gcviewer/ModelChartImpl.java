@@ -335,6 +335,26 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     }
 
     @Override
+    public boolean isShowUsedYoungMemoryLine() {
+        return usedYoungRenderer.isVisible();
+    }
+
+    @Override
+    public void setShowUsedYoungMemoryLine(boolean showUsedYoungMemoryLine) {
+        usedYoungRenderer.setVisible(showUsedYoungMemoryLine);
+    }
+
+    @Override
+    public boolean isShowUsedTenuredMemoryLine() {
+        return usedTenuredRenderer.isVisible();
+    }
+
+    @Override
+    public void setShowUsedTenuredMemoryLine(boolean showUsedTenuredMemoryLine) {
+        usedTenuredRenderer.setVisible(showUsedTenuredMemoryLine);
+    }
+
+    @Override
     public void setShowInitialMarkLevel(boolean showInitialMarkLevel) {
         initialMarkLevelRenderer.setVisible(showInitialMarkLevel);
     }
@@ -370,6 +390,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         setShowIncGCLines(preferences.getGcLineProperty(GCPreferences.INC_GC_LINES));
         setShowTotalMemoryLine(preferences.getGcLineProperty(GCPreferences.TOTAL_MEMORY));
         setShowUsedMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_MEMORY));
+        setShowUsedTenuredMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_TENURED_MEMORY));
+        setShowUsedYoungMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_YOUNG_MEMORY));
         setShowInitialMarkLevel(preferences.getGcLineProperty(GCPreferences.INITIAL_MARK_LEVEL));
         setShowConcurrentCollectionBeginEnd(preferences.getGcLineProperty(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END));
     }

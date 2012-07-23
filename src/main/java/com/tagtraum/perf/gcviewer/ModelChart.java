@@ -36,6 +36,14 @@ public interface ModelChart {
 
     void setShowUsedMemoryLine(boolean showUsedMemoryLine);
 
+    boolean isShowUsedYoungMemoryLine();
+
+    void setShowUsedYoungMemoryLine(boolean showUsedYoungMemoryLine);
+
+    boolean isShowUsedTenuredMemoryLine();
+
+    void setShowUsedTenuredMemoryLine(boolean showUsedTenuredMemoryLine);
+
     void setShowTenured(boolean showTenured);
 
     boolean isShowTenured();
