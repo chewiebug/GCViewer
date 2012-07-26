@@ -25,6 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
@@ -51,7 +54,7 @@ import com.tagtraum.perf.gcviewer.util.TimeFormat;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @version $Id: $
  */
-public class ModelChartImpl extends JScrollPane implements ModelChart {
+public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeListener {
 
     private GCModel model;
     private Chart chart;
@@ -77,6 +80,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     private ConcurrentGcBegionEndRenderer concurrentGcLineRenderer;
     private boolean antiAlias;
     private TimeOffsetPanel timeOffsetPanel;
+    private int lastViewPortWidth = 0;
 
     public ModelChartImpl() {
         super();
@@ -86,11 +90,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         
-        // set scrolling speed
-        horizontalScrollBar = getHorizontalScrollBar();
-        horizontalScrollBar.setUnitIncrement(50);
-        horizontalScrollBar.setBlockIncrement(500);
-
         // order of the renderers determines what is painted first and last
         // we start with what's painted last
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -129,6 +128,14 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         // This would make scrolling slower, but eliminates flickering...
         //getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
 
+        getViewport().addChangeListener(this);
+        lastViewPortWidth = getViewport().getWidth();
+
+        // set scrolling speed
+        horizontalScrollBar = getHorizontalScrollBar();
+        horizontalScrollBar.setUnitIncrement(50);
+        horizontalScrollBar.setBlockIncrement(getViewport().getWidth());
+        
         JPanel rowHeaderPanel = new JPanel();
         GridBagLayout layout = new GridBagLayout();
         rowHeaderPanel.setLayout(layout);
@@ -235,8 +242,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         memoryRuler.setSize((int)memoryRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         pauseRuler.setSize((int)pauseRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         timestampRuler.setSize((int)(getViewport().getWidth()*getScaleFactor()), (int)timestampRuler.getPreferredSize().getHeight());
-        
-        horizontalScrollBar.setBlockIncrement((int)(scaleFactor * 5000));
         
         repaint();
     }
@@ -703,6 +708,15 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
 
         public void setUnitName(String unitName) {
             this.unitName = unitName;
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        JViewport viewPort = (JViewport)e.getSource();
+        if (lastViewPortWidth != viewPort.getWidth()) {
+            lastViewPortWidth = viewPort.getWidth();
+            horizontalScrollBar.setBlockIncrement(lastViewPortWidth);
         }
     }
 
