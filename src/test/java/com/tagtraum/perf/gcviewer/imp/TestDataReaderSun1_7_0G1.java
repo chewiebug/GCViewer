@@ -142,6 +142,47 @@ public class TestDataReaderSun1_7_0G1 {
     }
     
     @Test
+    public void applicationStoppedMixedLine() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = new ByteArrayInputStream(
+                ("2012-07-26T14:58:54.045+0200: Total time for which application threads were stopped: 0.0078335 seconds" +
+                        "\n3.634: [GC concurrent-root-region-scan-start]")
+                .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("gc type", "GC concurrent-root-region-scan-start", model.get(0).getTypeAsString());
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+
+    @Test
+    public void applicationTimeMixed() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = new ByteArrayInputStream(
+                ("2012-07-26T15:24:21.845+0200: 3.100: [GC concurrent-root-region-scan-end, 0.0000680]" +
+                 "\n2012-07-26T14:58:58.320+0200Application time: 0.0000221 seconds" +
+                        "\n: 7.907: [GC concurrent-mark-start]")
+                .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        GCModel model = reader.read();
+
+        assertEquals("count", 2, model.size());
+        assertEquals("gc type", "GC concurrent-mark-start", model.get(1).getTypeAsString());
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    @Test
     public void eventNoMemory() throws Exception {
         // there are (rarely) events, where the memory information could not be parsed,
         // because the line with the memory information was mixed with another event

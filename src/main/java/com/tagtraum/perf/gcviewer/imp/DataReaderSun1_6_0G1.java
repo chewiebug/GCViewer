@@ -169,6 +169,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             throw new ParseException("unexpected mixed line", line, parsePosition);
                         }
                     }
+                    else if (line.indexOf(TOTAL_TIME_THREADS_STOPPED) > 0) {
+                        beginningOfLine = line.substring(0, line.indexOf(TOTAL_TIME_THREADS_STOPPED));
+                        continue;
+                    }
+                    else if (line.indexOf(APPLICATION_TIME) > 0) {
+                        beginningOfLine = line.substring(0, line.indexOf(APPLICATION_TIME));
+                        continue;
+                    }
                     else if (beginningOfLine != null) {
                         // not detailed log but mixed line
                         line = beginningOfLine + line;
@@ -224,8 +232,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         model.add(parseLine(line, parsePosition));
                     }
                 } catch (Exception pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.getMessage());
-                    if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
+                    if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.toString());
+                    if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.toString(), pe);
                 }
                 parsePosition.setIndex(0);
             }
@@ -253,7 +261,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 || line.endsWith(Type.G1_YOUNG_MARK_STACK_FULL.getType()) 
                 || line.endsWith(Type.G1_YOUNG_TO_SPACE_OVERFLOW.getType()) 
                 || line.endsWith(Type.G1_PARTIAL.getType()) 
-                || line.endsWith(Type.G1_PARTIAL_TO_SPACE_OVERFLOW.getType()); 
+                || line.endsWith(Type.G1_PARTIAL_TO_SPACE_OVERFLOW.getType())
+                || line.endsWith(Type.G1_MIXED.getType())
+                || line.endsWith(Type.G1_MIXED_TO_SPACE_OVERFLOW.getType()); 
     }
 
     /**
