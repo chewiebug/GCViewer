@@ -250,7 +250,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private boolean isPrintTenuringDistribution(String line) {
         return line.endsWith(Type.G1_YOUNG.getType()) 
                 || line.endsWith(Type.G1_YOUNG__.getType()) 
-                || line.endsWith(Type.G1_YOUNG_MARK_STAC_FULL.getType()) 
+                || line.endsWith(Type.G1_YOUNG_MARK_STACK_FULL.getType()) 
                 || line.endsWith(Type.G1_YOUNG_TO_SPACE_OVERFLOW.getType()) 
                 || line.endsWith(Type.G1_PARTIAL.getType()) 
                 || line.endsWith(Type.G1_PARTIAL_TO_SPACE_OVERFLOW.getType()); 
