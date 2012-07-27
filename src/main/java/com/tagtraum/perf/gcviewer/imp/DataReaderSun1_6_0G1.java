@@ -316,19 +316,22 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 
                 // parse Eden
                 pos.setIndex(line.indexOf("Eden:"));
-                GCEvent edenEvent = new GCEvent();
-                edenEvent.setDateStamp(event.getDatestamp());
-                edenEvent.setTimestamp(event.getTimestamp());
-                edenEvent.setType(parseType(line, pos));
-                setMemoryExtended(edenEvent, line, pos);
-                event.add(edenEvent);
+                GCEvent youngEvent = new GCEvent();
+                youngEvent.setDateStamp(event.getDatestamp());
+                youngEvent.setTimestamp(event.getTimestamp());
+                youngEvent.setType(parseType(line, pos));
+                setMemoryExtended(youngEvent, line, pos);
                 
-                // omit Survivors -> don't know yet the meaning of the entry
-//                pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
-//                GCEvent survivorsEvent = new GCEvent();
-//                setMemorySimple(survivorsEvent, line, pos);
-//                edenEvent.setTotal(edenEvent.getTotal() + survivorsEvent.getPostUsed());
+                // add survivors
+                pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
+                GCEvent survivorsEvent = new GCEvent();
+                setMemoryExtended(survivorsEvent, line, pos);
+                youngEvent.setPreUsed(youngEvent.getPreUsed() + survivorsEvent.getPreUsed());
+                youngEvent.setPostUsed(youngEvent.getPostUsed() + survivorsEvent.getPostUsed());
+                youngEvent.setTotal(youngEvent.getTotal() + survivorsEvent.getPostUsed());
                 
+                event.add(youngEvent);
+
                 // parse heap size
                 pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
                 setMemoryExtended(event, line, pos);
