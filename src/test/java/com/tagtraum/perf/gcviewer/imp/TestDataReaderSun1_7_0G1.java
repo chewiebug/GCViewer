@@ -51,23 +51,23 @@ public class TestDataReaderSun1_7_0G1 {
         final DataReader reader = new DataReaderSun1_6_0G1(in);
         GCModel model = reader.read();
         
-        assertEquals("gc pause", 0.00623837, model.getPause().getMax(), 0.000000001);
+        assertEquals("gc pause", 0.14482200, model.getPause().getMax(), 0.000000001);
         GCEvent heap = (GCEvent) model.getEvents().next();
-        assertEquals("heap", 8192, heap.getPreUsed());
-        assertEquals("heap", 7895, heap.getPostUsed());
-        assertEquals("heap", 16*1024, heap.getTotal());
+        assertEquals("heap before", 1105*1024, heap.getPreUsed());
+        assertEquals("heap after", 380*1024, heap.getPostUsed());
+        assertEquals("heap", 2*1024*1024, heap.getTotal());
         
         GCEvent young = model.getGCEvents().next().getYoung();
         assertNotNull("young", young);
-        assertEquals("young before", 8192, young.getPreUsed());
-        assertEquals("young after", 0, young.getPostUsed());
-        assertEquals("young total", 8*1024, young.getTotal());
+        assertEquals("young before", 1024*1024, young.getPreUsed());
+        assertEquals("young after", 128*1024, young.getPostUsed());
+        assertEquals("young total", (896+128)*1024, young.getTotal());
         
         GCEvent tenured = model.getGCEvents().next().getTenured();
         assertNotNull("tenured", tenured);
-        assertEquals("tenured before", 0, tenured.getPreUsed());
-        assertEquals("tenured after", 7895, tenured.getPostUsed());
-        assertEquals("tenured total", 16*1024 - 8192, tenured.getTotal());
+        assertEquals("tenured before", (1105-1024)*1024, tenured.getPreUsed());
+        assertEquals("tenured after", (380-128)*1024, tenured.getPostUsed());
+        assertEquals("tenured total", 1024*1024, tenured.getTotal());
         
         assertEquals("number of errors", 0, handler.getCount());
     }
