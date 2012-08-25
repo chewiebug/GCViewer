@@ -144,6 +144,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
             for (GCEvent event : details) {
                 event.toStringBuffer(sb);
             }
+            sb.append(' ');
         }
         sb.append(preUsed);
         sb.append("K->");
