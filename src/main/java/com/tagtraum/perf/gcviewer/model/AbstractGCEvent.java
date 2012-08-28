@@ -290,6 +290,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type JROCKIT_NURSERY_GC = new Type("jrockit.Nursery GC", Generation.YOUNG);
         public static final Type JROCKIT_PARALLEL_NURSERY_GC = new Type("jrockit.parallel nursery GC", Generation.YOUNG);
 
+        public static final Type JROCKIT_16_OLD_GC = new Type("jrockit.OC", Generation.TENURED);
+        public static final Type JROCKIT_16_YOUNG_GC = new Type("jrockit.YC", Generation.YOUNG);
+        public static final Type JROCKIT_16_PARALLEL_NURSERY_GC = new Type("jrockit.parallel nursery GC", Generation.YOUNG);
+        
         public static final Type FULL_GC = new Type("Full GC", Generation.ALL);
         public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
         public static final Type GC = new Type("GC", Generation.YOUNG);
