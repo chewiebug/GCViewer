@@ -42,7 +42,7 @@ public class DataReaderJRockit1_6_0 implements DataReader {
             GCEvent event = null;
             int nurserySize = -1;
             while ((line = in.readLine()) != null) {
-                // Log entry types to be parsed:
+                // Sample JRockit log entry types to be parsed:
                 //
                 // [INFO ][memory ] GC mode: Garbage collection optimized for throughput, strategy: Generational Parallel Mark & Sweep
                 // [INFO ][memory ] Heap size: 8388608KB, maximal heap size: 8388608KB, nursery size: 4194304KB
