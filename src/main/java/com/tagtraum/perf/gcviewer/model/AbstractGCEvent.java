@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The abstract gc event is the base class for all types of events. All sorts of general
@@ -26,6 +28,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     private Type type = Type.UNDEFINED;
     private boolean tenuredDetail;
     private String typeAsString;
+    private Generation generation;
     protected List<T> details;
 
     public Iterator<T> details() {
@@ -43,6 +46,9 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         if (detail.getType().getGeneration() == Generation.TENURED) {
         	tenuredDetail = true;
         }
+        
+        // will be calculated upon call to "getGeneration()"
+        generation = null;
     }
 
     public boolean hasDetails() {
@@ -102,8 +108,36 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     	return isStopTheWorld;
     }
     
+    /**
+     * Returns the generation of the event including generation of detail events if present.
+     * @return generation of event including generation of detail events
+     */
     public Generation getGeneration() {
-        return getType().getGeneration();
+        if (generation == null) {
+            if (!hasDetails()) {
+                generation = getType().getGeneration();
+            }
+            else {
+                // find out, what generations the detail events contain
+                Set<Generation> generationSet = new TreeSet<Generation>();
+                for (T detailEvent : details) {
+                    generationSet.add(detailEvent.getType().getGeneration());
+                }
+                
+                if (generationSet.size() > 1 || generationSet.contains(Generation.ALL)) {
+                    generation = Generation.ALL;
+                }
+                else if (generationSet.size() == 1) {
+                    generation  = generationSet.iterator().next();
+                }
+                else {
+                    // default
+                    generation = Generation.YOUNG;
+                }
+            }
+        }
+        
+        return generation;
     }
     
     public double getTimestamp() {

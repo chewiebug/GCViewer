@@ -11,7 +11,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TestGcEvent.class
+    TestGcEvent.class,
+    TestAbstractGCEvent.class
 })
 public class TestAll {
 }
