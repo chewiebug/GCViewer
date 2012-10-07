@@ -33,7 +33,7 @@ public class Zoom extends AbstractAction {
         try {
             String item = (String)o[0];
             if (item.endsWith("%")) item = item.substring(0, item.length()-1);
-            final int zoomFactor = NumberParser.parseInt(item.trim());
+            final double zoomFactor = Double.parseDouble(item.trim());
             if (zoomFactor > 0) gcViewer.getSelectedGCDocument().getModelChart().setScaleFactor(zoomFactor/1000.0);
         }
         catch (NumberFormatException nfe) {
