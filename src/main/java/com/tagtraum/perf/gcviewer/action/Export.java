@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.action;
 import com.tagtraum.perf.gcviewer.*;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterFactory;
+import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 import javax.swing.*;
@@ -20,11 +21,9 @@ import java.io.File;
 public class Export extends AbstractAction {
     private GCViewer gcViewer;
     private JFileChooser saveDialog;
-    private DataWriterFactory writerFactory;
 
     public Export(final GCViewer gcViewer) {
         this.gcViewer = gcViewer;
-        writerFactory = new DataWriterFactory();
         putValue(NAME, GCViewer.localStrings.getString("main_frame_menuitem_export"));
         putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
         putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_export"));
@@ -59,7 +58,7 @@ public class Export extends AbstractAction {
         try {
             if (file.toString().indexOf('.') == -1) file = new File(file.toString() + extension);
             if (!file.exists() || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, GCViewer.localStrings.getString("fileexport_dialog_confirm_overwrite"), GCViewer.localStrings.getString("fileexport_dialog_title"), JOptionPane.YES_NO_OPTION)) {
-                writer = writerFactory.getDataWriter(file, extension);
+                writer = DataWriterFactory.getDataWriter(file, DataWriterType.asType(extension));
                 writer.write(model);
             }
         } catch (Exception ioe) {

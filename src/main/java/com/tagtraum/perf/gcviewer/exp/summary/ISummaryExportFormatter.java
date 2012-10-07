@@ -8,5 +8,6 @@ package com.tagtraum.perf.gcviewer.exp.summary;
  *
  */
 public interface ISummaryExportFormatter {
+    static final String NAME = "summaryExportFormatter"; 
     String formatLine(String tag, String value, String units);
 }

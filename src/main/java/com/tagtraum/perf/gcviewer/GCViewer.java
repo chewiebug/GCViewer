@@ -289,7 +289,7 @@ public class GCViewer extends JFrame {
     private URL[] convertFilesToURLs(final File[] files) throws MalformedURLException {
         final URL[] urls = new URL[files.length];
         for (int i=0; i<files.length; i++) {
-            urls[i] = files[i].getAbsoluteFile().toURL();
+            urls[i] = files[i].getAbsoluteFile().toURI().toURL();
         }
         return urls;
     }

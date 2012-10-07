@@ -36,10 +36,10 @@ public class TimeFormat extends DateFormat {
     }
 
     //@author sean
-    public Formatted formatToFormatted(Date date) {
+    public FormattedValue formatToFormatted(Date date) {
     	StringBuffer appendTo = new StringBuffer();
     	appendTo.append(date.getTime() / ONE_SECOND);   	
-    	Formatted formed = new Formatted(appendTo, "s");
+    	FormattedValue formed = new FormattedValue(appendTo, "s");
     	return formed;
     }    
     

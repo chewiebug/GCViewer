@@ -1,37 +1,44 @@
-/**
- * 
- */
 package com.tagtraum.perf.gcviewer.exp.summary;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Map;
 
+import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.util.*;
+import com.tagtraum.perf.gcviewer.util.FormattedValue;
+import com.tagtraum.perf.gcviewer.util.MemoryFormat;
+import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
 /**
+ * <p>SummaryDataWriter writes a csv-file of quite a few parameters of the {@link GCModel} class.
+ * It is intended to be used from a command line version of GCViewer.
+ * 
+ * <p>HISTORY:
+ * 
+ * <p>04/04/2011 SR
+ * <ul>
+ * <li>added unit test for the CSV output, for the Sun JDK</li>
+ * <li>removed embedded commas from the value field in the CSV output</li>
+ * <li>added another column for the units for each field</li>
+ * <li>lines that had extra value for std. deviation, or for %, have now been split into two lines</li>
+ * </ul>
+ * 
  * @author sean
- * SR: adding feature to auto export summary data, when run from command line
- * 
- * 
- * HISTORY:
- * 
- * 04/04/2011 SR
- * - added unit test for the CSV output, for the Sun JDK
- * - removed embedded commas from the value field in the CSV output
- * - added another column for the units for each field
- * - lines that had extra value for std. deviation, or for %, have now been split into two lines
  * 
  * TODO:   datetime fields like 'totalTime' need to separate out their units.
- * 
  */
-public class SummaryExporter {
+public class SummaryDataWriter extends AbstractDataWriter {
+    
 	private ISummaryExportFormatter formatter;
 
 	/*
 	 * field formatters
-	 * */
+	 */
 	private NumberFormat pauseFormatter;
 	private MemoryFormat footprintSlopeFormatter;
 	private NumberFormat percentFormatter;
@@ -42,18 +49,35 @@ public class SummaryExporter {
 	private MemoryFormat freedMemoryPerMinFormatter;
 	private MemoryFormat sigmaMemoryFormatter;
 
-	public SummaryExporter() {
-		//use the default csv formatter
-		this.formatter = new CsvSummaryExportFormatter();
-		initialiseFormatters();
+	public SummaryDataWriter(OutputStream out) {
+        //use the default csv formatter
+	    this(out, null);
+	}
+	
+	/**
+	 * Constructor for SummaryDatWriter with additional <code>configuration</code> parameter.
+	 * Expected contents of the parameter:
+	 * <ul>
+	 * <li>String: <code>ISummaryExportFormatter.NAME</code></li>
+	 * <li>Object: instance of class implementing ISummaryExportFormatter
+	 * </ul>
+	 * 
+	 * @param out
+	 * @param configuration
+	 */
+	public SummaryDataWriter(OutputStream out, Map<String, Object> configuration) {
+	    super(out, configuration);
+
+	    // don't use "configuration" parameter directly - it may be null
+	    this.formatter = (ISummaryExportFormatter) getConfiguration().get(ISummaryExportFormatter.NAME);
+	    if (this.formatter == null) {
+	        this.formatter = new CsvSummaryExportFormatter();
+	    }
+	    
+	    initialiseFormatters();
 	}
 
-	public SummaryExporter(ISummaryExportFormatter formatter) {
-		this.formatter = formatter;
-		initialiseFormatters();
-	}
-
-	private void initialiseFormatters() {
+    private void initialiseFormatters() {
 		pauseFormatter = NumberFormat.getInstance();
 		pauseFormatter.setMaximumFractionDigits(5);
 
@@ -79,7 +103,7 @@ public class SummaryExporter {
 	}
 
 	private void exportValue(PrintWriter writer, String tag, boolean bValue) {
-		exportValue(writer, tag, bValue ? "true" : "false", "bool");
+		exportValue(writer, tag, Boolean.toString(bValue), "bool");
 	}
 
 	private void exportValue(PrintWriter writer, String tag, String value, String units) {
@@ -87,11 +111,30 @@ public class SummaryExporter {
 		writer.println(strFormatted);
 	}
 
-	public void exportSummaryFromModel(GCModel model, String gcLogFileDesc, String filePath) throws IOException {
+    @Override
+    public void write(GCModel model) throws IOException {
+        int lastIndexOfSlash = model.getURL().getFile().lastIndexOf('/');
+        exportValue(out, 
+                "gcLogFile", 
+                model.getURL().getFile().substring(lastIndexOfSlash >= 0 ? lastIndexOfSlash + 1 : 0),
+                "-");
+        
+        exportMemorySummary(out, model);
+        exportPauseSummary(out, model);
+        exportOverallSummary(out, model);
+
+        out.flush();
+    }
+
+	public void exportSummaryFromModel(GCModel model, String filePath) throws IOException {
 		FileWriter outFile = new FileWriter(filePath);
 		PrintWriter out = new PrintWriter(outFile);
 
-		exportValue(out, "gcLogFile", gcLogFileDesc, "-");
+		int lastIndexOfSlash = model.getURL().getFile().lastIndexOf('/');
+		exportValue(out, 
+		        "gcLogFile", 
+		        model.getURL().getFile().substring(lastIndexOfSlash >= 0 ? lastIndexOfSlash + 1 : 0),
+		        "-");
 		
 		exportMemorySummary(out, model);
 		exportPauseSummary(out, model);
@@ -104,7 +147,7 @@ public class SummaryExporter {
 	private void exportOverallSummary(PrintWriter out, GCModel model) {
 		exportValue(out, "accumPause", gcTimeFormatter.format(model.getPause().getSum()), "s");
 		
-		Formatted formed = footprintFormatter.formatToFormatted(model.getFootprint());
+		FormattedValue formed = footprintFormatter.formatToFormatted(model.getFootprint());
 		exportValue(out, "footprint", formed.getValue(), formed.getUnits());
 		
 		formed = footprintFormatter.formatToFormatted(model.getFreedMemory());		
@@ -196,7 +239,7 @@ public class SummaryExporter {
 	}
 
 	private void exportMemorySummary(PrintWriter out, GCModel model) {
-		Formatted formed = footprintFormatter.formatToFormatted(model.getFootprint());
+		FormattedValue formed = footprintFormatter.formatToFormatted(model.getFootprint());
 		exportValue(out, "footprint", formed.getValue(), formed.getUnits());
 		
 		// check whether we have full gc data at all
@@ -286,12 +329,13 @@ public class SummaryExporter {
 		exportValue(out, "freedMemory", formed.getValue(), formed.getUnits());
 	}
 
-    private Formatted sigmaMemoryFormat(double value) {
+    private FormattedValue sigmaMemoryFormat(double value) {
         if (Double.isNaN(value)) {
         	StringBuffer buffer = new StringBuffer("NaN");
-        	return new Formatted(buffer, ' '); 
+        	return new FormattedValue(buffer, ' '); 
         }
         return sigmaMemoryFormatter.formatToFormatted(value);
     }
+
 }
 

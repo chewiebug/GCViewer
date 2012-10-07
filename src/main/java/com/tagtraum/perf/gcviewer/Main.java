@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import com.tagtraum.perf.gcviewer.exp.summary.SummaryExporter;
+import com.tagtraum.perf.gcviewer.exp.DataWriter;
+import com.tagtraum.perf.gcviewer.exp.DataWriterFactory;
+import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.imp.DataReader;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFactory;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -20,12 +22,12 @@ public class Main {
             //export summary:
             try {
                 exportSummary(summaryFilePath, gcfile);
+                System.exit(0);
             }
             catch(IOException e1) {
                 e1.printStackTrace();
+                System.exit(-1);
             }
-            //exit: quick & dirty, but does not really matter
-            System.exit(0);
 
         } else if (args.length > 1) {
             usage();
@@ -35,9 +37,14 @@ public class Main {
     }
 	
 	private static void exportSummary(String summaryFilePath, String gcFilename) throws IOException {
-        SummaryExporter exporter = new SummaryExporter();
-    	GCModel model = loadModel(new File(gcFilename).toURI().toURL());
-        exporter.exportSummaryFromModel(model, gcFilename, summaryFilePath);
+	    DataWriter summaryWriter = DataWriterFactory.getDataWriter(new File(summaryFilePath), DataWriterType.SUMMARY);
+	    try {
+	        GCModel model = loadModel(new File(gcFilename).toURI().toURL());
+	        summaryWriter.write(model);
+	    } 
+	    finally {
+            summaryWriter.close();
+	    }
 	}
     
     private static GCModel loadModel(final URL url) throws IOException {

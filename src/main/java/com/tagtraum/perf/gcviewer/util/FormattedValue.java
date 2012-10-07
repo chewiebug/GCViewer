@@ -7,16 +7,16 @@ package com.tagtraum.perf.gcviewer.util;
  * 
  * @author sean 
  */
-public class Formatted {
+public class FormattedValue {
 	StringBuffer bufferValue;
 	String units;
 	
-	public Formatted(StringBuffer toAppendTo, char units) {
+	public FormattedValue(StringBuffer toAppendTo, char units) {
 		this.bufferValue = toAppendTo;
 		this.units = "" + units;
 	}
 
-	public Formatted(StringBuffer toAppendTo, String units) {
+	public FormattedValue(StringBuffer toAppendTo, String units) {
 		this.bufferValue = toAppendTo;
 		this.units = units;
 	}	

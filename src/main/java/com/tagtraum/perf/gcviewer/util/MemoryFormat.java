@@ -74,16 +74,16 @@ public class MemoryFormat extends NumberFormat {
     }
     
     
-    public Formatted formatToFormatted(double memInK) {
+    public FormattedValue formatToFormatted(double memInK) {
     	StringBuffer toAppendTo = new StringBuffer();
     	FieldPosition pos = new FieldPosition(0);
     	
-    	Formatted formed = formatToFormatted(memInK, toAppendTo, pos, false);
+    	FormattedValue formed = formatToFormatted(memInK, toAppendTo, pos, false);
     	
     	return formed;
 	}
     
-    protected Formatted formatToFormatted(double memInK, StringBuffer toAppendTo, FieldPosition pos, boolean bAppendUnits) {
+    protected FormattedValue formatToFormatted(double memInK, StringBuffer toAppendTo, FieldPosition pos, boolean bAppendUnits) {
 
     	char units = ' ';
     	
@@ -118,7 +118,7 @@ public class MemoryFormat extends NumberFormat {
         format.setMaximumFractionDigits(iOrigMaxFracDigits);
         format.setMinimumFractionDigits(iOrigMinFracDigits);
         
-        return new Formatted(toAppendTo, units);
+        return new FormattedValue(toAppendTo, units);
     }
 
 }
