@@ -19,23 +19,23 @@ import java.io.File;
  *
  */
 public class Export extends AbstractAction {
-    private GCViewer gcViewer;
+    private GCViewerGui gcViewer;
     private JFileChooser saveDialog;
 
-    public Export(final GCViewer gcViewer) {
+    public Export(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewer.localStrings.getString("main_frame_menuitem_export"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
-        putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_export"));
+        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_export"));
+        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
+        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_export"));
         putValue(ACTION_COMMAND_KEY, "export");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/save.png"))));
         setEnabled(false);
         saveDialog = new JFileChooser();
-        saveDialog.setDialogTitle(GCViewer.localStrings.getString("fileexport_dialog_title"));
+        saveDialog.setDialogTitle(GCViewerGui.localStrings.getString("fileexport_dialog_title"));
         saveDialog.removeChoosableFileFilter(saveDialog.getAcceptAllFileFilter());
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", GCViewer.localStrings.getString("fileexport_dialog_csv")));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".txt", GCViewer.localStrings.getString("fileexport_dialog_txt")));
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", GCViewerGui.localStrings.getString("fileexport_dialog_csv")));
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".txt", GCViewerGui.localStrings.getString("fileexport_dialog_txt")));
     }
 
     public void actionPerformed(final ActionEvent e) {
@@ -49,7 +49,7 @@ public class Export extends AbstractAction {
             if (val == JFileChooser.APPROVE_OPTION) {
                 exportFile(chartPanelView.getModel(), saveDialog.getSelectedFile(), ((ExtensionFileFilter)saveDialog.getFileFilter()).getExtension());
             } else if (val == JFileChooser.ERROR_OPTION) {
-                JOptionPane.showMessageDialog(gcViewer, GCViewer.localStrings.getString("fileexport_dialog_error_occured"), GCViewer.localStrings.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(gcViewer, GCViewerGui.localStrings.getString("fileexport_dialog_error_occured"), GCViewerGui.localStrings.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -57,13 +57,13 @@ public class Export extends AbstractAction {
         DataWriter writer = null;
         try {
             if (file.toString().indexOf('.') == -1) file = new File(file.toString() + extension);
-            if (!file.exists() || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, GCViewer.localStrings.getString("fileexport_dialog_confirm_overwrite"), GCViewer.localStrings.getString("fileexport_dialog_title"), JOptionPane.YES_NO_OPTION)) {
+            if (!file.exists() || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, GCViewerGui.localStrings.getString("fileexport_dialog_confirm_overwrite"), GCViewerGui.localStrings.getString("fileexport_dialog_title"), JOptionPane.YES_NO_OPTION)) {
                 writer = DataWriterFactory.getDataWriter(file, DataWriterType.asType(extension));
                 writer.write(model);
             }
         } catch (Exception ioe) {
             //ioe.printStackTrace();
-            JOptionPane.showMessageDialog(gcViewer, ioe.getLocalizedMessage(), GCViewer.localStrings.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(gcViewer, ioe.getLocalizedMessage(), GCViewerGui.localStrings.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
         } finally {
             if (writer != null) {
                 writer.close();

@@ -1,6 +1,6 @@
 package com.tagtraum.perf.gcviewer.action;
 
-import com.tagtraum.perf.gcviewer.GCViewer;
+import com.tagtraum.perf.gcviewer.GCViewerGui;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 import javax.swing.*;
@@ -15,12 +15,12 @@ import java.awt.event.ActionEvent;
  *
  */
 public class Zoom extends AbstractAction {
-    private GCViewer gcViewer;
+    private GCViewerGui gcViewer;
 
-    public Zoom(final GCViewer gcViewer) {
+    public Zoom(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewer.localStrings.getString("action_zoom"));
-        putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("action_zoom_hint"));
+        putValue(NAME, GCViewerGui.localStrings.getString("action_zoom"));
+        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("action_zoom_hint"));
         //putValue(Action.MNEMONIC_KEY, new Integer(localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "zoom");
         //putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));

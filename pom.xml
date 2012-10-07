@@ -98,7 +98,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.tagtraum.perf.gcviewer.Main</mainClass>
+							<mainClass>com.tagtraum.perf.gcviewer.GCViewer</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>

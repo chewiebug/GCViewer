@@ -17,8 +17,8 @@ public class RefreshWatchDog {
     private javax.swing.Timer animationTimer;
     private java.util.Timer reloadTimer;
     private Action action;
-    public static final ImageIcon WATCH_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewer.class.getResource("images/watch.png")));
-    private static final ImageIcon CLOCK_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewer.class.getResource("images/clock.png")));
+    public static final ImageIcon WATCH_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewerGui.class.getResource("images/watch.png")));
+    private static final ImageIcon CLOCK_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewerGui.class.getResource("images/clock.png")));
     /*
     private static final ImageIcon CLOCK_N_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewer.class.getResource("images/clock_n.gif")));
     private static final ImageIcon CLOCK_NE_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewer.class.getResource("images/clock_ne.gif")));

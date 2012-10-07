@@ -32,7 +32,7 @@ import javax.swing.JDesktopPane;
  */
 public class DesktopPane extends JDesktopPane {
 
-    public DesktopPane(final GCViewer gcViewer) {
+    public DesktopPane(final GCViewerGui gcViewer) {
         // TODO refactor; looks very similar to GCDocument implementation
         gcViewer.setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY, new DropTargetListener(){
             public void dragEnter(DropTargetDragEvent e) {
@@ -75,7 +75,7 @@ public class DesktopPane extends JDesktopPane {
         }));
     }
 
-    private ImageIcon logoIcon = new ImageIcon(GCViewer.class.getResource("gcviewer_background.png"));
+    private ImageIcon logoIcon = new ImageIcon(GCViewerGui.class.getResource("gcviewer_background.png"));
     
     public void paint(Graphics g) {
         fillBackground(g);

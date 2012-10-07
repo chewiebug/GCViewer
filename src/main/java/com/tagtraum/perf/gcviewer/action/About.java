@@ -1,7 +1,7 @@
 package com.tagtraum.perf.gcviewer.action;
 
 import com.tagtraum.perf.gcviewer.AboutDialog;
-import com.tagtraum.perf.gcviewer.GCViewer;
+import com.tagtraum.perf.gcviewer.GCViewerGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +17,11 @@ import java.awt.event.ActionEvent;
 public class About extends AbstractAction {
     private AboutDialog aboutDialog;
 
-    public About(final GCViewer gcViewer) {
+    public About(final GCViewerGui gcViewer) {
         aboutDialog = new AboutDialog(gcViewer);
-        putValue(NAME, GCViewer.localStrings.getString("main_frame_menuitem_about"));
-        putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_about"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_about").charAt(0)));
+        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_about"));
+        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_about"));
+        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_about").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "about");
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/about.png"))));
     }

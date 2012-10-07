@@ -48,7 +48,7 @@ public class GCDocument extends JInternalFrame {
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
 
-    public GCDocument(final GCViewer gcViewer, String s) {
+    public GCDocument(final GCViewerGui gcViewer, String s) {
         super(s, true, true, true, false);
         this.refreshWatchDog = new RefreshWatchDog();
         refreshWatchDog.setGcDocument(this);
