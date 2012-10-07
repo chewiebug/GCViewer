@@ -1,8 +1,10 @@
 package com.tagtraum.perf.gcviewer;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.SoftBevelBorder;
-
 
 /**
  * About dialog.
@@ -51,18 +52,42 @@ public class AboutDialog extends JDialog implements ActionListener {
 
         JPanel versionPanel = new JPanel();
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        versionPanel.setLayout(new GridLayout(6, 1));
+        versionPanel.setLayout(new GridBagLayout());
+        
         JLabel copyright = new JLabel("\u00A9" + " 2011-2012: Joerg Wuethrich", JLabel.CENTER);
-        JLabel contributorsLabel = new JLabel("contributors:", JLabel.CENTER);
-        JLabel contributors = new JLabel("Johan Kaving | Carl Meyer | Cka3o4Huk | Serafín Sedano", JLabel.CENTER);
-        JLabel version2 = new JLabel("version: " + VersionReader.getVersion(), JLabel.CENTER);
-        versionPanel.add(copyright);
-        versionPanel.add(new JLabel());
-        versionPanel.add(contributorsLabel);
-        versionPanel.add(contributors);
-        versionPanel.add(new JLabel());
-        versionPanel.add(version2);
+        
+        JLabel contributorsLabel = new JLabel("contributors (alphabetically ordered):", JLabel.CENTER);
+        contributorsLabel.setForeground(Color.GRAY);
+        JLabel contributors = new JLabel(
+                "<html><center>Peter Bilstein | Cka3o4Huk | Bernd Eckenfels <br>" +
+        		"Johan Kaving | Carl Meyer <br>" +
+        		"Rupesh Ramachandran | Serafín Sedano</center><html>", JLabel.CENTER);
+        
+        JLabel version = new JLabel("<html><font color=\"gray\">version:</font> " + VersionReader.getVersion() + "</html>", JLabel.CENTER);
+        
+        JLabel spacer1 = new JLabel("spacer");
+        spacer1.setForeground(getBackground());
+        JLabel spacer2 = new JLabel("spacer");
+        spacer2.setForeground(getBackground());
 
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = GridBagConstraints.NORTH;
+        gridBagConstraints.fill = GridBagConstraints.VERTICAL;
+        gridBagConstraints.gridx = 0;
+
+        versionPanel.add(copyright, gridBagConstraints);
+        gridBagConstraints.gridy = 1;
+        versionPanel.add(spacer1, gridBagConstraints);
+        gridBagConstraints.gridy = 2;
+        versionPanel.add(contributorsLabel, gridBagConstraints);
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        versionPanel.add(contributors, gridBagConstraints);
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = GridBagConstraints.VERTICAL;
+        versionPanel.add(spacer2, gridBagConstraints);
+        gridBagConstraints.gridy = 5;
+        versionPanel.add(version, gridBagConstraints);
         
         Panel buttonPanel = new Panel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
