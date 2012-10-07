@@ -42,15 +42,13 @@ public class SummaryExporter {
 	private MemoryFormat freedMemoryPerMinFormatter;
 	private MemoryFormat sigmaMemoryFormatter;
 
-	public SummaryExporter()
-	{
+	public SummaryExporter() {
 		//use the default csv formatter
 		this.formatter = new CsvSummaryExportFormatter();
 		initialiseFormatters();
 	}
 
-	public SummaryExporter(ISummaryExportFormatter formatter)
-	{
+	public SummaryExporter(ISummaryExportFormatter formatter) {
 		this.formatter = formatter;
 		initialiseFormatters();
 	}
@@ -80,19 +78,16 @@ public class SummaryExporter {
 		percentFormatter.setMinimumFractionDigits(1);
 	}
 
-	private void exportValue(PrintWriter writer, String tag, boolean bValue)
-	{
+	private void exportValue(PrintWriter writer, String tag, boolean bValue) {
 		exportValue(writer, tag, bValue ? "true" : "false", "bool");
 	}
 
-	private void exportValue(PrintWriter writer, String tag, String value, String units)
-	{
+	private void exportValue(PrintWriter writer, String tag, String value, String units) {
 		String strFormatted = formatter.formatLine(tag, value, units);
 		writer.println(strFormatted);
 	}
 
-	public void exportSummaryFromModel(GCModel model, String gcLogFileDesc, String filePath) throws IOException
-	{
+	public void exportSummaryFromModel(GCModel model, String gcLogFileDesc, String filePath) throws IOException {
 		FileWriter outFile = new FileWriter(filePath);
 		PrintWriter out = new PrintWriter(outFile);
 
@@ -122,7 +117,8 @@ public class SummaryExporter {
 			
 			formed = freedMemoryPerMinFormatter.formatToFormatted(model.getFreedMemory()/model.getRunningTime()*60.0);
 			exportValue(out, "freedMemoryPerMin", formed.getValue(), formed.getUnits() + "/min");
-		} else {
+		} 
+		else {
 			exportValue(out, "throughput", "n.a.", "%");
 			exportValue(out, "totalTime", "n.a.", "s");
 			exportValue(out, "freedMemoryPerMin", "n.a.", "M/min");
@@ -291,8 +287,7 @@ public class SummaryExporter {
 	}
 
     private Formatted sigmaMemoryFormat(double value) {
-        if (Double.isNaN(value))
-        {
+        if (Double.isNaN(value)) {
         	StringBuffer buffer = new StringBuffer("NaN");
         	return new Formatted(buffer, ' '); 
         }

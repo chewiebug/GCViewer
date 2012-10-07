@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.swing.SwingUtilities;
-
 import com.tagtraum.perf.gcviewer.exp.summary.SummaryExporter;
 import com.tagtraum.perf.gcviewer.imp.DataReader;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFactory;
@@ -36,8 +34,7 @@ public class Main {
         }
     }
 	
-	private static void exportSummary(String summaryFilePath, String gcFilename) throws IOException
-    {
+	private static void exportSummary(String summaryFilePath, String gcFilename) throws IOException {
         SummaryExporter exporter = new SummaryExporter();
     	GCModel model = loadModel(new File(gcFilename).toURI().toURL());
         exporter.exportSummaryFromModel(model, gcFilename, summaryFilePath);
@@ -57,6 +54,5 @@ public class Main {
 		System.out.println("Welcome to GCViewer with cmdline");
         System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>]");
     }
-
 
 }
