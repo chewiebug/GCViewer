@@ -217,10 +217,10 @@ public class SummaryExporter {
 		}
 		else {
 			formed = footprintFormatter.formatToFormatted(model.getFootprintAfterFullGC().average());
-			exportValue(out, "footprintAfterFullGC", formed.getValue(), formed.getUnits());
+			exportValue(out, "avgfootprintAfterFullGC", formed.getValue(), formed.getUnits());
 			formed = sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation());
-			exportValue(out, "footprintAfterFullGC\u03c3", formed.getValue(), formed.getUnits());
-			exportValue(out, "footprintAfterFullGCisSig", isSignificant(model.getFootprintAfterFullGC().average(),
+			exportValue(out, "avgfootprintAfterFullGC\u03c3", formed.getValue(), formed.getUnits());
+			exportValue(out, "avgfootprintAfterFullGCisSig", isSignificant(model.getFootprintAfterFullGC().average(),
 					model.getFootprintAfterFullGC().standardDeviation()));
 			formed = footprintFormatter.formatToFormatted(model.getFreedMemoryByFullGC().getSum());
 			exportValue(out, "freedMemoryByFullGC", formed.getValue(), formed.getUnits());
@@ -256,11 +256,11 @@ public class SummaryExporter {
 		}
 		else {
 			formed = footprintFormatter.formatToFormatted(model.getFootprintAfterGC().average());
-			exportValue(out, "footprintAfterGC", formed.getValue(), formed.getUnits());
+			exportValue(out, "avgfootprintAfterGC", formed.getValue(), formed.getUnits());
 			
 			formed = sigmaMemoryFormat(model.getFootprintAfterGC().standardDeviation());
-			exportValue(out, "footprintAfterGC\u03c3", formed.getValue(), formed.getUnits());
-			exportValue(out, "footprintAfterGCisSig", isSignificant(model.getFootprintAfterGC().average(),
+			exportValue(out, "avgfootprintAfterGC\u03c3", formed.getValue(), formed.getUnits());
+			exportValue(out, "avgfootprintAfterGCisSig", isSignificant(model.getFootprintAfterGC().average(),
 					model.getFootprintAfterGC().standardDeviation()));
 			if (fullGCDataVailable && model.getRelativePostGCIncrease().getN() != 0) {
 				formed = footprintSlopeFormatter.formatToFormatted(model.getPostGCSlope());
