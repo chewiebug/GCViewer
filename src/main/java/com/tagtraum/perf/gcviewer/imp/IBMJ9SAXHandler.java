@@ -114,71 +114,71 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 			} else if("tenured".equals(qName)){
 				currentTenured++;
 				String freeStr = attrs.getValue("freebytes");
-				int free = -1;
+				long free = -1;
 				if(freeStr != null){
-					free = Integer.parseInt(freeStr);
+					free = Long.parseLong(freeStr);
 				}
 				String totalStr = attrs.getValue("totalbytes");
-				int total = -1;
+				long total = -1;
 				if(totalStr != null){
-					total = Integer.parseInt(totalStr);
+					total = Long.parseLong(totalStr);
 				}
 				
 				// For now only care about Total - don't break into SOA and LOA
 				if(currentTenured == 1){
-					currentAF.initialFreeBytes = free/1000;
-					currentAF.initialTotalBytes = total/1000;
+					currentAF.initialFreeBytes = (int)(free/1000);
+					currentAF.initialTotalBytes = (int)(total/1000);
 				} else if(currentTenured == 2){
 					// ignore
 				} else if(currentTenured == 3){
-					currentAF.afterFreeBytes = free/1000;
-					currentAF.afterTotalBytes = total/1000;
+					currentAF.afterFreeBytes = (int)(free/1000);
+					currentAF.afterTotalBytes = (int)(total/1000);
 				} else {
 					LOG.warning("currentTenured is > 3!");
 				}
 			} else if("soa".equals(qName)){
 				String freeStr = attrs.getValue("freebytes");
-				int free = -1;
+				long free = -1;
 				if(freeStr != null){
-					free = Integer.parseInt(freeStr);
+					free = Long.parseLong(freeStr);
 				}
 				String totalStr = attrs.getValue("totalbytes");
-				int total = -1;
+				long total = -1;
 				if(totalStr != null){
-					total = Integer.parseInt(totalStr);
+					total = Long.parseLong(totalStr);
 				}
 				
 				if(currentTenured == 1){
-					currentAF.initialSOAFreeBytes = free/1000;
-					currentAF.initialSOATotalBytes = total/1000;
+					currentAF.initialSOAFreeBytes = (int)(free/1000);
+					currentAF.initialSOATotalBytes = (int)(total/1000);
 				} else if(currentTenured == 2){
 					// ignore
 				} else if(currentTenured == 3){
-					currentAF.afterSOAFreeBytes = free/1000;
-					currentAF.afterSOATotalBytes = total/1000;
+					currentAF.afterSOAFreeBytes = (int)(free/1000);
+					currentAF.afterSOATotalBytes = (int)(total/1000);
 				} else {
 					LOG.warning("currentTenured is > 3!");
 				}
 			} else if("loa".equals(qName)){
 				String freeStr = attrs.getValue("freebytes");
-				int free = -1;
+				long free = -1;
 				if(freeStr != null){
-					free = Integer.parseInt(freeStr);
+					free = Long.parseLong(freeStr);
 				}
 				String totalStr = attrs.getValue("totalbytes");
-				int total = -1;
+				long total = -1;
 				if(totalStr != null){
-					total = Integer.parseInt(totalStr);
+					total = Long.parseLong(totalStr);
 				}
 				
 				if(currentTenured == 1){
-					currentAF.initialLOAFreeBytes = free/1000;
-					currentAF.initialLOATotalBytes = total/1000;
+					currentAF.initialLOAFreeBytes = (int)(free/1000);
+					currentAF.initialLOATotalBytes = (int)(total/1000);
 				} else if(currentTenured == 2){
 					// ignore
 				} else if(currentTenured == 3){
-					currentAF.afterLOAFreeBytes = free/1000;
-					currentAF.afterLOATotalBytes = total/1000;
+					currentAF.afterLOAFreeBytes = (int)(free/1000);
+					currentAF.afterLOATotalBytes = (int)(total/1000);
 				} else {
 					LOG.warning("currentTenured is > 3!");
 				}
