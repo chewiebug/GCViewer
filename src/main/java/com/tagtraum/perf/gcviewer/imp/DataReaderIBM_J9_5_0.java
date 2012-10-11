@@ -11,6 +11,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -61,7 +62,8 @@ public class DataReaderIBM_J9_5_0 implements DataReader {
                 exception.initCause(e);
                 throw exception;
 			} catch (SAXException e) {
-				if(e.getMessage().startsWith("XML document structures must start and end within the same entity")) {
+				// TODO: if(e.getMessage().startsWith("XML document structures must start and end within the same entity")) {
+				if (e instanceof SAXParseException && ((SAXParseException) e).getColumnNumber() == 1) {
 					// ignore. this just means a xml tag terminated.
 				} else {
                     final IOException exception = new IOException(e.toString());
