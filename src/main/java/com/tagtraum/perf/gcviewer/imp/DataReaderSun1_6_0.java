@@ -126,7 +126,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // Matcher group of end of line
     private static final int LINES_MIXED_ENDOFLINE_GROUP = 3;
     
-    // -XX:+PrintAdaptiveSizePolicy outputs the following lines:
+    // -XX:+PrintAdaptiveSizePolicy combined with -XX:+UseAdaptiveSizePolicy outputs the following lines:
     // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1 
     // PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0.059538 major_cost: 0.000000 mutator_cost: 0.940462 throughput_goal: 0.990000 live_space: 273821824 free_space: 33685504 old_promo_size: 16842752 old_eden_size: 16842752 desired_promo_size: 16842752 desired_eden_size: 33685504
     // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512) 
@@ -135,6 +135,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
     private static Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\(System\\))Adaptive.*");
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
+    
+    // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
+    // outputs the following line:
+    // 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] 
+    private static Pattern printAdaptiveSizePolicyPattern = Pattern.compile("(.*GC)Adaptive.*(true|false)( \\[.*)");
+    private static final int PRINT_ADAPTIVE_SIZE_GROUP_BEFORE = 1;
+    private static final int PRINT_ADAPTIVE_SIZE_GROUP_AFTER = 3;
+    
     private Date firstDateStamp = null;
 
     public DataReaderSun1_6_0(InputStream in) throws UnsupportedEncodingException {
@@ -149,6 +157,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             Matcher mixedLineMatcher = linesMixedPattern.matcher("");
             Matcher adaptiveSizePolicyMatcher = adaptiveSizePolicyPattern.matcher("");
+            Matcher printAdaptiveSizePolicyMatcher = printAdaptiveSizePolicyPattern.matcher("");
             String line;
             // beginningOfLine must be a stack because more than one beginningOfLine might be needed
             Deque<String> beginningOfLine = new LinkedList<String>();
@@ -217,13 +226,30 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (line.indexOf(ADAPTIVE_PATTERN) >= 0) {
-                        adaptiveSizePolicyMatcher.reset(line);
-                        if (!adaptiveSizePolicyMatcher.matches()) {
-                            LOG.severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
-                            continue;
+                        if (line.indexOf("Times") > 0) {
+                            // -XX:+PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy
+                            printAdaptiveSizePolicyMatcher.reset(line);
+                            if (!printAdaptiveSizePolicyMatcher.matches()) {
+                                LOG.severe("printAdaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                continue;
+                            }
+                            
+                            model.add(parseLine(
+                                    printAdaptiveSizePolicyMatcher.group(PRINT_ADAPTIVE_SIZE_GROUP_BEFORE)
+                                        + printAdaptiveSizePolicyMatcher.group(PRINT_ADAPTIVE_SIZE_GROUP_AFTER), 
+                                    parsePosition));
+                            parsePosition.setIndex(0);
                         }
-                        beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
-                        lineNumber = skipLines(in, parsePosition, lineNumber, ADAPTIVE_SIZE_POLICY_STRINGS);
+                        else {
+                            // -XX:+PrintAdaptiveSizePolicy -XX:+UseAdaptiveSizePolicy
+                            adaptiveSizePolicyMatcher.reset(line);
+                            if (!adaptiveSizePolicyMatcher.matches()) {
+                                LOG.severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                continue;
+                            }
+                            beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
+                            lineNumber = skipLines(in, parsePosition, lineNumber, ADAPTIVE_SIZE_POLICY_STRINGS);
+                        }
                         continue;
                     }
                     else if (beginningOfLine.size() > 0) {

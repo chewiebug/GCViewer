@@ -479,6 +479,23 @@ public class TestDataReaderSun1_6_0 {
     }
     
     @Test
+    public void testPrintWithoutUseAdaptiveSizePolicy() throws Exception {
+        // issue #36
+        // -XX:+PrintAdaptiveSizePolicy
+        // -XX:-UseAdaptiveSizePolicy
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2012-09-27T17:03:28.712+0200: 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] "
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("GC pause", 0.0132830, model.getGCPause().getMax(), 0.00000001);
+    }
+    
+    @Test
     public void testCMSScavengeBeforeRemarkTimeStamp() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2.036: [GC[YG occupancy: 235954 K (235968 K)]2.036: [GC 2.036: [ParNew: 235954K->30K(235968K), 0.0004961 secs] 317153K->81260K(395712K), 0.0005481 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
