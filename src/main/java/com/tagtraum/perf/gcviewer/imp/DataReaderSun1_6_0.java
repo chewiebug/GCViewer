@@ -46,6 +46,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintPromotionFailure (output ignored)</li>
  * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
+ * <li>-XX:PrintCMSStatistics=2 (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -63,6 +64,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final String DESIRED_SURVIVOR = "Desired survivor"; // -XX:+PrintTenuringDistribution
     private static final String SURVIVOR_AGE = "- age"; // -XX:+PrintTenuringDistribution
     private static final String TIMES_ALONE = " [Times";
+    private static final String FINISHED = "Finished"; // -XX:PrintCmsStatistics=2
+    private static final String CARDTABLE = " (cardTable: "; // -XX:PrintCmsStatistics=2 
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
@@ -72,6 +75,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(TOTAL_TIME_THREADS_STOPPED);
         EXCLUDE_STRINGS.add(SURVIVOR_AGE);
         EXCLUDE_STRINGS.add(TIMES_ALONE);
+        EXCLUDE_STRINGS.add(FINISHED);
+        EXCLUDE_STRINGS.add(CARDTABLE);
     }
     
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -143,6 +148,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_BEFORE = 1;
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_AFTER = 3;
     
+    // -XX:PrintCmsStatistics=2
+    private static final String PRINT_CMS_STATISTICS_ITERATIONS = "iterations";
+    private static Pattern printCmsStatisticsIterationsPattern = Pattern.compile("(.*)[ ][\\[][0-9]+[ ]iterations[, 0-9]+[ ]waits[, 0-9]+[ ]cards[)][\\]][ ](.*)");
+    private static final int PRINT_CMS_STATISTICS_ITERATIONS_GROUP_BEFORE = 1;
+    private static final int PRINT_CMS_STATISTICS_ITERATIONS_GROUP_AFTER = 2;
+    private static final String PRINT_CMS_STATISTICS_SURVIVOR = "  (Survivor:";
+    
     private Date firstDateStamp = null;
 
     public DataReaderSun1_6_0(InputStream in) throws UnsupportedEncodingException {
@@ -158,6 +170,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             Matcher mixedLineMatcher = linesMixedPattern.matcher("");
             Matcher adaptiveSizePolicyMatcher = adaptiveSizePolicyPattern.matcher("");
             Matcher printAdaptiveSizePolicyMatcher = printAdaptiveSizePolicyPattern.matcher("");
+            Matcher printCmsStatisticsIterationsMatcher = printCmsStatisticsIterationsPattern.matcher("");
             String line;
             // beginningOfLine must be a stack because more than one beginningOfLine might be needed
             Deque<String> beginningOfLine = new LinkedList<String>();
@@ -182,6 +195,21 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         StringBuilder sb = new StringBuilder(line);
                         sb.replace(indexOfStart, indexOfStart + CMS_ABORT_PRECLEAN.length(), "");
                         line = sb.toString();
+                    }
+                    if (line.indexOf(PRINT_CMS_STATISTICS_ITERATIONS) > 0) {
+                        // -XX:PrintCmsStatistics -> filter text that the parser doesn't know
+                        printCmsStatisticsIterationsMatcher.reset(line);
+                        if (!printCmsStatisticsIterationsMatcher.matches()) {
+                            LOG.severe("printCmsStatisticsIterationsMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            continue;
+                        }
+                        
+                        line = printCmsStatisticsIterationsMatcher.group(PRINT_CMS_STATISTICS_ITERATIONS_GROUP_BEFORE)
+                                + printCmsStatisticsIterationsMatcher.group(PRINT_CMS_STATISTICS_ITERATIONS_GROUP_AFTER);
+                    }
+                    if (line.indexOf(PRINT_CMS_STATISTICS_SURVIVOR) > 0) {
+                        beginningOfLine.addFirst(line.substring(0, line.indexOf(PRINT_CMS_STATISTICS_SURVIVOR)));
+                        continue;
                     }
 
                     if (isCmsScavengeBeforeRemark(line)) {

@@ -645,7 +645,112 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 1, model.size());
         assertEquals("GC pause", 0.0269605, model.getGCPause().getMin(), 0.000000001);
         assertEquals("number of errors", 0, handler.getCount());
-
     }
-     
+    
+    @Test
+    public void testPrintCmsStatisticsConcurrentMark() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-10-20T18:04:57.850+0200: 1.327: [CMS-concurrent-mark: 0.011/0.011 secs] (CMS-concurrent-mark yielded 0 times)" 
+                 + "\n [Times: user=0.03 sys=0.00, real=0.01 secs]")
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("GC pause", 0.011, model.getConcurrentEventPauses().values().iterator().next().getMin(), 0.000000001);
+    }
+
+    @Test
+    public void testPrintCmsStatisticsConcurrentPreclean() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-10-20T18:04:57.850+0200: 1.329: [CMS-concurrent-preclean: 0.002/0.002 secs] (CMS-concurrent-preclean yielded 0 times)" 
+                 + "\n [Times: user=0.00 sys=0.00, real=0.00 secs]")
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("concurrent time", 0.002, model.getConcurrentEventPauses().values().iterator().next().getMin(), 0.000000001);
+    }
+
+    @Test
+    public void testPrintCmsStatisticsConcurrentModeFailure() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-10-20T18:04:58.147+0200: 1.621: [GC 1.621: [ParNew: 78631K->78631K(78656K), 0.0000164 secs]1.621: [CMS [9 iterations, 5 waits, 5367 cards)] 2012-10-20T18:04:58.147+0200: 1.621: [CMS-concurrent-abortable-preclean: 0.020/0.292 secs] (CMS-concurrent-abortable-preclean yielded 0 times)" 
+                 + "\n [Times: user=0.30 sys=0.23, real=0.30 secs]"
+                 + "\n (concurrent mode failure): 402265K->61915K(436928K), 0.0394420 secs] 480896K->61915K(515584K), [CMS Perm : 2626K->2625K(65536K)], 0.0395686 secs] [Times: user=0.03 sys=0.00, real=0.03 secs]")
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("failure pause", 0.0395686, model.getFullGCPause().getMax(), 0.0000001);
+        assertEquals("concurrent time", 0.02, model.getConcurrentEventPauses().values().iterator().next().getMin(), 0.000000001);
+    }
+
+    @Test
+    public void testPrintCmsStatisticsRemark() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-10-20T18:04:59.443+0200: 2.918: [GC[YG occupancy: 8752 K (78656 K)]2.918: [Rescan (parallel)  (Survivor:1chunks) Finished young gen rescan work in 2th thread: 0.000 sec" 
+                 + "\nFinished young gen rescan work in 1th thread: 0.000 sec"
+                 + "\nFinished young gen rescan work in 0th thread: 0.000 sec" 
+                 + "\nFinished remaining root rescan work in 1th thread: 0.000 sec" 
+                 + "\nFinished remaining root rescan work in 2th thread: 0.000 sec" 
+                 + "\nFinished remaining root rescan work in 0th thread: 0.000 sec" 
+                 + "\nFinished dirty card rescan work in 0th thread: 0.001 sec"
+                 + "\nFinished dirty card rescan work in 2th thread: 0.001 sec"
+                 + "\nFinished dirty card rescan work in 1th thread: 0.001 sec"
+                 + "\nFinished young gen rescan work in 3th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 3th thread: 0.000 sec"
+                 + "\nFinished dirty card rescan work in 3th thread: 0.000 sec"
+                 + "\nFinished work stealing in 3th thread: 0.000 sec"
+                 + "\nFinished work stealing in 2th thread: 0.000 sec"
+                 + "\nFinished work stealing in 0th thread: 0.000 sec"
+                 + "\nFinished work stealing in 1th thread: 0.000 sec"
+                 + "\n, 0.0008918 secs]2.919: [weak refs processing, 0.0000057 secs]2.919: [class unloading, 0.0001020 secs]2.919: [scrub symbol & string tables, 0.0003265 secs] [1 CMS-remark: 376134K(436928K)] 384886K(515584K), 0.0014952 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]"
+                 )
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("GC pause", 0.0014952, model.getGCPause().getMin(), 0.000000001);
+    }
+
+    @Test
+    public void testPrintCmsStatisticsParNewBeforeRemark() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-10-20T18:04:59.412+0200: 2.897: [GC 2.897: [ParNew [15 iterations, 8 waits, 4115 cards)] 2012-10-20T18:04:59.443+0200: 2.917: [CMS-concurrent-abortable-preclean: 0.031/0.593 secs] (CMS-concurrent-abortable-preclean yielded 0 times)" 
+                 + "\n [Times: user=0.66 sys=0.00, real=0.59 secs]"
+                 + "\n: 78624K->8686K(78656K), 0.0203494 secs] 424271K->384820K(515584K), 0.0204543 secs] [Times: user=0.13 sys=0.00, real=0.03 secs]")
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("GC pause", 0.0204543, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("concurrent time", 0.031, model.getConcurrentEventPauses().values().iterator().next().getMin(), 0.000000001);
+    }
+
+    @Test
+    public void testPrintCmsStatisticsParNewBeforeRemark2() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-10-20T18:05:00.083+0200: 3.556: [GC 3.556: [ParNew: 78624K->8688K(78656K), 0.0302267 secs] 451513K->438445K(515584K), 0.0302972 secs] [Times: user=0.13 sys=0.00, real=0.03 secs]" 
+                 + "\n [11 iterations, 6 waits, 7020 cards)] 2012-10-20T18:05:00.114+0200: 3.587: [CMS-concurrent-abortable-preclean: 0.024/0.391 secs] (CMS-concurrent-abortable-preclean yielded 0 times)"
+                 + "\n [Times: user=0.61 sys=0.06, real=0.39 secs]")
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("GC pause", 0.0302972, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("concurrent time", 0.024, model.getConcurrentEventPauses().values().iterator().next().getMin(), 0.000000001);
+    }
+
 }
