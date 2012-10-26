@@ -721,6 +721,42 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC pause", 0.0014952, model.getGCPause().getMin(), 0.000000001);
     }
 
+    /**
+     * Tests the combination of -XX:PrintCmsStatistics=2 and -XX:+CMSScavengeBeforeRemark 
+     */
+    @Test
+    public void testPrintCmsStatisticsScavengeBeforeRemark() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-10-26T18:31:09.699+0200: 15.473: [GC[YG occupancy: 8752 K (78656 K)]2012-10-26T18:31:09.699+0200: 15.473: [GC 15.473: [ParNew: 8752K->64K(78656K), 0.0052352 secs] 388874K->388870K(515584K), 0.0052868 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]"
+                 + "\n15.478: [Rescan (parallel)  (Survivor:0chunks) Finished young gen rescan work in 1th thread: 0.000 sec"
+                 + "\nFinished young gen rescan work in 1th thread: 0.000 sec"
+                 + "\nFinished young gen rescan work in 0th thread: 0.000 sec" 
+                 + "\nFinished remaining root rescan work in 1th thread: 0.000 sec" 
+                 + "\nFinished remaining root rescan work in 2th thread: 0.000 sec" 
+                 + "\nFinished remaining root rescan work in 0th thread: 0.000 sec" 
+                 + "\nFinished dirty card rescan work in 0th thread: 0.001 sec"
+                 + "\nFinished dirty card rescan work in 2th thread: 0.001 sec"
+                 + "\nFinished dirty card rescan work in 1th thread: 0.001 sec"
+                 + "\nFinished young gen rescan work in 3th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 3th thread: 0.000 sec"
+                 + "\nFinished dirty card rescan work in 3th thread: 0.000 sec"
+                 + "\nFinished work stealing in 3th thread: 0.000 sec"
+                 + "\nFinished work stealing in 2th thread: 0.000 sec"
+                 + "\nFinished work stealing in 0th thread: 0.000 sec"
+                 + "\nFinished work stealing in 1th thread: 0.000 sec"
+                 + "\n, 0.0006571 secs]15.479: [weak refs processing, 0.0000041 secs]15.479: [class unloading, 0.0001106 secs]15.479: [scrub symbol table, 0.0004465 secs]15.480: [scrub string table, 0.0000168 secs] [1 CMS-remark: 388806K(436928K)] 388870K(515584K), 0.0067111 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]"
+                 )
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 2, model.size());
+        assertEquals("GC pause ParNew", 0.0052868, model.getGCPause().getMin(), 0.000000001);
+        assertEquals("GC pause Remark", 0.0067111, model.getGCPause().getMax(), 0.000000001);
+        
+    }
+
     @Test
     public void testPrintCmsStatisticsParNewBeforeRemark() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(

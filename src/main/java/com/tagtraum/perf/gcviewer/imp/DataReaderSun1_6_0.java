@@ -208,7 +208,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                                 + printCmsStatisticsIterationsMatcher.group(PRINT_CMS_STATISTICS_ITERATIONS_GROUP_AFTER);
                     }
                     if (line.indexOf(PRINT_CMS_STATISTICS_SURVIVOR) > 0) {
-                        beginningOfLine.addFirst(line.substring(0, line.indexOf(PRINT_CMS_STATISTICS_SURVIVOR)));
+                        String currentBeginning = "";
+                        if (beginningOfLine.size() > 0) {
+                            // if -XX:PrintCmsStatistics=2 is combined with -XX:+CMSScavengeBeforeRemark
+                            // then a remark line is broken into three parts, which have to be glued together
+                            currentBeginning = beginningOfLine.removeFirst();
+                        }
+                        beginningOfLine.addFirst(currentBeginning + line.substring(0, line.indexOf(PRINT_CMS_STATISTICS_SURVIVOR)));
                         continue;
                     }
 
