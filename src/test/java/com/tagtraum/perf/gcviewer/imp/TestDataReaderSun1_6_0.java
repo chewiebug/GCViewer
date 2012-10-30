@@ -789,4 +789,17 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("concurrent time", 0.024, model.getConcurrentEventPauses().values().iterator().next().getMin(), 0.000000001);
     }
 
+    @Test
+    public void testCommaInTimestamp() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "12,655: [GC [PSYoungGen: 262656K->28075K(306432K)] 262656K->28075K(1006848K), 0,3541657 secs] [Times: user=0,22 sys=0,48, real=0,35 secs]" 
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("GC pause", 0.3541657, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("GC timestamp", 12.655, model.get(0).getTimestamp(), 0.000001);
+    }
 }

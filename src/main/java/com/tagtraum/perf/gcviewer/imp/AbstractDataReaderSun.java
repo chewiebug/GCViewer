@@ -389,8 +389,8 @@ public abstract class AbstractDataReaderSun implements DataReader {
             hasDigitsBeforeDot = true;
         }
         
-        // "."
-        if (line.charAt(index) == '.') {
+        // "." / ","
+        if (line.charAt(index) == '.' || line.charAt(index) == ',') {
             ++index;
             hasDot = true;
         }
