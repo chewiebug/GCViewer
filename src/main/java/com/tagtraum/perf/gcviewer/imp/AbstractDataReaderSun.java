@@ -39,11 +39,20 @@ public abstract class AbstractDataReaderSun implements DataReader {
     private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
     
     protected BufferedReader in;
+    protected GcLogType gcLogType;
 
-    public AbstractDataReaderSun(InputStream in) throws UnsupportedEncodingException {
+    /**
+     * Create an instance of this class passing an inputStream an the type of the logfile.
+     * @param in inputstream to the log file
+     * @param gcLogType type of the logfile
+     * @throws UnsupportedEncodingException if ASCII is not supported
+     */
+    public AbstractDataReaderSun(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super();
         this.in = new BufferedReader(new InputStreamReader(in, "ASCII"), 64 * 1024);
+        this.gcLogType = gcLogType;
     }
-
+    
     protected void setMemoryAndPauses(GCEvent event, String line) throws ParseException {
         setMemoryAndPauses(event, line, new ParsePosition(0));
     }

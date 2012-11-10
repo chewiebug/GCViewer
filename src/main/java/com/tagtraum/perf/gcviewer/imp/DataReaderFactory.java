@@ -93,22 +93,22 @@ public class DataReaderFactory {
         } else if (s.indexOf("pause (young)") > 0) {
             // G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x G1 collector");
-            return new DataReaderSun1_6_0G1(in);
+            return new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         } else if (s.indexOf("[Times:") > 0) {
             // all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x");
-            return new DataReaderSun1_6_0(in);
+            return new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
         } else if (s.indexOf("CMS-initial-mark") != -1 || s.indexOf("PSYoungGen") != -1) {
             // format is 1.5, but datareader for 1_6_0 can handle it
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.5.x");
-            return new DataReaderSun1_6_0(in);
+            return new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         } else if (s.indexOf(": [") != -1) {
             // format is 1.4, but datareader for 1_6_0 can handle it
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.4.x");
-            return new DataReaderSun1_6_0(in);
+            return new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
         } else if (s.indexOf("[GC") != -1 || s.indexOf("[Full GC") != -1 || s.indexOf("[Inc GC")!=-1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.3.1");
-            return new DataReaderSun1_3_1(in);
+            return new DataReaderSun1_3_1(in, GcLogType.SUN1_3_1);
         } else if (s.indexOf("<GC: managing allocation failure: need ") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.2.2");
             return new DataReaderSun1_2_2(in);

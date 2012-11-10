@@ -28,8 +28,8 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
     
     private int count;
 
-    public DataReaderSun1_3_1(InputStream in) throws UnsupportedEncodingException {
-        super(in);
+    public DataReaderSun1_3_1(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(in, gcLogType);
     }
 
     public GCModel read() throws IOException {

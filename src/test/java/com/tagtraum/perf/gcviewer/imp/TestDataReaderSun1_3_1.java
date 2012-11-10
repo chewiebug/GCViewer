@@ -29,7 +29,7 @@ public class TestDataReaderSun1_3_1 extends TestCase {
         AbstractGCEvent<GCEvent> event3 = new GCEvent(2, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
         AbstractGCEvent<GCEvent> event4 = new GCEvent(3, 10753, 6046, 10912, 0.3146707d, AbstractGCEvent.Type.FULL_GC);
         ByteArrayInputStream in = new ByteArrayInputStream("[GC 8968K->8230K(10912K), 0.0037192 secs]\r\n[GC 8968K->8230K(10[GC 8968K->8230K(10912K), 0.0037192 secs]912K), 0.0037192 secs]\r\n[Full GC 10753K->6046K(10912K), 0.3146707 secs]".getBytes());
-        DataReader reader = new DataReaderSun1_3_1(in);
+        DataReader reader = new DataReaderSun1_3_1(in, GcLogType.SUN1_3_1);
         GCModel model = reader.read();
         assertTrue(model.size() == 4);
         Iterator<GCEvent> i = model.getGCEvents();

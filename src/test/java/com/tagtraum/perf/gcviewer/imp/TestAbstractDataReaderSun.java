@@ -21,7 +21,7 @@ public class TestAbstractDataReaderSun {
     
     @Before
     public void setUp() throws UnsupportedEncodingException {
-        dataReader = new AbstractDataReaderSunSub(new ByteArrayInputStream(new byte[0]));
+        dataReader = new AbstractDataReaderSunSub(new ByteArrayInputStream(new byte[0]), GcLogType.SUN1_6);
     }
     
     /**
@@ -85,8 +85,8 @@ public class TestAbstractDataReaderSun {
      */
     private class AbstractDataReaderSunSub extends AbstractDataReaderSun {
         
-        public AbstractDataReaderSunSub(InputStream in) throws UnsupportedEncodingException {
-            super(in);
+        public AbstractDataReaderSunSub(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+            super(in, gcLogType);
         }
     
         @Override

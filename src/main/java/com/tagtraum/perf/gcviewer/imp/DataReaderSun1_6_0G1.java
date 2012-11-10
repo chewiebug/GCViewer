@@ -106,8 +106,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("}");
     }
     
-    public DataReaderSun1_6_0G1(InputStream in) throws UnsupportedEncodingException {
-        super(in);
+    public DataReaderSun1_6_0G1(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(in, gcLogType);
     }
 
     @Override

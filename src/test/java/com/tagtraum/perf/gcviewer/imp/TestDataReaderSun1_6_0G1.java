@@ -30,7 +30,7 @@ public class TestDataReaderSun1_6_0G1 {
     	DATA_READER_FACTORY_LOGGER.addHandler(handler);
     	
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_gc_verbose.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("gc pause sum", 62.616796, model.getPause().getSum(), 0.000000001);
@@ -50,7 +50,7 @@ public class TestDataReaderSun1_6_0G1 {
                 ("2012-02-29T13:41:00.721+0100: 0.163: [GC pause (young) 4096K->3936K(16M), 0.0032067 secs]")
                 .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -66,7 +66,7 @@ public class TestDataReaderSun1_6_0G1 {
 				("9.978: [Full GC (System.gc()) 597M->1142K(7168K), 0.1604955 secs]")
 				.getBytes());
     	
-		final DataReader reader = new DataReaderSun1_6_0G1(in);
+		final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
 		GCModel model = reader.read();
 
 		assertEquals("count", 1, model.size());
@@ -81,7 +81,7 @@ public class TestDataReaderSun1_6_0G1 {
                 		"\n, 0.0013065 secs]")
                 .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 2, model.size());
@@ -95,7 +95,7 @@ public class TestDataReaderSun1_6_0G1 {
                         "\n[GC concurrent-mark-start]")
                 .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 2, model.size());
@@ -107,7 +107,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testDetailedYoungCollection() throws Exception {
         // parse one detailed event
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_Detailed-young.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("number of pauses", 1, model.getPause().getN());
@@ -121,7 +121,7 @@ public class TestDataReaderSun1_6_0G1 {
         // 8.775: [GC pause (young)8.775: [GC concurrent-mark-end, 0.0101638 sec]
         // , 0.00831998 secs]
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_Detailed-mixedLine1.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("nummber of events", 2, model.size());
@@ -136,7 +136,7 @@ public class TestDataReaderSun1_6_0G1 {
         // 0.230: [GC pause (young)0.235:  (initial-mark), 0.00430038 secs]
         // [GC concurrent-mark-start]
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_Detailed-mixedLine2.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("nummber of events", 2, model.size());
@@ -151,7 +151,7 @@ public class TestDataReaderSun1_6_0G1 {
         // 0.331: [GC pause (young)0.333 (initial-mark), 0.00178520 secs]
         // :    [GC concurrent-mark-start]        
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_Detailed-mixedLine3.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("nummber of events", 2, model.size());
@@ -165,7 +165,7 @@ public class TestDataReaderSun1_6_0G1 {
         final InputStream in = new ByteArrayInputStream(("107.222: [Full GC107.248: [GC concurrent-mark-end, 0.0437048 sec]" +
         		"\n 254M->59M(199M), 0.0687356 secs]" +
         		"\n [Times: user=0.06 sys=0.02, real=0.07 secs]").getBytes());
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("number of events", 2, model.size());
@@ -177,7 +177,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testYoungToSpaceOverflow() throws Exception {
         // special type of GC: 0.838: "[GC pause (young) (to-space overflow)..."
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_young_toSpaceOverflow.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("nummber of events", 1, model.size());
@@ -191,7 +191,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testPartialToSpaceOverflow() throws Exception {
         // special type of GC: 0.838: "[GC pause (partial) (to-space overflow)..."
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_partial_toSpaceOverflow.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("nummber of events", 1, model.size());
@@ -205,7 +205,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testYoungToSpaceOverflowInitialMark() throws Exception {
         // special type of GC: 0.838: "[GC pause (young) (to-space overflow) (initial-mark)..."
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_young_initialMarkToSpaceOverflow.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("nummber of events", 2, model.size());
@@ -220,7 +220,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testPartialToSpaceOverflowInitialMark() throws Exception {
         // special type of GC: 0.838: "[GC pause (partial) (to-space overflow) (initial-mark)..."
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_partial_initialMarkToSpaceOverflow.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
         
         assertEquals("nummber of events", 2, model.size());
@@ -235,7 +235,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testGcPattern() throws Exception {
         final InputStream in = new ByteArrayInputStream(("0.452: [GC concurrent-count-start]").getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -247,7 +247,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testGcPausePattern() throws Exception {
         final InputStream in = new ByteArrayInputStream(("0.360: [GC concurrent-count-end, 0.0242674]").getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -258,7 +258,7 @@ public class TestDataReaderSun1_6_0G1 {
     public void testGcMemoryPausePattern() throws Exception {
         final InputStream in = new ByteArrayInputStream(("0.360: [GC cleanup 19M->19M(36M), 0.0007889 secs]").getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -273,7 +273,7 @@ public class TestDataReaderSun1_6_0G1 {
                 ("0.319: [GC pause (young) (initial-mark), 0.00188271 secs]" +
                         "\n [Times: user=0.00 sys=0.00, real=0.00 secs] ").getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -288,7 +288,7 @@ public class TestDataReaderSun1_6_0G1 {
                 ("0.334: [GC remark, 0.0009506 secs]" +
                         "\n [Times: user=0.00 sys=0.00, real=0.00 secs] ").getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -305,7 +305,7 @@ public class TestDataReaderSun1_6_0G1 {
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_PrintHeapAtGC.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -321,7 +321,7 @@ public class TestDataReaderSun1_6_0G1 {
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
         final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0G1_MarkStackFull.txt");
-        final DataReader reader = new DataReaderSun1_6_0G1(in);
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());

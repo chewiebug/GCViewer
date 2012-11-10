@@ -157,8 +157,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     
     private Date firstDateStamp = null;
 
-    public DataReaderSun1_6_0(InputStream in) throws UnsupportedEncodingException {
-        super(in);
+    public DataReaderSun1_6_0(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(in, gcLogType);
     }
 
     public GCModel read() throws IOException {
@@ -175,6 +175,9 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             // beginningOfLine must be a stack because more than one beginningOfLine might be needed
             Deque<String> beginningOfLine = new LinkedList<String>();
             int lineNumber = 0;
+            boolean lastLineWasScavengeBeforeRemark = false;
+            boolean lineSkippedForScavengeBeforeRemark = false;
+            boolean printTenuringDistributionOn = false;
             final ParsePosition parsePosition = new ParsePosition(0);
             OUTERLOOP:
             while ((line = in.readLine()) != null) {
@@ -184,6 +187,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     continue;
                 }
                 try {
+                    printTenuringDistributionOn = false;
                     // filter out [Unloading class com.xyz] statements
                     for (String i : EXCLUDE_STRINGS) {
                         if (line.indexOf(i) == 0) continue OUTERLOOP;
@@ -228,12 +232,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         if (!isPrintTenuringDistribution(line)) {
                             model.add(parseLine(line.substring(startOf2ndEvent), parsePosition));
                             parsePosition.setIndex(0);
-                            continue;
                         }
                         else {
                             beginningOfLine.addFirst(line.substring(startOf2ndEvent));
-                            continue;
                         }
+                        
+                        lastLineWasScavengeBeforeRemark = true;
+                        continue;
                     }
                     final int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassIndex > 0) {
@@ -287,14 +292,45 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (beginningOfLine.size() > 0) {
-                        line = beginningOfLine.removeFirst() + line;
+                        // -XX:+CMSScavengeBeforeRemark combined with -XX:+PrintTenuringDistribution
+                        // is the only case where beginningOfLine.size() > 1
+                        printTenuringDistributionOn = beginningOfLine.size() == 2;
+                        if (gcLogType == GcLogType.SUN1_5 
+                                && lastLineWasScavengeBeforeRemark
+                                && ! lineSkippedForScavengeBeforeRemark) {
+                            
+                            // -XX:+CMSScavengeBeforeRemark inserts a pause on its own line between
+                            // the first and the second part of the enclosing remark event. Probably
+                            // that is the duration of the Scavenge-Before-Remark event; this information
+                            // will be dropped to reduce complexity of the parser at the cost of
+                            // some accuracy in that case.
+                            lineSkippedForScavengeBeforeRemark = true;
+                            continue;
+                        }
+                        else {
+                            line = beginningOfLine.removeFirst() + line;
+                        }
                     }
                     else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                         // the next few lines will be the sizing of the heap
                         lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
                         continue;
                     }
-                    model.add(parseLine(line, parsePosition));
+
+                    AbstractGCEvent<?> gcEvent = parseLine(line, parsePosition);
+                     
+                     if (lastLineWasScavengeBeforeRemark && !printTenuringDistributionOn) {
+                         // according to http://mail.openjdk.java.net/pipermail/hotspot-gc-use/2012-August/001297.html
+                         // the pause time reported for cms-remark includes the scavenge-before-remark time
+                         // so it has to be corrected to show only the time spent in remark event
+                         lastLineWasScavengeBeforeRemark = false;
+                         lineSkippedForScavengeBeforeRemark = false;
+                         GCEvent scavengeBeforeRemarkEvent = (GCEvent) model.get(model.size() - 1);
+                         GCEvent remarkEvent = (GCEvent) gcEvent;
+                         remarkEvent.setPause(remarkEvent.getPause() - scavengeBeforeRemarkEvent.getPause());
+                     }
+                     
+                     model.add(gcEvent);
                 } catch (Exception pe) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);

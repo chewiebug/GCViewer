@@ -23,7 +23,7 @@ public class TestDataReaderSun1_3_1_19 extends TestCase {
     	// does not seem to be implemented at all
     	
     	final InputStream in = getClass().getResourceAsStream("SampleSun1_3_1_19SunOS.txt");
-        final DataReader reader = new DataReaderSun1_3_1(in);
+        final DataReader reader = new DataReaderSun1_3_1(in, GcLogType.SUN1_3_1);
         GCModel model = reader.read();
         
         assertEquals("throughput", 95.21, model.getThroughput(), 0.01);
