@@ -1,7 +1,9 @@
 language: java
 script: mvn -q clean install
 jdk:
-  - oraclejdk6
+  - oraclejdk7
+  - openjdk6
+  - openjdk7
 
 branches:
   only:
