@@ -1,0 +1,12 @@
+language: java
+script: mvn -q clean install
+jdk:
+  - oraclejdk6
+
+branches:
+  only:
+    - topic-travis
+
+notifications:
+  email:
+    - bernd-2012@eckenfels.net
