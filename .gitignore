@@ -1,3 +1,6 @@
 /.settings
 /target
 /dependometer
+/deploy.bat
+/GCViewer.ofp
+/releasenotes.txt
