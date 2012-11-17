@@ -64,7 +64,8 @@ public class AboutDialog extends JDialog implements ActionListener {
         		"Serafín Sedano | Andrey Skripalschikov</center><html>",
         		JLabel.CENTER);
         
-        JLabel version = new JLabel("<html><font color=\"gray\">version:</font> " + VersionReader.getVersion() + "</html>", JLabel.CENTER);
+        JLabel version = new JLabel("<html><font color=\"gray\">version:</font> " + BuildInfoReader.getVersion() + "</html>", JLabel.CENTER);
+        JLabel buildDate = new JLabel("<html><font color=\"gray\">build date:</font> " + BuildInfoReader.getBuildDate() + "</html>", JLabel.CENTER);
         
         JLabel spacer1 = new JLabel("spacer");
         spacer1.setForeground(getBackground());
@@ -89,6 +90,8 @@ public class AboutDialog extends JDialog implements ActionListener {
         versionPanel.add(spacer2, gridBagConstraints);
         gridBagConstraints.gridy = 5;
         versionPanel.add(version, gridBagConstraints);
+        gridBagConstraints.gridy = 6;
+        versionPanel.add(buildDate, gridBagConstraints);
         
         Panel buttonPanel = new Panel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));

@@ -107,7 +107,7 @@ public class DesktopPane extends JDesktopPane {
         Object oldAAHint = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        String versionString = "version: " + VersionReader.getVersion();
+        String versionString = "version: " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")";
         g.drawString(versionString, 
                 getWidth()/2 - g.getFontMetrics().stringWidth(versionString)/2,
                 getHeight()/2 + logoImage.getIconHeight()/2 + 25);

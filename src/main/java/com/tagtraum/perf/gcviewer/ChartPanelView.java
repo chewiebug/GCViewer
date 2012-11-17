@@ -120,6 +120,7 @@ public class ChartPanelView {
         IMP_LOGGER.addHandler(textAreaLogHandler);
         DATA_READER_FACTORY_LOGGER.addHandler(textAreaLogHandler);
         try {
+            IMP_LOGGER.info("GCViewer version " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")");
             final InputStream in = url.openStream();
             final DataReader reader = factory.getDataReader(in);
             final GCModel model = reader.read();
