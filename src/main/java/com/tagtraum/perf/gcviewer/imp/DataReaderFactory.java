@@ -72,8 +72,10 @@ public class DataReaderFactory {
     }
 
     private DataReader getDataReaderBySample(String s, InputStream in) throws IOException {
+        // if there is a [memory ] somewhere in the first chunk of the logs, it is JRockit
         if (s.indexOf("[memory ] ") != -1) {
-            if ((s.indexOf("[memory ] [YC") != -1) ||(s.indexOf("[memory ] [OC") != -1)) {
+            // JRockit 1.5 and 1.6 logs look like: [memory ][Tue Nov 13 08:39:01 2012][01684] [OC#1]
+            if ((s.indexOf("[YC#") != -1) ||(s.indexOf("[OC#") != -1)) {
                 if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.6");
                 return new DataReaderJRockit1_6_0(in);
             } else {

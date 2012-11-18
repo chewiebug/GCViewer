@@ -13,18 +13,15 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
 /**
- * DataReaderJRockit1_4_2.
- * <p/>
- * Date: Jan 5, 2006
- * Time: 5:31:50 AM
- *
- * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
+ * DataReaderJRockit1_6_0
+ * @see DataReaderJRockit1_4_2
+ * @author Rupesh Ramachandran
  */
 public class DataReaderJRockit1_6_0 implements DataReader {
     private static Logger LOG = Logger.getLogger(DataReaderJRockit1_6_0.class.getName());
 
     private LineNumberReader in;
-    private static final String MEMORY_MARKER = "[memory ] ";
+    private static final String MEMORY_MARKER = "[memory ]";
     private static final String NURSERY_SIZE = "nursery size: ";
     private static final String PAUSE_MARKER = "longest pause ";
 
@@ -64,6 +61,7 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                 if (!gcSummary) {
                     gcSummary = line.endsWith("Memory usage report");
                 }
+                // Log any relevant memory usage reports at INFO level, rest as FINE
                 if (gcSummary) {
                     if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     continue;
@@ -85,27 +83,20 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                     }
                     continue;
                 }
-                else if (line.substring(startLog).startsWith("<")) {
-                    // ignore
+                else if (line.indexOf("C#") == -1) {
+                    // No [YC#] or [OC#] logs which we are interested in
                     if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
                     continue;
                 }
-                else if (line.indexOf("strategy") != -1) {
-                    // ignore logs like:
-                    // [INFO ][memory ] [OC#3] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
-                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
-                    continue;
-                }
-                else if ((line.indexOf("->") == -1) || (line.indexOf(']') == -1)) {
-                    // ignore logs like:
-                    // [INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases
-                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
-                    continue;
-                }
-                // Assume this is an actual GC log. Look for time string, skip ahead of [OC#2]]
-                // [OC#2] 34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.
-                final int startTimeIndex = line.indexOf(']', startLog) + 1; // go to end of "[OC#2]" in above example                                 
-                
+                        
+                // Assume this is an actual GC log of interest. Look for time string, skip ahead of [OC#2]
+                // [memory ] [OC#2] 34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.
+                //   OR if timestamp logging enabled...
+                // [memory ][Sat Oct 27 20:04:38 2012][23355] [OC#2] 
+                int startGCStats = line.indexOf("C#"); // skip to OC# or YC# 
+                // Example: 
+                final int startTimeIndex = line.indexOf(']', startGCStats) + 1; // go to end of "[OC#2]" in above example                                 
+             
                 final int colon = line.indexOf(':', startTimeIndex);
                 if (colon == -1) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning("Malformed line (" + in.getLineNumber() + "). Missing colon after start time: " + line);
