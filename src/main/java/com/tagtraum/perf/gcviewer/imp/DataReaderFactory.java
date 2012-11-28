@@ -29,6 +29,7 @@ public class DataReaderFactory {
         long nextPos = 0;
         String chunkOfLastLine = null;
         int attemptCount = 0;
+        String s = "";
         while (attemptCount < MAX_ATTEMPT_COUNT) {
             in.mark(FOUR_KB + (int) nextPos);
             if (nextPos > 0) {
@@ -46,7 +47,7 @@ public class DataReaderFactory {
             }
             nextPos += length;
 
-            String s = new String(buf, 0, length, "ASCII");
+            s = new String(buf, 0, length, "ASCII");
             if (chunkOfLastLine != null && chunkOfLastLine.length() > 0) {
                 s = chunkOfLastLine + s;
             }
@@ -65,7 +66,9 @@ public class DataReaderFactory {
         }
 
         if (dataReader == null) {
-            if (LOG.isLoggable(Level.SEVERE)) LOG.severe(localStrings.getString("datareaderfactory_instantiation_failed"));
+            if (LOG.isLoggable(Level.SEVERE)) LOG.severe(localStrings.getString("datareaderfactory_instantiation_failed")
+                    + "\ncontent:"
+                    + "\n" + s);
             throw new IOException(localStrings.getString("datareaderfactory_instantiation_failed"));
         }
         return dataReader;

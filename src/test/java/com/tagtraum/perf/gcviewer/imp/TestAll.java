@@ -13,6 +13,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     TestAbstractDataReaderSun.class,
     
+    TestDataReaderFacade.class,
     TestDataReaderFactory.class,
     TestDataReaderSun1_2_2.class,
     TestDataReaderSun1_3_1.class,

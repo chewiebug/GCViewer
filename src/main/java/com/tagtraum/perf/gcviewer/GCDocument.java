@@ -34,6 +34,8 @@ import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  *         Date: May 5, 2005
@@ -120,9 +122,9 @@ public class GCDocument extends JInternalFrame {
 
     /**
      * @return true, if any of the files has been reloaded
-     * @throws IOException
+     * @throws DataReaderException if something went wrong reading the data
      */
-    public boolean reloadModels(boolean background) throws IOException {
+    public boolean reloadModels(boolean background) throws DataReaderException {
         boolean reloaded = false;
         for (ChartPanelView chartPanelView : chartPanelViews) {
             reloaded |= chartPanelView.reloadModel();
@@ -141,7 +143,7 @@ public class GCDocument extends JInternalFrame {
         return preferences;
     }
     
-    public void add(final URL url) throws IOException {
+    public void add(final URL url) throws DataReaderException {
         ChartPanelView chartPanelView = new ChartPanelView(this, url);
         chartPanelViews.add(chartPanelView);
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {

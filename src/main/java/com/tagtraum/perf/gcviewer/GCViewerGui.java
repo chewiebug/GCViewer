@@ -58,6 +58,7 @@ import com.tagtraum.perf.gcviewer.action.OpenURL;
 import com.tagtraum.perf.gcviewer.action.Refresh;
 import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
+import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
@@ -333,12 +334,11 @@ public class GCViewerGui extends JFrame {
             }
             recentURLsMenu.getRecentURLsModel().add(urls);
             repaint();
-        } catch (RuntimeException e) {
+        } catch (DataReaderException e) {
+            e.printStackTrace();
+        } catch (PropertyVetoException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            //e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -364,12 +364,9 @@ public class GCViewerGui extends JFrame {
             }
             recentURLsMenu.getRecentURLsModel().add(urls);
             repaint();
-        } catch (RuntimeException e) {
+        }
+        catch (DataReaderException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            //e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
