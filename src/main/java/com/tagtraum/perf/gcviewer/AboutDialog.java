@@ -60,8 +60,9 @@ public class AboutDialog extends JDialog implements ActionListener {
         contributorsLabel.setForeground(Color.GRAY);
         JLabel contributors = new JLabel(
                 "<html><center>Peter Bilstein | Cka3o4Huk | Bernd Eckenfels <br>" +
-        		"Johan Kaving | Carl Meyer | Rupesh Ramachandran<br>" +
-        		"Serafín Sedano | Andrey Skripalschikov</center><html>",
+        		"Neil Gentleman | Johan Kaving | Carl Meyer <br>" +
+        		"Rupesh Ramachandran | Serafín Sedano<br>" +
+        		"Andrey Skripalschikov</center><html>",
         		JLabel.CENTER);
         
         JLabel version = new JLabel("<html><font color=\"gray\">version:</font> " + BuildInfoReader.getVersion() + "</html>", JLabel.CENTER);
