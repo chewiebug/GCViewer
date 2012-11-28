@@ -55,6 +55,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
             // don't recompute polygon for each paint event
             polygon = computePolygon(getModelChart(), getModelChart().getModel());
         }
+        clippedPolygon = initClippedPolygon(polygon, g2d.getClip());
         if (drawPolygon) {
             // don't antialias the polygon, if we are going to antialias the bounding lines
             Object oldAAHint = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
@@ -62,7 +63,6 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             }
             g2d.setPaint(createPaint(polygon));
-            clippedPolygon = initClippedPolygon(polygon, g2d.getClip());
             g2d.fillPolygon(clippedPolygon);
             if (isDrawLine()) {
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAHint);
@@ -70,7 +70,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         }
         if (isDrawLine()) {
             g2d.setPaint(getLinePaint());
-            g2d.drawPolyline(polygon.xpoints, polygon.ypoints, polygon.npoints-1);
+            g2d.drawPolyline(clippedPolygon.xpoints, clippedPolygon.ypoints, clippedPolygon.npoints-1);
         }
     }
 
