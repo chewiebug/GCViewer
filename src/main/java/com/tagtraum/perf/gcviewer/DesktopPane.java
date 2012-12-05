@@ -22,6 +22,8 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 
+import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
+
 /**
  * DesktopPane is the "background" of the application after opening.
  * <p/>

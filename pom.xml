@@ -163,7 +163,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/src/main/resources/com/tagtraum/perf/gcviewer</outputDirectory>
+							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${basedir}/src/main/templates</directory>

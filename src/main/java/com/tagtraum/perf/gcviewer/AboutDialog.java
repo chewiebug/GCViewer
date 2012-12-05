@@ -26,6 +26,8 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.SoftBevelBorder;
 
+import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
+
 /**
  * About dialog.
  * 

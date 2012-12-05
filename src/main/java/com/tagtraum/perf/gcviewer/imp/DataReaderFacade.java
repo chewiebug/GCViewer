@@ -17,9 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import com.tagtraum.perf.gcviewer.BuildInfoReader;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file

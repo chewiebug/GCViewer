@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +23,7 @@ public class BuildInfoReader {
      */
     private static String readPropertyValue(String propertyName) {
         String propertyValue = "n/a";
-        InputStream in = BuildInfoReader.class.getResourceAsStream(FILE_NAME);
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(FILE_NAME);
         if (in != null) {
             Properties props = new Properties();
             try {
