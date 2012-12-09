@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer.exp;
+package com.tagtraum.perf.gcviewer.exp.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import com.tagtraum.perf.gcviewer.exp.summary.SummaryDataWriter;
+import com.tagtraum.perf.gcviewer.exp.DataWriter;
+import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 
 /**
  * Factory for all available {@link DataWriter} implementations.

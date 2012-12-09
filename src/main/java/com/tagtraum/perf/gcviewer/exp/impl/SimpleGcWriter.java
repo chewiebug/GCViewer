@@ -1,9 +1,10 @@
-package com.tagtraum.perf.gcviewer.exp;
+package com.tagtraum.perf.gcviewer.exp.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 
+import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;

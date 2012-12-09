@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
-import com.tagtraum.perf.gcviewer.exp.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
+import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.model.GCModel;

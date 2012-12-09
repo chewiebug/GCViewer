@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.exp.impl.SimpleGcWriter;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;

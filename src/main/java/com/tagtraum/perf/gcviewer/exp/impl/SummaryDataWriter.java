@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer.exp.summary;
+package com.tagtraum.perf.gcviewer.exp.impl;
 
 import java.io.FileWriter;
 import java.io.IOException;

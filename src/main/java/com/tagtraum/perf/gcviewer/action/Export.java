@@ -16,7 +16,7 @@ import com.tagtraum.perf.gcviewer.GCDocument;
 import com.tagtraum.perf.gcviewer.GCViewerGui;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
-import com.tagtraum.perf.gcviewer.exp.DataWriterFactory;
+import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**

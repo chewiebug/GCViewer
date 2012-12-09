@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.tagtraum.perf.gcviewer.exp.summary;
+package com.tagtraum.perf.gcviewer.exp.impl;
 
 /**
  * @author sean
