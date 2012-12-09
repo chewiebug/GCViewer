@@ -13,6 +13,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     ModelPanelTest.class,
     TestBuildInfoReader.class,
+    com.tagtraum.perf.gcviewer.exp.TestAll.class,
     com.tagtraum.perf.gcviewer.imp.TestAll.class,
     com.tagtraum.perf.gcviewer.math.TestAll.class,
     com.tagtraum.perf.gcviewer.model.TestAll.class

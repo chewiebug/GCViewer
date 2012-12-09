@@ -52,6 +52,7 @@ public class DataWriterFactory {
         switch (type) {
             case PLAIN   : return new PlainDataWriter(outputStream); 
             case CSV     : return new CSVDataWriter(outputStream);
+            case SIMPLE  : return new SimpleGcWriter(outputStream);
             case SUMMARY : return new SummaryDataWriter(outputStream, configuration); 
             default : throw new IOException(localStrings.getString("datawriterfactory_instantiation_failed") + " " + file);
         }

@@ -223,6 +223,12 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || getTypeAsString().indexOf(Type.G1_PARTIAL_INITIAL_MARK_TO_SPACE_OVERFLOW.getType()) >= 0;
     }
     
+    public boolean isRemark() {
+        return getTypeAsString().indexOf(Type.CMS_REMARK.getType()) >= 0
+                || getTypeAsString().indexOf(Type.ASCMS_REMARK.getType()) >= 0
+                || getTypeAsString().indexOf(Type.G1_REMARK.getType()) >= 0;
+    }
+    
     public static class Type implements Serializable {
         private final String type;
         private final String rep;
