@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.exp.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Locale;
 
 import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
@@ -38,7 +39,7 @@ public class SimpleGcWriter extends AbstractDataWriter {
             AbstractGCEvent<?> abstractEvent = i.next();
             if (abstractEvent.isStopTheWorld()) {
                 GCEvent event = (GCEvent)abstractEvent;
-                out.printf("%s %f %f", getSimpleType(event), event.getTimestamp(), event.getPause());
+                out.printf((Locale)null, "%s %f %f", getSimpleType(event), event.getTimestamp(), event.getPause());
                 out.println();
             }
         }
