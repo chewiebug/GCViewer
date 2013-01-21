@@ -35,12 +35,12 @@ public class SimpleGcWriter extends AbstractDataWriter {
     @Override
     public void write(GCModel model) throws IOException {
         Iterator<AbstractGCEvent<?>> i = model.getEvents();
+        final Locale NO_LOCALE = null;
         while (i.hasNext()) {
             AbstractGCEvent<?> abstractEvent = i.next();
             if (abstractEvent.isStopTheWorld()) {
                 GCEvent event = (GCEvent)abstractEvent;
-                out.printf((Locale)null, "%s %f %f", getSimpleType(event), event.getTimestamp(), event.getPause());
-                out.println();
+                out.printf(NO_LOCALE, "%s %f %f%n", getSimpleType(event), event.getTimestamp(), event.getPause());
             }
         }
 
