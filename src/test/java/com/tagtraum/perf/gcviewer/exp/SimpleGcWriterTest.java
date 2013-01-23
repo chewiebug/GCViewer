@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.exp;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +55,8 @@ public class SimpleGcWriterTest {
     }
     
     @Test
-    public void export() throws Exception {
+    public void exportLocaleDe() throws Exception {
+        Locale.setDefault(new Locale("de", "ch"));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         SimpleGcWriter writer = new SimpleGcWriter(outputStream);
         
@@ -74,4 +76,19 @@ public class SimpleGcWriterTest {
         assertEquals("name of event 2", "InitialMarkGC", secondLine[0]);
     }
 
+    @Test
+    public void exportLocaleSv() throws Exception {
+        Locale.setDefault(new Locale("sv", "se"));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SimpleGcWriter writer = new SimpleGcWriter(outputStream);
+        
+        writer.write(gcModel);
+        
+        String[] lines = outputStream.toString().split(System.getProperty("line.separator"));
+        assertEquals("line count", 2, lines.length);
+        
+        String[] firstLine = lines[0].split(" ");
+        assertEquals("number of parts in line 1", 3, firstLine.length);
+        assertEquals("timestamp", "0.677000", firstLine[1]);
+    }
 }
