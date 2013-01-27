@@ -145,10 +145,14 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         // if the resulting point is not between two points in the array, make sure that the range
         // is extended until the insertion point is found
         while (polygon.xpoints[insertionBoundary.getStartX()] > xMin) {
-            insertionBoundary.decreaseStartX();
+            if (!insertionBoundary.decreaseStartX()) {
+                break;
+            }
         }
         while (polygon.xpoints[insertionBoundary.getEndX()] < xMax) {
-            insertionBoundary.increaseEndX();
+            if (!insertionBoundary.increaseEndX()) {
+                break;
+            }
         }
         
         return insertionBoundary;
@@ -308,12 +312,30 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
             this.maxX = arrayLength-1;
         }
         
-        public void decreaseStartX() {
-            --startX;
+        /**
+         * Decreases start index by one
+         * @return <code>true</code> if current start index was &gt;0 before, <code>false</code> otherwise
+         */
+        public boolean decreaseStartX() {
+            if (startX > 0) {
+                --startX;
+                return true;
+            }
+            
+            return false;
         }
         
-        public void increaseEndX() {
-            ++endX;
+        /**
+         * Increases end index by one
+         * @return <code>true</code> if current end index was &lt; max value before, <code>false</code> otherwise
+         */
+        public boolean increaseEndX() {
+            if (endX < maxX) {
+                ++endX;
+                return true;
+            }
+            
+            return false;
         }
         
         public int getDistance() {
