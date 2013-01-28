@@ -107,7 +107,15 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                     insertionPoint.getDistance() + 1);
             
             xpoints[0] = xpoints[1]-1;
-            ypoints[0] = (int) Math.ceil(clip.getBounds2D().getMaxY());
+            if (drawPolygon) {
+                // for polygons the last point needs to be in the bottom of the chart 
+                // (otherwise filling will not be correct)...
+                ypoints[0] = (int) Math.ceil(clip.getBounds2D().getMaxY());
+            }
+            else {
+                // ...for lines it must not (otherwise vertical lines will appear where they shouldn't)
+                ypoints[0] = ypoints[1];
+            }
             
             clippedPolygon.xpoints = xpoints;
             clippedPolygon.ypoints = ypoints;
