@@ -17,11 +17,14 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
+ * <p>The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
+ * It contains a lot of helper methods to do the actual parsing of the details of a gc event.
+ * New parsers for Sun / Oracle gc algorithms should derive from this class.</p>
  *
- * Date: Feb 12, 2002
- * Time: 4:30:27 PM
+ * <p>Date: Feb 12, 2002</p>
+ * <p>Time: 4:30:27 PM</p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public abstract class AbstractDataReaderSun implements DataReader {
 
@@ -38,7 +41,9 @@ public abstract class AbstractDataReaderSun implements DataReader {
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
     private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
     
+    /** the reader accessing the log file */
     protected BufferedReader in;
+    /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
 
     /**
@@ -53,10 +58,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
         this.gcLogType = gcLogType;
     }
     
-    protected void setMemoryAndPauses(GCEvent event, String line) throws ParseException {
-        setMemoryAndPauses(event, line, new ParsePosition(0));
-    }
-
     /**
      * Returns the amount of memory in kilobyte. Depending on <code>memUnit</code>, input is
      * converted to kilobyte.
@@ -86,6 +87,26 @@ public abstract class AbstractDataReaderSun implements DataReader {
         }
     }
     
+    /**
+     * Convenience method to parse memory information followed by a pause time.
+     * 
+     * @param event event where the result should be written to
+     * @param line line to be parsed (from the beginning)
+     * @throws ParseException is thrown to report any problems the parser runs into
+     * @see #setMemoryAndPauses(GCEvent, String, ParsePosition)
+     */
+    protected void setMemoryAndPauses(GCEvent event, String line) throws ParseException {
+        setMemoryAndPauses(event, line, new ParsePosition(0));
+    }
+
+    /**
+     * Parses memory information in the format &lt;number&gt;KB-&gt;&lt;number&gt;KB(&lt;number&gt;KB), &lt;number&gt;ms
+     * 
+     * @param event event where result of parsing is to be stored
+     * @param line line to be parsed
+     * @param pos position where parsing should start
+     * @throws ParseException is thrown to report any problems the parser runs into
+     */
     protected void setMemoryAndPauses(GCEvent event, String line, ParsePosition pos) throws ParseException {
         setMemory(event, line, pos);
         parsePause(event, line, pos);
