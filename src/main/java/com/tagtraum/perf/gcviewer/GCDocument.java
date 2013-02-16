@@ -127,7 +127,7 @@ public class GCDocument extends JInternalFrame {
     public boolean reloadModels(boolean background) throws DataReaderException {
         boolean reloaded = false;
         for (ChartPanelView chartPanelView : chartPanelViews) {
-            reloaded |= chartPanelView.reloadModel();
+            reloaded |= chartPanelView.reloadModel(!refreshWatchDog.isRunning());
         }
         if (!background) {
             relayout();

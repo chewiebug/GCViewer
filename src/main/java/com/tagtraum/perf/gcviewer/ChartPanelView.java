@@ -91,13 +91,17 @@ public class ChartPanelView {
     }
 
     /**
-     * @return true, if the files has been reloaded
+     * Reloads the model displayed in this chart panel if it has changed. Using the parameter
+     * the parser error dialog can be suppressed.
+     * 
+     * @param showParserErrors if <code>true</code> parser errors will be shown
+     * @return <code>true</code>, if the file has been reloaded
      * @throws DataReaderException if something went wrong reading the file
      */
-    public boolean reloadModel() throws DataReaderException {
+    public boolean reloadModel(boolean showParserErrors) throws DataReaderException {
         if (model.getURL() == null) return false;
         if (model.isDifferent(model.getURL())) {
-            setModel(dataReaderFacade.loadModel(this.model.getURL(), true, gcDocument));
+            setModel(dataReaderFacade.loadModel(this.model.getURL(), showParserErrors, gcDocument));
             return true;
         }
         return false;
