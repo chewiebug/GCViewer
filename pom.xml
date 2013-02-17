@@ -58,17 +58,17 @@
 	</licenses>
 
 	<properties>
-		<github.global.server>github</github.global.server>
 
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
-
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+        <github.global.oauth2Token>${env.TOKEN}</github.global.oauth2Token>
 	</properties>
 
 	<scm>
-		<url>https://github.com/chewiebug/GCViewer</url>
-		<connection>scm:git:git://https://github.com/chewiebug/GCViewer.git</connection>
-		<developerConnection>scm:git:git@github.com/chewiebug/GCViewer.git</developerConnection>
+		<url>https://github.com/ecki/GCViewer</url>
+		<connection>scm:git:git://https://github.com/ecki/GCViewer.git</connection>
+		<developerConnection>scm:git:git@github.com/ecki/GCViewer.git</developerConnection>
 	</scm>
 
 	<dependencies>
@@ -264,24 +264,23 @@
 				</executions>
 			</plugin>
 
-			<!-- execute this using "mvn install ghDownloads:upload" DON'T use eclipse 
-				to do so, because m2eclipse can't filter ${maven.build.timestamp} into build.info.properties -->
+			<!--  can be executed by travis-ci with "mvn com.github.github:site-maven-plugin:site"
+			      will require OAuth token for the github repo from scm.url in ${env.TOKEN}. -->
 			<plugin>
 				<groupId>com.github.github</groupId>
-				<artifactId>downloads-maven-plugin</artifactId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.7</version>
 				<configuration>
-					<description>${project.version} release of ${project.name}. This is
-						a development release of the latest sources. See
-						https://github.com/chewiebug/GCViewer/wiki/Changelog</description>
+					<message>Travis #${env.TRAVIS_JOB_ID} build ${project.name} ${project.version}</message>
+					<outputDirectory>${project.build.directory}</outputDirectory>
 					<includes>
 						<include>gcviewer_mac_${project.version}.zip</include>
 						<include>gcviewer-${project.version}.zip</include>
 					</includes>
-					<override>true</override>
-					<includeAttached>true</includeAttached>
 					<dryRun>false</dryRun>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>
