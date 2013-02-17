@@ -7,8 +7,8 @@ jdk:
 
 branches:
   only:
-    - topic-travis
+    - master
 
 notifications:
   email:
-    - bernd-2012@eckenfels.net
+    - gcviewer-info@googlegroups.com
