@@ -4,7 +4,9 @@ env:
   global:
       - secure: "L8/g6MW2BguawcrEVOZXjzSazJDu/iiZZ8KcH6EIaWyCpmS+FRZ0uw03QGVn\nrsDcbGe20cqSd+ZlWnE6VZ8MFv+q07xH2uJjzuyM1jnhm7+VpIAGVuAYFPsm\n4BgcyXS0ffx3FWtImrCRaKc9n/IV1soO9de+uoQY+YDxvOQzDY8="
 
-script: mvn clean package
+install: mvn --version
+
+script: mvn -q clean package
 
 jdk:
   - openjdk7
@@ -17,6 +19,6 @@ notifications:
   email:
     - bernd-2013@eckenfels.net
 
-after_script:
-  - mvn com.github.github:site-maven-plugin:site
+after_success:
+  - mvn -q com.github.github:site-maven-plugin:site
 
