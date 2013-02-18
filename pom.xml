@@ -1,11 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	<groupId>com.tagtraum</groupId>
 	<artifactId>gcviewer</artifactId>
 	<version>1.32-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>GCViewer</name>
+	<description>GCViewer</description>
 	<url>http://github.com/chewiebug/GCViewer/wiki</url>
 
 	<developers>
@@ -30,9 +35,9 @@
 		<developer>
 			<name>Bernd Eckenfels</name>
 		</developer>
-        <developer>
-            <name>Neil Gentleman</name>
-        </developer>
+		<developer>
+			<name>Neil Gentleman</name>
+		</developer>
 		<developer>
 			<name>Johan Kaving</name>
 		</developer>
@@ -48,6 +53,9 @@
 		<developer>
 			<name>Andrey Skripalschikov</name>
 		</developer>
+		<developer>
+			<name>Reinhard Nägele</name>
+		</developer>
 	</developers>
 
 	<licenses>
@@ -58,17 +66,16 @@
 	</licenses>
 
 	<properties>
-		<github.global.server>github</github.global.server>
-
-		<build.timestamp>${maven.build.timestamp}</build.timestamp>
-
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<source.plugin.version>2.2.1</source.plugin.version>
+		<javadoc.plugin.version>2.9</javadoc.plugin.version>
 	</properties>
 
 	<scm>
 		<url>https://github.com/chewiebug/GCViewer</url>
-		<connection>scm:git:git://https://github.com/chewiebug/GCViewer.git</connection>
-		<developerConnection>scm:git:git@github.com/chewiebug/GCViewer.git</developerConnection>
+		<connection>scm:git:ssh://git@github.com/chewiebug/GCViewer.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/chewiebug/GCViewer.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<dependencies>
@@ -81,207 +88,198 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>build.info.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>build.info.properties</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/mac</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/Info.plist</include>
+				</includes>
+				<targetPath>${project.build.directory}/mac</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/mac</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/Info.plist</exclude>
+				</excludes>
+				<targetPath>${project.build.directory}/mac</targetPath>
+			</resource>
+		</resources>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>1.2</version>
 					<configuration>
-						<encoding>UTF-8</encoding>
+						<buildNumberPropertyName>revision</buildNumberPropertyName>
+						<timestampPropertyName>timestamp</timestampPropertyName>
+						<timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm:ssZZ}</timestampFormat>
+						<getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
 					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3.1</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
+					<version>2.4</version>
 					<configuration>
-						<encoding>UTF-8</encoding>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<mainClass>com.tagtraum.perf.gcviewer.GCViewer</mainClass>
+								<addClasspath>true</addClasspath>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Date>${timestamp}</Implementation-Date>
+								<Implementation-Revision>${revision}</Implementation-Revision>
+							</manifestEntries>
+						</archive>
+						<excludes>
+							<exclude>**/*.psd</exclude>
+						</excludes>
 					</configuration>
 				</plugin>
 				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.7</version>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${javadoc.plugin.version}</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Date>${timestamp}</Implementation-Date>
+								<Implementation-Revision>${revision}</Implementation-Revision>
+							</manifestEntries>
+						</archive>
+						<links>
+							<link>http://docs.oracle.com/javase/6/docs/api/</link>
+						</links>
+					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>com.github.github</groupId>
-					<artifactId>downloads-maven-plugin</artifactId>
-					<version>0.6</version>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${source.plugin.version}</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Date>${timestamp}</Implementation-Date>
+								<Implementation-Revision>${revision}</Implementation-Revision>
+							</manifestEntries>
+						</archive>
+						<excludeResources>true</excludeResources>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.10</version>
+					<configuration>
+						<includes>
+							<include>com/tagtraum/perf/gcviewer/TestAll.java</include>
+						</includes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 
 		<plugins>
-
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<includes>
-						<include>com/tagtraum/perf/gcviewer/TestAll.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.tagtraum.perf.gcviewer.GCViewer</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-					<excludes>
-						<exclude>**/*.psd</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-resources</id>
+						<id>create-build-metadata</id>
 						<phase>validate</phase>
 						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/src/main/templates</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>build.info.properties</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>copy-distribution-resources</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/dist</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}</directory>
-									<filtering>false</filtering>
-									<includes>
-										<include>README</include>
-										<include>LICENSE.txt</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>copy-mac-resources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/mac</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/src/main/templates</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>Info.plist</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>standard-distribution</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<mkdir dir="target" />
-								<zip destfile="target/gcviewer-${project.version}.zip">
-									<zipfileset dir="target/dist" includes="*" />
-									<zipfileset dir="target" includes="gcviewer-${project.version}.jar" />
-								</zip>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-
-					<execution>
-						<id>mac-distribution</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<mkdir dir="target" />
-								<zip destfile="target/gcviewer_mac_${project.version}.zip">
-									<zipfileset dir="src/main/mac" excludes="**/JavaApplicationStub" />
-									<zipfileset dir="src/main/mac/GCViewer.app/Contents/MacOS/"
-										prefix="GCViewer.app/Contents/MacOS/" filemode="755" />
-									<zipfileset dir="target" includes="gcviewer-${project.version}.jar"
-										prefix="GCViewer.app/Contents/Resources/" />
-									<zipfileset dir="target/mac" includes="Info.plist"
-										prefix="GCViewer.app/Contents/" />
-								</zip>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
+							<goal>create</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- execute this using "mvn install ghDownloads:upload" DON'T use eclipse 
-				to do so, because m2eclipse can't filter ${maven.build.timestamp} into build.info.properties -->
 			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>downloads-maven-plugin</artifactId>
-				<configuration>
-					<description>${project.version} release of ${project.name}. This is
-						a development release of the latest sources. See
-						https://github.com/chewiebug/GCViewer/wiki/Changelog</description>
-					<includes>
-						<include>gcviewer_mac_${project.version}.zip</include>
-						<include>gcviewer-${project.version}.zip</include>
-					</includes>
-					<override>true</override>
-					<includeAttached>true</includeAttached>
-					<dryRun>false</dryRun>
-				</configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create-distributions</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/dist_standard.xml</descriptor>
+								<descriptor>src/main/assembly/dist_mac.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<!-- 
+				Override plugin versions of Sonatype profile. This needs to be done 
+				here because profiles are not inherited. 
+			-->
+			<id>sonatype-oss-release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${source.plugin.version}</version>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${javadoc.plugin.version}</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
