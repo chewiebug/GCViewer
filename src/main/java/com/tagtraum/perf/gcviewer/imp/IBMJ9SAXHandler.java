@@ -126,13 +126,13 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 				
 				// For now only care about Total - don't break into SOA and LOA
 				if(currentTenured == 1){
-					currentAF.initialFreeBytes = (int)(free/1000);
-					currentAF.initialTotalBytes = (int)(total/1000);
+					currentAF.initialFreeBytes = free;
+					currentAF.initialTotalBytes = total;
 				} else if(currentTenured == 2){
 					// ignore
 				} else if(currentTenured == 3){
-					currentAF.afterFreeBytes = (int)(free/1000);
-					currentAF.afterTotalBytes = (int)(total/1000);
+					currentAF.afterFreeBytes = free;
+					currentAF.afterTotalBytes = total;
 				} else {
 					LOG.warning("currentTenured is > 3!");
 				}
@@ -149,13 +149,13 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 				}
 				
 				if(currentTenured == 1){
-					currentAF.initialSOAFreeBytes = (int)(free/1000);
-					currentAF.initialSOATotalBytes = (int)(total/1000);
+					currentAF.initialSOAFreeBytes = free;
+					currentAF.initialSOATotalBytes = total;
 				} else if(currentTenured == 2){
 					// ignore
 				} else if(currentTenured == 3){
-					currentAF.afterSOAFreeBytes = (int)(free/1000);
-					currentAF.afterSOATotalBytes = (int)(total/1000);
+					currentAF.afterSOAFreeBytes = free;
+					currentAF.afterSOATotalBytes = total;
 				} else {
 					LOG.warning("currentTenured is > 3!");
 				}
@@ -172,13 +172,13 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 				}
 				
 				if(currentTenured == 1){
-					currentAF.initialLOAFreeBytes = (int)(free/1000);
-					currentAF.initialLOATotalBytes = (int)(total/1000);
+					currentAF.initialLOAFreeBytes = free;
+					currentAF.initialLOATotalBytes = total;
 				} else if(currentTenured == 2){
 					// ignore
 				} else if(currentTenured == 3){
-					currentAF.afterLOAFreeBytes = (int)(free/1000);
-					currentAF.afterLOATotalBytes = (int)(total/1000);
+					currentAF.afterLOAFreeBytes = free;
+					currentAF.afterLOATotalBytes = total;
 				} else {
 					LOG.warning("currentTenured is > 3!");
 				}
@@ -190,10 +190,9 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 		}
 	}
 
-	public void endElement(String namespaceURI, String sName, // simple name
-			String qName // qualified name
-	) throws SAXException {
-		if("af".equals(qName)){
+	public void endElement(String namespaceURI, String simpleName, String qualifiedName) throws SAXException {
+	    
+		if("af".equals(qualifiedName)){
 			System.out.println("In AF endElement!");
 			if(currentAF != null){
 				GCEvent event = new GCEvent();
@@ -209,17 +208,15 @@ public class IBMJ9SAXHandler extends DefaultHandler {
 					event.setType(AbstractGCEvent.Type.FULL_GC);
 				}
 				if(currentAF.initialTotalBytes != -1 && currentAF.initialFreeBytes != -1){
-					int preUsed = currentAF.initialTotalBytes - currentAF.initialFreeBytes;
-					event.setPreUsed(preUsed);
+					event.setPreUsed(currentAF.getPreUsedInKb());
 				}
 
 				if(currentAF.afterTotalBytes != -1 && currentAF.afterFreeBytes != -1){
-					int postUsed = currentAF.afterTotalBytes - currentAF.afterFreeBytes;
-					event.setPostUsed(postUsed);
+					event.setPostUsed(currentAF.getPostUsedInKb());
 				}
 				
 				if(currentAF.afterTotalBytes != -1) {
-					event.setTotal(currentAF.afterTotalBytes);
+					event.setTotal(currentAF.getTotalInKb());
 				}
 				
                 //event.setTimestamp(currentAF.timestamp.getTime());
@@ -230,32 +227,26 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                 }
                 
                 if(currentAF.afterSOATotalBytes != -1 && currentAF.afterSOAFreeBytes != -1 && currentAF.initialSOAFreeBytes  != -1 && currentAF.initialSOATotalBytes != -1){
-                	int preUsed = currentAF.initialSOATotalBytes - currentAF.initialSOAFreeBytes;
-                	int postUsed = currentAF.afterSOATotalBytes - currentAF.afterSOAFreeBytes;
                 	final GCEvent detailEvent = new GCEvent();
                 	detailEvent.setTimestamp(currentAF.elapsedTime);
                 	detailEvent.setType(AbstractGCEvent.Type.PS_YOUNG_GEN);
                 	detailEvent.setTenuredDetail(true);
-                	detailEvent.setPreUsed(preUsed);
-                	detailEvent.setPostUsed(postUsed);
-                	detailEvent.setTotal(currentAF.afterSOATotalBytes);
+                	detailEvent.setPreUsed(currentAF.getPreUsedSoaInKb());
+                	detailEvent.setPostUsed(currentAF.getPostUsedSoaInKb());
+                	detailEvent.setTotal(currentAF.getTotalSoaInKb());
                 	event.add(detailEvent);
                 }
 
                 if(currentAF.afterLOATotalBytes != -1 && currentAF.afterLOAFreeBytes != -1 && currentAF.initialLOAFreeBytes  != -1 && currentAF.initialLOATotalBytes != -1){
-                	int preUsed = currentAF.initialLOATotalBytes - currentAF.initialLOAFreeBytes;
-                	int postUsed = currentAF.afterLOATotalBytes - currentAF.afterLOAFreeBytes;
                 	final GCEvent detailEvent = new GCEvent();
                 	detailEvent.setTimestamp(currentAF.elapsedTime);
                 	detailEvent.setType(AbstractGCEvent.Type.PS_OLD_GEN);
                 	detailEvent.setTenuredDetail(true);
-                	detailEvent.setPreUsed(preUsed);
-                	detailEvent.setPostUsed(postUsed);
-                	detailEvent.setTotal(currentAF.afterLOATotalBytes);
+                	detailEvent.setPreUsed(currentAF.getPreUsedLoaInKb());
+                	detailEvent.setPostUsed(currentAF.getPostUsedLoaInKb());
+                	detailEvent.setTotal(currentAF.getTotalLoaInKb());
                 	event.add(detailEvent);
                 }
-                
-                
                 
                 model.add(event);
                 currentTenured = 0;
@@ -280,20 +271,20 @@ class AF{
 	Date timestamp;
 	long elapsedTime;
 	double intervalms=-1;
-	int minRequestedBytes=-1;
+	long minRequestedBytes=-1;
 	double timeExclusiveAccessMs=-1;
-	int initialFreeBytes = -1;
-	int initialTotalBytes = -1;
-	int initialSOAFreeBytes = -1;
-	int initialSOATotalBytes = -1;
-	int initialLOAFreeBytes = -1;
-	int initialLOATotalBytes = -1;	
-	int afterFreeBytes = -1;
-	int afterTotalBytes = -1;
-	int afterSOAFreeBytes = -1;
-	int afterSOATotalBytes = -1;
-	int afterLOAFreeBytes = -1;
-	int afterLOATotalBytes = -1;
+	long initialFreeBytes = -1;
+	long initialTotalBytes = -1;
+	long initialSOAFreeBytes = -1;
+	long initialSOATotalBytes = -1;
+	long initialLOAFreeBytes = -1;
+	long initialLOATotalBytes = -1;	
+	long afterFreeBytes = -1;
+	long afterTotalBytes = -1;
+	long afterSOAFreeBytes = -1;
+	long afterSOATotalBytes = -1;
+	long afterLOAFreeBytes = -1;
+	long afterLOATotalBytes = -1;
 	String gcType;
 	double gcIntervalms=-1;
 	int gcSoftRefsCleared = -1;
@@ -304,4 +295,40 @@ class AF{
 	double gcTimeCompact = -1;
 	double gcTime = -1;
 	double totalTime = -1;	
+	
+	public int getPreUsedInKb() {
+	    return (int)((initialTotalBytes - initialFreeBytes) / 1024);
+	}
+	
+	public int getPostUsedInKb() {
+	    return (int)((afterTotalBytes - afterFreeBytes) / 1024);
+	}
+	
+	public int getTotalInKb() {
+	    return (int)(afterTotalBytes / 1024);
+	}
+	
+	public int getPreUsedSoaInKb() {
+	    return (int)((initialSOATotalBytes - initialSOAFreeBytes) / 1024);
+	}
+	
+	public int getPostUsedSoaInKb() {
+	    return (int)((afterSOATotalBytes - afterSOAFreeBytes) / 1024);
+	}
+	
+	public int getTotalSoaInKb() {
+	    return (int)(afterSOATotalBytes / 1024);
+	}
+	
+	public int getPreUsedLoaInKb() {
+	    return (int)((initialLOATotalBytes - initialLOAFreeBytes) / 1024);
+	}
+	
+	public int getPostUsedLoaInKb() {
+	    return (int)((afterLOATotalBytes - afterLOAFreeBytes) / 1024);
+	}
+	
+	public int getTotalLoaInKb() {
+	    return (int)(afterLOATotalBytes / 1024);
+	}
 }

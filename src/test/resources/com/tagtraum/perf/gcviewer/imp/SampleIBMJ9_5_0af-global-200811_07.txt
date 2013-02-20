@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<verbosegc version="200811_07">
+
+<af type="tenured" id="1" timestamp="Mar 25 22:40:24 2010" intervalms="0.000">
+  <minimum requested_bytes="32" />
+  <time exclusiveaccessms="0.011" />
+  <tenured freebytes="2621440" totalbytes="52428800" percent="5" >
+    <soa freebytes="0" totalbytes="49807360" percent="0" />
+    <loa freebytes="2621440" totalbytes="2621440" percent="100" />
+  </tenured>
+  <gc type="global" id="1" totalid="1" intervalms="0.000">
+    <classloadersunloaded count="0" timetakenms="0.440" />
+    <refs_cleared soft="104" threshold="32" weak="147" phantom="0" />
+    <finalization objectsqueued="23" />
+    <timesms mark="32.385" sweep="2.444" compact="0.000" total="35.425" />
+    <tenured freebytes="40481224" totalbytes="52428800" percent="77" >
+      <soa freebytes="37859784" totalbytes="49807360" percent="76" />
+      <loa freebytes="2621440" totalbytes="2621440" percent="100" />
+    </tenured>
+  </gc>
+  <tenured freebytes="40481192" totalbytes="52428800" percent="77" >
+    <soa freebytes="37859752" totalbytes="49807360" percent="76" />
+    <loa freebytes="2621440" totalbytes="2621440" percent="100" />
+  </tenured>
+  <time totalms="35.912" />
+</af>

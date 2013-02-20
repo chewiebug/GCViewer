@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+
+<verbosegc version="20090417_AA">
+
+<initialized>
+  <attribute name="gcPolicy" value="-Xgcpolicy:optavgpause" />
+  <attribute name="maxHeapSize" value="0x300000000" />
+  <attribute name="initialHeapSize" value="0x300000000" />
+  <attribute name="compressedRefs" value="false" />
+  <attribute name="pageSize" value="0x1000" />
+  <attribute name="requestedPageSize" value="0x1000" />
+</initialized>
+
+<af type="tenured" id="1" timestamp="Oct 07 11:46:23 2012" intervalms="0.000">
+  <minimum requested_bytes="34603032" />
+  <time exclusiveaccessms="0.884" meanexclusiveaccessms="0.872" threads="1" lastthreadtid="0x0000000129AECB00" />
+  <refs soft="40624" weak="777045" phantom="770" dynamicSoftReferenceThreshold="28" maxSoftReferenceThreshold="32" />
+  <tenured freebytes="4626919608" totalbytes="12884901888" percent="35" >
+    <soa freebytes="4609983720" totalbytes="12833362944" percent="35" />
+    <loa freebytes="16935888" totalbytes="51538944" percent="32" />
+  </tenured>
+  <con event="completed full sweep" timestamp="Oct 07 11:46:23 2012">
+    <stats sweepbytes="0" sweeptime="0.305" connectbytes="0" connecttime="0.001" />
+  </con>
+  <gc type="global" id="14" totalid="14" intervalms="56765.134">
+    <finalization objectsqueued="2386" />
+    <timesms mark="496.529" sweep="1.400" compact="0.000" total="501.514" />
+    <tenured freebytes="11283782480" totalbytes="12884901888" percent="87" >
+      <soa freebytes="11104498688" totalbytes="12704514048" percent="87" />
+      <loa freebytes="179283792" totalbytes="180387840" percent="99" />
+    </tenured>
+  </gc>
+  <tenured freebytes="10933557088" totalbytes="12884901888" percent="84" >
+    <soa freebytes="10788876328" totalbytes="12704514048" percent="84" />
+    <loa freebytes="144680760" totalbytes="180387840" percent="80" />
+  </tenured>
+  <refs soft="40590" weak="15642" phantom="128" dynamicSoftReferenceThreshold="27" maxSoftReferenceThreshold="32" />
+  <time totalms="837.024" />
+</af>
+
