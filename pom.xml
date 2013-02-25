@@ -30,9 +30,9 @@
 		<developer>
 			<name>Bernd Eckenfels</name>
 		</developer>
-        <developer>
-            <name>Neil Gentleman</name>
-        </developer>
+		<developer>
+			<name>Neil Gentleman</name>
+		</developer>
 		<developer>
 			<name>Johan Kaving</name>
 		</developer>
@@ -108,14 +108,64 @@
 					<version>1.7</version>
 				</plugin>
 				<plugin>
-					<groupId>com.github.github</groupId>
-					<artifactId>downloads-maven-plugin</artifactId>
-					<version>0.6</version>
+					<groupId>org.apache.geronimo.genesis.plugins</groupId>
+					<artifactId>tools-maven-plugin</artifactId>
+					<version>1.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.geronimo.genesis.plugins
+										</groupId>
+										<artifactId>
+											tools-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.4,)
+										</versionRange>
+										<goals>
+											<goal>
+												copy-legal-files
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 
 		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<!-- disable the deploy plugin for now to suppress error messages related 
+						to failed maven repository deployments; currently scp is used to copy the 
+						.jar file to sourceforge -->
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -183,7 +233,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/dist</outputDirectory>
+							<outputDirectory>${basedir}/target</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${basedir}</directory>
@@ -220,33 +270,39 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.geronimo.genesis.plugins</groupId>
+				<artifactId>tools-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install-legal-files</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-legal-files</goal>
+						</goals>
+						<configuration>
+							<fileset>
+								<basedir>${pom.basedir}</basedir>
+								<includes>
+									<include>README</include>
+									<include>LICENSE.txt</include>
+								</includes>
+							</fileset>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>standard-distribution</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<mkdir dir="target" />
-								<zip destfile="target/gcviewer-${project.version}.zip">
-									<zipfileset dir="target/dist" includes="*" />
-									<zipfileset dir="target" includes="gcviewer-${project.version}.jar" />
-								</zip>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-
 					<execution>
 						<id>mac-distribution</id>
 						<phase>package</phase>
 						<configuration>
 							<target>
 								<mkdir dir="target" />
-								<zip destfile="target/gcviewer_mac_${project.version}.zip">
+								<zip destfile="target/gcviewer-mac-${project.version}.zip">
 									<zipfileset dir="src/main/mac" excludes="**/JavaApplicationStub" />
 									<zipfileset dir="src/main/mac/GCViewer.app/Contents/MacOS/"
 										prefix="GCViewer.app/Contents/MacOS/" filemode="755" />
@@ -261,27 +317,44 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
+
+					<execution>
+						<id>copy-to-sourceforge</id>
+						<phase>deploy</phase>
+						<configuration>
+							<target>
+								<scp
+									todir="${scp.username}:${scp.password}@frs.sourceforge.net:/home/frs/project/gcviewer/"
+									trust="true" failonerror="true">
+									<fileset dir="${project.basedir}/target">
+										<include name="${project.build.finalName}.${project.packaging}" />
+										<include name="gcviewer-mac-${project.version}.zip" />
+                                        <include name="README" />
+									</fileset>
+								</scp>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.6.5</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>0.1.44-1</version>
+					</dependency>
+				</dependencies>
+
 			</plugin>
 
-			<!-- execute this using "mvn install ghDownloads:upload" DON'T use eclipse 
-				to do so, because m2eclipse can't filter ${maven.build.timestamp} into build.info.properties -->
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>downloads-maven-plugin</artifactId>
-				<configuration>
-					<description>${project.version} release of ${project.name}. This is
-						a development release of the latest sources. See
-						https://github.com/chewiebug/GCViewer/wiki/Changelog</description>
-					<includes>
-						<include>gcviewer_mac_${project.version}.zip</include>
-						<include>gcviewer-${project.version}.zip</include>
-					</includes>
-					<override>true</override>
-					<includeAttached>true</includeAttached>
-					<dryRun>false</dryRun>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 </project>
