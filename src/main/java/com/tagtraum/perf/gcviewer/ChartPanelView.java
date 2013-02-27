@@ -1,8 +1,6 @@
 package com.tagtraum.perf.gcviewer;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,29 +11,22 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import com.tagtraum.perf.gcviewer.imp.DataReader;
-import com.tagtraum.perf.gcviewer.imp.DataReaderFactory;
+import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -53,7 +44,6 @@ public class ChartPanelView {
     public static final String EVENT_MINIMIZED = "minimized";
     
     private static final ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
-    private static final DataReaderFactory factory = new DataReaderFactory();
 
     private GCPreferences preferences;
     
@@ -68,11 +58,9 @@ public class ChartPanelView {
     private SwingPropertyChangeSupport propertyChangeSupport;
     private GCDocument gcDocument;
     private TextAreaLogHandler textAreaLogHandler;
-    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
-
-
-    public ChartPanelView(GCDocument gcDocument, URL url) throws IOException {
+    private DataReaderFacade dataReaderFacade;
+    
+    public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {
         this.gcDocument = gcDocument;
         this.preferences = gcDocument.getPreferences();
         this.modelChart = new ModelChartImpl();
@@ -95,57 +83,28 @@ public class ChartPanelView {
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
         this.textAreaLogHandler = new TextAreaLogHandler();
-        final GCModel model = loadModel(url);
+        dataReaderFacade = new DataReaderFacade();
+        final GCModel model = dataReaderFacade.loadModel(url, true, gcDocument);
         setModel(model);
         // TODO delete
         model.printDetailedInformation();
     }
 
     /**
-     * @return true, if the files has been reloaded
-     * @throws IOException
+     * Reloads the model displayed in this chart panel if it has changed. Using the parameter
+     * the parser error dialog can be suppressed.
+     * 
+     * @param showParserErrors if <code>true</code> parser errors will be shown
+     * @return <code>true</code>, if the file has been reloaded
+     * @throws DataReaderException if something went wrong reading the file
      */
-    public boolean reloadModel() throws IOException {
+    public boolean reloadModel(boolean showParserErrors) throws DataReaderException {
         if (model.getURL() == null) return false;
         if (model.isDifferent(model.getURL())) {
-            setModel(loadModel(this.model.getURL()));
+            setModel(dataReaderFacade.loadModel(this.model.getURL(), showParserErrors, gcDocument));
             return true;
         }
         return false;
-    }
-
-    private GCModel loadModel(final URL url) throws IOException {
-        // set up special handler
-        textAreaLogHandler = new TextAreaLogHandler();
-        IMP_LOGGER.addHandler(textAreaLogHandler);
-        DATA_READER_FACTORY_LOGGER.addHandler(textAreaLogHandler);
-        try {
-            final InputStream in = url.openStream();
-            final DataReader reader = factory.getDataReader(in);
-            final GCModel model = reader.read();
-            model.setURL(url);
-            if (textAreaLogHandler.hasErrors() && !gcDocument.isWatched()) {
-                // show error dialog
-                final JPanel panel = new JPanel(new BorderLayout());
-                final JLabel messageLabel = new JLabel(new MessageFormat(localStrings.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
-                messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-                panel.add(messageLabel, BorderLayout.NORTH);
-                final JScrollPane textAreaScrollPane = new JScrollPane(textAreaLogHandler.getTextArea());
-                textAreaScrollPane.setPreferredSize(new Dimension(700, 500));
-                panel.add(textAreaScrollPane, BorderLayout.CENTER);
-                SwingUtilities.invokeLater(new Runnable(){
-                    public void run() {
-                        JOptionPane.showMessageDialog(null, panel, new MessageFormat(localStrings.getString("datareader_parseerror_dialog_title")).format(new Object[]{url}), JOptionPane.ERROR_MESSAGE);
-                    }
-                });
-            }
-            return model;
-        }
-        finally {
-            // remove special handler after we are done with reading.
-            IMP_LOGGER.removeHandler(textAreaLogHandler);
-            DATA_READER_FACTORY_LOGGER.removeHandler(textAreaLogHandler);
-        }
     }
 
     public void invalidate() {

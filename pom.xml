@@ -3,10 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tagtraum</groupId>
 	<artifactId>gcviewer</artifactId>
-	<version>1.31-RC4</version>
+	<version>1.32-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>GCViewer</name>
-	<url>http://www.tagtraum.com/gcviewer.html</url>
+	<url>http://github.com/chewiebug/GCViewer/wiki</url>
+
 	<developers>
 		<developer>
 			<name>Hendrik Schreiber</name>
@@ -17,26 +18,68 @@
 		</developer>
 		<developer>
 			<name>Jörg Wüthrich</name>
-			<email>jwu@gmx.ch</email>
+			<email>gcviewer@gmx.ch</email>
 			<url>http://github.com/chewiebug/GCViewer</url>
+		</developer>
+		<developer>
+			<name>Peter Bilstein</name>
+		</developer>
+		<developer>
+			<name>Cka3o4Huk</name>
+		</developer>
+		<developer>
+			<name>Bernd Eckenfels</name>
+		</developer>
+        <developer>
+            <name>Neil Gentleman</name>
+        </developer>
+		<developer>
+			<name>Johan Kaving</name>
+		</developer>
+		<developer>
+			<name>Carl Meyer</name>
+		</developer>
+		<developer>
+			<name>Rupesh Ramachandran</name>
 		</developer>
 		<developer>
 			<name>Serafín Sedano</name>
 		</developer>
+		<developer>
+			<name>Andrey Skripalschikov</name>
+		</developer>
 	</developers>
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License 2.1</name>
 			<url>http://www.gnu.org/licenses/lgpl.txt</url>
 		</license>
 	</licenses>
+
+	<properties>
+		<github.global.server>github</github.global.server>
+
+		<build.timestamp>${maven.build.timestamp}</build.timestamp>
+
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+	</properties>
+
+	<scm>
+		<url>https://github.com/chewiebug/GCViewer</url>
+		<connection>scm:git:git://https://github.com/chewiebug/GCViewer.git</connection>
+		<developerConnection>scm:git:git@github.com/chewiebug/GCViewer.git</developerConnection>
+	</scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -52,20 +95,28 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>2.3.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.5</version>
-					<configuration>
-						<encoding>UTF-8</encoding>
-					</configuration>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.7</version>
+				</plugin>
+				<plugin>
+					<groupId>com.github.github</groupId>
+					<artifactId>downloads-maven-plugin</artifactId>
+					<version>0.6</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -76,6 +127,7 @@
 					</includes>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -84,6 +136,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -96,12 +149,10 @@
 					</archive>
 					<excludes>
 						<exclude>**/*.psd</exclude>
-						<!-- version.properties is only a template; the productive one is generated 
-							to where the other ressources are -->
-						<exclude>version.properties</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
@@ -112,19 +163,124 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/src/main/resources/com/tagtraum/perf/gcviewer</outputDirectory>
+							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${basedir}/src/main/templates</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>version.properties</include>
+										<include>build.info.properties</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>copy-distribution-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/dist</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}</directory>
+									<filtering>false</filtering>
+									<includes>
+										<include>README</include>
+										<include>LICENSE.txt</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>copy-mac-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/mac</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/main/templates</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>Info.plist</include>
 									</includes>
 								</resource>
 							</resources>
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>standard-distribution</id>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<mkdir dir="target" />
+								<zip destfile="target/gcviewer-${project.version}.zip">
+									<zipfileset dir="target/dist" includes="*" />
+									<zipfileset dir="target" includes="gcviewer-${project.version}.jar" />
+								</zip>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>mac-distribution</id>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<mkdir dir="target" />
+								<zip destfile="target/gcviewer_mac_${project.version}.zip">
+									<zipfileset dir="src/main/mac" excludes="**/JavaApplicationStub" />
+									<zipfileset dir="src/main/mac/GCViewer.app/Contents/MacOS/"
+										prefix="GCViewer.app/Contents/MacOS/" filemode="755" />
+									<zipfileset dir="target" includes="gcviewer-${project.version}.jar"
+										prefix="GCViewer.app/Contents/Resources/" />
+									<zipfileset dir="target/mac" includes="Info.plist"
+										prefix="GCViewer.app/Contents/" />
+								</zip>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- execute this using "mvn install ghDownloads:upload" DON'T use eclipse 
+				to do so, because m2eclipse can't filter ${maven.build.timestamp} into build.info.properties -->
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>downloads-maven-plugin</artifactId>
+				<configuration>
+					<description>${project.version} release of ${project.name}. This is
+						a development release of the latest sources. See
+						https://github.com/chewiebug/GCViewer/wiki/Changelog</description>
+					<includes>
+						<include>gcviewer_mac_${project.version}.zip</include>
+						<include>gcviewer-${project.version}.zip</include>
+					</includes>
+					<override>true</override>
+					<includeAttached>true</includeAttached>
+					<dryRun>false</dryRun>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

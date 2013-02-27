@@ -1,0 +1,29 @@
+0.153: [GCAdaptiveSizePolicy::old generation size: collection: 1 (4194304) -> (8781824) 
+AdaptiveSizePolicy::survivor space sizes: collection: 1 (524288, 524288) -> (1441792, 524288) filler object size: 0
+AdaptiveSizePolicy::young generation size: collection: 1 (4194304) -> (5111808) 
+ 3054K->3065K(13056K), 0.0077290 secs]
+0.162: [GCAdaptiveSizePolicy::old generation size: collection: 2 (8781824) -> (12255232) 
+AdaptiveSizePolicy::survivor space sizes: collection: 2 (524288, 1441792) -> (524288, 524288) filler object size: 0
+ 6106K->6098K(16448K), 0.0142468 secs]
+0.177: [GCAdaptiveSizePolicy::old generation size: collection: 3 (12255232) -> (17563648) 
+AdaptiveSizePolicy::survivor space sizes: collection: 3 (524288, 524288) -> (23986176, 524288) filler object size: 0
+AdaptiveSizePolicy::young generation size: collection: 3 (5111808) -> (28573696) 
+ 10036K->10036K(44544K), 0.0295009 secs]
+0.207: [Full GCAdaptiveSizePolicy::old generation size: collection: 4 (17563648) -> (18743296) 
+AdaptiveSizePolicy::young generation size: collection: 4 (28573696) -> (47710208) 
+ 10036K->9989K(64384K), 0.0053011 secs]
+0.236: [GCAdaptiveSizePolicy::old generation size: collection: 5 (56492032) -> (100270080) 
+AdaptiveSizePolicy::survivor space sizes: collection: 5 (524288, 524288) -> (33423360, 524288) filler object size: 0
+AdaptiveSizePolicy::young generation size: collection: 5 (47710208) -> (80609280) 
+ 55547K->55547K(176128K), 0.0400048 secs]
+0.276: [Full GCAdaptiveSizePolicy::old generation size: collection: 6 (100270080) -> (102367232) 
+AdaptiveSizePolicy::young generation size: collection: 6 (80609280) -> (81526784) 
+ 55547K->55547K(179072K), 0.0064211 secs]
+0.314: [GCAdaptiveSizePolicy::old generation size: collection: 7 (102367232) -> (104005632) 
+AdaptiveSizePolicy::survivor space sizes: collection: 7 (524288, 524288) -> (655360, 524288) filler object size: 32765
+ 134130K->58581K(180672K), 0.0130367 secs]
+0.357: [GCAdaptiveSizePolicy::old generation size: collection: 8 (104005632) -> (118554624) 
+AdaptiveSizePolicy::survivor space sizes: collection: 8 (524288, 655360) -> (589824, 589824) filler object size: 16381
+ 137027K->73796K(194816K), 0.0664674 secs]
+0.423: [Full GCAdaptiveSizePolicy::old generation size: collection: 9 (118554624) -> (62914560) 
+ 73796K->15872K(140480K), 0.0151668 secs]

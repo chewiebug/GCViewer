@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -24,6 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
@@ -32,21 +36,25 @@ import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
+import com.tagtraum.perf.gcviewer.renderer.PolygonChartRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedTenuredRenderer;
+import com.tagtraum.perf.gcviewer.renderer.UsedYoungRenderer;
 import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
 /**
- * Graphical chart of the gc file.
+ * Graphical chart of the gc file. It contains the chart and all rulers surrounding it but not
+ * the model details on the right side.
  *
  * Date: Jan 30, 2002
  * Time: 7:50:42 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @version $Id: $
  */
-public class ModelChartImpl extends JScrollPane implements ModelChart {
+public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeListener {
 
     private GCModel model;
     private Chart chart;
@@ -66,10 +74,13 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     private FullGCLineRenderer fullGCLineRenderer;
     private GCTimesRenderer gcTimesRenderer;
     private UsedHeapRenderer usedHeapRenderer;
+    private UsedTenuredRenderer usedTenuredRenderer;
+    private UsedYoungRenderer usedYoungRenderer;
     private InitialMarkLevelRenderer initialMarkLevelRenderer;
     private ConcurrentGcBegionEndRenderer concurrentGcLineRenderer;
     private boolean antiAlias;
     private TimeOffsetPanel timeOffsetPanel;
+    private int lastViewPortWidth = 0;
 
     public ModelChartImpl() {
         super();
@@ -79,11 +90,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         
-        // set scrolling speed
-        horizontalScrollBar = getHorizontalScrollBar();
-        horizontalScrollBar.setUnitIncrement(50);
-        horizontalScrollBar.setBlockIncrement(500);
-
         // order of the renderers determines what is painted first and last
         // we start with what's painted last
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -97,6 +103,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         chart.add(initialMarkLevelRenderer, gridBagConstraints);
         usedHeapRenderer = new UsedHeapRenderer(this);
         chart.add(usedHeapRenderer, gridBagConstraints);
+        usedTenuredRenderer = new UsedTenuredRenderer(this);
+        chart.add(usedTenuredRenderer, gridBagConstraints);
         gcTimesRenderer = new GCTimesRenderer(this);
         chart.add(gcTimesRenderer, gridBagConstraints);
         fullGCLineRenderer = new FullGCLineRenderer(this);
@@ -107,6 +115,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         chart.add(incLineRenderer, gridBagConstraints);
         concurrentGcLineRenderer = new ConcurrentGcBegionEndRenderer(this);
         chart.add(concurrentGcLineRenderer, gridBagConstraints);
+        usedYoungRenderer = new UsedYoungRenderer(this);
+        chart.add(usedYoungRenderer, gridBagConstraints);
         totalTenuredRenderer = new TotalTenuredRenderer(this);
         chart.add(totalTenuredRenderer, gridBagConstraints);
         totalYoungRenderer = new TotalYoungRenderer(this);
@@ -118,6 +128,14 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         // This would make scrolling slower, but eliminates flickering...
         //getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
 
+        getViewport().addChangeListener(this);
+        lastViewPortWidth = getViewport().getWidth();
+
+        // set scrolling speed
+        horizontalScrollBar = getHorizontalScrollBar();
+        horizontalScrollBar.setUnitIncrement(50);
+        horizontalScrollBar.setBlockIncrement(getViewport().getWidth());
+        
         JPanel rowHeaderPanel = new JPanel();
         GridBagLayout layout = new GridBagLayout();
         rowHeaderPanel.setLayout(layout);
@@ -128,7 +146,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         constraints.gridheight = 2;
         constraints.gridx = 0;
         constraints.gridy = 1;
-        this.memoryRuler = new Ruler(true, 0, model.getFootprint(), "K");
+        this.memoryRuler = new Ruler(true, 0, model.getFootprint() / 1024, "M");
         this.pauseRuler = new Ruler(true, 0, model.getPause().getMax(), "s");
         layout.setConstraints(memoryRuler, constraints);
         rowHeaderPanel.add(memoryRuler);
@@ -204,9 +222,15 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
 
     public void invalidate() {
         super.invalidate();
-        chart.invalidate();
     }
 
+    /**
+     * Resets the internal cache of the chart.
+     */
+    public void resetPolygonCache() {
+        chart.resetPolygons();
+    }
+    
     public double getScaleFactor() {
         return scaleFactor;
     }
@@ -214,11 +238,10 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     public void setScaleFactor(double scaleFactor) {
         this.scaleFactor = scaleFactor;
         chart.setSize(chart.getPreferredSize());
+        chart.resetPolygons();
         memoryRuler.setSize((int)memoryRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         pauseRuler.setSize((int)pauseRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         timestampRuler.setSize((int)(getViewport().getWidth()*getScaleFactor()), (int)timestampRuler.getPreferredSize().getHeight());
-        
-        horizontalScrollBar.setBlockIncrement((int)(scaleFactor * 5000));
         
         repaint();
     }
@@ -241,6 +264,9 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     @Override
     public void setShowTenured(boolean showTenured) {
         totalTenuredRenderer.setVisible(showTenured);
+        
+        // reset cache because young generation needs to be repainted
+        resetPolygonCache();
     }
 
     @Override
@@ -314,6 +340,26 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     }
 
     @Override
+    public boolean isShowUsedYoungMemoryLine() {
+        return usedYoungRenderer.isVisible();
+    }
+
+    @Override
+    public void setShowUsedYoungMemoryLine(boolean showUsedYoungMemoryLine) {
+        usedYoungRenderer.setVisible(showUsedYoungMemoryLine);
+    }
+
+    @Override
+    public boolean isShowUsedTenuredMemoryLine() {
+        return usedTenuredRenderer.isVisible();
+    }
+
+    @Override
+    public void setShowUsedTenuredMemoryLine(boolean showUsedTenuredMemoryLine) {
+        usedTenuredRenderer.setVisible(showUsedTenuredMemoryLine);
+    }
+
+    @Override
     public void setShowInitialMarkLevel(boolean showInitialMarkLevel) {
         initialMarkLevelRenderer.setVisible(showInitialMarkLevel);
     }
@@ -349,6 +395,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         setShowIncGCLines(preferences.getGcLineProperty(GCPreferences.INC_GC_LINES));
         setShowTotalMemoryLine(preferences.getGcLineProperty(GCPreferences.TOTAL_MEMORY));
         setShowUsedMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_MEMORY));
+        setShowUsedTenuredMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_TENURED_MEMORY));
+        setShowUsedYoungMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_YOUNG_MEMORY));
         setShowInitialMarkLevel(preferences.getGcLineProperty(GCPreferences.INITIAL_MARK_LEVEL));
         setShowConcurrentCollectionBeginEnd(preferences.getGcLineProperty(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END));
     }
@@ -366,7 +414,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
     }
 
     public void setFootprint(long footprint) {
-        this.memoryRuler.setMaxUnit(footprint);
+        this.memoryRuler.setMaxUnit(footprint / 1024);
         this.footprint = footprint;
         getColumnHeader().revalidate();
         chart.revalidate();
@@ -387,11 +435,12 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
         return maxPause;
     }
 
-    private class Chart extends JPanel {
+    private class Chart extends JPanel implements ComponentListener {
 
         public Chart() {
             setBackground(Color.white);
             setLayout(new GridBagLayout());
+            addComponentListener(this);
         }
 
         public Dimension getPreferredSize() {
@@ -400,6 +449,37 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
 
         private int scaleX(double d) {
             return (int) (d * getScaleFactor());
+        }
+        
+        /**
+         * Reset the cached polygons of all {@link PolygonChartRenderer}s stored in this chart.
+         */
+        public void resetPolygons() {
+            for (Component component : getComponents()) {
+                if (component instanceof PolygonChartRenderer) {
+                    ((PolygonChartRenderer)component).resetPolygon();
+                }
+            }
+        }
+
+        @Override
+        public void componentResized(ComponentEvent e) {
+            resetPolygons();
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+            // not interested
+        }
+
+        @Override
+        public void componentShown(ComponentEvent e) {
+            // not interested
+        }
+
+        @Override
+        public void componentHidden(ComponentEvent e) {
+            // not interested
         }
 
     }
@@ -522,8 +602,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
                 s = ((NumberFormat)formatter).format(offsetValue);
             }
             else if (formatter instanceof DateFormat) {
-                final Date date = new Date(((long)offsetValue) * 1000l);
-                //final Date date = new Date((long)Math.ceil(val * 1000.0d));
+                final Date date = new Date(Math.round(offsetValue) * 1000);
                 s = ((DateFormat)formatter).format(date);
             }
             return s;
@@ -629,6 +708,15 @@ public class ModelChartImpl extends JScrollPane implements ModelChart {
 
         public void setUnitName(String unitName) {
             this.unitName = unitName;
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        JViewport viewPort = (JViewport)e.getSource();
+        if (lastViewPortWidth != viewPort.getWidth()) {
+            lastViewPortWidth = viewPort.getWidth();
+            horizontalScrollBar.setBlockIncrement(lastViewPortWidth);
         }
     }
 

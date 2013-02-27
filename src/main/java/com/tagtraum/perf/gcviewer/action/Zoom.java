@@ -1,6 +1,6 @@
 package com.tagtraum.perf.gcviewer.action;
 
-import com.tagtraum.perf.gcviewer.GCViewer;
+import com.tagtraum.perf.gcviewer.GCViewerGui;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 import javax.swing.*;
@@ -15,15 +15,15 @@ import java.awt.event.ActionEvent;
  *
  */
 public class Zoom extends AbstractAction {
-    private GCViewer gcViewer;
+    private GCViewerGui gcViewer;
 
-    public Zoom(final GCViewer gcViewer) {
+    public Zoom(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewer.localStrings.getString("action_zoom"));
-        putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("action_zoom_hint"));
+        putValue(NAME, GCViewerGui.localStrings.getString("action_zoom"));
+        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("action_zoom_hint"));
         //putValue(Action.MNEMONIC_KEY, new Integer(localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "zoom");
-        //putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', java.awt.Event.CTRL_MASK ));
+        //putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         setEnabled(false);
     }
 
@@ -33,7 +33,7 @@ public class Zoom extends AbstractAction {
         try {
             String item = (String)o[0];
             if (item.endsWith("%")) item = item.substring(0, item.length()-1);
-            final int zoomFactor = NumberParser.parseInt(item.trim());
+            final double zoomFactor = Double.parseDouble(item.trim());
             if (zoomFactor > 0) gcViewer.getSelectedGCDocument().getModelChart().setScaleFactor(zoomFactor/1000.0);
         }
         catch (NumberFormatException nfe) {

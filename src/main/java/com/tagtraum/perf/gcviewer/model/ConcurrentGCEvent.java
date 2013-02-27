@@ -7,7 +7,7 @@ package com.tagtraum.perf.gcviewer.model;
  * Time: 11:55:26 AM
  *
  */
-public class ConcurrentGCEvent extends AbstractGCEvent {
+public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
 
     private double duration;
     private double pause;

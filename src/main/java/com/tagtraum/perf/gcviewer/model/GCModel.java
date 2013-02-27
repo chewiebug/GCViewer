@@ -36,7 +36,7 @@ public class GCModel implements Serializable {
 
 	private static Logger LOG = Logger.getLogger(GCModel.class.getName());
 
-    private List<AbstractGCEvent> allEvents;
+    private List<AbstractGCEvent<?>> allEvents;
     private List<GCEvent> stopTheWorldEvents;
     private List<GCEvent> gcEvents;
     private List<ConcurrentGCEvent> concurrentGCEvents;
@@ -87,7 +87,7 @@ public class GCModel implements Serializable {
     public GCModel(boolean countTenuredAsFull) {
         this.countTenuredAsFull = countTenuredAsFull;
         
-        this.allEvents = new ArrayList<AbstractGCEvent>();
+        this.allEvents = new ArrayList<AbstractGCEvent<?>>();
         this.stopTheWorldEvents = new ArrayList<GCEvent>();
         this.gcEvents = new ArrayList<GCEvent>();
         this.concurrentGCEvents = new ArrayList<ConcurrentGCEvent>();
@@ -146,7 +146,7 @@ public class GCModel implements Serializable {
     
     private void printIntData(String name, IntData data) {
         try {
-            System.out.println(name + " (avg, min, max):\t" + data.average() + "\t" + data.getMin() + "\t" + data.getMax());
+            System.out.println(name + " (n, avg, stddev, min, max):\t" + data.getN() + "\t" + data.average() + "\t" + data.standardDeviation() + "\t" + data.getMin() + "\t" + data.getMax());
         } catch (IllegalStateException e) {
             System.out.println(name + "\t" + e.toString());
         }
@@ -154,7 +154,7 @@ public class GCModel implements Serializable {
     
     private void printDoubleData(String name, DoubleData data) {
         try {
-            System.out.println(name + " (avg, stddev, min, max):\t" + data.average() + "\t" + data.standardDeviation() + "\t" + data.getMin() + "\t" + data.getMax());
+            System.out.println(name + " (n, avg, stddev, min, max):\t" + data.getN() + "\t" + data.average() + "\t" + data.standardDeviation() + "\t" + data.getMin() + "\t" + data.getMax());
         } catch (IllegalStateException e) {
             System.out.println(name + "\t" + e.toString());
         }
@@ -172,7 +172,7 @@ public class GCModel implements Serializable {
         printIntData("perm size used", permUsedSizes);
         printIntData("tenured size used", tenuredUsedSizes);
         printIntData("young size used", youngUsedSizes);
-}
+    }
     
     public void setURL(final URL url) {
         this.url = url;
@@ -292,6 +292,19 @@ public class GCModel implements Serializable {
         return this.lastModified != otherLastModified || this.length != otherLength;
     }
 
+    /**
+     * Returns the event that was last added or <code>null</code> if there is none yet.
+     * @return last event or <code>null</code>
+     */
+    public AbstractGCEvent<?> getLastEventAdded() {
+        if (allEvents.size() > 0) {
+            return allEvents.get(allEvents.size()-1);
+        }
+        else {
+            return null;
+        }
+    }
+    
     public Iterator<GCEvent> getGCEvents() {
         return stopTheWorldEvents.iterator();
     }
@@ -300,7 +313,7 @@ public class GCModel implements Serializable {
         return concurrentGCEvents.iterator();
     }
 
-    public Iterator<AbstractGCEvent> getEvents() {
+    public Iterator<AbstractGCEvent<?>> getEvents() {
         return allEvents.iterator();
     }
     
@@ -318,7 +331,7 @@ public class GCModel implements Serializable {
     	return data;
     }
     
-    public void add(final AbstractGCEvent abstractEvent) {
+    public void add(final AbstractGCEvent<?> abstractEvent) {
         allEvents.add(abstractEvent);
         
         firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
@@ -402,10 +415,10 @@ public class GCModel implements Serializable {
         if (event.getGeneration().equals(Generation.YOUNG) && event.hasDetails() && !event.isFull()) {
             
             GCEvent youngEvent = null;
-            for (Iterator<AbstractGCEvent> i = event.details(); i.hasNext(); ) {
-                AbstractGCEvent ev = i.next();
+            for (Iterator<GCEvent> i = event.details(); i.hasNext(); ) {
+                GCEvent ev = i.next();
                 if (ev.getGeneration().equals(Generation.YOUNG)) {
-                    youngEvent = (GCEvent)ev;
+                    youngEvent = ev;
                     break;
                 }
             }
@@ -442,16 +455,18 @@ public class GCModel implements Serializable {
             initialMarkEvent = event;
         }
         else {
-            Iterator<AbstractGCEvent> i = event.details();
+            Iterator<GCEvent> i = event.details();
             while (i.hasNext() && initialMarkEvent == null) {
-                AbstractGCEvent gcEvent = i.next();
+                GCEvent gcEvent = i.next();
                 if (gcEvent.isInitialMark()) {
                     initialMarkEvent = (GCEvent)gcEvent;
                 }
             }
         }
 
-        if (initialMarkEvent != null) {
+        // getTotal() returns 0 only if just the memory information could not be parsed
+        // which can be the case with java 7 G1 algorithm (mixed with concurrent event)
+        if (initialMarkEvent != null && initialMarkEvent.getTotal() > 0) {
             initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double)initialMarkEvent.getTotal());
         }
     }
@@ -464,12 +479,10 @@ public class GCModel implements Serializable {
         }
         
         // if there are details, young, tenured and perm sizes can be extracted
-        Iterator<AbstractGCEvent> i = event.details();
+        Iterator<GCEvent> i = event.details();
         while (i.hasNext()) {
-            AbstractGCEvent abstractGCEvent = (AbstractGCEvent)i.next();
-            if (abstractGCEvent instanceof GCEvent) {
-                updateHeapSize((GCEvent)abstractGCEvent);
-            }
+            GCEvent abstractGCEvent = i.next();
+            updateHeapSize((GCEvent)abstractGCEvent);
         }
     }
     
@@ -498,8 +511,8 @@ public class GCModel implements Serializable {
         return allEvents.size();
     }
 
-    public AbstractGCEvent get(final int index) {
-        return (AbstractGCEvent) allEvents.get(index);
+    public AbstractGCEvent<?> get(final int index) {
+        return allEvents.get(index);
     }
 
 

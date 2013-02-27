@@ -1,7 +1,7 @@
 package com.tagtraum.perf.gcviewer.action;
 
 import com.tagtraum.perf.gcviewer.GCDocument;
-import com.tagtraum.perf.gcviewer.GCViewer;
+import com.tagtraum.perf.gcviewer.GCViewerGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,16 +15,16 @@ import java.awt.event.ActionEvent;
  *
  */
 public class Watch extends AbstractAction {
-    private GCViewer gcViewer;
-    private static final ImageIcon WATCH_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewer.class.getResource("images/watch.png")));
+    private GCViewerGui gcViewer;
+    private static final ImageIcon WATCH_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewerGui.class.getResource("images/watch.png")));
 
-    public Watch(final GCViewer gcViewer) {
+    public Watch(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewer.localStrings.getString("main_frame_menuitem_watch"));
-        putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_watch"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_watch").charAt(0)));
+        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_watch"));
+        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_watch"));
+        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_watch").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "watch");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('W', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('W', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, WATCH_ICON);
         setEnabled(false);
     }

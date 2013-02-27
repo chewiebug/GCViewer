@@ -37,7 +37,7 @@ public class TotalHeapRenderer extends PolygonChartRenderer {
             	polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getTotal());
             }
         }
-        polygon.addPoint(model.getRunningTime(), 0.0d);
+        polygon.addPointNotOptimised(model.getRunningTime(), 0.0d);
         return polygon;
     }
 }

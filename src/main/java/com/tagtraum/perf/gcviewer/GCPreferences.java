@@ -25,6 +25,8 @@ public class GCPreferences {
     public static final String GC_TIMES_RECTANGLES = "gctimesrectangles";
     public static final String TOTAL_MEMORY = "totalmemory";
     public static final String USED_MEMORY = "usedmemory";
+    public static final String USED_YOUNG_MEMORY = "usedyoungmemory";
+    public static final String USED_TENURED_MEMORY = "usedtenuredmemory";
     public static final String TENURED_MEMORY = "tenuredmemory";
     public static final String YOUNG_MEMORY = "youngmemory";
     public static final String INITIAL_MARK_LEVEL = "initialmarklevel";

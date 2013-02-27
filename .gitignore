@@ -6,3 +6,8 @@
 /src/dist/
 /src/build.xml
 /src/manifest.mf
+/deploy.bat
+/GCViewer.ofp
+/releasenotes.txt
+/*.iml
+/.idea/

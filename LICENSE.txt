@@ -29,8 +29,8 @@ Feedback
 
 We encourage your feedback and suggestions and want to use your feedback to
 improve the Software. Send all such feedback to:
-<jwu@gmx.ch>
+<gcviewer@gmx.ch>
 
 For more information on tagtraum industries incorporated and GCViewer
 please see <http://www.tagtraum.com/>. For more information on the latest
-development of GCViewer please see <http://github.com/chewiebug/GCViewer>.
+development of GCViewer please see <http://github.com/chewiebug/GCViewer/wiki>.

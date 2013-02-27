@@ -8,38 +8,47 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
+ * The abstract gc event is the base class for all types of events. All sorts of general
+ * information can be queried from it and it provides the possibility to add detail events.
  *
  * Date: Jun 1, 2005
  * Time: 1:47:32 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
-public abstract class AbstractGCEvent implements Serializable {
+public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable {
     @SuppressWarnings("unchecked")
-    private static final Iterator<AbstractGCEvent> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+    private final Iterator<T> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
     private Date datestamp;
     private double timestamp;
-    private Type type = Type.GC;
+    private Type type = Type.UNDEFINED;
     private boolean tenuredDetail;
     private String typeAsString;
-    protected List<AbstractGCEvent> details;
+    private Generation generation;
+    protected List<T> details;
 
-    public Iterator<AbstractGCEvent> details() {
+    public Iterator<T> details() {
         if (details == null) return EMPTY_ITERATOR;
         return details.iterator();
     }
 
-    public void add(AbstractGCEvent detail) {
+    public void add(T detail) {
         // most events have only one detail event
         if (details == null) {
-        	details = new ArrayList<AbstractGCEvent>(2);
+        	details = new ArrayList<T>(2);
         }
         details.add(detail);
         typeAsString += " " + detail.getType();
         if (detail.getType().getGeneration() == Generation.TENURED) {
         	tenuredDetail = true;
         }
+        
+        // will be calculated upon call to "getGeneration()"
+        generation = null;
     }
 
     public boolean hasDetails() {
@@ -70,7 +79,7 @@ public abstract class AbstractGCEvent implements Serializable {
     private String buildTypeAsString() {
     	StringBuilder sb = new StringBuilder(getType().getType());
     	if (details != null) {
-    		for (AbstractGCEvent detailType : details) {
+    		for (T detailType : details) {
     			sb.append(" ").append(detailType.getType());
     		}
     	}
@@ -89,7 +98,7 @@ public abstract class AbstractGCEvent implements Serializable {
     public boolean isStopTheWorld() {
     	boolean isStopTheWorld = getType().getConcurrency() == Concurrency.SERIAL;
     	if (details != null) {
-    		for (AbstractGCEvent detailEvent : details) {
+    		for (T detailEvent : details) {
     			if (!isStopTheWorld) {
     				isStopTheWorld = detailEvent.getType().getConcurrency() == Concurrency.SERIAL;
     			}
@@ -99,8 +108,36 @@ public abstract class AbstractGCEvent implements Serializable {
     	return isStopTheWorld;
     }
     
+    /**
+     * Returns the generation of the event including generation of detail events if present.
+     * @return generation of event including generation of detail events
+     */
     public Generation getGeneration() {
-        return getType().getGeneration();
+        if (generation == null) {
+            if (!hasDetails()) {
+                generation = getType().getGeneration();
+            }
+            else {
+                // find out, what generations the detail events contain
+                Set<Generation> generationSet = new TreeSet<Generation>();
+                for (T detailEvent : details) {
+                    generationSet.add(detailEvent.getType().getGeneration());
+                }
+                
+                if (generationSet.size() > 1 || generationSet.contains(Generation.ALL)) {
+                    generation = Generation.ALL;
+                }
+                else if (generationSet.size() == 1) {
+                    generation  = generationSet.iterator().next();
+                }
+                else {
+                    // default
+                    generation = Generation.YOUNG;
+                }
+            }
+        }
+        
+        return generation;
     }
     
     public double getTimestamp() {
@@ -143,8 +180,10 @@ public abstract class AbstractGCEvent implements Serializable {
         }
         
         if (details != null) {
-            // this is probably only right for SUN garbage collectors
-            return details.size() == 3;
+            // the assumption is, that a full collection is everything, that collects from more 
+            // than one generation.
+            // Probably this is not always strictly right, but often enough a good assumption
+            return details.size() > 1;
         }
         else {
             return false;
@@ -165,20 +204,29 @@ public abstract class AbstractGCEvent implements Serializable {
     
     public boolean isConcurrentCollectionStart() {
         return getType().getType().equals(Type.CMS_CONCURRENT_MARK_START.getType()) // CMS
+                || getType().getType().equals(Type.ASCMS_CONCURRENT_MARK_START.getType()) // CMS AdaptiveSizePolicy
                 || getType().getType().equals(Type.G1_CONCURRENT_MARK_START.getType());// G1
     }
     
     public boolean isConcurrentCollectionEnd() {
         return getType().getType().equals(Type.CMS_CONCURRENT_RESET.getType()) // CMS
+                || getType().getType().equals(Type.ASCMS_CONCURRENT_RESET.getType()) // CMS AdaptiveSizePolicy
                 || getType().getType().equals(Type.G1_CONCURRENT_CLEANUP_END.getType()); // G1
     }
     
     public boolean isInitialMark() {
         return getTypeAsString().indexOf(Type.CMS_INITIAL_MARK.getType()) >= 0
+                || getTypeAsString().indexOf(Type.ASCMS_INITIAL_MARK.getType()) >= 0
                 || getTypeAsString().indexOf(Type.G1_YOUNG_INITIAL_MARK.getType()) >= 0
                 || getTypeAsString().indexOf(Type.G1_YOUNG_INITIAL_MARK_TO_SPACE_OVERFLOW.getType()) >= 0
                 || getTypeAsString().indexOf(Type.G1_PARTIAL_INITIAL_MARK.getType()) >= 0
                 || getTypeAsString().indexOf(Type.G1_PARTIAL_INITIAL_MARK_TO_SPACE_OVERFLOW.getType()) >= 0;
+    }
+    
+    public boolean isRemark() {
+        return getTypeAsString().indexOf(Type.CMS_REMARK.getType()) >= 0
+                || getTypeAsString().indexOf(Type.ASCMS_REMARK.getType()) >= 0
+                || getTypeAsString().indexOf(Type.G1_REMARK.getType()) >= 0;
     }
     
     public static class Type implements Serializable {
@@ -275,6 +323,8 @@ public abstract class AbstractGCEvent implements Serializable {
             return rep;
         }
 
+        public static final Type UNDEFINED = new Type("undefined", Generation.YOUNG);
+
         // TODO: is jrockit GC really of type Generation.ALL or rather Generation.TENURED ?
         public static final Type JROCKIT_GC = new Type("jrockit.GC", Generation.TENURED);
         public static final Type JROCKIT_NURSERY_GC = new Type("jrockit.Nursery GC", Generation.YOUNG);
@@ -284,12 +334,16 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type JROCKIT_16_YOUNG_GC = new Type("jrockit.YC", Generation.YOUNG);
         public static final Type JROCKIT_16_PARALLEL_NURSERY_GC = new Type("jrockit.parallel nursery GC", Generation.YOUNG);
         
+        // Sun JDK 1.5
+        public static final Type SCAVENGE_BEFORE_REMARK = new Type("Scavenge-Before-Remark", "Scavenge-Before-Remark", Generation.ALL);
+        
         public static final Type FULL_GC = new Type("Full GC", Generation.ALL);
         public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
         public static final Type GC = new Type("GC", Generation.YOUNG);
         public static final Type GC__ = new Type("GC--", Generation.YOUNG);
-        public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG); // single threaded
+        public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG, Concurrency.SERIAL); // single threaded
         public static final Type PAR_NEW = new Type("ParNew", "ParNew:", Generation.YOUNG); // parallel
+        public static final Type ASPAR_NEW = new Type("ASParNew", "ASParNew:", Generation.YOUNG); // parallel (CMS AdaptiveSizePolicy)
         public static final Type PAR_OLD_GEN = new Type("ParOldGen", "ParOldGen:", Generation.TENURED);
         public static final Type PS_YOUNG_GEN = new Type("PSYoungGen", "PSYoungGen:", Generation.YOUNG);
         public static final Type PS_OLD_GEN = new Type("PSOldGen", "PSOldGen:", Generation.TENURED);
@@ -299,6 +353,8 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type TRAIN = new Type("Train", "Train:", Generation.TENURED);
         public static final Type TRAIN_MSC = new Type("Train MSC", "Train MSC:", Generation.TENURED);
         public static final Type PERM = new Type("Perm", "Perm:", Generation.PERM);
+
+        // CMS types
         public static final Type CMS = new Type("CMS", "CMS:", Generation.TENURED);
         public static final Type CMS_PERM = new Type("CMS Perm", "CMS Perm :", Generation.PERM);
         
@@ -324,11 +380,36 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", "CMS-initial-mark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type CMS_REMARK = new Type("CMS-remark", "CMS-remark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         
+        // CMS (Concurrent Mark Sweep) AdaptiveSizePolicy Event Types
+        public static final Type ASCMS = new Type("ASCMS", "ASCMS:", Generation.TENURED);
+
+        // Parnew (promotion failed) AdaptiveSizePolicy
+        public static final Type ASPAR_NEW_PROMOTION_FAILED = new Type("ASParNew (promotion failed)", "ASParNew (promotion failed):", Generation.YOUNG, Concurrency.SERIAL);
+        
+        // CMS (concurrent mode failure / interrupted) AdaptiveSizePolicy
+        public static final Type ASCMS_CMF = new Type("ASCMS (concurrent mode failure)", "ASCMS (concurrent mode failure):", Generation.TENURED, Concurrency.SERIAL);
+        public static final Type ASCMS_CMI = new Type("ASCMS (concurrent mode interrupted)", "ASCMS (concurrent mode interrupted):", Generation.TENURED, Concurrency.SERIAL);
+
+        public static final Type ASCMS_CONCURRENT_MARK_START = new Type("ASCMS-concurrent-mark-start", "ASCMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_MARK = new Type("ASCMS-concurrent-mark", "ASCMS-concurrent-mark:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_PRECLEAN_START = new Type("ASCMS-concurrent-preclean-start", "ASCMS-concurrent-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_PRECLEAN = new Type("ASCMS-concurrent-preclean", "ASCMS-concurrent-preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_SWEEP_START = new Type("ASCMS-concurrent-sweep-start", "ASCMS-concurrent-sweep-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_SWEEP = new Type("ASCMS-concurrent-sweep", "ASCMS-concurrent-sweep:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_RESET_START = new Type("ASCMS-concurrent-reset-start", "ASCMS-concurrent-reset-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_RESET = new Type("ASCMS-concurrent-reset", "ASCMS-concurrent-reset:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+        public static final Type ASCMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("ASCMS-concurrent-abortable-preclean-start", "ASCMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type ASCMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("ASCMS-concurrent-abortable-preclean", "ASCMS-concurrent-abortable-preclean:", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
+
+        public static final Type ASCMS_INITIAL_MARK = new Type("ASCMS-initial-mark", "ASCMS-initial-mark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type ASCMS_REMARK = new Type("ASCMS-remark", "ASCMS-remark:", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        
         // G1 stop the world types
         public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", "Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         
         // only young collection
         public static final Type G1_YOUNG = new Type("GC pause (young)", "GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_YOUNG_MARK_STACK_FULL = new Type("GC pause (young)Mark stack is full.", "GC pause (young) Mark stack is full", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         // young collections with problems (to-space overflow)
         public static final Type G1_YOUNG__ = new Type("GC pause (young)--", "GC pause (young)--", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         // the same as above but more verbose in detailed mode
@@ -336,6 +417,9 @@ public abstract class AbstractGCEvent implements Serializable {
         // partially young collection (
         public static final Type G1_PARTIAL = new Type("GC pause (partial)", "GC pause (partial)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_PARTIAL_TO_SPACE_OVERFLOW = new Type("GC pause (partial) (to-space overflow)", "GC pause (partial) (to-space overflow)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        // mixed collection (might have replaced "partial" collection in jdk1.7.0_u5)
+        public static final Type G1_MIXED = new Type("GC pause (mixed)", "GC pause (mixed)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_MIXED_TO_SPACE_OVERFLOW = new Type("GC pause (mixed) (to-space overflow)", "GC pause (mixed) (to-space overflow)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         
         // TODO: Generation: young and tenured!
         public static final Type G1_YOUNG_INITIAL_MARK = new Type("GC pause (young) (initial-mark)", "GC pause (young) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
@@ -343,12 +427,19 @@ public abstract class AbstractGCEvent implements Serializable {
         public static final Type G1_PARTIAL_INITIAL_MARK = new Type("GC pause (partial) (initial-mark)", "GC pause (partial) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_PARTIAL_INITIAL_MARK_TO_SPACE_OVERFLOW = new Type("GC pause (partial) (to-space overflow) (initial-mark)", "GC pause (partial) (to-space overflow) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_REMARK = new Type("GC remark", "GC remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        // Java 7; detail event inside G1_REMARK
+        public static final Type G1_GC_REFPROC = new Type("GC ref-proc", "GC ref-proc", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.CONCURRENCY_HELPER);
         public static final Type G1_CLEANUP = new Type("GC cleanup", "GC cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        // Java 7_u2; detailed info in all detailed events
+        public static final Type G1_EDEN = new Type("Eden", "Eden:", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         
         // G1 concurrent types
+        public static final Type G1_CONCURRENT_ROOT_REGION_SCAN_START = new Type("GC concurrent-root-region-scan-start", "GC concurrent-root-region-scan-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type G1_CONCURRENT_ROOT_REGION_SCAN_END = new Type("GC concurrent-root-region-scan-end", "GC concurrent-root-region-scan-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type G1_CONCURRENT_MARK_START = new Type("GC concurrent-mark-start", "GC concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_MARK_END = new Type("GC concurrent-mark-end", "GC concurrent-mark-end,", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type G1_CONCURRENT_MARK_ABORT = new Type("GC concurrent-mark-abort", "GC concurrent-mark-abort", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type G1_CONCURRENT_MARK_RESET_FOR_OVERFLOW = new Type("GC concurrent-mark-reset-for-overflow", "GC concurrent-mark-reset-for-overflow", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_COUNT_START = new Type("GC concurrent-count-start", "GC concurrent-count-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", "GC concurrent-count-end,", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", "GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);

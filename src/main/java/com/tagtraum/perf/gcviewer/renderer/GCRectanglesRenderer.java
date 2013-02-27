@@ -1,12 +1,16 @@
 package com.tagtraum.perf.gcviewer.renderer;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.util.Iterator;
+
 import com.tagtraum.perf.gcviewer.ChartRenderer;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
-
-import java.awt.*;
-import java.util.Iterator;
 
 /**
  * GCRectanglesRenderer.
@@ -49,7 +53,11 @@ public class GCRectanglesRenderer extends ChartRenderer {
         int lastX = Integer.MIN_VALUE;
         int lastY = Integer.MIN_VALUE;
 
-        for (Iterator<GCEvent> i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
+        Rectangle clip = g2d.getClipBounds();
+        int leftBoundary = clip.x;
+        int rightBoundary = clip.x + clip.width;
+        
+        for (Iterator<GCEvent> i = getModelChart().getModel().getGCEvents(); i.hasNext() && lastX < rightBoundary;) {
             GCEvent event = i.next();
             final double pause = event.getPause();
             final int width = (int) Math.max(Math.abs(scaleFactor * pause), 1.0d);
@@ -57,14 +65,17 @@ public class GCRectanglesRenderer extends ChartRenderer {
             final int x = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
             final int y = getHeight() - (int) (pause * scaledHeight);
             if (lastX != x || lastY != y || lastWidth != width || lastHeight != height) {
-                if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
-                    g2d.setPaint(darker);
-                } else if (event.getType() == AbstractGCEvent.Type.INC_GC) {
-                    g2d.setPaint(brighter);
-                } else {
-                    g2d.setPaint(getLinePaint());
+                if ((x + pause) > leftBoundary && x < rightBoundary) {
+                    // make sure only visible rectangles are drawn
+                    if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
+                        g2d.setPaint(darker);
+                    } else if (event.getType() == AbstractGCEvent.Type.INC_GC) {
+                        g2d.setPaint(brighter);
+                    } else {
+                        g2d.setPaint(getLinePaint());
+                    }
+                    g2d.fillRect(x, y, width, height);
                 }
-                g2d.fillRect(x, y, width, height);
                 lastWidth = width;
                 lastHeight = height;
                 lastX = x;

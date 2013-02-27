@@ -354,7 +354,7 @@ public class ModelPanel extends JTabbedPane {
         }
         
         public void setModel(GCModel model) {
-            final boolean pauseDataAvailable = model.getPause().getN() != 0;
+            final boolean pauseDataAvailable = model.getPause().getN() > 0;
             final boolean gcDataAvailable = model.getGCPause().getN() > 0;
             final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
             final boolean pauseIntervalDataAvailable = model.getPauseInterval().getN() > 0; // fix for "Exception if only one GC log line in file"

@@ -1,6 +1,6 @@
 package com.tagtraum.perf.gcviewer.action;
 
-import com.tagtraum.perf.gcviewer.GCViewer;
+import com.tagtraum.perf.gcviewer.GCViewerGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,19 +14,24 @@ import java.awt.event.ActionEvent;
  *
  */
 public class Exit extends AbstractAction {
-    private GCViewer gcViewer;
+    private GCViewerGui gcViewer;
 
-    public Exit(final GCViewer gcViewer) {
+    public Exit(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewer.localStrings.getString("main_frame_menuitem_exit"));
-        putValue(SHORT_DESCRIPTION, GCViewer.localStrings.getString("main_frame_menuitem_hint_exit"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewer.localStrings.getString("main_frame_menuitem_mnemonic_exit").charAt(0)));
+        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_exit"));
+        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_exit"));
+        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_exit").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "exit");
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('X', Event.CTRL_MASK ));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/exit.png"))));
     }
 
     public void actionPerformed(final ActionEvent e) {
         gcViewer.exit();
+    }
+
+    // Used by OS X adaptations
+    public void quit() {
+        actionPerformed(null);
     }
 }

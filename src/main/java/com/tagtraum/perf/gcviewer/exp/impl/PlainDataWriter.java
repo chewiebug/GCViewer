@@ -1,14 +1,13 @@
-package com.tagtraum.perf.gcviewer.exp;
-
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
+package com.tagtraum.perf.gcviewer.exp.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.Iterator;
+
+import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  * Writes the model using the toString()-methode of {@link GCEvent}.
@@ -18,25 +17,22 @@ import java.util.Iterator;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @version $Id: $
  */
-public class PlainDataWriter implements DataWriter {
-
-    private PrintWriter out;
+public class PlainDataWriter extends AbstractDataWriter {
 
     public PlainDataWriter(OutputStream out) {
-        this.out = new PrintWriter(new OutputStreamWriter(out));
+        super(out);
     }
 
     /**
      * Writes the model and flushes the internal PrintWriter.
      */
     public void write(GCModel model) throws IOException {
-        for (Iterator i = model.getEvents(); i.hasNext();) {
+        Iterator<AbstractGCEvent<?>> i = model.getEvents();
+        while (i.hasNext()) {
             out.println(i.next().toString());
         }
+        
         out.flush();
     }
 
-    public void close() {
-        if (out != null) out.close();
-    }
 }

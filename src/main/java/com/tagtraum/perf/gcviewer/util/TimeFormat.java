@@ -22,6 +22,7 @@ public class TimeFormat extends DateFormat {
     private static final long ONE_HOUR = ONE_MINUTE * 60l;
     private static final long ONE_DAY = ONE_HOUR * 24l;
 
+    private SimpleDateFormat millisFormat = new SimpleDateFormat("S");
     private SimpleDateFormat secondsFormat = new SimpleDateFormat("s's'");
     private SimpleDateFormat minuteFormat = new SimpleDateFormat("m'm'");
     private SimpleDateFormat hourFormat = new SimpleDateFormat("H'h'");
@@ -29,10 +30,19 @@ public class TimeFormat extends DateFormat {
 
     public TimeFormat() {
         final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
+        millisFormat.setTimeZone(utcTimeZone);
         minuteFormat.setTimeZone(utcTimeZone);
         hourFormat.setTimeZone(utcTimeZone);
     }
 
+    //@author sean
+    public FormattedValue formatToFormatted(Date date) {
+    	StringBuffer appendTo = new StringBuffer();
+    	appendTo.append(date.getTime() / ONE_SECOND);   	
+    	FormattedValue formed = new FormattedValue(appendTo, "s");
+    	return formed;
+    }    
+    
     public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
         long time = date.getTime();
         if (time >= ONE_DAY * 365) {

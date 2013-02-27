@@ -1,18 +1,18 @@
 package com.tagtraum.perf.gcviewer;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -25,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.SoftBevelBorder;
+
+import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 
 /**
  * About dialog.
@@ -52,18 +54,47 @@ public class AboutDialog extends JDialog implements ActionListener {
 
         JPanel versionPanel = new JPanel();
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        versionPanel.setLayout(new GridLayout(6, 1));
+        versionPanel.setLayout(new GridBagLayout());
+        
         JLabel copyright = new JLabel("\u00A9" + " 2011-2012: Joerg Wuethrich", JLabel.CENTER);
-        JLabel contributorsLabel = new JLabel("contributor:", JLabel.CENTER);
-        JLabel contributors = new JLabel("Serafín Sedano", JLabel.CENTER);
-        JLabel version2 = new JLabel("version: " + loadVersion(), JLabel.CENTER);
-        versionPanel.add(copyright);
-        versionPanel.add(new JLabel());
-        versionPanel.add(contributorsLabel);
-        versionPanel.add(contributors);
-        versionPanel.add(new JLabel());
-        versionPanel.add(version2);
+        
+        JLabel contributorsLabel = new JLabel("contributors (alphabetically ordered):", JLabel.CENTER);
+        contributorsLabel.setForeground(Color.GRAY);
+        JLabel contributors = new JLabel(
+                "<html><center>Peter Bilstein | Cka3o4Huk | Bernd Eckenfels <br>" +
+        		"Neil Gentleman | Johan Kaving | Carl Meyer <br>" +
+        		"Rupesh Ramachandran | Serafín Sedano<br>" +
+        		"Andrey Skripalschikov</center><html>",
+        		JLabel.CENTER);
+        
+        JLabel version = new JLabel("<html><font color=\"gray\">version:</font> " + BuildInfoReader.getVersion() + "</html>", JLabel.CENTER);
+        JLabel buildDate = new JLabel("<html><font color=\"gray\">build date:</font> " + BuildInfoReader.getBuildDate() + "</html>", JLabel.CENTER);
+        
+        JLabel spacer1 = new JLabel("spacer");
+        spacer1.setForeground(getBackground());
+        JLabel spacer2 = new JLabel("spacer");
+        spacer2.setForeground(getBackground());
 
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = GridBagConstraints.NORTH;
+        gridBagConstraints.fill = GridBagConstraints.VERTICAL;
+        gridBagConstraints.gridx = 0;
+
+        versionPanel.add(copyright, gridBagConstraints);
+        gridBagConstraints.gridy = 1;
+        versionPanel.add(spacer1, gridBagConstraints);
+        gridBagConstraints.gridy = 2;
+        versionPanel.add(contributorsLabel, gridBagConstraints);
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        versionPanel.add(contributors, gridBagConstraints);
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = GridBagConstraints.VERTICAL;
+        versionPanel.add(spacer2, gridBagConstraints);
+        gridBagConstraints.gridy = 5;
+        versionPanel.add(version, gridBagConstraints);
+        gridBagConstraints.gridy = 6;
+        versionPanel.add(buildDate, gridBagConstraints);
         
         Panel buttonPanel = new Panel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -89,26 +120,6 @@ public class AboutDialog extends JDialog implements ActionListener {
         pack();
         setResizable(false);
         setVisible(false);
-    }
-
-    private String loadVersion() {
-        String version = "n/a";
-        InputStream in = getClass().getResourceAsStream("version.properties");
-        if (in != null) {
-            Properties props = new Properties();
-            try {
-                try {
-                    props.load(in);
-                    version = props.getProperty("build.version");
-                } finally {
-                    in.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return version;
     }
 
     protected JRootPane createRootPane() {

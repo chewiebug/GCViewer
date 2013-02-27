@@ -1,0 +1,52 @@
+{Heap before GC invocations=879 (full 116):
+ garbage-first heap   total 4080640K, used 2831190K [0x0000000140100000, 0x0000000239200000, 0x0000000240100000)
+  region size 1024K, 67 young (68608K), 3 survivors (3072K)
+ compacting perm gen  total 272384K, used 271388K [0x0000000240100000, 0x0000000250b00000, 0x0000000258100000)
+   the space 272384K,  99% used [0x0000000240100000, 0x0000000250a072c0, 0x0000000250a07400, 0x0000000250b00000)
+No shared spaces configured.
+248191.536: [GC pause (young)Mark stack is full.
+Setting abort in CSMarkOopClosure because push failed.
+Mark stack is full.
+Setting abort in CSMarkOopClosure because push failed.
+Mark stack is full.
+Setting abort in CSMarkOopClosure because push failed.
+Mark stack is full.
+Setting abort in CSMarkOopClosure because push failed.
+Mark stack is full.
+Setting abort in CSMarkOopClosure because push failed.
+Mark stack is full.
+Setting abort in CSMarkOopClosure because push failed.
+, 0.08032150 secs]
+   [SATB Drain Time:   0.0 ms]
+   [Parallel Time:  68.9 ms]
+      [GC Worker Start Time (ms):  248191535.9  248191535.9]
+      [Update RS (ms):  3.8  6.0
+       Avg:   4.9, Min:   3.8, Max:   6.0]
+         [Processed Buffers : 6 11
+          Sum: 17, Avg: 8, Min: 6, Max: 11]
+      [Ext Root Scanning (ms):  57.8  54.0
+       Avg:  55.9, Min:  54.0, Max:  57.8]
+      [Mark Stack Scanning (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+      [Scan RS (ms):  0.0  0.1
+       Avg:   0.1, Min:   0.0, Max:   0.1]
+      [Object Copy (ms):  7.1  8.6
+       Avg:   7.8, Min:   7.1, Max:   8.6]
+      [Termination (ms):  0.0  0.0
+       Avg:   0.0, Min:   0.0, Max:   0.0]
+         [Termination Attempts : 2 3
+          Sum: 5, Avg: 2, Min: 2, Max: 3]
+      [GC Worker End Time (ms):  248191604.7  248191604.7]
+      [Other:   0.1 ms]
+   [Clear CT:   0.0 ms]
+   [Other:  11.4 ms]
+      [Choose CSet:   0.0 ms]
+   [ 2764M->2700M(3985M)]
+ [Times: user=0.16 sys=0.00, real=0.08 secs] 
+Heap after GC invocations=880 (full 116):
+ garbage-first heap   total 4080640K, used 2765718K [0x0000000140100000, 0x0000000239200000, 0x0000000240100000)
+  region size 1024K, 3 young (3072K), 3 survivors (3072K)
+ compacting perm gen  total 272384K, used 271388K [0x0000000240100000, 0x0000000250b00000, 0x0000000258100000)
+   the space 272384K,  99% used [0x0000000240100000, 0x0000000250a072c0, 0x0000000250a07400, 0x0000000250b00000)
+No shared spaces configured.
+}

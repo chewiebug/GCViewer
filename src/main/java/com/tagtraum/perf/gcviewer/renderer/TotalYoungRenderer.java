@@ -6,18 +6,18 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.util.Iterator;
 
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.ModelChart;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
- * TotalYoungRenderer.
+ * Renders total size of young generation.
  *
- * Date: Jun 2, 2005
- * Time: 3:31:21 PM
+ * <br>Date: Jun 2, 2005
+ * <br>Time: 3:31:21 PM<br>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public class TotalYoungRenderer extends PolygonChartRenderer {
     public static final Paint DEFAULT_LINEPAINT = Color.ORANGE;
@@ -36,40 +36,36 @@ public class TotalYoungRenderer extends PolygonChartRenderer {
         polygon.addPoint(0.0d, 0.0d);
         double lastTenured = 0;
         double lastYoung = 0;
-        for (Iterator i = model.getGCEvents(); i.hasNext();) {
-            GCEvent event = (GCEvent) i.next();
-            double tenured = 0;
-            double young = 0;
-            for (Iterator iterator=event.details(); iterator.hasNext();) {
-                final Object o = iterator.next();
-                if (o instanceof GCEvent) {
-                    GCEvent detailEvent = (GCEvent)o;
-                    if (modelChart.isShowTenured() && detailEvent.getType().getGeneration() == Generation.TENURED) {
-                        double total = detailEvent.getTotal();
-                        if (total == 0) total = tenured;
-                        else tenured = total;
-                    }
-                    if (detailEvent.getType().getGeneration() == Generation.YOUNG) {
-                        double total = detailEvent.getTotal();
-                        if (total == 0) total = young;
-                        else young = total;
-                    }
+        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
+            GCEvent event = i.next();
+            double tenuredSize = 0;
+            double youngSize = 0;
+            GCEvent young = event.getYoung();
+            GCEvent tenured = event.getTenured();
+            if (hasMemoryInformation(event) && young != null && tenured != null) {
+                if (modelChart.isShowTenured()) {
+                    tenuredSize = tenured.getTotal();
                 }
-            }
-            if (modelChart.isShowTenured() && tenured == 0 && young != 0) {
-                tenured = event.getTotal() - young;
-            }
-            if (young != 0) {
-                polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), lastTenured + lastYoung);
-                polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), tenured + young);
-                lastYoung = young;
-            }
-            if (tenured != 0) {
-                lastTenured = tenured;
+                youngSize = young.getTotal();
+                
+                if (polygon.npoints == 1) {
+                    // first point needs to be treated different from the rest,
+                    // because otherwise the polygon would not start with a vertical line at 0, 
+                    // but with a slanting line between 0 and after the first pause
+                    polygon.addPoint(0, tenuredSize + youngSize);
+                    lastYoung = youngSize;                
+                    lastTenured = tenuredSize;
+                }
+                if (lastTenured + lastYoung != tenuredSize + youngSize) {
+                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), lastTenured + lastYoung);
+                }
+                polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), tenuredSize + youngSize);
+                lastYoung = youngSize;
+                lastTenured = tenuredSize;
             }
         }
-        polygon.addPoint(model.getRunningTime(), lastTenured + lastYoung);
-        polygon.addPoint(model.getRunningTime(), 0.0d);
+        polygon.addPointNotOptimised(model.getRunningTime(), lastTenured + lastYoung);
+        polygon.addPointNotOptimised(model.getRunningTime(), 0.0d);
         return polygon;
     }
 }

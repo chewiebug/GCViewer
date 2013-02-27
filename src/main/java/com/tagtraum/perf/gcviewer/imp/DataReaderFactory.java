@@ -21,14 +21,60 @@ public class DataReaderFactory {
     private static Logger LOG = Logger.getLogger(DataReaderFactory.class.getName());
     private static final int ONE_KB = 1024;
     private static final int FOUR_KB = ONE_KB * 4;
+    private static final int MAX_ATTEMPT_COUNT = 100;
 
     public DataReader getDataReader(InputStream inStream) throws IOException {
         BufferedInputStream in = new BufferedInputStream(inStream, FOUR_KB);
-        in.mark(FOUR_KB);
-        byte[] buf = new byte[ONE_KB * 3];
-        int length = in.read(buf);
-        in.reset();
-        String s = new String(buf, 0, length, "ASCII");
+        DataReader dataReader = null;
+        long nextPos = 0;
+        String chunkOfLastLine = null;
+        int attemptCount = 0;
+        String s = "";
+        while (attemptCount < MAX_ATTEMPT_COUNT) {
+            in.mark(FOUR_KB + (int) nextPos);
+            if (nextPos > 0) {
+                long skipped = in.skip(nextPos);
+                if (skipped != nextPos) {
+                    break;
+                }
+            }
+            byte[] buf = new byte[ONE_KB * 3];
+            int length = in.read(buf);
+            in.reset();
+
+            if (length <= 0) {
+                break;
+            }
+            nextPos += length;
+
+            s = new String(buf, 0, length, "ASCII");
+            if (chunkOfLastLine != null && chunkOfLastLine.length() > 0) {
+                s = chunkOfLastLine + s;
+            }
+            dataReader = getDataReaderBySample(s, in);
+            if (dataReader != null) {
+                break;
+            }
+
+            int index = s.lastIndexOf('\n');
+            if (index >= 0) {
+                chunkOfLastLine = s.substring(index + 1, s.length());
+            } else {
+                chunkOfLastLine = "";
+            }
+            attemptCount++;
+        }
+
+        if (dataReader == null) {
+            if (LOG.isLoggable(Level.SEVERE)) LOG.severe(localStrings.getString("datareaderfactory_instantiation_failed")
+                    + "\ncontent:"
+                    + "\n" + s);
+            throw new IOException(localStrings.getString("datareaderfactory_instantiation_failed"));
+        }
+        return dataReader;
+    }
+
+    private DataReader getDataReaderBySample(String s, InputStream in) throws IOException {
         // if there is a [memory ] somewhere in the first chunk of the logs, it is JRockit
         if (s.indexOf("[memory ]") != -1) {
             // JRockit 1.5 and 1.6 logs look like: [memory ][Tue Nov 13 08:39:01 2012][01684] [OC#1]
@@ -53,22 +99,24 @@ public class DataReaderFactory {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM <1.3.0");
             return new DataReaderIBM1_3_0(in);
         } else if (s.indexOf("pause (young)") > 0) {
-        	// G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
+            // G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x G1 collector");
-            return new DataReaderSun1_6_0G1(in);
+            return new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
         } else if (s.indexOf("[Times:") > 0) {
-        	// all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
+            // all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.6.x");
-            return new DataReaderSun1_6_0(in);
+            return new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
         } else if (s.indexOf("CMS-initial-mark") != -1 || s.indexOf("PSYoungGen") != -1) {
+            // format is 1.5, but datareader for 1_6_0 can handle it
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.5.x");
-            return new DataReaderSun1_5_0(in);
+            return new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         } else if (s.indexOf(": [") != -1) {
+            // format is 1.4, but datareader for 1_6_0 can handle it
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.4.x");
-            return new DataReaderSun1_4_0(in);
+            return new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
         } else if (s.indexOf("[GC") != -1 || s.indexOf("[Full GC") != -1 || s.indexOf("[Inc GC")!=-1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.3.1");
-            return new DataReaderSun1_3_1(in);
+            return new DataReaderSun1_3_1(in, GcLogType.SUN1_3_1);
         } else if (s.indexOf("<GC: managing allocation failure: need ") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: Sun 1.2.2");
             return new DataReaderSun1_2_2(in);
@@ -78,14 +126,13 @@ public class DataReaderFactory {
         } else if (s.indexOf("<GC: ") == 0 && s.indexOf('>') != -1 && new StringTokenizer(s.substring(0, s.indexOf('>')+1), " ").countTokens() == 22) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: HP-UX 1.4.1/1.4.2");
             return new DataReaderHPUX1_4_1(in);
-        } else if (s.indexOf("<verbosegc version=\"") != -1) { 
+        } else if (s.indexOf("<verbosegc version=\"") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM J9 5.0");
             return new DataReaderIBM_J9_5_0(in);
-        } else if (s.indexOf("starting collection, threshold allocation reached.") != -1) { 
+        } else if (s.indexOf("starting collection, threshold allocation reached.") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM i5/OS 1.4.2");
             return new DataReaderIBMi5OS1_4_2(in);
-        } else
-            if (LOG.isLoggable(Level.SEVERE)) LOG.severe(localStrings.getString("datareaderfactory_instantiation_failed"));
-            throw new IOException(localStrings.getString("datareaderfactory_instantiation_failed"));
+        }
+        return null;
     }
 }

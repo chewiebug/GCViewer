@@ -18,7 +18,7 @@ public class RecentURLsMenu extends JMenu {
 
     private RecentURLsModel model;
 
-    public RecentURLsMenu(final GCViewer gcViewer) {
+    public RecentURLsMenu(final GCViewerGui gcViewer) {
         super(localStrings.getString("main_frame_menuitem_recent_files"));
         this.model = new RecentURLsModel();
         this.model.addRecentURLsListener(new RecentURLsListener(){

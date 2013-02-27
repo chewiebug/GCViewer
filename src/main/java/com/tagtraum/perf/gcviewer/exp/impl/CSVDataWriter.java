@@ -1,13 +1,12 @@
-package com.tagtraum.perf.gcviewer.exp;
-
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
+package com.tagtraum.perf.gcviewer.exp.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.Iterator;
+
+import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  *
@@ -16,12 +15,10 @@ import java.util.Iterator;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @version $Id: $
  */
-public class CSVDataWriter implements DataWriter {
-
-    private PrintWriter out;
+public class CSVDataWriter extends AbstractDataWriter {
 
     public CSVDataWriter(OutputStream out) {
-        this.out = new PrintWriter(new OutputStreamWriter(out));
+        super(out);
     }
 
     private void writeHeader() {
@@ -33,7 +30,9 @@ public class CSVDataWriter implements DataWriter {
      */
     public void write(GCModel model) throws IOException {
         writeHeader();
-        for (Iterator i = model.getGCEvents(); i.hasNext();) {
+        
+        Iterator<GCEvent> i = model.getGCEvents();
+        while (i.hasNext()) {
             GCEvent event = (GCEvent) i.next();
             // write always two lines so that there is a nice used memory curve
             if (model.hasCorrectTimestamp()) {
@@ -61,10 +60,8 @@ public class CSVDataWriter implements DataWriter {
             out.print(',');
             out.println("NONE");
         }
+        
         out.flush();
     }
 
-    public void close() {
-        if (out != null) out.close();
-    }
 }
