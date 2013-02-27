@@ -81,7 +81,7 @@ public class DataReaderJRockit1_5_0 implements DataReader {
                 else if (line.indexOf("OutOfMemory") != -1) {
                     //If the application exits with OutOfMemory, it can get printed to GC log as well
                     //Log as SEVERE for user, but ignore for parsing
-                    if (LOG.isLoggable(Level.INFO)) LOG.warning("GC log contains OutOfMemory error: " + line.substring(startTimeIndex));
+                    if (LOG.isLoggable(Level.WARNING)) LOG.warning("GC log contains OutOfMemory error: " + line.substring(startTimeIndex));
                     continue;
                 }                
                 else if (line.toLowerCase().indexOf("heap size:") != -1) {
@@ -98,6 +98,12 @@ public class DataReaderJRockit1_5_0 implements DataReader {
                     if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startTimeIndex));
                     continue;
                 } 
+                else if (line.indexOf("K->K") != -1){
+                    // Ignore lines like this:
+                    // -: GC K->K (K), ms
+                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startTimeIndex));
+                    continue;
+                }
                 else if (line.indexOf("->") == -1){
                     // Ignore anything that is not of the format:
                     // 1643328K->159027K (3145728K), 71.126 ms
