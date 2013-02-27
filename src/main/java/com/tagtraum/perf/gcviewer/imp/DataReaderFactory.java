@@ -35,6 +35,9 @@ public class DataReaderFactory {
             if ((s.indexOf("[YC#") != -1) ||(s.indexOf("[OC#") != -1)) {
                 if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.6");
                 return new DataReaderJRockit1_6_0(in);
+            } else if (s.indexOf("GC mode:") != -1) {
+                if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.5");
+                return new DataReaderJRockit1_5_0(in);
             } else {
                 if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.4.2");
                 return new DataReaderJRockit1_4_2(in);

@@ -1,0 +1,51 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Generational Concurrent Mark, Parallel Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB, nursery size: 262144KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][memory ] [YC#1] 31.323-32.294: YC 461947KB->524256KB (524288KB), 0.971 s, sum of pauses 971.177 ms, longest pause 971.177 ms.
+[INFO ][memory ] [OC#1] 32.294-32.436: OC 524256KB->265908KB (524288KB), 0.142 s, sum of pauses 24.856 ms, longest pause 18.435 ms.
+[INFO ][memory ] [OC#2] 32.437-32.658: OC 266036KB->263157KB (524288KB), 0.220 s, sum of pauses 18.381 ms, longest pause 12.002 ms.
+[INFO ][memory ] [OC#3] 32.658-32.680: OC 268375KB->199278KB (524288KB), 0.022 s, sum of pauses 8.744 ms, longest pause 5.013 ms.
+[INFO ][memory ] [YC#2] 34.787-34.790: YC 461420KB->264880KB (524288KB), 0.002 s, sum of pauses 2.012 ms, longest pause 2.012 ms.
+[INFO ][memory ] [OC#4] 34.993-35.011: OC 295475KB->198289KB (524288KB), 0.018 s, sum of pauses 7.470 ms, longest pause 5.062 ms.
+[INFO ][memory ] [OC#5] 35.011-35.108: OC 198289KB->319261KB (524288KB), 0.096 s, sum of pauses 83.940 ms, longest pause 78.947 ms.
+[INFO ][memory ] [OC#6] 35.217-35.263: OC 319261KB->190352KB (524288KB), 0.045 s, sum of pauses 7.069 ms, longest pause 4.697 ms.
+[INFO ][memory ] [OC#7] 35.384-35.402: OC 190506KB->190328KB (524288KB), 0.018 s, sum of pauses 7.744 ms, longest pause 4.754 ms.
+[INFO ][memory ] [OC#8] 35.402-35.532: OC 190328KB->190327KB (524288KB), 0.130 s, sum of pauses 17.731 ms, longest pause 9.739 ms.
+[INFO ][memory ] [OC#9] 35.533-35.667: OC 190327KB->189980KB (524288KB), 0.134 s, sum of pauses 119.467 ms, longest pause 110.748 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 247772184
+[INFO ][memory ] [OC#10] 45.998-46.117: OC 256081KB->198015KB (524288KB), 0.119 s, sum of pauses 76.559 ms, longest pause 47.850 ms.
+[INFO ][memory ] [YC#3] 47.662-47.664: YC 460159KB->263681KB (524288KB), 0.002 s, sum of pauses 1.875 ms, longest pause 1.875 ms.
+[INFO ][memory ] [OC#11] 48.508-48.524: OC 420829KB->198015KB (524288KB), 0.016 s, sum of pauses 5.914 ms, longest pause 3.896 ms.
+[INFO ][memory ] [OC#12] 48.526-48.569: OC 198015KB->197988KB (524288KB), 0.043 s, sum of pauses 23.340 ms, longest pause 13.153 ms.
+[INFO ][memory ] [OC#13] 48.569-48.706: OC 197988KB->197973KB (524288KB), 0.136 s, sum of pauses 121.986 ms, longest pause 117.625 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 123886416
+[INFO ][memory ] [OC#14] 59.363-59.399: OC 263132KB->69064KB (524288KB), 0.036 s, sum of pauses 8.528 ms, longest pause 4.842 ms.
+[INFO ][memory ] [OC#15] 59.399-59.447: OC 69064KB->197981KB (524288KB), 0.048 s, sum of pauses 27.876 ms, longest pause 24.696 ms.
+[INFO ][memory ] [YC#4] 61.159-61.161: YC 460125KB->263583KB (524288KB), 0.002 s, sum of pauses 1.859 ms, longest pause 1.859 ms.
+[INFO ][memory ] [OC#16] 62.152-62.166: OC 420742KB->197981KB (524288KB), 0.014 s, sum of pauses 5.397 ms, longest pause 3.306 ms.
+[INFO ][memory ] [OC#17] 62.166-62.232: OC 197981KB->318963KB (524288KB), 0.065 s, sum of pauses 52.444 ms, longest pause 49.072 ms.
+[INFO ][memory ] [OC#18] 62.333-62.412: OC 318963KB->190045KB (524288KB), 0.079 s, sum of pauses 7.395 ms, longest pause 5.064 ms.
+[INFO ][memory ] [OC#19] 62.620-62.637: OC 190141KB->190022KB (524288KB), 0.017 s, sum of pauses 7.297 ms, longest pause 4.488 ms.
+[INFO ][memory ] [OC#20] 62.637-62.666: OC 190022KB->190014KB (524288KB), 0.029 s, sum of pauses 17.106 ms, longest pause 10.967 ms.
+[INFO ][memory ] [OC#21] 62.666-62.789: OC 190014KB->190013KB (524288KB), 0.123 s, sum of pauses 108.323 ms, longest pause 103.022 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 247772184
+[INFO ][memory ] [OC#22] 73.251-73.296: OC 255052KB->198010KB (524288KB), 0.045 s, sum of pauses 27.199 ms, longest pause 22.914 ms.
+[INFO ][memory ] [YC#5] 75.452-75.454: YC 460154KB->263676KB (524288KB), 0.002 s, sum of pauses 2.040 ms, longest pause 2.040 ms.
+[INFO ][memory ] [OC#23] 76.446-76.474: OC 420831KB->198009KB (524288KB), 0.028 s, sum of pauses 6.725 ms, longest pause 4.093 ms.
+[INFO ][memory ] [OC#24] 76.474-76.545: OC 198009KB->318964KB (524288KB), 0.070 s, sum of pauses 55.712 ms, longest pause 50.675 ms.
+[INFO ][memory ] [OC#25] 76.668-76.729: OC 318964KB->190020KB (524288KB), 0.061 s, sum of pauses 10.388 ms, longest pause 6.225 ms.
+[INFO ][memory ] [OC#26] 76.831-76.859: OC 190054KB->190019KB (524288KB), 0.028 s, sum of pauses 7.281 ms, longest pause 4.469 ms.
+[INFO ][memory ] [OC#27] 76.859-76.889: OC 190019KB->190015KB (524288KB), 0.030 s, sum of pauses 11.730 ms, longest pause 6.475 ms.
+[INFO ][memory ] [OC#28] 76.889-77.069: OC 190015KB->190014KB (524288KB), 0.180 s, sum of pauses 163.783 ms, longest pause 160.906 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 247772184

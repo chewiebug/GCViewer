@@ -1,0 +1,53 @@
+[memory ][Tue Nov 27 20:46:32 2012][07945] Running with 64 bit heap and uncompressed references.
+[memory ][Tue Nov 27 20:46:32 2012][07945] GC mode: Static, strategy: Generational Concurrent Mark & Sweep
+[memory ][Tue Nov 27 20:46:32 2012][07945] heap size: 25165824K, maximal heap size: 25165824K, nursery size: 4194304K
+[memory ][Tue Nov 27 20:46:32 2012][07945] -: GC K->K (K), ms
+[memory ][Tue Nov 27 20:46:32 2012][07945] - start time of collection (seconds since jvm start)
+[memory ][Tue Nov 27 20:46:32 2012][07945] - end time of collection (seconds since jvm start)
+[memory ][Tue Nov 27 20:46:32 2012][07945] - memory used by objects before collection (KB)
+[memory ][Tue Nov 27 20:46:32 2012][07945] - memory used by objects after collection (KB)
+[memory ][Tue Nov 27 20:46:32 2012][07945] - size of heap after collection (KB)
+[memory ][Tue Nov 27 20:46:32 2012][07945] - total sum of pauses during collection (milliseconds)
+[memory ][Tue Nov 27 20:46:32 2012][07945] run with -Xverbose:gcpause to see individual pauses
+[memory ][Tue Nov 27 20:47:59 2012][07945] 86.338: parallel nursery GC 6342580K->3193677K (25165824K), 377.950 ms
+[gcpause][Tue Nov 27 20:47:59 2012][07945] nursery collection pause time: 377.950000 ms
+[memory ][Tue Nov 27 20:49:23 2012][07945] 170.474: parallel nursery GC 6342477K->3193589K (25165824K), 431.549 ms
+[gcpause][Tue Nov 27 20:49:23 2012][07945] nursery collection pause time: 431.549000 ms
+[memory ][Tue Nov 27 20:50:53 2012][07945] 260.912: parallel nursery GC 8225175K->5076375K (25165824K), 437.175 ms
+[gcpause][Tue Nov 27 20:50:53 2012][07945] nursery collection pause time: 437.175000 ms
+[memory ][Tue Nov 27 20:52:22 2012][07945] 349.327: parallel nursery GC 8225175K->5076258K (25165824K), 427.192 ms
+[gcpause][Tue Nov 27 20:52:22 2012][07945] nursery collection pause time: 427.192000 ms
+[memory ][Tue Nov 27 20:53:19 2012][07945] 406.469: parallel nursery GC 8233244K->5084331K (25165824K), 368.508 ms
+[gcpause][Tue Nov 27 20:53:19 2012][07945] nursery collection pause time: 368.508000 ms
+[memory ][Tue Nov 27 20:53:44 2012][07945] 431.552: parallel nursery GC 8243165K->5094301K (25165824K), 288.407 ms
+[gcpause][Tue Nov 27 20:53:44 2012][07945] nursery collection pause time: 288.407000 ms
+[memory ][Tue Nov 27 20:54:08 2012][07945] 456.082: parallel nursery GC 8256491K->5160146K (25165824K), 257.011 ms
+[gcpause][Tue Nov 27 20:54:08 2012][07945] nursery collection pause time: 257.011000 ms
+[memory ][Tue Nov 27 20:54:35 2012][07945] 482.139: parallel nursery GC 10078452K->6929460K (25165824K), 558.459 ms
+[gcpause][Tue Nov 27 20:54:35 2012][07945] nursery collection pause time: 558.459000 ms
+[memory ][Tue Nov 27 20:54:59 2012][07945] 506.868: parallel nursery GC 10106139K->6957339K (25165824K), 312.258 ms
+[gcpause][Tue Nov 27 20:54:59 2012][07945] nursery collection pause time: 312.258000 ms
+[memory ][Tue Nov 27 20:55:22 2012][07945] 530.069: parallel nursery GC 10106651K->6957787K (25165824K), 179.281 ms
+[gcpause][Tue Nov 27 20:55:22 2012][07945] nursery collection pause time: 179.281000 ms
+[memory ][Tue Nov 27 20:56:02 2012][07945] 569.325: parallel nursery GC 10106587K->6957659K (25165824K), 644.698 ms
+[gcpause][Tue Nov 27 20:56:02 2012][07945] nursery collection pause time: 644.698000 ms
+[memory ][Tue Nov 27 20:56:51 2012][07945] 618.198: parallel nursery GC 11613124K->8463876K (25165824K), 725.479 ms
+[gcpause][Tue Nov 27 20:56:51 2012][07945] nursery collection pause time: 725.479000 ms
+[memory ][Tue Nov 27 20:57:13 2012][07945] 641.285: parallel nursery GC 11613188K->8464388K (25165824K), 174.086 ms
+[gcpause][Tue Nov 27 20:57:13 2012][07945] nursery collection pause time: 174.086000 ms
+[memory ][Tue Nov 27 20:57:36 2012][07945] 663.828: parallel nursery GC 11613700K->8464708K (25165824K), 130.922 ms
+[gcpause][Tue Nov 27 20:57:36 2012][07945] nursery collection pause time: 130.922000 ms
+[memory ][Tue Nov 27 20:58:13 2012][07945] 701.379: parallel nursery GC 11613508K->8464452K (25165824K), 138.026 ms
+[gcpause][Tue Nov 27 20:58:13 2012][07945] nursery collection pause time: 138.026000 ms
+[memory ][Tue Nov 27 20:59:31 2012][07945] 778.216: parallel nursery GC 11613252K->8464324K (25165824K), 432.334 ms
+[gcpause][Tue Nov 27 20:59:31 2012][07945] nursery collection pause time: 432.334000 ms
+[memory ][Tue Nov 27 21:00:48 2012][07945] 855.609: parallel nursery GC 12969391K->9820591K (25165824K), 459.515 ms
+[gcpause][Tue Nov 27 21:00:48 2012][07945] nursery collection pause time: 459.515000 ms
+[memory ][Tue Nov 27 21:02:06 2012][07945] 933.180: parallel nursery GC 14189577K->11040738K (25165824K), 430.249 ms
+[gcpause][Tue Nov 27 21:02:06 2012][07945] nursery collection pause time: 430.249000 ms
+[memory ][Tue Nov 27 21:03:22 2012][07945] 1009.390: parallel nursery GC 14189538K->11040354K (25165824K), 499.022 ms
+[gcpause][Tue Nov 27 21:03:22 2012][07945] nursery collection pause time: 499.022000 ms
+[memory ][Tue Nov 27 21:04:42 2012][07945] 1089.308: parallel nursery GC 15287288K->12138232K (25165824K), 509.388 ms
+[gcpause][Tue Nov 27 21:04:42 2012][07945] nursery collection pause time: 509.388000 ms
+[memory ][Tue Nov 27 21:05:56 2012][07945] 1163.268: parallel nursery GC 16537519K->13388655K (25165824K), 602.746 ms
+[gcpause][Tue Nov 27 21:05:56 2012][07945] nursery collection pause time: 602.746000 ms

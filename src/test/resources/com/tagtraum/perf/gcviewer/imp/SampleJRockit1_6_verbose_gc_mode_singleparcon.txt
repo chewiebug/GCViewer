@@ -1,0 +1,463 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Parallel Mark, Concurrent Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][memory ] [OC#1] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#1] [---]    42.185 ms (26.242000-26.284000)  OC
+[INFO ][gcpause] [OC#1] [con]     0.004 ms (26.242000-26.242000)  OC:PreGC
+[INFO ][gcpause] [OC#1] [pau]    32.087 ms (26.242000-26.274000)  OC:Main
+[INFO ][gcpause] [OC#1] [con]    10.062 ms (26.274000-26.284000)  OC:PostGC
+[INFO ][memory ] [OC#1] 26.242-26.284: OC 270909KB->210916KB (524288KB), 0.042 s, sum of pauses 32.087 ms, longest pause 32.087 ms.
+[INFO ][memory ] [OC#2] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#2] [---]   118.960 ms (26.285000-26.404000)  OC
+[INFO ][gcpause] [OC#2] [con]     0.000 ms (26.285000-26.285000)  OC:PreGC
+[INFO ][gcpause] [OC#2] [pau]    70.873 ms (26.285000-26.356000)  OC:Main
+[INFO ][gcpause] [OC#2] [con]     1.126 ms (26.356000-26.357000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#2] [pau]     0.048 ms (26.357000-26.357000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#2] [con]     0.001 ms (26.357000-26.357000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#2] [pau]     0.433 ms (26.357000-26.357000)  OC:Cleanup
+[INFO ][gcpause] [OC#2] [con]    46.085 ms (26.357000-26.404000)  OC:PostGC
+[INFO ][memory ] [OC#2] 26.285-26.404: OC 210918KB->206307KB (524288KB), 0.119 s, sum of pauses 71.354 ms, longest pause 70.873 ms.
+[INFO ][memory ] [OC#3] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#3] [---]   199.441 ms (26.404000-26.603000)  OC
+[INFO ][gcpause] [OC#3] [con]     0.001 ms (26.404000-26.404000)  OC:PreGC
+[INFO ][gcpause] [OC#3] [pau]   193.998 ms (26.404000-26.598000)  OC:Main
+[INFO ][gcpause] [OC#3] [con]     5.176 ms (26.598000-26.603000)  OC:PostGC
+[INFO ][memory ] [OC#3] 26.404-26.603: OC 206309KB->412537KB (524288KB), 0.199 s, sum of pauses 193.998 ms, longest pause 193.998 ms.
+[INFO ][gcpause] Thread "http-0.0.0.0-8000-1" id=15 idx=0x3c tid=29400 was in object alloc 538.201 ms from 26.242 s (3 GCs).
+[INFO ][memory ] [OC#4] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#4] [---]    21.685 ms (28.501000-28.523000)  OC
+[INFO ][gcpause] [OC#4] [con]     0.002 ms (28.501000-28.501000)  OC:PreGC
+[INFO ][gcpause] [OC#4] [pau]    13.004 ms (28.501000-28.514000)  OC:Main
+[INFO ][gcpause] [OC#4] [con]     2.114 ms (28.514000-28.516000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#4] [pau]     0.032 ms (28.516000-28.516000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#4] [con]     0.504 ms (28.516000-28.517000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#4] [pau]     0.230 ms (28.517000-28.517000)  OC:Cleanup
+[INFO ][gcpause] [OC#4] [con]     5.289 ms (28.517000-28.523000)  OC:PostGC
+[INFO ][memory ] [OC#4] 28.501-28.523: OC 524288KB->370017KB (524288KB), 0.022 s, sum of pauses 13.266 ms, longest pause 13.004 ms.
+[INFO ][gcpause] [OC#5] [---]    15.715 ms (29.329000-29.345000)  OC
+[INFO ][gcpause] [OC#5] [con]     0.002 ms (29.329000-29.329000)  OC:PreGC
+[INFO ][gcpause] [OC#5] [pau]     9.013 ms (29.332000-29.341000)  OC:Main
+[INFO ][gcpause] [OC#5] [con]     1.705 ms (29.341000-29.343000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#5] [pau]     0.010 ms (29.343000-29.343000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#5] [con]     0.362 ms (29.343000-29.343000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#5] [pau]     0.038 ms (29.344000-29.344000)  OC:Cleanup
+[INFO ][gcpause] [OC#5] [con]     1.472 ms (29.344000-29.345000)  OC:PostGC
+[INFO ][memory ] [OC#5] 29.329-29.345: OC 456006KB->370203KB (524288KB), 0.016 s, sum of pauses 9.061 ms, longest pause 9.013 ms.
+[INFO ][gcpause] [OC#6] [---]    17.252 ms (30.103000-30.120000)  OC
+[INFO ][gcpause] [OC#6] [con]     0.002 ms (30.103000-30.103000)  OC:PreGC
+[INFO ][gcpause] [OC#6] [pau]    11.465 ms (30.103000-30.115000)  OC:Main
+[INFO ][gcpause] [OC#6] [con]     1.655 ms (30.115000-30.116000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#6] [pau]     0.012 ms (30.117000-30.117000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#6] [con]     0.287 ms (30.117000-30.117000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#6] [pau]     0.032 ms (30.117000-30.117000)  OC:Cleanup
+[INFO ][gcpause] [OC#6] [con]     3.222 ms (30.117000-30.120000)  OC:PostGC
+[INFO ][memory ] [OC#6] 30.103-30.120: OC 462728KB->370160KB (524288KB), 0.017 s, sum of pauses 11.509 ms, longest pause 11.465 ms.
+[INFO ][gcpause] [OC#7] [---]    15.108 ms (30.939000-30.954000)  OC
+[INFO ][gcpause] [OC#7] [con]     0.002 ms (30.939000-30.939000)  OC:PreGC
+[INFO ][gcpause] [OC#7] [pau]     7.900 ms (30.942000-30.950000)  OC:Main
+[INFO ][gcpause] [OC#7] [con]     1.321 ms (30.950000-30.951000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#7] [pau]     0.009 ms (30.952000-30.952000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#7] [con]     0.208 ms (30.952000-30.952000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#7] [pau]     0.027 ms (30.952000-30.952000)  OC:Cleanup
+[INFO ][gcpause] [OC#7] [con]     1.760 ms (30.952000-30.954000)  OC:PostGC
+[INFO ][memory ] [OC#7] 30.939-30.954: OC 466478KB->370113KB (524288KB), 0.015 s, sum of pauses 7.937 ms, longest pause 7.900 ms.
+[INFO ][gcpause] [OC#8] [---]    23.138 ms (31.711000-31.734000)  OC
+[INFO ][gcpause] [OC#8] [con]     0.002 ms (31.711000-31.711000)  OC:PreGC
+[INFO ][gcpause] [OC#8] [pau]    10.483 ms (31.718000-31.728000)  OC:Main
+[INFO ][gcpause] [OC#8] [con]     1.634 ms (31.728000-31.730000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#8] [pau]     0.009 ms (31.730000-31.730000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#8] [con]     0.327 ms (31.730000-31.730000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#8] [pau]     0.034 ms (31.731000-31.731000)  OC:Cleanup
+[INFO ][gcpause] [OC#8] [con]     3.213 ms (31.731000-31.734000)  OC:PostGC
+[INFO ][memory ] [OC#8] 31.711-31.734: OC 462764KB->370090KB (524288KB), 0.023 s, sum of pauses 10.526 ms, longest pause 10.483 ms.
+[INFO ][gcpause] [OC#9] [---]    14.978 ms (32.491000-32.506000)  OC
+[INFO ][gcpause] [OC#9] [con]     0.002 ms (32.491000-32.491000)  OC:PreGC
+[INFO ][gcpause] [OC#9] [pau]     8.353 ms (32.494000-32.502000)  OC:Main
+[INFO ][gcpause] [OC#9] [con]     1.474 ms (32.502000-32.504000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#9] [pau]     0.014 ms (32.504000-32.504000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#9] [con]     0.251 ms (32.504000-32.504000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#9] [pau]     0.036 ms (32.504000-32.504000)  OC:Cleanup
+[INFO ][gcpause] [OC#9] [con]     1.640 ms (32.504000-32.506000)  OC:PostGC
+[INFO ][memory ] [OC#9] 32.491-32.506: OC 461339KB->369972KB (524288KB), 0.015 s, sum of pauses 8.403 ms, longest pause 8.353 ms.
+[INFO ][memory ] [OC#10] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#10] [---]    21.502 ms (33.051000-33.072000)  OC
+[INFO ][gcpause] [OC#10] [con]     0.002 ms (33.051000-33.051000)  OC:PreGC
+[INFO ][gcpause] [OC#10] [pau]    10.740 ms (33.056000-33.067000)  OC:Main
+[INFO ][gcpause] [OC#10] [con]     5.391 ms (33.067000-33.072000)  OC:PostGC
+[INFO ][memory ] [OC#10] 33.051-33.072: OC 429312KB->370086KB (524288KB), 0.022 s, sum of pauses 10.740 ms, longest pause 10.740 ms.
+[INFO ][memory ] [OC#11] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#11] [---]    25.587 ms (33.073000-33.099000)  OC
+[INFO ][gcpause] [OC#11] [con]     0.001 ms (33.073000-33.073000)  OC:PreGC
+[INFO ][gcpause] [OC#11] [pau]    15.281 ms (33.075000-33.090000)  OC:Main
+[INFO ][gcpause] [OC#11] [con]     3.455 ms (33.090000-33.094000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#11] [pau]     0.682 ms (33.094000-33.094000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#11] [con]     0.105 ms (33.094000-33.094000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#11] [pau]     0.062 ms (33.095000-33.095000)  OC:Cleanup
+[INFO ][gcpause] [OC#11] [con]     3.867 ms (33.095000-33.099000)  OC:PostGC
+[INFO ][memory ] [OC#11] 33.073-33.099: OC 370086KB->370087KB (524288KB), 0.026 s, sum of pauses 16.025 ms, longest pause 15.281 ms.
+[INFO ][memory ] [OC#12] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#12] [---]   193.173 ms (33.099000-33.292000)  OC
+[INFO ][gcpause] [OC#12] [con]     0.001 ms (33.099000-33.099000)  OC:PreGC
+[INFO ][gcpause] [OC#12] [pau]   188.700 ms (33.100000-33.289000)  OC:Main
+[INFO ][gcpause] [OC#12] [con]     3.457 ms (33.289000-33.292000)  OC:PostGC
+[INFO ][memory ] [OC#12] 33.099-33.292: OC 370401KB->369990KB (524288KB), 0.193 s, sum of pauses 188.700 ms, longest pause 188.700 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 124712280
+[INFO ][memory ] [OC#13] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#13] [---]    14.871 ms (34.730000-34.745000)  OC
+[INFO ][gcpause] [OC#13] [con]     0.002 ms (34.730000-34.730000)  OC:PreGC
+[INFO ][gcpause] [OC#13] [pau]     9.537 ms (34.731000-34.740000)  OC:Main
+[INFO ][gcpause] [OC#13] [con]     1.182 ms (34.740000-34.741000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#13] [pau]     0.019 ms (34.741000-34.741000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#13] [con]     0.705 ms (34.742000-34.742000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#13] [pau]     0.047 ms (34.743000-34.743000)  OC:Cleanup
+[INFO ][gcpause] [OC#13] [con]     2.064 ms (34.743000-34.745000)  OC:PostGC
+[INFO ][memory ] [OC#13] 34.730-34.745: OC 524288KB->370210KB (524288KB), 0.015 s, sum of pauses 9.602 ms, longest pause 9.537 ms.
+[INFO ][memory ] [OC#14] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#14] [---]    21.143 ms (34.764000-34.785000)  OC
+[INFO ][gcpause] [OC#14] [con]     0.003 ms (34.764000-34.764000)  OC:PreGC
+[INFO ][gcpause] [OC#14] [pau]    11.016 ms (34.764000-34.775000)  OC:Main
+[INFO ][gcpause] [OC#14] [con]    10.043 ms (34.775000-34.785000)  OC:PostGC
+[INFO ][memory ] [OC#14] 34.764-34.785: OC 371858KB->370104KB (524288KB), 0.021 s, sum of pauses 11.016 ms, longest pause 11.016 ms.
+[INFO ][memory ] [OC#15] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#15] [---]    21.614 ms (34.786000-34.807000)  OC
+[INFO ][gcpause] [OC#15] [con]     0.001 ms (34.786000-34.786000)  OC:PreGC
+[INFO ][gcpause] [OC#15] [pau]    15.706 ms (34.786000-34.802000)  OC:Main
+[INFO ][gcpause] [OC#15] [con]     0.537 ms (34.802000-34.802000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#15] [pau]     0.021 ms (34.803000-34.803000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#15] [con]     0.009 ms (34.803000-34.803000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#15] [pau]     0.031 ms (34.803000-34.803000)  OC:Cleanup
+[INFO ][gcpause] [OC#15] [con]     4.706 ms (34.803000-34.807000)  OC:PostGC
+[INFO ][memory ] [OC#15] 34.786-34.807: OC 370104KB->370060KB (524288KB), 0.022 s, sum of pauses 15.757 ms, longest pause 15.706 ms.
+[INFO ][memory ] [OC#16] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#16] [---]   206.958 ms (34.809000-35.016000)  OC
+[INFO ][gcpause] [OC#16] [con]     0.002 ms (34.809000-34.809000)  OC:PreGC
+[INFO ][gcpause] [OC#16] [pau]   202.802 ms (34.809000-35.012000)  OC:Main
+[INFO ][gcpause] [OC#16] [con]     4.006 ms (35.012000-35.016000)  OC:PostGC
+[INFO ][memory ] [OC#16] 34.809-35.016: OC 370060KB->370022KB (524288KB), 0.207 s, sum of pauses 202.802 ms, longest pause 202.802 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 234478896
+[INFO ][memory ] [OC#17] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#17] [---]    42.437 ms (51.245000-51.287000)  OC
+[INFO ][gcpause] [OC#17] [con]     0.002 ms (51.245000-51.245000)  OC:PreGC
+[INFO ][gcpause] [OC#17] [pau]    28.231 ms (51.245000-51.273000)  OC:Main
+[INFO ][gcpause] [OC#17] [con]     1.244 ms (51.273000-51.274000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#17] [pau]     0.019 ms (51.274000-51.274000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#17] [con]     1.840 ms (51.274000-51.276000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#17] [pau]     0.049 ms (51.276000-51.276000)  OC:Cleanup
+[INFO ][gcpause] [OC#17] [con]    10.913 ms (51.276000-51.287000)  OC:PostGC
+[INFO ][memory ] [OC#17] 51.245-51.287: OC 370537KB->126522KB (524288KB), 0.042 s, sum of pauses 28.299 ms, longest pause 28.231 ms.
+[INFO ][gcpause] [OC#18] [---]    19.188 ms (62.524000-62.543000)  OC
+[INFO ][gcpause] [OC#18] [con]     0.002 ms (62.524000-62.524000)  OC:PreGC
+[INFO ][gcpause] [OC#18] [pau]     8.448 ms (62.530000-62.538000)  OC:Main
+[INFO ][gcpause] [OC#18] [con]     1.429 ms (62.538000-62.540000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#18] [pau]     0.012 ms (62.540000-62.540000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#18] [con]     0.336 ms (62.540000-62.540000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#18] [pau]     0.085 ms (62.540000-62.540000)  OC:Cleanup
+[INFO ][gcpause] [OC#18] [con]     3.190 ms (62.540000-62.543000)  OC:PostGC
+[INFO ][memory ] [OC#18] 62.524-62.543: OC 466928KB->370094KB (524288KB), 0.019 s, sum of pauses 8.546 ms, longest pause 8.448 ms.
+[INFO ][gcpause] [OC#19] [---]    15.133 ms (63.200000-63.215000)  OC
+[INFO ][gcpause] [OC#19] [con]     0.002 ms (63.200000-63.200000)  OC:PreGC
+[INFO ][gcpause] [OC#19] [pau]    11.362 ms (63.200000-63.211000)  OC:Main
+[INFO ][gcpause] [OC#19] [con]     1.197 ms (63.211000-63.213000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#19] [pau]     0.010 ms (63.213000-63.213000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#19] [con]     0.296 ms (63.213000-63.213000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#19] [pau]     0.035 ms (63.213000-63.213000)  OC:Cleanup
+[INFO ][gcpause] [OC#19] [con]     1.557 ms (63.213000-63.215000)  OC:PostGC
+[INFO ][memory ] [OC#19] 63.200-63.215: OC 468535KB->370270KB (524288KB), 0.015 s, sum of pauses 11.407 ms, longest pause 11.362 ms.
+[INFO ][gcpause] [OC#20] [---]    17.541 ms (63.871000-63.889000)  OC
+[INFO ][gcpause] [OC#20] [con]     0.002 ms (63.871000-63.871000)  OC:PreGC
+[INFO ][gcpause] [OC#20] [pau]     8.864 ms (63.876000-63.885000)  OC:Main
+[INFO ][gcpause] [OC#20] [con]     1.451 ms (63.885000-63.887000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#20] [pau]     0.011 ms (63.887000-63.887000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#20] [con]     0.356 ms (63.887000-63.887000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#20] [pau]     0.036 ms (63.887000-63.887000)  OC:Cleanup
+[INFO ][gcpause] [OC#20] [con]     1.535 ms (63.887000-63.889000)  OC:PostGC
+[INFO ][memory ] [OC#20] 63.871-63.889: OC 464441KB->370104KB (524288KB), 0.018 s, sum of pauses 8.911 ms, longest pause 8.864 ms.
+[INFO ][gcpause] [OC#21] [---]    20.496 ms (64.500000-64.520000)  OC
+[INFO ][gcpause] [OC#21] [con]     0.002 ms (64.500000-64.500000)  OC:PreGC
+[INFO ][gcpause] [OC#21] [pau]    16.399 ms (64.500000-64.517000)  OC:Main
+[INFO ][gcpause] [OC#21] [con]     1.471 ms (64.517000-64.518000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#21] [pau]     0.009 ms (64.518000-64.518000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#21] [con]     0.366 ms (64.518000-64.519000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#21] [pau]     0.037 ms (64.519000-64.519000)  OC:Cleanup
+[INFO ][gcpause] [OC#21] [con]     1.510 ms (64.519000-64.520000)  OC:PostGC
+[INFO ][memory ] [OC#21] 64.500-64.520: OC 463607KB->370429KB (524288KB), 0.020 s, sum of pauses 16.445 ms, longest pause 16.399 ms.
+[INFO ][gcpause] [OC#22] [---]    15.288 ms (65.177000-65.192000)  OC
+[INFO ][gcpause] [OC#22] [con]     0.002 ms (65.177000-65.177000)  OC:PreGC
+[INFO ][gcpause] [OC#22] [pau]     8.211 ms (65.181000-65.189000)  OC:Main
+[INFO ][gcpause] [OC#22] [con]     1.166 ms (65.189000-65.190000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#22] [pau]     0.011 ms (65.190000-65.190000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#22] [con]     0.326 ms (65.190000-65.191000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#22] [pau]     0.031 ms (65.191000-65.191000)  OC:Cleanup
+[INFO ][gcpause] [OC#22] [con]     1.495 ms (65.191000-65.192000)  OC:PostGC
+[INFO ][memory ] [OC#22] 65.177-65.192: OC 462169KB->370107KB (524288KB), 0.015 s, sum of pauses 8.254 ms, longest pause 8.211 ms.
+[INFO ][gcpause] [OC#23] [---]    14.849 ms (65.899000-65.913000)  OC
+[INFO ][gcpause] [OC#23] [con]     0.002 ms (65.899000-65.899000)  OC:PreGC
+[INFO ][gcpause] [OC#23] [pau]    10.742 ms (65.899000-65.910000)  OC:Main
+[INFO ][gcpause] [OC#23] [con]     1.448 ms (65.910000-65.911000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#23] [pau]     0.011 ms (65.911000-65.911000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#23] [con]     0.354 ms (65.911000-65.912000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#23] [pau]     0.038 ms (65.912000-65.912000)  OC:Cleanup
+[INFO ][gcpause] [OC#23] [con]     1.437 ms (65.912000-65.913000)  OC:PostGC
+[INFO ][memory ] [OC#23] 65.899-65.913: OC 466620KB->370304KB (524288KB), 0.015 s, sum of pauses 10.791 ms, longest pause 10.742 ms.
+[INFO ][gcpause] [OC#24] [---]    15.621 ms (66.569000-66.584000)  OC
+[INFO ][gcpause] [OC#24] [con]     0.002 ms (66.569000-66.569000)  OC:PreGC
+[INFO ][gcpause] [OC#24] [pau]     8.687 ms (66.572000-66.581000)  OC:Main
+[INFO ][gcpause] [OC#24] [con]     1.422 ms (66.581000-66.582000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#24] [pau]     0.012 ms (66.582000-66.582000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#24] [con]     0.366 ms (66.582000-66.583000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#24] [pau]     0.034 ms (66.583000-66.583000)  OC:Cleanup
+[INFO ][gcpause] [OC#24] [con]     1.445 ms (66.583000-66.584000)  OC:PostGC
+[INFO ][memory ] [OC#24] 66.569-66.584: OC 466537KB->370103KB (524288KB), 0.016 s, sum of pauses 8.732 ms, longest pause 8.687 ms.
+[INFO ][gcpause] [OC#25] [---]    15.628 ms (67.241000-67.257000)  OC
+[INFO ][gcpause] [OC#25] [con]     0.002 ms (67.241000-67.241000)  OC:PreGC
+[INFO ][gcpause] [OC#25] [pau]     8.768 ms (67.245000-67.254000)  OC:Main
+[INFO ][gcpause] [OC#25] [con]     1.221 ms (67.254000-67.255000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#25] [pau]     0.012 ms (67.255000-67.255000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#25] [con]     0.276 ms (67.255000-67.255000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#25] [pau]     0.030 ms (67.255000-67.255000)  OC:Cleanup
+[INFO ][gcpause] [OC#25] [con]     1.623 ms (67.255000-67.257000)  OC:PostGC
+[INFO ][memory ] [OC#25] 67.241-67.257: OC 466247KB->370108KB (524288KB), 0.016 s, sum of pauses 8.810 ms, longest pause 8.768 ms.
+[INFO ][memory ] [OC#26] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#26] [---]    12.428 ms (67.403000-67.416000)  OC
+[INFO ][gcpause] [OC#26] [con]     0.002 ms (67.403000-67.403000)  OC:PreGC
+[INFO ][gcpause] [OC#26] [pau]    10.492 ms (67.403000-67.414000)  OC:Main
+[INFO ][gcpause] [OC#26] [con]     1.865 ms (67.414000-67.416000)  OC:PostGC
+[INFO ][memory ] [OC#26] 67.403-67.416: OC 391299KB->370105KB (524288KB), 0.012 s, sum of pauses 10.492 ms, longest pause 10.492 ms.
+[INFO ][memory ] [OC#27] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#27] [---]    33.291 ms (67.417000-67.450000)  OC
+[INFO ][gcpause] [OC#27] [con]     0.003 ms (67.417000-67.417000)  OC:PreGC
+[INFO ][gcpause] [OC#27] [pau]    23.736 ms (67.417000-67.441000)  OC:Main
+[INFO ][gcpause] [OC#27] [con]     1.511 ms (67.441000-67.442000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#27] [pau]     0.054 ms (67.443000-67.443000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#27] [con]     0.023 ms (67.443000-67.443000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#27] [pau]     0.072 ms (67.443000-67.443000)  OC:Cleanup
+[INFO ][gcpause] [OC#27] [con]     7.264 ms (67.443000-67.450000)  OC:PostGC
+[INFO ][memory ] [OC#27] 67.417-67.450: OC 370105KB->370055KB (524288KB), 0.033 s, sum of pauses 23.862 ms, longest pause 23.736 ms.
+[INFO ][memory ] [OC#28] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#28] [---]   178.984 ms (67.451000-67.630000)  OC
+[INFO ][gcpause] [OC#28] [con]     0.002 ms (67.451000-67.451000)  OC:PreGC
+[INFO ][gcpause] [OC#28] [pau]   175.884 ms (67.451000-67.627000)  OC:Main
+[INFO ][gcpause] [OC#28] [con]     3.004 ms (67.627000-67.630000)  OC:PostGC
+[INFO ][memory ] [OC#28] 67.451-67.630: OC 370055KB->370026KB (524288KB), 0.179 s, sum of pauses 175.884 ms, longest pause 175.884 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 234478896
+[INFO ][memory ] [OC#29] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#29] [---]    91.678 ms (72.444000-72.536000)  OC
+[INFO ][gcpause] [OC#29] [con]     0.003 ms (72.444000-72.444000)  OC:PreGC
+[INFO ][gcpause] [OC#29] [pau]    24.221 ms (72.476000-72.501000)  OC:Main
+[INFO ][gcpause] [OC#29] [con]     0.982 ms (72.501000-72.502000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#29] [pau]     0.016 ms (72.502000-72.502000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#29] [con]     3.001 ms (72.502000-72.505000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#29] [pau]     0.056 ms (72.534000-72.534000)  OC:Cleanup
+[INFO ][gcpause] [OC#29] [con]     2.138 ms (72.534000-72.536000)  OC:PostGC
+[INFO ][memory ] [OC#29] 72.444-72.536: OC 370363KB->126500KB (524288KB), 0.092 s, sum of pauses 24.293 ms, longest pause 24.221 ms.
+[INFO ][gcpause] [OC#30] [---]    17.697 ms (84.039000-84.057000)  OC
+[INFO ][gcpause] [OC#30] [con]     0.003 ms (84.039000-84.039000)  OC:PreGC
+[INFO ][gcpause] [OC#30] [pau]     8.655 ms (84.041000-84.050000)  OC:Main
+[INFO ][gcpause] [OC#30] [con]     2.376 ms (84.050000-84.052000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#30] [pau]     0.011 ms (84.052000-84.052000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#30] [con]     0.409 ms (84.052000-84.053000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#30] [pau]     0.038 ms (84.053000-84.053000)  OC:Cleanup
+[INFO ][gcpause] [OC#30] [con]     3.556 ms (84.053000-84.057000)  OC:PostGC
+[INFO ][memory ] [OC#30] 84.039-84.057: OC 467315KB->370537KB (524288KB), 0.018 s, sum of pauses 8.703 ms, longest pause 8.655 ms.
+[INFO ][gcpause] [OC#31] [---]    15.498 ms (84.663000-84.678000)  OC
+[INFO ][gcpause] [OC#31] [con]     0.002 ms (84.663000-84.663000)  OC:PreGC
+[INFO ][gcpause] [OC#31] [pau]     8.390 ms (84.666000-84.674000)  OC:Main
+[INFO ][gcpause] [OC#31] [con]     1.228 ms (84.674000-84.676000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#31] [pau]     0.011 ms (84.676000-84.676000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#31] [con]     0.299 ms (84.676000-84.676000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#31] [pau]     0.033 ms (84.676000-84.676000)  OC:Cleanup
+[INFO ][gcpause] [OC#31] [con]     1.608 ms (84.676000-84.678000)  OC:PostGC
+[INFO ][memory ] [OC#31] 84.663-84.678: OC 463987KB->370252KB (524288KB), 0.015 s, sum of pauses 8.434 ms, longest pause 8.390 ms.
+[INFO ][gcpause] [OC#32] [---]    17.767 ms (85.335000-85.352000)  OC
+[INFO ][gcpause] [OC#32] [con]     0.002 ms (85.335000-85.335000)  OC:PreGC
+[INFO ][gcpause] [OC#32] [pau]    10.655 ms (85.338000-85.349000)  OC:Main
+[INFO ][gcpause] [OC#32] [con]     1.327 ms (85.349000-85.350000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#32] [pau]     0.012 ms (85.350000-85.350000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#32] [con]     0.302 ms (85.350000-85.351000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#32] [pau]     0.089 ms (85.351000-85.351000)  OC:Cleanup
+[INFO ][gcpause] [OC#32] [con]     1.754 ms (85.351000-85.352000)  OC:PostGC
+[INFO ][memory ] [OC#32] 85.335-85.352: OC 466918KB->370080KB (524288KB), 0.018 s, sum of pauses 10.756 ms, longest pause 10.655 ms.
+[INFO ][gcpause] [OC#33] [---]    14.674 ms (86.008000-86.022000)  OC
+[INFO ][gcpause] [OC#33] [con]     0.002 ms (86.008000-86.008000)  OC:PreGC
+[INFO ][gcpause] [OC#33] [pau]     9.326 ms (86.009000-86.018000)  OC:Main
+[INFO ][gcpause] [OC#33] [con]     1.495 ms (86.018000-86.020000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#33] [pau]     0.009 ms (86.020000-86.020000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#33] [con]     0.390 ms (86.020000-86.021000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#33] [pau]     0.055 ms (86.021000-86.021000)  OC:Cleanup
+[INFO ][gcpause] [OC#33] [con]     1.478 ms (86.021000-86.022000)  OC:PostGC
+[INFO ][memory ] [OC#33] 86.008-86.022: OC 467829KB->370304KB (524288KB), 0.015 s, sum of pauses 9.390 ms, longest pause 9.326 ms.
+[INFO ][gcpause] [OC#34] [---]    17.193 ms (86.679000-86.696000)  OC
+[INFO ][gcpause] [OC#34] [con]     0.002 ms (86.679000-86.679000)  OC:PreGC
+[INFO ][gcpause] [OC#34] [pau]     9.979 ms (86.680000-86.690000)  OC:Main
+[INFO ][gcpause] [OC#34] [con]     1.498 ms (86.690000-86.692000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#34] [pau]     0.009 ms (86.692000-86.692000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#34] [con]     0.650 ms (86.692000-86.693000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#34] [pau]     0.046 ms (86.693000-86.693000)  OC:Cleanup
+[INFO ][gcpause] [OC#34] [con]     3.647 ms (86.693000-86.696000)  OC:PostGC
+[INFO ][memory ] [OC#34] 86.679-86.696: OC 468444KB->370236KB (524288KB), 0.017 s, sum of pauses 10.035 ms, longest pause 9.979 ms.
+[INFO ][gcpause] [OC#35] [---]    15.946 ms (87.404000-87.420000)  OC
+[INFO ][gcpause] [OC#35] [con]     0.002 ms (87.404000-87.404000)  OC:PreGC
+[INFO ][gcpause] [OC#35] [pau]     9.431 ms (87.406000-87.416000)  OC:Main
+[INFO ][gcpause] [OC#35] [con]     1.312 ms (87.416000-87.417000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#35] [pau]     0.010 ms (87.417000-87.417000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#35] [con]     0.354 ms (87.417000-87.417000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#35] [pau]     0.055 ms (87.417000-87.418000)  OC:Cleanup
+[INFO ][gcpause] [OC#35] [con]     2.365 ms (87.418000-87.420000)  OC:PostGC
+[INFO ][memory ] [OC#35] 87.404-87.420: OC 466246KB->370119KB (524288KB), 0.016 s, sum of pauses 9.496 ms, longest pause 9.431 ms.
+[INFO ][gcpause] [OC#36] [---]    16.713 ms (88.079000-88.096000)  OC
+[INFO ][gcpause] [OC#36] [con]     0.002 ms (88.079000-88.079000)  OC:PreGC
+[INFO ][gcpause] [OC#36] [pau]    12.535 ms (88.079000-88.092000)  OC:Main
+[INFO ][gcpause] [OC#36] [con]     1.451 ms (88.092000-88.093000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#36] [pau]     0.023 ms (88.093000-88.093000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#36] [con]     0.384 ms (88.093000-88.094000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#36] [pau]     0.037 ms (88.094000-88.094000)  OC:Cleanup
+[INFO ][gcpause] [OC#36] [con]     1.565 ms (88.094000-88.096000)  OC:PostGC
+[INFO ][memory ] [OC#36] 88.079-88.096: OC 464849KB->370411KB (524288KB), 0.017 s, sum of pauses 12.595 ms, longest pause 12.535 ms.
+[INFO ][gcpause] [OC#37] [---]    13.318 ms (88.702000-88.715000)  OC
+[INFO ][gcpause] [OC#37] [con]     0.002 ms (88.702000-88.702000)  OC:PreGC
+[INFO ][gcpause] [OC#37] [pau]     8.538 ms (88.702000-88.711000)  OC:Main
+[INFO ][gcpause] [OC#37] [con]     1.436 ms (88.711000-88.712000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#37] [pau]     0.009 ms (88.712000-88.712000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#37] [con]     0.350 ms (88.712000-88.713000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#37] [pau]     0.036 ms (88.713000-88.713000)  OC:Cleanup
+[INFO ][gcpause] [OC#37] [con]     2.231 ms (88.713000-88.715000)  OC:PostGC
+[INFO ][memory ] [OC#37] 88.702-88.715: OC 461940KB->370315KB (524288KB), 0.013 s, sum of pauses 8.583 ms, longest pause 8.538 ms.
+[INFO ][memory ] [OC#38] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#38] [---]    11.610 ms (88.833000-88.845000)  OC
+[INFO ][gcpause] [OC#38] [con]     0.003 ms (88.833000-88.833000)  OC:PreGC
+[INFO ][gcpause] [OC#38] [pau]     9.461 ms (88.833000-88.843000)  OC:Main
+[INFO ][gcpause] [OC#38] [con]     2.061 ms (88.843000-88.845000)  OC:PostGC
+[INFO ][memory ] [OC#38] 88.833-88.845: OC 388649KB->370079KB (524288KB), 0.012 s, sum of pauses 9.461 ms, longest pause 9.461 ms.
+[INFO ][memory ] [OC#39] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#39] [---]    26.014 ms (88.845000-88.871000)  OC
+[INFO ][gcpause] [OC#39] [con]     0.001 ms (88.845000-88.845000)  OC:PreGC
+[INFO ][gcpause] [OC#39] [pau]    17.667 ms (88.845000-88.863000)  OC:Main
+[INFO ][gcpause] [OC#39] [con]     1.847 ms (88.863000-88.865000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#39] [pau]     0.043 ms (88.866000-88.866000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#39] [con]     0.018 ms (88.866000-88.866000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#39] [pau]     0.088 ms (88.866000-88.866000)  OC:Cleanup
+[INFO ][gcpause] [OC#39] [con]     4.887 ms (88.866000-88.871000)  OC:PostGC
+[INFO ][memory ] [OC#39] 88.845-88.871: OC 370079KB->370038KB (524288KB), 0.026 s, sum of pauses 17.798 ms, longest pause 17.667 ms.
+[INFO ][memory ] [OC#40] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#40] [---]   174.035 ms (88.872000-89.046000)  OC
+[INFO ][gcpause] [OC#40] [con]     0.001 ms (88.872000-88.872000)  OC:PreGC
+[INFO ][gcpause] [OC#40] [pau]   171.037 ms (88.872000-89.043000)  OC:Main
+[INFO ][gcpause] [OC#40] [con]     2.944 ms (89.043000-89.046000)  OC:PostGC
+[INFO ][memory ] [OC#40] 88.872-89.046: OC 370038KB->370025KB (524288KB), 0.174 s, sum of pauses 171.037 ms, longest pause 171.037 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 234478896
+[INFO ][memory ] [OC#41] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#41] [---]    69.824 ms (96.754000-96.823000)  OC
+[INFO ][gcpause] [OC#41] [con]     0.002 ms (96.754000-96.754000)  OC:PreGC
+[INFO ][gcpause] [OC#41] [pau]    27.095 ms (96.754000-96.781000)  OC:Main
+[INFO ][gcpause] [OC#41] [con]     1.944 ms (96.788000-96.790000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#41] [pau]     0.021 ms (96.790000-96.790000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#41] [con]     3.071 ms (96.790000-96.793000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#41] [pau]     0.044 ms (96.822000-96.822000)  OC:Cleanup
+[INFO ][gcpause] [OC#41] [con]     1.669 ms (96.822000-96.823000)  OC:PostGC
+[INFO ][memory ] [OC#41] 96.754-96.823: OC 370527KB->126514KB (524288KB), 0.070 s, sum of pauses 27.160 ms, longest pause 27.095 ms.
+[INFO ][gcpause] [OC#42] [---]    19.098 ms (107.933000-107.952000)  OC
+[INFO ][gcpause] [OC#42] [con]     0.002 ms (107.933000-107.933000)  OC:PreGC
+[INFO ][gcpause] [OC#42] [pau]    10.847 ms (107.933000-107.944000)  OC:Main
+[INFO ][gcpause] [OC#42] [con]     1.299 ms (107.944000-107.945000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#42] [pau]     0.012 ms (107.945000-107.945000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#42] [con]     0.312 ms (107.945000-107.945000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#42] [pau]     0.035 ms (107.945000-107.945000)  OC:Cleanup
+[INFO ][gcpause] [OC#42] [con]     6.275 ms (107.945000-107.952000)  OC:PostGC
+[INFO ][memory ] [OC#42] 107.933-107.952: OC 465391KB->370094KB (524288KB), 0.019 s, sum of pauses 10.894 ms, longest pause 10.847 ms.
+[INFO ][gcpause] [OC#43] [---]    17.147 ms (108.558000-108.575000)  OC
+[INFO ][gcpause] [OC#43] [con]     0.002 ms (108.558000-108.558000)  OC:PreGC
+[INFO ][gcpause] [OC#43] [pau]    12.835 ms (108.558000-108.571000)  OC:Main
+[INFO ][gcpause] [OC#43] [con]     1.541 ms (108.571000-108.573000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#43] [pau]     0.010 ms (108.573000-108.573000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#43] [con]     0.372 ms (108.573000-108.573000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#43] [pau]     0.036 ms (108.573000-108.573000)  OC:Cleanup
+[INFO ][gcpause] [OC#43] [con]     1.731 ms (108.573000-108.575000)  OC:PostGC
+[INFO ][memory ] [OC#43] 108.558-108.575: OC 465747KB->370321KB (524288KB), 0.017 s, sum of pauses 12.882 ms, longest pause 12.835 ms.
+[INFO ][gcpause] [OC#44] [---]    15.767 ms (109.233000-109.248000)  OC
+[INFO ][gcpause] [OC#44] [con]     0.002 ms (109.233000-109.233000)  OC:PreGC
+[INFO ][gcpause] [OC#44] [pau]    11.619 ms (109.233000-109.244000)  OC:Main
+[INFO ][gcpause] [OC#44] [con]     1.515 ms (109.244000-109.246000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#44] [pau]     0.021 ms (109.246000-109.246000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#44] [con]     0.371 ms (109.246000-109.247000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#44] [pau]     0.039 ms (109.247000-109.247000)  OC:Cleanup
+[INFO ][gcpause] [OC#44] [con]     1.433 ms (109.247000-109.248000)  OC:PostGC
+[INFO ][memory ] [OC#44] 109.233-109.248: OC 469020KB->370322KB (524288KB), 0.016 s, sum of pauses 11.678 ms, longest pause 11.619 ms.
+[INFO ][gcpause] [OC#45] [---]    15.784 ms (109.903000-109.919000)  OC
+[INFO ][gcpause] [OC#45] [con]     0.002 ms (109.903000-109.903000)  OC:PreGC
+[INFO ][gcpause] [OC#45] [pau]     8.759 ms (109.907000-109.915000)  OC:Main
+[INFO ][gcpause] [OC#45] [con]     1.527 ms (109.915000-109.917000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#45] [pau]     0.011 ms (109.917000-109.917000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#45] [con]     0.360 ms (109.917000-109.917000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#45] [pau]     0.036 ms (109.917000-109.917000)  OC:Cleanup
+[INFO ][gcpause] [OC#45] [con]     1.443 ms (109.917000-109.919000)  OC:PostGC
+[INFO ][memory ] [OC#45] 109.903-109.919: OC 463541KB->370093KB (524288KB), 0.016 s, sum of pauses 8.806 ms, longest pause 8.759 ms.
+[INFO ][gcpause] [OC#46] [---]    12.440 ms (110.575000-110.587000)  OC
+[INFO ][gcpause] [OC#46] [con]     0.002 ms (110.575000-110.575000)  OC:PreGC
+[INFO ][gcpause] [OC#46] [pau]     8.337 ms (110.575000-110.584000)  OC:Main
+[INFO ][gcpause] [OC#46] [con]     1.426 ms (110.584000-110.585000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#46] [pau]     0.011 ms (110.585000-110.585000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#46] [con]     0.407 ms (110.585000-110.586000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#46] [pau]     0.033 ms (110.586000-110.586000)  OC:Cleanup
+[INFO ][gcpause] [OC#46] [con]     1.468 ms (110.586000-110.587000)  OC:PostGC
+[INFO ][memory ] [OC#46] 110.575-110.587: OC 464275KB->370209KB (524288KB), 0.012 s, sum of pauses 8.382 ms, longest pause 8.337 ms.
+[INFO ][gcpause] [OC#47] [---]    12.611 ms (111.243000-111.256000)  OC
+[INFO ][gcpause] [OC#47] [con]     0.002 ms (111.243000-111.243000)  OC:PreGC
+[INFO ][gcpause] [OC#47] [pau]     8.701 ms (111.243000-111.252000)  OC:Main
+[INFO ][gcpause] [OC#47] [con]     1.390 ms (111.252000-111.254000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#47] [pau]     0.008 ms (111.254000-111.254000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#47] [con]     0.302 ms (111.254000-111.254000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#47] [pau]     0.036 ms (111.254000-111.255000)  OC:Cleanup
+[INFO ][gcpause] [OC#47] [con]     1.375 ms (111.255000-111.256000)  OC:PostGC
+[INFO ][memory ] [OC#47] 111.243-111.256: OC 465715KB->370353KB (524288KB), 0.013 s, sum of pauses 8.745 ms, longest pause 8.701 ms.
+[INFO ][gcpause] [OC#48] [---]    14.881 ms (111.913000-111.928000)  OC
+[INFO ][gcpause] [OC#48] [con]     0.002 ms (111.913000-111.913000)  OC:PreGC
+[INFO ][gcpause] [OC#48] [pau]     9.886 ms (111.914000-111.924000)  OC:Main
+[INFO ][gcpause] [OC#48] [con]     1.503 ms (111.924000-111.925000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#48] [pau]     0.008 ms (111.926000-111.926000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#48] [con]     0.317 ms (111.926000-111.926000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#48] [pau]     0.031 ms (111.926000-111.926000)  OC:Cleanup
+[INFO ][gcpause] [OC#48] [con]     1.546 ms (111.926000-111.928000)  OC:PostGC
+[INFO ][memory ] [OC#48] 111.913-111.928: OC 463078KB->370328KB (524288KB), 0.015 s, sum of pauses 9.926 ms, longest pause 9.886 ms.
+[INFO ][gcpause] [OC#49] [---]    14.132 ms (112.584000-112.599000)  OC
+[INFO ][gcpause] [OC#49] [con]     0.002 ms (112.584000-112.584000)  OC:PreGC
+[INFO ][gcpause] [OC#49] [pau]     8.635 ms (112.585000-112.594000)  OC:Main
+[INFO ][gcpause] [OC#49] [con]     1.560 ms (112.594000-112.595000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#49] [pau]     0.011 ms (112.596000-112.596000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#49] [con]     0.377 ms (112.596000-112.597000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#49] [pau]     0.041 ms (112.597000-112.597000)  OC:Cleanup
+[INFO ][gcpause] [OC#49] [con]     1.767 ms (112.597000-112.599000)  OC:PostGC
+[INFO ][memory ] [OC#49] 112.584-112.599: OC 466097KB->370317KB (524288KB), 0.014 s, sum of pauses 8.688 ms, longest pause 8.635 ms.
+[INFO ][memory ] [OC#50] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#50] [---]    11.649 ms (112.765000-112.777000)  OC
+[INFO ][gcpause] [OC#50] [con]     0.006 ms (112.765000-112.765000)  OC:PreGC
+[INFO ][gcpause] [OC#50] [pau]     9.732 ms (112.765000-112.775000)  OC:Main
+[INFO ][gcpause] [OC#50] [con]     1.805 ms (112.775000-112.777000)  OC:PostGC
+[INFO ][memory ] [OC#50] 112.765-112.777: OC 393270KB->370092KB (524288KB), 0.012 s, sum of pauses 9.732 ms, longest pause 9.732 ms.
+[INFO ][memory ] [OC#51] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#51] [---]    22.424 ms (112.777000-112.800000)  OC
+[INFO ][gcpause] [OC#51] [con]     0.002 ms (112.777000-112.777000)  OC:PreGC
+[INFO ][gcpause] [OC#51] [pau]    17.095 ms (112.777000-112.794000)  OC:Main
+[INFO ][gcpause] [OC#51] [con]     0.773 ms (112.794000-112.795000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#51] [pau]     0.019 ms (112.795000-112.795000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#51] [con]     0.011 ms (112.795000-112.795000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#51] [pau]     0.030 ms (112.795000-112.795000)  OC:Cleanup
+[INFO ][gcpause] [OC#51] [con]     4.316 ms (112.795000-112.800000)  OC:PostGC
+[INFO ][memory ] [OC#51] 112.777-112.800: OC 370092KB->370051KB (524288KB), 0.022 s, sum of pauses 17.143 ms, longest pause 17.095 ms.
+[INFO ][memory ] [OC#52] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#52] [---]    38.454 ms (112.800000-112.839000)  OC
+[INFO ][gcpause] [OC#52] [con]     0.003 ms (112.800000-112.800000)  OC:PreGC
+[INFO ][gcpause] [OC#52] [pau]    35.420 ms (112.800000-112.836000)  OC:Main
+[INFO ][gcpause] [OC#52] [con]     2.931 ms (112.836000-112.839000)  OC:PostGC
+[INFO ][memory ] [OC#52] 112.800-112.839: OC 370051KB->370026KB (524288KB), 0.038 s, sum of pauses 35.420 ms, longest pause 35.420 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 234478896

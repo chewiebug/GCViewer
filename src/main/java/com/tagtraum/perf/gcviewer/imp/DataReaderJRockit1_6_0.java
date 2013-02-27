@@ -74,6 +74,19 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                     if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     continue;
                 }
+                else if (line.indexOf("GC strategy") != -1) {
+                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
+                    continue;
+                }
+                else if (line.indexOf("OutOfMemory") != -1) {
+                    if (LOG.isLoggable(Level.INFO)) LOG.warning("GC log contains OutOfMemory error: " + line.substring(startLog));
+                    continue;
+                }                
+                else if (line.substring(startLog).startsWith("<")) {
+                    // ignore
+                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
+                    continue;
+                }                
                 else if (line.toLowerCase().indexOf("heap size:") != -1) {
                     if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     final int nurserySizeStart = line.indexOf(NURSERY_SIZE);
