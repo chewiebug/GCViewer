@@ -1,0 +1,1807 @@
+[memory ][Mon Feb 18 14:29:45 2013][09776] GC mode: Static, strategy: Generational Parallel Mark & Sweep
+[memory ][Mon Feb 18 14:29:45 2013][09776] heap size: 3145728K, maximal heap size: 3145728K, nursery size: 1572864K
+[memory ][Mon Feb 18 14:29:45 2013][09776] <s>-<end>: GC <before>K-><after>K (<heap>K), <pause> ms
+[memory ][Mon Feb 18 14:29:45 2013][09776] <s/start> - start time of collection (seconds since jvm start)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <end>     - end time of collection (seconds since jvm start)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <before>  - memory used by objects before collection (KB)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <after>   - memory used by objects after collection (KB)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <heap>    - size of heap after collection (KB)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <pause>   - total sum of pauses during collection (milliseconds)
+[memory ][Mon Feb 18 14:29:45 2013][09776]             run with -Xverbose:gcpause to see individual pauses
+[gcpause][Mon Feb 18 14:29:50 2013][09776] Threads waited for memory 70.909 ms starting at 4.778 s
+[gcpause][Mon Feb 18 14:29:50 2013][09776] old collection phase 1-0 pause time: 71.126374 ms, (start time: 4.778 s)
+[gcpause][Mon Feb 18 14:29:50 2013][09776] (pause includes compaction: 15.170 ms (external), update ref: 3.230 ms)
+[memory ][Mon Feb 18 14:29:50 2013][09776] 4.778-4.849: GC 1643328K->159027K (3145728K), 71.126 ms
+[gcpause][Mon Feb 18 14:29:52 2013][09776] Threads waited for memory 57.452 ms starting at 6.763 s
+[gcpause][Mon Feb 18 14:29:52 2013][09776] old collection phase 1-0 pause time: 52.403343 ms, (start time: 6.768 s)
+[gcpause][Mon Feb 18 14:29:52 2013][09776] (pause includes compaction: 14.092 ms (internal), update ref: 9.523 ms)
+[memory ][Mon Feb 18 14:29:52 2013][09776] 6.768-6.821: GC 2441728K->349358K (3145728K), 52.403 ms
+[gcpause][Mon Feb 18 14:29:53 2013][09776] Threads waited for memory 34.204 ms starting at 8.442 s
+[gcpause][Mon Feb 18 14:29:53 2013][09776] old collection phase 1-0 pause time: 34.039589 ms, (start time: 8.442 s)
+[gcpause][Mon Feb 18 14:29:53 2013][09776] (pause includes compaction: 14.002 ms (external), update ref: 2.973 ms)
+[memory ][Mon Feb 18 14:29:53 2013][09776] 8.442-8.476: GC 2841728K->608966K (3145728K), 34.040 ms
+[gcpause][Mon Feb 18 14:29:55 2013][09776] Threads waited for memory 29.234 ms starting at 9.938 s
+[gcpause][Mon Feb 18 14:29:55 2013][09776] old collection phase 1-0 pause time: 26.694396 ms, (start time: 9.941 s)
+[gcpause][Mon Feb 18 14:29:55 2013][09776] (pause includes compaction: 10.771 ms (internal), update ref: 2.409 ms)
+[memory ][Mon Feb 18 14:29:55 2013][09776] 9.941-9.968: GC 3027328K->803024K (3145728K), 26.694 ms
+[gcpause][Mon Feb 18 14:29:56 2013][09776] Threads waited for memory 53.025 ms starting at 10.879 s
+[gcpause][Mon Feb 18 14:29:56 2013][09776] old collection phase 1-0 pause time: 51.748942 ms, (start time: 10.881 s)
+[gcpause][Mon Feb 18 14:29:56 2013][09776] (pause includes compaction: 27.387 ms (external), update ref: 3.967 ms)
+[memory ][Mon Feb 18 14:29:56 2013][09776] 10.881-10.932: GC 3120128K->977569K (3145728K), 51.749 ms
+[gcpause][Mon Feb 18 14:29:56 2013][09776] Threads waited for memory 44.773 ms starting at 11.706 s
+[gcpause][Mon Feb 18 14:29:56 2013][09776] old collection phase 1-0 pause time: 36.275842 ms, (start time: 11.715 s)
+[gcpause][Mon Feb 18 14:29:56 2013][09776] (pause includes compaction: 20.644 ms (internal), update ref: 2.105 ms)
+[memory ][Mon Feb 18 14:29:56 2013][09776] 11.715-11.751: GC 3142528K->1152983K (3145728K), 36.276 ms
+[gcpause][Mon Feb 18 14:29:57 2013][09776] Threads waited for memory 75.882 ms starting at 12.402 s
+[gcpause][Mon Feb 18 14:29:57 2013][09776] old collection phase 1-0 pause time: 65.496479 ms, (start time: 12.413 s)
+[gcpause][Mon Feb 18 14:29:57 2013][09776] (pause includes compaction: 30.469 ms (external), update ref: 5.024 ms)
+[memory ][Mon Feb 18 14:29:57 2013][09776] 12.413-12.478: GC 3145728K->1318248K (3145728K), 65.496 ms
+[gcpause][Mon Feb 18 14:29:58 2013][09776] Threads waited for memory 55.878 ms starting at 13.035 s
+[gcpause][Mon Feb 18 14:29:58 2013][09776] old collection phase 1-0 pause time: 42.950724 ms, (start time: 13.048 s)
+[gcpause][Mon Feb 18 14:29:58 2013][09776] (pause includes compaction: 26.418 ms (internal), update ref: 3.031 ms)
+[memory ][Mon Feb 18 14:29:58 2013][09776] 13.048-13.091: GC 3145728K->1467838K (3145728K), 42.951 ms
+[gcpause][Mon Feb 18 14:29:58 2013][09776] Threads waited for memory 89.354 ms starting at 13.580 s
+[gcpause][Mon Feb 18 14:29:58 2013][09776] old collection phase 1-0 pause time: 77.405537 ms, (start time: 13.592 s)
+[gcpause][Mon Feb 18 14:29:58 2013][09776] (pause includes compaction: 36.112 ms (external), update ref: 6.716 ms)
+[memory ][Mon Feb 18 14:29:58 2013][09776] 13.592-13.669: GC 3145728K->1584656K (3145728K), 77.406 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.130: parallel nursery GC 3145728K->3142656K (3145728K), 38.687 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 38.687114 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] Threads waited for memory 106.103 ms starting at 14.129 s
+[gcpause][Mon Feb 18 14:29:59 2013][09776] old collection phase 1-0 pause time: 55.019404 ms, (start time: 14.180 s)
+[gcpause][Mon Feb 18 14:29:59 2013][09776] (pause includes compaction: 33.640 ms (internal), update ref: 3.129 ms)
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.180-14.235: GC 3145728K->1687917K (3145728K), 55.019 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.434: parallel nursery GC 2523288K->2521752K (3145728K), 21.552 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 21.552094 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.456: parallel nursery GC 2523288K->2521752K (3145728K), 3.394 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 3.393643 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.595: parallel nursery GC 3083792K->3082256K (3145728K), 14.096 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 14.096037 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] Threads waited for memory 85.253 ms starting at 14.643 s
+[gcpause][Mon Feb 18 14:29:59 2013][09776] old collection phase 1-0 pause time: 72.952536 ms, (start time: 14.656 s)
+[gcpause][Mon Feb 18 14:29:59 2013][09776] (pause includes compaction: 31.859 ms (external), update ref: 6.390 ms)
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.656-14.729: GC 3145728K->1800174K (3145728K), 72.953 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 14.926: parallel nursery GC 2649495K->2647957K (3145728K), 23.758 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 23.757551 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 14.950: parallel nursery GC 2649495K->2647957K (3145728K), 9.739 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 9.739015 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] Threads waited for memory 94.393 ms starting at 15.122 s
+[gcpause][Mon Feb 18 14:30:00 2013][09776] old collection phase 1-0 pause time: 79.975405 ms, (start time: 15.137 s)
+[gcpause][Mon Feb 18 14:30:00 2013][09776] (pause includes compaction: 39.512 ms (internal), update ref: 3.210 ms)
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.137-15.217: GC 3145728K->1882812K (3145728K), 79.975 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.312: parallel nursery GC 2434023K->2433253K (3145728K), 14.406 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 14.406043 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.327: parallel nursery GC 2434023K->2433253K (3145728K), 3.000 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 2.999976 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.401: parallel nursery GC 2629721K->2628951K (3145728K), 12.094 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 12.094342 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.414: parallel nursery GC 2629721K->2628951K (3145728K), 5.790 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 5.790030 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.496: parallel nursery GC 2949592K->2948821K (3145728K), 16.554 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 16.554016 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.520: parallel nursery GC 2992845K->2992074K (3145728K), 12.267 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 12.266796 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.533: parallel nursery GC 3010956K->3010186K (3145728K), 9.829 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 9.828835 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] Threads waited for memory 67.635 ms starting at 15.597 s
+[gcpause][Mon Feb 18 14:30:00 2013][09776] old collection phase 1-0 pause time: 62.736707 ms, (start time: 15.602 s)
+[gcpause][Mon Feb 18 14:30:00 2013][09776] (pause includes compaction: 20.115 ms (external), update ref: 4.550 ms)
+[memory ][Mon Feb 18 14:30:00 2013][09776] 15.602-15.665: GC 3145728K->1976174K (3145728K), 62.737 ms
+[gcpause][Mon Feb 18 14:30:01 2013][09776] Threads waited for memory 71.215 ms starting at 15.810 s
+[gcpause][Mon Feb 18 14:30:01 2013][09776] old collection phase 1-0 pause time: 63.874593 ms, (start time: 15.818 s)
+[gcpause][Mon Feb 18 14:30:01 2013][09776] (pause includes compaction: 35.703 ms (internal), update ref: 3.462 ms)
+[memory ][Mon Feb 18 14:30:01 2013][09776] 15.818-15.882: GC 2539328K->2017170K (3145728K), 63.875 ms
+[gcpause][Mon Feb 18 14:30:01 2013][09776] Threads waited for memory 97.570 ms starting at 16.107 s
+[gcpause][Mon Feb 18 14:30:01 2013][09776] old collection phase 1-0 pause time: 92.485484 ms, (start time: 16.112 s)
+[gcpause][Mon Feb 18 14:30:01 2013][09776] (pause includes compaction: 46.059 ms (external), update ref: 6.434 ms)
+[memory ][Mon Feb 18 14:30:01 2013][09776] 16.112-16.205: GC 2856128K->2061504K (3145728K), 92.485 ms
+[gcpause][Mon Feb 18 14:30:01 2013][09776] Threads waited for memory 99.810 ms starting at 16.458 s
+[gcpause][Mon Feb 18 14:30:01 2013][09776] old collection phase 1-0 pause time: 88.836754 ms, (start time: 16.469 s)
+[gcpause][Mon Feb 18 14:30:01 2013][09776] (pause includes compaction: 41.546 ms (internal), update ref: 2.100 ms)
+[memory ][Mon Feb 18 14:30:01 2013][09776] 16.469-16.558: GC 3009728K->2125074K (3145728K), 88.837 ms
+[gcpause][Mon Feb 18 14:30:02 2013][09776] Threads waited for memory 61.042 ms starting at 16.816 s
+[gcpause][Mon Feb 18 14:30:02 2013][09776] old collection phase 1-0 pause time: 59.302004 ms, (start time: 16.818 s)
+[gcpause][Mon Feb 18 14:30:02 2013][09776] (pause includes compaction: 10.730 ms (external), update ref: 4.809 ms)
+[memory ][Mon Feb 18 14:30:02 2013][09776] 16.818-16.877: GC 3088128K->2186838K (3145728K), 59.302 ms
+[gcpause][Mon Feb 18 14:30:02 2013][09776] Threads waited for memory 164.580 ms starting at 17.309 s
+[gcpause][Mon Feb 18 14:30:02 2013][09776] old collection phase 1-0 pause time: 147.668616 ms, (start time: 17.326 s)
+[gcpause][Mon Feb 18 14:30:02 2013][09776] (pause includes compaction: 67.000 ms (internal), update ref: 40.900 ms)
+[memory ][Mon Feb 18 14:30:02 2013][09776] 17.326-17.474: GC 3126528K->2251341K (3145728K), 147.669 ms
+[gcpause][Mon Feb 18 14:30:02 2013][09776] Threads waited for memory 78.564 ms starting at 17.676 s
+[gcpause][Mon Feb 18 14:30:02 2013][09776] old collection phase 1-0 pause time: 62.804456 ms, (start time: 17.692 s)
+[gcpause][Mon Feb 18 14:30:02 2013][09776] (pause includes compaction: 7.987 ms (external), update ref: 7.459 ms)
+[memory ][Mon Feb 18 14:30:02 2013][09776] 17.692-17.755: GC 3145728K->2287821K (3145728K), 62.804 ms
+[gcpause][Mon Feb 18 14:30:03 2013][09776] Threads waited for memory 140.534 ms starting at 17.966 s
+[gcpause][Mon Feb 18 14:30:03 2013][09776] old collection phase 1-0 pause time: 85.365096 ms, (start time: 18.022 s)
+[gcpause][Mon Feb 18 14:30:03 2013][09776] (pause includes compaction: 55.848 ms (internal), update ref: 10.575 ms)
+[memory ][Mon Feb 18 14:30:03 2013][09776] 18.022-18.107: GC 3145728K->2331519K (3145728K), 85.365 ms
+[memory ][Mon Feb 18 14:30:03 2013][09776] 18.170: parallel nursery GC 2607828K->2603781K (3145728K), 14.933 ms
+[gcpause][Mon Feb 18 14:30:03 2013][09776] nursery collection pause time: 14.933156 ms
+[memory ][Mon Feb 18 14:30:03 2013][09776] 18.189: parallel nursery GC 2670626K->2669846K (3145728K), 6.999 ms
+[gcpause][Mon Feb 18 14:30:03 2013][09776] nursery collection pause time: 6.999259 ms
+[memory ][Mon Feb 18 14:30:03 2013][09776] 18.254: parallel nursery GC 2934220K->2936413K (3145728K), 12.316 ms
+[gcpause][Mon Feb 18 14:30:03 2013][09776] nursery collection pause time: 12.315555 ms
+[gcpause][Mon Feb 18 14:30:03 2013][09776] Threads waited for memory 79.767 ms starting at 18.286 s
+[gcpause][Mon Feb 18 14:30:03 2013][09776] old collection phase 1-0 pause time: 59.362568 ms, (start time: 18.307 s)
+[gcpause][Mon Feb 18 14:30:03 2013][09776] (pause includes compaction: 11.342 ms (external), update ref: 7.781 ms)
+[memory ][Mon Feb 18 14:30:03 2013][09776] 18.307-18.366: GC 3145728K->2426979K (3145728K), 59.363 ms
+[gcpause][Mon Feb 18 14:30:04 2013][09776] Threads waited for memory 85.882 ms starting at 18.788 s
+[gcpause][Mon Feb 18 14:30:04 2013][09776] old collection phase 1-0 pause time: 75.491609 ms, (start time: 18.799 s)
+[gcpause][Mon Feb 18 14:30:04 2013][09776] (pause includes compaction: 52.883 ms (internal), update ref: 4.238 ms)
+[memory ][Mon Feb 18 14:30:04 2013][09776] 18.799-18.874: GC 3145728K->2413317K (3145728K), 75.492 ms
+[memory ][Mon Feb 18 14:30:04 2013][09776] 18.948: parallel nursery GC 2833949K->2836109K (3145728K), 13.736 ms
+[gcpause][Mon Feb 18 14:30:04 2013][09776] nursery collection pause time: 13.735732 ms
+[memory ][Mon Feb 18 14:30:04 2013][09776] 18.964: parallel nursery GC 2891793K->2889709K (3145728K), 5.383 ms
+[gcpause][Mon Feb 18 14:30:04 2013][09776] nursery collection pause time: 5.383019 ms
+[gcpause][Mon Feb 18 14:30:04 2013][09776] Threads waited for memory 69.658 ms starting at 19.013 s
+[gcpause][Mon Feb 18 14:30:04 2013][09776] old collection phase 1-0 pause time: 52.694871 ms, (start time: 19.031 s)
+[gcpause][Mon Feb 18 14:30:04 2013][09776] (pause includes compaction: 11.952 ms (external), update ref: 8.242 ms)
+[memory ][Mon Feb 18 14:30:04 2013][09776] 19.031-19.083: GC 3145728K->2428016K (3145728K), 52.695 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] Threads waited for memory 289.478 ms starting at 19.884 s
+[gcpause][Mon Feb 18 14:30:05 2013][09776] old collection phase 1-0 pause time: 270.908343 ms, (start time: 19.903 s)
+[gcpause][Mon Feb 18 14:30:05 2013][09776] (pause includes compaction: 47.166 ms (internal), update ref: 3.928 ms)
+[memory ][Mon Feb 18 14:30:05 2013][09776] 19.903-20.173: GC 3145728K->2470775K (3145728K), 270.908 ms
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.248: parallel nursery GC 2894198K->2893580K (3145728K), 13.219 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] nursery collection pause time: 13.218884 ms
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.261: parallel nursery GC 2894198K->2893580K (3145728K), 2.648 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] nursery collection pause time: 2.647883 ms
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.267: parallel nursery GC 2986356K->2985738K (3145728K), 6.621 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] nursery collection pause time: 6.620990 ms
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.275: parallel nursery GC 3033104K->3032485K (3145728K), 4.993 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] nursery collection pause time: 4.992945 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] Threads waited for memory 149.565 ms starting at 20.292 s
+[gcpause][Mon Feb 18 14:30:05 2013][09776] old collection phase 1-0 pause time: 131.685340 ms, (start time: 20.310 s)
+[gcpause][Mon Feb 18 14:30:05 2013][09776] (pause includes compaction: 5.454 ms (external), update ref: 7.060 ms)
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.310-20.442: GC 3145728K->2500196K (3145728K), 131.685 ms
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.513: parallel nursery GC 2971999K->2971380K (3145728K), 10.989 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] nursery collection pause time: 10.988791 ms
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.526: parallel nursery GC 3015402K->3014783K (3145728K), 4.812 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] nursery collection pause time: 4.811766 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] Threads waited for memory 94.479 ms starting at 20.692 s
+[gcpause][Mon Feb 18 14:30:05 2013][09776] old collection phase 1-0 pause time: 83.045183 ms, (start time: 20.704 s)
+[gcpause][Mon Feb 18 14:30:05 2013][09776] (pause includes compaction: 30.847 ms (internal), update ref: 27.541 ms)
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.704-20.787: GC 3145728K->2518349K (3145728K), 83.045 ms
+[memory ][Mon Feb 18 14:30:05 2013][09776] 20.804: parallel nursery GC 2783738K->2783428K (3145728K), 10.464 ms
+[gcpause][Mon Feb 18 14:30:05 2013][09776] nursery collection pause time: 10.464244 ms
+[memory ][Mon Feb 18 14:30:06 2013][09776] 20.815: parallel nursery GC 2783738K->2783428K (3145728K), 11.136 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] nursery collection pause time: 11.135582 ms
+[memory ][Mon Feb 18 14:30:06 2013][09776] 20.827: parallel nursery GC 2783738K->2783428K (3145728K), 6.671 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] nursery collection pause time: 6.670776 ms
+[memory ][Mon Feb 18 14:30:06 2013][09776] 20.836: parallel nursery GC 2845508K->2845199K (3145728K), 9.806 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] nursery collection pause time: 9.806251 ms
+[memory ][Mon Feb 18 14:30:06 2013][09776] 20.846: parallel nursery GC 2845508K->2845199K (3145728K), 9.063 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] nursery collection pause time: 9.062545 ms
+[memory ][Mon Feb 18 14:30:06 2013][09776] 20.863: parallel nursery GC 2908849K->2908540K (3145728K), 8.157 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] nursery collection pause time: 8.156650 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] Threads waited for memory 71.923 ms starting at 20.901 s
+[gcpause][Mon Feb 18 14:30:06 2013][09776] old collection phase 1-0 pause time: 64.015738 ms, (start time: 20.909 s)
+[gcpause][Mon Feb 18 14:30:06 2013][09776] (pause includes compaction: 6.381 ms (external), update ref: 8.932 ms)
+[memory ][Mon Feb 18 14:30:06 2013][09776] 20.909-20.973: GC 3145728K->2546229K (3145728K), 64.016 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] Threads waited for memory 103.702 ms starting at 20.991 s
+[gcpause][Mon Feb 18 14:30:06 2013][09776] old collection phase 1-0 pause time: 84.345258 ms, (start time: 21.010 s)
+[gcpause][Mon Feb 18 14:30:06 2013][09776] (pause includes compaction: 51.375 ms (internal), update ref: 11.257 ms)
+[memory ][Mon Feb 18 14:30:06 2013][09776] 21.010-21.095: GC 2854528K->2596183K (3145728K), 84.345 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] Threads waited for memory 55.098 ms starting at 21.118 s
+[gcpause][Mon Feb 18 14:30:06 2013][09776] old collection phase 1-0 pause time: 41.553130 ms, (start time: 21.132 s)
+[gcpause][Mon Feb 18 14:30:06 2013][09776] (pause includes compaction: 4.242 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:06 2013][09776] 21.132-21.173: GC 3012928K->2566539K (3145728K), 41.553 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] Threads waited for memory 97.107 ms starting at 21.245 s
+[gcpause][Mon Feb 18 14:30:06 2013][09776] old collection phase 1-0 pause time: 80.167362 ms, (start time: 21.262 s)
+[gcpause][Mon Feb 18 14:30:06 2013][09776] (pause includes compaction: 6.317 ms (internal), update ref: 3.722 ms)
+[memory ][Mon Feb 18 14:30:06 2013][09776] 21.262-21.342: GC 3089728K->2558892K (3145728K), 80.167 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] Threads waited for memory 61.271 ms starting at 21.420 s
+[gcpause][Mon Feb 18 14:30:06 2013][09776] old collection phase 1-0 pause time: 43.905378 ms, (start time: 21.437 s)
+[gcpause][Mon Feb 18 14:30:06 2013][09776] (pause includes compaction: 9.156 ms (internal), update ref: 9.458 ms)
+[memory ][Mon Feb 18 14:30:06 2013][09776] 21.437-21.481: GC 3129728K->2572154K (3145728K), 43.905 ms
+[gcpause][Mon Feb 18 14:30:06 2013][09776] Threads waited for memory 50.559 ms starting at 21.565 s
+[gcpause][Mon Feb 18 14:30:06 2013][09776] old collection phase 1-0 pause time: 34.708361 ms, (start time: 21.581 s)
+[gcpause][Mon Feb 18 14:30:06 2013][09776] (pause includes compaction: 0.000 ms (no compaction), update ref: 0.000 ms)
+[memory ][Mon Feb 18 14:30:06 2013][09776] 21.581-21.615: GC 3145728K->2587144K (3145728K), 34.708 ms
+[gcpause][Mon Feb 18 14:30:07 2013][09776] Threads waited for memory 492.140 ms starting at 21.650 s
+[gcpause][Mon Feb 18 14:30:07 2013][09776] old collection phase 1-0 pause time: 468.103507 ms, (start time: 21.674 s)
+[gcpause][Mon Feb 18 14:30:07 2013][09776] (pause includes compaction: 367.087 ms (external), update ref: 19.531 ms)
+[memory ][Mon Feb 18 14:30:07 2013][09776] 21.674-22.142: GC 3145728K->2630935K (3145728K), 468.104 ms
+[gcpause][Mon Feb 18 14:30:07 2013][09776] Threads waited for memory 48.099 ms starting at 22.226 s
+[gcpause][Mon Feb 18 14:30:07 2013][09776] old collection phase 1-0 pause time: 47.780967 ms, (start time: 22.226 s)
+[gcpause][Mon Feb 18 14:30:07 2013][09776] (pause includes compaction: 0.000 ms (no compaction), update ref: 0.000 ms)
+[memory ][Mon Feb 18 14:30:07 2013][09776] 22.226-22.274: GC 3145728K->2625533K (3145728K), 47.781 ms
+[gcpause][Mon Feb 18 14:30:07 2013][09776] Threads waited for memory 144.917 ms starting at 22.353 s
+[gcpause][Mon Feb 18 14:30:07 2013][09776] old collection phase 1-0 pause time: 122.816292 ms, (start time: 22.375 s)
+[gcpause][Mon Feb 18 14:30:07 2013][09776] (pause includes compaction: 58.068 ms (external), update ref: 8.234 ms)
+[memory ][Mon Feb 18 14:30:07 2013][09776] 22.375-22.498: GC 3145728K->2623564K (3145728K), 122.816 ms
+[gcpause][Mon Feb 18 14:30:07 2013][09776] Threads waited for memory 129.923 ms starting at 22.684 s
+[gcpause][Mon Feb 18 14:30:07 2013][09776] old collection phase 1-0 pause time: 85.842424 ms, (start time: 22.728 s)
+[gcpause][Mon Feb 18 14:30:07 2013][09776] (pause includes compaction: 2.572 ms (internal), update ref: 3.862 ms)
+[memory ][Mon Feb 18 14:30:07 2013][09776] 22.728-22.814: GC 3145728K->2682843K (3145728K), 85.842 ms
+[memory ][Mon Feb 18 14:30:07 2013][09776] 22.815: parallel nursery GC 2683457K->2682894K (3145728K), 1.815 ms
+[gcpause][Mon Feb 18 14:30:07 2013][09776] nursery collection pause time: 1.814870 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] Threads waited for memory 132.769 ms starting at 22.835 s
+[gcpause][Mon Feb 18 14:30:08 2013][09776] old collection phase 1-0 pause time: 112.250423 ms, (start time: 22.856 s)
+[gcpause][Mon Feb 18 14:30:08 2013][09776] (pause includes compaction: 58.820 ms (external), update ref: 6.827 ms)
+[memory ][Mon Feb 18 14:30:08 2013][09776] 22.856-22.968: GC 3145728K->2650684K (3145728K), 112.250 ms
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.059: parallel nursery GC 3145728K->3145420K (3145728K), 10.863 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] nursery collection pause time: 10.863044 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] Threads waited for memory 66.938 ms starting at 23.426 s
+[gcpause][Mon Feb 18 14:30:08 2013][09776] old collection phase 1-0 pause time: 53.805042 ms, (start time: 23.439 s)
+[gcpause][Mon Feb 18 14:30:08 2013][09776] (pause includes compaction: 0.000 ms (no compaction), update ref: 0.000 ms)
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.439-23.493: GC 3145728K->2711918K (3145728K), 53.805 ms
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.493: parallel nursery GC 2712075K->2711958K (3145728K), 1.501 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] nursery collection pause time: 1.501271 ms
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.506: parallel nursery GC 3145728K->3145571K (3145728K), 9.208 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] nursery collection pause time: 9.207796 ms
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.515: parallel nursery GC 3145728K->3145571K (3145728K), 8.619 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] nursery collection pause time: 8.619092 ms
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.524: parallel nursery GC 3145728K->3145571K (3145728K), 7.756 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] nursery collection pause time: 7.755797 ms
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.532: parallel nursery GC 3145728K->3145571K (3145728K), 4.125 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] nursery collection pause time: 4.124518 ms
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.537: parallel nursery GC 3145728K->3145571K (3145728K), 11.000 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] nursery collection pause time: 10.999569 ms
+[gcpause][Mon Feb 18 14:30:08 2013][09776] Threads waited for memory 125.414 ms starting at 23.532 s
+[gcpause][Mon Feb 18 14:30:08 2013][09776] old collection phase 1-0 pause time: 109.697493 ms, (start time: 23.548 s)
+[gcpause][Mon Feb 18 14:30:08 2013][09776] (pause includes compaction: 58.241 ms (external), update ref: 7.863 ms)
+[memory ][Mon Feb 18 14:30:08 2013][09776] 23.548-23.658: GC 3145728K->2693824K (3145728K), 109.697 ms
+[gcpause][Mon Feb 18 14:30:09 2013][09776] Threads waited for memory 48.691 ms starting at 24.281 s
+[gcpause][Mon Feb 18 14:30:09 2013][09776] old collection phase 1-0 pause time: 48.148458 ms, (start time: 24.282 s)
+[gcpause][Mon Feb 18 14:30:09 2013][09776] (pause includes compaction: 1.466 ms (internal), update ref: 3.129 ms)
+[memory ][Mon Feb 18 14:30:09 2013][09776] 24.282-24.330: GC 2950528K->2733291K (3145728K), 48.148 ms
+[gcpause][Mon Feb 18 14:30:09 2013][09776] Threads waited for memory 247.620 ms starting at 24.339 s
+[gcpause][Mon Feb 18 14:30:09 2013][09776] old collection phase 1-0 pause time: 235.176552 ms, (start time: 24.352 s)
+[gcpause][Mon Feb 18 14:30:09 2013][09776] (pause includes compaction: 115.291 ms (external), update ref: 12.998 ms)
+[memory ][Mon Feb 18 14:30:09 2013][09776] 24.352-24.587: GC 3052928K->2736090K (3145728K), 235.177 ms
+[gcpause][Mon Feb 18 14:30:10 2013][09776] Threads waited for memory 54.858 ms starting at 25.404 s
+[gcpause][Mon Feb 18 14:30:10 2013][09776] old collection phase 1-0 pause time: 49.093361 ms, (start time: 25.410 s)
+[gcpause][Mon Feb 18 14:30:10 2013][09776] (pause includes compaction: 2.854 ms (internal), update ref: 3.010 ms)
+[memory ][Mon Feb 18 14:30:10 2013][09776] 25.410-25.459: GC 3110528K->2716357K (3145728K), 49.093 ms
+[gcpause][Mon Feb 18 14:30:10 2013][09776] Threads waited for memory 95.341 ms starting at 25.473 s
+[gcpause][Mon Feb 18 14:30:10 2013][09776] old collection phase 1-0 pause time: 75.247812 ms, (start time: 25.493 s)
+[gcpause][Mon Feb 18 14:30:10 2013][09776] (pause includes compaction: 26.400 ms (external), update ref: 6.365 ms)
+[memory ][Mon Feb 18 14:30:10 2013][09776] 25.493-25.569: GC 3137728K->2722704K (3145728K), 75.248 ms
+[gcpause][Mon Feb 18 14:30:11 2013][09776] Threads waited for memory 54.787 ms starting at 26.676 s
+[gcpause][Mon Feb 18 14:30:11 2013][09776] old collection phase 1-0 pause time: 47.734261 ms, (start time: 26.684 s)
+[gcpause][Mon Feb 18 14:30:11 2013][09776] (pause includes compaction: 0.000 ms (no compaction), update ref: 0.000 ms)
+[memory ][Mon Feb 18 14:30:11 2013][09776] 26.684-26.731: GC 3145728K->2729414K (3145728K), 47.734 ms
+[gcpause][Mon Feb 18 14:30:11 2013][09776] Threads waited for memory 69.845 ms starting at 26.745 s
+[gcpause][Mon Feb 18 14:30:11 2013][09776] old collection phase 1-0 pause time: 50.383684 ms, (start time: 26.764 s)
+[gcpause][Mon Feb 18 14:30:11 2013][09776] (pause includes compaction: 7.512 ms (external), update ref: 4.416 ms)
+[memory ][Mon Feb 18 14:30:11 2013][09776] 26.764-26.815: GC 3145728K->2774375K (3145728K), 50.384 ms
+[gcpause][Mon Feb 18 14:30:13 2013][09776] Threads waited for memory 49.569 ms starting at 27.956 s
+[gcpause][Mon Feb 18 14:30:13 2013][09776] old collection phase 1-0 pause time: 44.705543 ms, (start time: 27.961 s)
+[gcpause][Mon Feb 18 14:30:13 2013][09776] (pause includes compaction: 1.066 ms (internal), update ref: 2.918 ms)
+[memory ][Mon Feb 18 14:30:13 2013][09776] 27.961-28.006: GC 3145728K->2754241K (3145728K), 44.706 ms
+[gcpause][Mon Feb 18 14:30:13 2013][09776] Threads waited for memory 77.441 ms starting at 28.020 s
+[gcpause][Mon Feb 18 14:30:13 2013][09776] old collection phase 1-0 pause time: 58.400728 ms, (start time: 28.039 s)
+[gcpause][Mon Feb 18 14:30:13 2013][09776] (pause includes compaction: 8.127 ms (external), update ref: 7.372 ms)
+[memory ][Mon Feb 18 14:30:13 2013][09776] 28.039-28.098: GC 3145728K->2717811K (3145728K), 58.401 ms
+[gcpause][Mon Feb 18 14:30:14 2013][09776] Threads waited for memory 45.123 ms starting at 29.528 s
+[gcpause][Mon Feb 18 14:30:14 2013][09776] old collection phase 1-0 pause time: 80.024677 ms, (start time: 29.529 s)
+[gcpause][Mon Feb 18 14:30:14 2013][09776] (pause includes compaction: 1.308 ms (internal), update ref: 3.066 ms)
+[memory ][Mon Feb 18 14:30:14 2013][09776] 29.529-29.609: GC 3145728K->2753186K (3145728K), 80.025 ms
+[gcpause][Mon Feb 18 14:30:14 2013][09776] Threads waited for memory 61.292 ms starting at 29.624 s
+[gcpause][Mon Feb 18 14:30:14 2013][09776] old collection phase 1-0 pause time: 42.099234 ms, (start time: 29.643 s)
+[gcpause][Mon Feb 18 14:30:14 2013][09776] (pause includes compaction: 4.899 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:14 2013][09776] 29.643-29.685: GC 3145728K->2732693K (3145728K), 42.099 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.334: parallel nursery GC 3145728K->3145516K (3145728K), 8.262 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 8.262380 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] Threads waited for memory 59.600 ms starting at 31.345 s
+[gcpause][Mon Feb 18 14:30:16 2013][09776] old collection phase 1-0 pause time: 57.941878 ms, (start time: 31.347 s)
+[gcpause][Mon Feb 18 14:30:16 2013][09776] (pause includes compaction: 2.574 ms (internal), update ref: 3.082 ms)
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.347-31.405: GC 3145728K->2749085K (3145728K), 57.942 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.414: parallel nursery GC 3145728K->3145622K (3145728K), 5.970 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 5.970183 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.430: parallel nursery GC 3145728K->3145622K (3145728K), 9.025 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 9.024564 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] Threads waited for memory 64.721 ms starting at 31.414 s
+[gcpause][Mon Feb 18 14:30:16 2013][09776] old collection phase 1-0 pause time: 39.265553 ms, (start time: 31.439 s)
+[gcpause][Mon Feb 18 14:30:16 2013][09776] (pause includes compaction: 5.025 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.439-31.479: GC 3145728K->2775194K (3145728K), 39.266 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.479: parallel nursery GC 2775249K->2775229K (3145728K), 1.772 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 1.771756 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.490: parallel nursery GC 3145728K->3145673K (3145728K), 6.843 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 6.843230 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.507: parallel nursery GC 3145728K->3145673K (3145728K), 8.001 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 8.000620 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.526: parallel nursery GC 3145728K->3145673K (3145728K), 7.906 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 7.905668 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.544: parallel nursery GC 3145728K->3145673K (3145728K), 7.149 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 7.149130 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.561: parallel nursery GC 3145728K->3145673K (3145728K), 8.222 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 8.222346 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.580: parallel nursery GC 3145728K->3145673K (3145728K), 1.676 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 1.675778 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.592: parallel nursery GC 3145728K->3145673K (3145728K), 1.364 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 1.363719 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.604: parallel nursery GC 3145728K->3145673K (3145728K), 8.338 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 8.338342 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.622: parallel nursery GC 3145728K->3145673K (3145728K), 7.637 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 7.636722 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.640: parallel nursery GC 3145728K->3145673K (3145728K), 8.509 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 8.508743 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.659: parallel nursery GC 3145728K->3145673K (3145728K), 9.267 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 9.266820 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.679: parallel nursery GC 3145728K->3145673K (3145728K), 9.514 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 9.513696 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.699: parallel nursery GC 3145728K->3145673K (3145728K), 9.353 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 9.352534 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.719: parallel nursery GC 3145728K->3145673K (3145728K), 8.102 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 8.102245 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.737: parallel nursery GC 3145728K->3145673K (3145728K), 1.293 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 1.293403 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.749: parallel nursery GC 3145728K->3145673K (3145728K), 7.826 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 7.825600 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.767: parallel nursery GC 3145728K->3145673K (3145728K), 6.728 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 6.728261 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.784: parallel nursery GC 3145728K->3145673K (3145728K), 7.398 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 7.397545 ms
+[memory ][Mon Feb 18 14:30:16 2013][09776] 31.801: parallel nursery GC 3145728K->3145673K (3145728K), 7.191 ms
+[gcpause][Mon Feb 18 14:30:16 2013][09776] nursery collection pause time: 7.190704 ms
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.819: parallel nursery GC 3145728K->3145673K (3145728K), 8.814 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] nursery collection pause time: 8.814129 ms
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.839: parallel nursery GC 3145728K->3145673K (3145728K), 9.099 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] nursery collection pause time: 9.099499 ms
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.859: parallel nursery GC 3145728K->3145673K (3145728K), 9.124 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] nursery collection pause time: 9.123622 ms
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.879: parallel nursery GC 3145728K->3145673K (3145728K), 10.501 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] nursery collection pause time: 10.500685 ms
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.900: parallel nursery GC 3145728K->3145673K (3145728K), 8.552 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] nursery collection pause time: 8.551856 ms
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.919: parallel nursery GC 3145728K->3145673K (3145728K), 8.815 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] nursery collection pause time: 8.814643 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] Threads waited for memory 92.288 ms starting at 31.900 s
+[gcpause][Mon Feb 18 14:30:17 2013][09776] old collection phase 1-0 pause time: 63.783747 ms, (start time: 31.928 s)
+[gcpause][Mon Feb 18 14:30:17 2013][09776] (pause includes compaction: 0.000 ms (no compaction), update ref: 0.000 ms)
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.928-31.992: GC 3145728K->2777312K (3145728K), 63.784 ms
+[memory ][Mon Feb 18 14:30:17 2013][09776] 31.994: parallel nursery GC 2960402K->3006528K (3145728K), 13.493 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] nursery collection pause time: 13.493476 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] Threads waited for memory 330.873 ms starting at 31.928 s
+[gcpause][Mon Feb 18 14:30:17 2013][09776] old collection phase 1-0 pause time: 251.687454 ms, (start time: 32.008 s)
+[gcpause][Mon Feb 18 14:30:17 2013][09776] (pause includes compaction: 192.773 ms (external), update ref: 6.842 ms)
+[memory ][Mon Feb 18 14:30:17 2013][09776] 32.008-32.259: GC 3011328K->2776995K (3145728K), 251.687 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] Threads waited for memory 64.802 ms starting at 32.296 s
+[gcpause][Mon Feb 18 14:30:17 2013][09776] old collection phase 1-0 pause time: 49.257602 ms, (start time: 32.312 s)
+[gcpause][Mon Feb 18 14:30:17 2013][09776] (pause includes compaction: 4.959 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:17 2013][09776] 32.312-32.361: GC 3070528K->2788013K (3145728K), 49.258 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] Threads waited for memory 125.164 ms starting at 32.362 s
+[gcpause][Mon Feb 18 14:30:17 2013][09776] old collection phase 1-0 pause time: 98.048656 ms, (start time: 32.389 s)
+[gcpause][Mon Feb 18 14:30:17 2013][09776] (pause includes compaction: 1.190 ms (internal), update ref: 3.674 ms)
+[memory ][Mon Feb 18 14:30:17 2013][09776] 32.389-32.487: GC 3118528K->2795222K (3145728K), 98.049 ms
+[gcpause][Mon Feb 18 14:30:17 2013][09776] old collection phase 1-0 pause time: 269.882860 ms, (start time: 32.494 s)
+[gcpause][Mon Feb 18 14:30:17 2013][09776] (pause includes compaction: 11.978 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:17 2013][09776] 32.494-32.763: GC 2795222K->2795287K (3145728K), 269.883 ms
+[gcpause][Mon Feb 18 14:30:18 2013][09776] Threads waited for memory 79.890 ms starting at 32.772 s
+[gcpause][Mon Feb 18 14:30:18 2013][09776] old collection phase 1-0 pause time: 51.809506 ms, (start time: 32.800 s)
+[gcpause][Mon Feb 18 14:30:18 2013][09776] (pause includes compaction: 6.758 ms (external), update ref: 8.586 ms)
+[memory ][Mon Feb 18 14:30:18 2013][09776] 32.800-32.852: GC 3145728K->2798325K (3145728K), 51.810 ms
+[gcpause][Mon Feb 18 14:30:19 2013][09776] Threads waited for memory 146.981 ms starting at 34.214 s
+[gcpause][Mon Feb 18 14:30:19 2013][09776] old collection phase 1-0 pause time: 118.279631 ms, (start time: 34.243 s)
+[gcpause][Mon Feb 18 14:30:19 2013][09776] (pause includes compaction: 1.303 ms (internal), update ref: 3.143 ms)
+[memory ][Mon Feb 18 14:30:19 2013][09776] 34.243-34.361: GC 3145728K->2790801K (3145728K), 118.280 ms
+[gcpause][Mon Feb 18 14:30:19 2013][09776] Threads waited for memory 63.886 ms starting at 34.367 s
+[gcpause][Mon Feb 18 14:30:19 2013][09776] old collection phase 1-0 pause time: 46.548129 ms, (start time: 34.385 s)
+[gcpause][Mon Feb 18 14:30:19 2013][09776] (pause includes compaction: 6.172 ms (external), update ref: 10.221 ms)
+[memory ][Mon Feb 18 14:30:19 2013][09776] 34.385-34.431: GC 3145728K->2792467K (3145728K), 46.548 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] Threads waited for memory 100.522 ms starting at 34.751 s
+[gcpause][Mon Feb 18 14:30:20 2013][09776] old collection phase 1-0 pause time: 67.583374 ms, (start time: 34.784 s)
+[gcpause][Mon Feb 18 14:30:20 2013][09776] (pause includes compaction: 2.546 ms (internal), update ref: 3.200 ms)
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.784-34.852: GC 3145728K->2785895K (3145728K), 67.583 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.852: parallel nursery GC 2786619K->2785901K (3145728K), 3.319 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 3.318707 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.861: parallel nursery GC 3145728K->3145004K (3145728K), 1.435 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.434548 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.863: parallel nursery GC 3145728K->3145004K (3145728K), 1.239 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.238998 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.864: parallel nursery GC 3145728K->3145004K (3145728K), 10.256 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 10.256376 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] Threads waited for memory 83.105 ms starting at 34.863 s
+[gcpause][Mon Feb 18 14:30:20 2013][09776] old collection phase 1-0 pause time: 61.806175 ms, (start time: 34.884 s)
+[gcpause][Mon Feb 18 14:30:20 2013][09776] (pause includes compaction: 4.353 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.884-34.946: GC 3145728K->2789399K (3145728K), 61.806 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.951: parallel nursery GC 3145004K->3145004K (3145728K), 11.960 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 11.960383 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] Threads waited for memory 240.299 ms starting at 34.875 s
+[gcpause][Mon Feb 18 14:30:20 2013][09776] old collection phase 1-0 pause time: 152.059513 ms, (start time: 34.963 s)
+[gcpause][Mon Feb 18 14:30:20 2013][09776] (pause includes compaction: 84.883 ms (external), update ref: 17.413 ms)
+[memory ][Mon Feb 18 14:30:20 2013][09776] 34.963-35.115: GC 3145728K->2788218K (3145728K), 152.060 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.120: parallel nursery GC 3145728K->3145366K (3145728K), 3.101 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 3.100574 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.124: parallel nursery GC 3145728K->3145366K (3145728K), 4.162 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 4.162499 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.129: parallel nursery GC 3145728K->3145366K (3145728K), 3.411 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 3.410580 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.133: parallel nursery GC 3145728K->3145366K (3145728K), 3.138 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 3.137528 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] Threads waited for memory 45.711 ms starting at 35.190 s
+[gcpause][Mon Feb 18 14:30:20 2013][09776] old collection phase 1-0 pause time: 45.648393 ms, (start time: 35.190 s)
+[gcpause][Mon Feb 18 14:30:20 2013][09776] (pause includes compaction: 0.535 ms (internal), update ref: 3.361 ms)
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.190-35.236: GC 3145728K->2728038K (3145728K), 45.648 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] Threads waited for memory 163.102 ms starting at 35.246 s
+[gcpause][Mon Feb 18 14:30:20 2013][09776] old collection phase 1-0 pause time: 134.604221 ms, (start time: 35.275 s)
+[gcpause][Mon Feb 18 14:30:20 2013][09776] (pause includes compaction: 49.767 ms (internal), update ref: 9.483 ms)
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.275-35.409: GC 3145728K->2758712K (3145728K), 134.604 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.418: parallel nursery GC 3145728K->3145728K (3145728K), 1.341 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.340622 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] Threads waited for memory 75.784 ms starting at 35.410 s
+[gcpause][Mon Feb 18 14:30:20 2013][09776] old collection phase 1-0 pause time: 56.257888 ms, (start time: 35.429 s)
+[gcpause][Mon Feb 18 14:30:20 2013][09776] (pause includes compaction: 1.047 ms (internal), update ref: 3.409 ms)
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.429-35.486: GC 3145728K->2759253K (3145728K), 56.258 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] Threads waited for memory 133.235 ms starting at 35.486 s
+[gcpause][Mon Feb 18 14:30:20 2013][09776] old collection phase 1-0 pause time: 107.447382 ms, (start time: 35.512 s)
+[gcpause][Mon Feb 18 14:30:20 2013][09776] (pause includes compaction: 36.479 ms (external), update ref: 5.811 ms)
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.512-35.619: GC 3145637K->2758992K (3145728K), 107.447 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.626: parallel nursery GC 3145728K->3145682K (3145728K), 1.719 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.719404 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.628: parallel nursery GC 3145728K->3145682K (3145728K), 1.343 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.343189 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.630: parallel nursery GC 3145728K->3145682K (3145728K), 1.282 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.281598 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.632: parallel nursery GC 3145728K->3145682K (3145728K), 1.251 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.251316 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.633: parallel nursery GC 3145728K->3145682K (3145728K), 1.272 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.271846 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.635: parallel nursery GC 3145728K->3145682K (3145728K), 1.772 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.771756 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.637: parallel nursery GC 3145728K->3145682K (3145728K), 1.249 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.249263 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.639: parallel nursery GC 3145728K->3145682K (3145728K), 1.260 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.259528 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.641: parallel nursery GC 3145728K->3145682K (3145728K), 1.353 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.353454 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.642: parallel nursery GC 3145728K->3145682K (3145728K), 1.455 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.454565 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.644: parallel nursery GC 3145728K->3145682K (3145728K), 1.414 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.413504 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.646: parallel nursery GC 3145728K->3145682K (3145728K), 1.419 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.419150 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.648: parallel nursery GC 3145728K->3145682K (3145728K), 1.355 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.354993 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.649: parallel nursery GC 3145728K->3145682K (3145728K), 1.531 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.530527 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.651: parallel nursery GC 3145728K->3145682K (3145728K), 1.487 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.487413 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.653: parallel nursery GC 3145728K->3145682K (3145728K), 1.412 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.412478 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.655: parallel nursery GC 3145728K->3145682K (3145728K), 1.432 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.432495 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.657: parallel nursery GC 3145728K->3145682K (3145728K), 1.469 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.468936 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.658: parallel nursery GC 3145728K->3145682K (3145728K), 1.520 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.519748 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.660: parallel nursery GC 3145728K->3145682K (3145728K), 1.636 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.635744 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.663: parallel nursery GC 3145728K->3145682K (3145728K), 1.566 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.565941 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.664: parallel nursery GC 3145728K->3145682K (3145728K), 1.515 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.515129 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.666: parallel nursery GC 3145728K->3145682K (3145728K), 1.596 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.596223 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.668: parallel nursery GC 3145728K->3145682K (3145728K), 1.287 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.286730 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.670: parallel nursery GC 3145728K->3145682K (3145728K), 1.329 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.328817 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.672: parallel nursery GC 3145728K->3145682K (3145728K), 1.266 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.265687 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.673: parallel nursery GC 3145728K->3145682K (3145728K), 1.288 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.287757 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.675: parallel nursery GC 3145728K->3145682K (3145728K), 1.294 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.293916 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.677: parallel nursery GC 3145728K->3145682K (3145728K), 1.302 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.302128 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.678: parallel nursery GC 3145728K->3145682K (3145728K), 1.280 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.279545 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.680: parallel nursery GC 3145728K->3145682K (3145728K), 1.286 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.285704 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.682: parallel nursery GC 3145728K->3145682K (3145728K), 1.435 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.435061 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.684: parallel nursery GC 3145728K->3145682K (3145728K), 1.380 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.380143 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.686: parallel nursery GC 3145728K->3145682K (3145728K), 1.322 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.322145 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.687: parallel nursery GC 3145728K->3145682K (3145728K), 1.333 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.332923 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.689: parallel nursery GC 3145728K->3145682K (3145728K), 1.333 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.333437 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.691: parallel nursery GC 3145728K->3145682K (3145728K), 1.245 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.245157 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.692: parallel nursery GC 3145728K->3145682K (3145728K), 1.341 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.340622 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.694: parallel nursery GC 3145728K->3145682K (3145728K), 1.261 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.261068 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.696: parallel nursery GC 3145728K->3145682K (3145728K), 1.311 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.310853 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.697: parallel nursery GC 3145728K->3145682K (3145728K), 1.306 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.306234 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.699: parallel nursery GC 3145728K->3145682K (3145728K), 1.357 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.357046 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.701: parallel nursery GC 3145728K->3145682K (3145728K), 1.411 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.410938 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.703: parallel nursery GC 3145728K->3145682K (3145728K), 1.268 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.267740 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.704: parallel nursery GC 3145728K->3145682K (3145728K), 1.264 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.264147 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.706: parallel nursery GC 3145728K->3145682K (3145728K), 1.342 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.341649 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.708: parallel nursery GC 3145728K->3145682K (3145728K), 1.148 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.147638 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.709: parallel nursery GC 3145728K->3145682K (3145728K), 1.256 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.256448 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.711: parallel nursery GC 3145728K->3145682K (3145728K), 1.341 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.341135 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.712: parallel nursery GC 3145728K->3145682K (3145728K), 1.310 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.310340 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.714: parallel nursery GC 3145728K->3145682K (3145728K), 1.338 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.338056 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.716: parallel nursery GC 3145728K->3145682K (3145728K), 1.493 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.492546 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.718: parallel nursery GC 3145728K->3145682K (3145728K), 1.388 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.388355 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.720: parallel nursery GC 3145728K->3145682K (3145728K), 1.313 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.312906 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.721: parallel nursery GC 3145728K->3145682K (3145728K), 1.268 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.268253 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.723: parallel nursery GC 3145728K->3145682K (3145728K), 1.325 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.324711 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.725: parallel nursery GC 3145728K->3145682K (3145728K), 1.309 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.309314 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.726: parallel nursery GC 3145728K->3145682K (3145728K), 1.425 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.425309 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.728: parallel nursery GC 3145728K->3145682K (3145728K), 1.387 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.386815 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.730: parallel nursery GC 3145728K->3145682K (3145728K), 1.404 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.404266 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.732: parallel nursery GC 3145728K->3145682K (3145728K), 1.325 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.325225 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.733: parallel nursery GC 3145728K->3145682K (3145728K), 1.469 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.469449 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.735: parallel nursery GC 3145728K->3145682K (3145728K), 1.364 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.363719 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.737: parallel nursery GC 3145728K->3145682K (3145728K), 1.320 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.319579 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.739: parallel nursery GC 3145728K->3145682K (3145728K), 1.348 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.347808 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.740: parallel nursery GC 3145728K->3145682K (3145728K), 1.546 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.546438 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.742: parallel nursery GC 3145728K->3145682K (3145728K), 1.238 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.237971 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.744: parallel nursery GC 3145728K->3145682K (3145728K), 1.300 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.300075 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.746: parallel nursery GC 3145728K->3145682K (3145728K), 1.306 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.306234 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.747: parallel nursery GC 3145728K->3145682K (3145728K), 1.341 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.340622 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.749: parallel nursery GC 3145728K->3145682K (3145728K), 1.244 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.244130 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.751: parallel nursery GC 3145728K->3145682K (3145728K), 1.301 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.300588 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.752: parallel nursery GC 3145728K->3145682K (3145728K), 1.319 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.319066 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.754: parallel nursery GC 3145728K->3145682K (3145728K), 1.351 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.350887 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.756: parallel nursery GC 3145728K->3145682K (3145728K), 1.258 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.257988 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.757: parallel nursery GC 3145728K->3145682K (3145728K), 1.350 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.349861 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.759: parallel nursery GC 3145728K->3145682K (3145728K), 1.262 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.262094 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.761: parallel nursery GC 3145728K->3145682K (3145728K), 1.560 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.559782 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.762: parallel nursery GC 3145728K->3145682K (3145728K), 1.326 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.326251 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.764: parallel nursery GC 3145728K->3145682K (3145728K), 1.312 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.312393 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.766: parallel nursery GC 3145728K->3145682K (3145728K), 1.344 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.343702 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.768: parallel nursery GC 3145728K->3145682K (3145728K), 1.396 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.396054 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.769: parallel nursery GC 3145728K->3145682K (3145728K), 1.287 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.286730 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.771: parallel nursery GC 3145728K->3145682K (3145728K), 1.278 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.278005 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.773: parallel nursery GC 3145728K->3145682K (3145728K), 1.408 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.407859 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.774: parallel nursery GC 3145728K->3145682K (3145728K), 1.334 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.334463 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.776: parallel nursery GC 3145728K->3145682K (3145728K), 1.401 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.400673 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.778: parallel nursery GC 3145728K->3145682K (3145728K), 1.357 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.356533 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.780: parallel nursery GC 3145728K->3145682K (3145728K), 1.297 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.296996 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.781: parallel nursery GC 3145728K->3145682K (3145728K), 1.285 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.285191 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.783: parallel nursery GC 3145728K->3145682K (3145728K), 1.357 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.357046 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.785: parallel nursery GC 3145728K->3145682K (3145728K), 1.260 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.260041 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.786: parallel nursery GC 3145728K->3145682K (3145728K), 1.283 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.282624 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.788: parallel nursery GC 3145728K->3145682K (3145728K), 1.179 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.179460 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.790: parallel nursery GC 3145728K->3145682K (3145728K), 1.303 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.302641 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.791: parallel nursery GC 3145728K->3145682K (3145728K), 1.322 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.321632 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.793: parallel nursery GC 3145728K->3145682K (3145728K), 1.404 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.403753 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.795: parallel nursery GC 3145728K->3145682K (3145728K), 1.294 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.294429 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.796: parallel nursery GC 3145728K->3145682K (3145728K), 1.419 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.419150 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.798: parallel nursery GC 3145728K->3145682K (3145728K), 1.371 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.370904 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.800: parallel nursery GC 3145728K->3145682K (3145728K), 1.456 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.455591 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.802: parallel nursery GC 3145728K->3145682K (3145728K), 1.527 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.526934 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.803: parallel nursery GC 3145728K->3145682K (3145728K), 1.395 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.395027 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.805: parallel nursery GC 3145728K->3145682K (3145728K), 1.644 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.643956 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.807: parallel nursery GC 3145728K->3145682K (3145728K), 1.543 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.542845 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.809: parallel nursery GC 3145728K->3145682K (3145728K), 1.501 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.501271 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.811: parallel nursery GC 3145728K->3145682K (3145728K), 1.496 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.496139 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.813: parallel nursery GC 3145728K->3145682K (3145728K), 1.524 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.524368 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.815: parallel nursery GC 3145728K->3145682K (3145728K), 1.630 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.629585 ms
+[memory ][Mon Feb 18 14:30:20 2013][09776] 35.817: parallel nursery GC 3145728K->3145682K (3145728K), 1.580 ms
+[gcpause][Mon Feb 18 14:30:20 2013][09776] nursery collection pause time: 1.580312 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.819: parallel nursery GC 3145728K->3145682K (3145728K), 1.365 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.364745 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.820: parallel nursery GC 3145728K->3145682K (3145728K), 1.306 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.305721 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.822: parallel nursery GC 3145728K->3145682K (3145728K), 1.333 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.333437 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.824: parallel nursery GC 3145728K->3145682K (3145728K), 1.313 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.312906 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.826: parallel nursery GC 3145728K->3145682K (3145728K), 1.372 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.372444 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.827: parallel nursery GC 3145728K->3145682K (3145728K), 1.409 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.408885 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.829: parallel nursery GC 3145728K->3145682K (3145728K), 1.288 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.288270 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.831: parallel nursery GC 3145728K->3145682K (3145728K), 1.323 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.322658 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.832: parallel nursery GC 3145728K->3145682K (3145728K), 1.506 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.505890 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.834: parallel nursery GC 3145728K->3145682K (3145728K), 1.359 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.358586 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.836: parallel nursery GC 3145728K->3145682K (3145728K), 1.328 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.327791 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.838: parallel nursery GC 3145728K->3145682K (3145728K), 1.457 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.457131 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.840: parallel nursery GC 3145728K->3145682K (3145728K), 1.396 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.395541 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.841: parallel nursery GC 3145728K->3145682K (3145728K), 1.412 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.412478 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.843: parallel nursery GC 3145728K->3145682K (3145728K), 1.346 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.345755 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.845: parallel nursery GC 3145728K->3145682K (3145728K), 1.364 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.364232 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.847: parallel nursery GC 3145728K->3145682K (3145728K), 1.423 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.422743 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.848: parallel nursery GC 3145728K->3145682K (3145728K), 1.424 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.423770 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.850: parallel nursery GC 3145728K->3145682K (3145728K), 1.370 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.369878 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.852: parallel nursery GC 3145728K->3145682K (3145728K), 1.349 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.348834 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.854: parallel nursery GC 3145728K->3145682K (3145728K), 1.339 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.338569 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.856: parallel nursery GC 3145728K->3145682K (3145728K), 1.345 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.344728 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.857: parallel nursery GC 3145728K->3145682K (3145728K), 1.323 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.323172 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.859: parallel nursery GC 3145728K->3145682K (3145728K), 1.380 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.379630 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.861: parallel nursery GC 3145728K->3145682K (3145728K), 1.371 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.370904 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.862: parallel nursery GC 3145728K->3145682K (3145728K), 1.288 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.287757 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.864: parallel nursery GC 3145728K->3145682K (3145728K), 1.343 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.343189 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.866: parallel nursery GC 3145728K->3145682K (3145728K), 1.729 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.729156 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.868: parallel nursery GC 3145728K->3145682K (3145728K), 1.350 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.350374 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.870: parallel nursery GC 3145728K->3145682K (3145728K), 1.371 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.371418 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.871: parallel nursery GC 3145728K->3145682K (3145728K), 1.353 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.352940 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.873: parallel nursery GC 3145728K->3145682K (3145728K), 1.444 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.443787 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.875: parallel nursery GC 3145728K->3145682K (3145728K), 1.357 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.357046 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.877: parallel nursery GC 3145728K->3145682K (3145728K), 1.389 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.389381 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.878: parallel nursery GC 3145728K->3145682K (3145728K), 1.269 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.268767 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.880: parallel nursery GC 3145728K->3145682K (3145728K), 1.345 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.344728 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.882: parallel nursery GC 3145728K->3145682K (3145728K), 1.566 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.566454 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.884: parallel nursery GC 3145728K->3145682K (3145728K), 1.455 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.455078 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.885: parallel nursery GC 3145728K->3145682K (3145728K), 1.344 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.343702 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.887: parallel nursery GC 3145728K->3145682K (3145728K), 1.356 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.355507 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.889: parallel nursery GC 3145728K->3145682K (3145728K), 1.262 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.261581 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.890: parallel nursery GC 3145728K->3145682K (3145728K), 1.216 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.216415 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.892: parallel nursery GC 3145728K->3145682K (3145728K), 1.241 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.240538 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.893: parallel nursery GC 3145728K->3145682K (3145728K), 1.352 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.351914 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.895: parallel nursery GC 3145728K->3145682K (3145728K), 1.395 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.394514 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.897: parallel nursery GC 3145728K->3145682K (3145728K), 1.399 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.399133 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.899: parallel nursery GC 3145728K->3145682K (3145728K), 1.501 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.501271 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.900: parallel nursery GC 3145728K->3145682K (3145728K), 1.518 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.518208 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.902: parallel nursery GC 3145728K->3145682K (3145728K), 1.317 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.317013 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.904: parallel nursery GC 3145728K->3145682K (3145728K), 1.299 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.298535 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.906: parallel nursery GC 3145728K->3145682K (3145728K), 1.474 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.474069 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.907: parallel nursery GC 3145728K->3145682K (3145728K), 1.351 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.350887 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.909: parallel nursery GC 3145728K->3145682K (3145728K), 1.297 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.296996 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.911: parallel nursery GC 3145728K->3145682K (3145728K), 1.276 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.276465 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.912: parallel nursery GC 3145728K->3145682K (3145728K), 1.240 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.239511 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.914: parallel nursery GC 3145728K->3145682K (3145728K), 1.360 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.360126 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.916: parallel nursery GC 3145728K->3145682K (3145728K), 1.247 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.246697 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.917: parallel nursery GC 3145728K->3145682K (3145728K), 1.259 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.259015 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.919: parallel nursery GC 3145728K->3145682K (3145728K), 1.272 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.271846 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.921: parallel nursery GC 3145728K->3145682K (3145728K), 1.350 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.350374 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.922: parallel nursery GC 3145728K->3145682K (3145728K), 1.246 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.245670 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.924: parallel nursery GC 3145728K->3145682K (3145728K), 1.328 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.327791 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.926: parallel nursery GC 3145728K->3145682K (3145728K), 1.368 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.368338 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.927: parallel nursery GC 3145728K->3145682K (3145728K), 1.272 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.271846 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.929: parallel nursery GC 3145728K->3145682K (3145728K), 1.246 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.245670 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.931: parallel nursery GC 3145728K->3145682K (3145728K), 1.449 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.449432 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.932: parallel nursery GC 3145728K->3145682K (3145728K), 1.367 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.367312 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.934: parallel nursery GC 3145728K->3145682K (3145728K), 1.347 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.346781 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.936: parallel nursery GC 3145728K->3145682K (3145728K), 1.244 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.243617 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.937: parallel nursery GC 3145728K->3145682K (3145728K), 1.290 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.289810 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.939: parallel nursery GC 3145728K->3145682K (3145728K), 1.397 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.397080 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.941: parallel nursery GC 3145728K->3145682K (3145728K), 1.283 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.283138 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.942: parallel nursery GC 3145728K->3145682K (3145728K), 1.307 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.306747 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.944: parallel nursery GC 3145728K->3145682K (3145728K), 1.343 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.342675 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.946: parallel nursery GC 3145728K->3145682K (3145728K), 1.538 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.538225 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.948: parallel nursery GC 3145728K->3145682K (3145728K), 1.557 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.557216 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.949: parallel nursery GC 3145728K->3145682K (3145728K), 1.405 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.404779 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.951: parallel nursery GC 3145728K->3145682K (3145728K), 1.388 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.387842 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.953: parallel nursery GC 3145728K->3145682K (3145728K), 1.444 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.443787 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.955: parallel nursery GC 3145728K->3145682K (3145728K), 1.376 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.376037 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.957: parallel nursery GC 3145728K->3145682K (3145728K), 1.723 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.722997 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.959: parallel nursery GC 3145728K->3145682K (3145728K), 1.492 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.491519 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.960: parallel nursery GC 3145728K->3145682K (3145728K), 1.475 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.474582 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.962: parallel nursery GC 3145728K->3145682K (3145728K), 1.471 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.470989 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.964: parallel nursery GC 3145728K->3145682K (3145728K), 1.321 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.320605 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.966: parallel nursery GC 3145728K->3145682K (3145728K), 1.429 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.429415 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.968: parallel nursery GC 3145728K->3145682K (3145728K), 1.377 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.377063 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.969: parallel nursery GC 3145728K->3145682K (3145728K), 1.456 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.455591 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.971: parallel nursery GC 3145728K->3145682K (3145728K), 1.261 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.260554 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.973: parallel nursery GC 3145728K->3145682K (3145728K), 1.295 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.295456 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.974: parallel nursery GC 3145728K->3145682K (3145728K), 1.384 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.384249 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.976: parallel nursery GC 3145728K->3145682K (3145728K), 1.267 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.266714 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.978: parallel nursery GC 3145728K->3145682K (3145728K), 1.409 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.409398 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.979: parallel nursery GC 3145728K->3145682K (3145728K), 1.279 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.278518 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.981: parallel nursery GC 3145728K->3145682K (3145728K), 1.343 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.343189 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.983: parallel nursery GC 3145728K->3145682K (3145728K), 1.231 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.231299 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.984: parallel nursery GC 3145728K->3145682K (3145728K), 1.275 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.275439 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.986: parallel nursery GC 3145728K->3145682K (3145728K), 1.561 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.560809 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.988: parallel nursery GC 3145728K->3145682K (3145728K), 1.377 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.376550 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.990: parallel nursery GC 3145728K->3145682K (3145728K), 1.486 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.485873 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.992: parallel nursery GC 3145728K->3145682K (3145728K), 1.583 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.583392 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.994: parallel nursery GC 3145728K->3145682K (3145728K), 1.566 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.565941 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.996: parallel nursery GC 3145728K->3145682K (3145728K), 1.489 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.488953 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.998: parallel nursery GC 3145728K->3145682K (3145728K), 1.378 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.378090 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 35.999: parallel nursery GC 3145728K->3145682K (3145728K), 1.360 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.359613 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.001: parallel nursery GC 3145728K->3145682K (3145728K), 1.629 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.628558 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.003: parallel nursery GC 3145728K->3145682K (3145728K), 1.669 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.668592 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.005: parallel nursery GC 3145728K->3145682K (3145728K), 1.453 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.452512 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.007: parallel nursery GC 3145728K->3145682K (3145728K), 1.529 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.528987 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.009: parallel nursery GC 3145728K->3145682K (3145728K), 1.612 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.612134 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.011: parallel nursery GC 3145728K->3145682K (3145728K), 1.396 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.395541 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.012: parallel nursery GC 3145728K->3145682K (3145728K), 1.288 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.287757 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.014: parallel nursery GC 3145728K->3145682K (3145728K), 1.488 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.487926 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.016: parallel nursery GC 3145728K->3145682K (3145728K), 2.332 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 2.332231 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.019: parallel nursery GC 3145728K->3145682K (3145728K), 1.558 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.557729 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.021: parallel nursery GC 3145728K->3145682K (3145728K), 1.625 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.625479 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.023: parallel nursery GC 3145728K->3145682K (3145728K), 1.325 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.324711 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.025: parallel nursery GC 3145728K->3145682K (3145728K), 1.599 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.599303 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.027: parallel nursery GC 3145728K->3145682K (3145728K), 1.713 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.713245 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.029: parallel nursery GC 3145728K->3145682K (3145728K), 1.728 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.727617 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.031: parallel nursery GC 3145728K->3145682K (3145728K), 1.628 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.628045 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.033: parallel nursery GC 3145728K->3145682K (3145728K), 1.734 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.734289 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.035: parallel nursery GC 3145728K->3145682K (3145728K), 1.933 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.932919 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.037: parallel nursery GC 3145728K->3145682K (3145728K), 1.569 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.569021 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.039: parallel nursery GC 3145728K->3145682K (3145728K), 1.487 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.486900 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.041: parallel nursery GC 3145728K->3145682K (3145728K), 1.609 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.608541 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.043: parallel nursery GC 3145728K->3145682K (3145728K), 1.543 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.543358 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.045: parallel nursery GC 3145728K->3145682K (3145728K), 1.479 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.478688 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.047: parallel nursery GC 3145728K->3145682K (3145728K), 1.974 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.973979 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.049: parallel nursery GC 3145728K->3145682K (3145728K), 1.411 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.411451 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.051: parallel nursery GC 3145728K->3145682K (3145728K), 1.414 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.413504 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.053: parallel nursery GC 3145728K->3145682K (3145728K), 1.288 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.288270 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.054: parallel nursery GC 3145728K->3145682K (3145728K), 1.344 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.343702 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.056: parallel nursery GC 3145728K->3145682K (3145728K), 1.289 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.288783 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.058: parallel nursery GC 3145728K->3145682K (3145728K), 1.483 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.483307 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.059: parallel nursery GC 3145728K->3145682K (3145728K), 1.350 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.350374 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.061: parallel nursery GC 3145728K->3145682K (3145728K), 1.267 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.266714 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.063: parallel nursery GC 3145728K->3145682K (3145728K), 1.251 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.251316 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.064: parallel nursery GC 3145728K->3145682K (3145728K), 1.271 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.271333 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.066: parallel nursery GC 3145728K->3145682K (3145728K), 1.353 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.352940 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.068: parallel nursery GC 3145728K->3145682K (3145728K), 1.260 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.260041 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.069: parallel nursery GC 3145728K->3145682K (3145728K), 1.339 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.338569 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.071: parallel nursery GC 3145728K->3145682K (3145728K), 1.266 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.265687 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.073: parallel nursery GC 3145728K->3145682K (3145728K), 1.260 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.259528 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.074: parallel nursery GC 3145728K->3145682K (3145728K), 1.255 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.254909 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.076: parallel nursery GC 3145728K->3145682K (3145728K), 1.335 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.335490 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.078: parallel nursery GC 3145728K->3145682K (3145728K), 1.331 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.331384 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.079: parallel nursery GC 3145728K->3145682K (3145728K), 1.395 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.395027 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.081: parallel nursery GC 3145728K->3145682K (3145728K), 1.403 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.403239 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.083: parallel nursery GC 3145728K->3145682K (3145728K), 1.343 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.342675 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.085: parallel nursery GC 3145728K->3145682K (3145728K), 1.282 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.281598 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.086: parallel nursery GC 3145728K->3145682K (3145728K), 1.318 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.318039 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.088: parallel nursery GC 3145728K->3145682K (3145728K), 1.398 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.398107 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.090: parallel nursery GC 3145728K->3145682K (3145728K), 1.277 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.277492 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.091: parallel nursery GC 3145728K->3145682K (3145728K), 1.426 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.426336 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.093: parallel nursery GC 3145728K->3145682K (3145728K), 1.248 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.247723 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.095: parallel nursery GC 3145728K->3145682K (3145728K), 1.384 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.384249 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.097: parallel nursery GC 3145728K->3145682K (3145728K), 1.373 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.372957 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.099: parallel nursery GC 3145728K->3145682K (3145728K), 1.367 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.367312 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.100: parallel nursery GC 3145728K->3145682K (3145728K), 1.634 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.634204 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.102: parallel nursery GC 3145728K->3145682K (3145728K), 1.452 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.451999 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.104: parallel nursery GC 3145728K->3145682K (3145728K), 1.270 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.269793 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.106: parallel nursery GC 3145728K->3145682K (3145728K), 1.283 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.282624 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.107: parallel nursery GC 3145728K->3145682K (3145728K), 1.272 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.272359 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.109: parallel nursery GC 3145728K->3145682K (3145728K), 1.387 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.387328 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.111: parallel nursery GC 3145728K->3145682K (3145728K), 1.386 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.386302 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.113: parallel nursery GC 3145728K->3145682K (3145728K), 1.242 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.242077 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.114: parallel nursery GC 3145728K->3145682K (3145728K), 1.382 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.382196 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.116: parallel nursery GC 3145728K->3145682K (3145728K), 1.376 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.376037 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.118: parallel nursery GC 3145728K->3145682K (3145728K), 1.332 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.332410 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.120: parallel nursery GC 3145728K->3145682K (3145728K), 1.381 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.380656 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.121: parallel nursery GC 3145728K->3145682K (3145728K), 1.519 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.518722 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.123: parallel nursery GC 3145728K->3145682K (3145728K), 1.357 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.356533 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.125: parallel nursery GC 3145728K->3145682K (3145728K), 1.369 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.368851 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.127: parallel nursery GC 3145728K->3145682K (3145728K), 1.285 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.284677 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.128: parallel nursery GC 3145728K->3145682K (3145728K), 1.315 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.314959 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.130: parallel nursery GC 3145728K->3145682K (3145728K), 1.347 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.346781 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.132: parallel nursery GC 3145728K->3145682K (3145728K), 1.262 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.262094 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.133: parallel nursery GC 3145728K->3145682K (3145728K), 1.354 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.354480 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.135: parallel nursery GC 3145728K->3145682K (3145728K), 1.282 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.281598 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.137: parallel nursery GC 3145728K->3145682K (3145728K), 1.243 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.242591 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.138: parallel nursery GC 3145728K->3145682K (3145728K), 1.334 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.333950 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.140: parallel nursery GC 3145728K->3145682K (3145728K), 1.295 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.295456 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.142: parallel nursery GC 3145728K->3145682K (3145728K), 1.283 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.283138 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.144: parallel nursery GC 3145728K->3145682K (3145728K), 1.309 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.309314 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.145: parallel nursery GC 3145728K->3145682K (3145728K), 1.356 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.355507 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.147: parallel nursery GC 3145728K->3145682K (3145728K), 1.155 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 1.154824 ms
+[memory ][Mon Feb 18 14:30:21 2013][09776] 36.148: parallel nursery GC 3145728K->3145682K (3145728K), 8.299 ms
+[gcpause][Mon Feb 18 14:30:21 2013][09776] nursery collection pause time: 8.299334 ms
+[gcpause][Mon Feb 18 14:30:22 2013][09776] Threads waited for memory 1082.267 ms starting at 36.148 s
+[gcpause][Mon Feb 18 14:30:22 2013][09776] old collection phase 1-0 pause time: 1063.220706 ms, (start time: 36.167 s)
+[gcpause][Mon Feb 18 14:30:22 2013][09776] (pause includes compaction: 997.341 ms (external), update ref: 15.036 ms)
+[memory ][Mon Feb 18 14:30:22 2013][09776] 36.167-37.231: GC 3145728K->2786789K (3145728K), 1063.221 ms
+[memory ][Mon Feb 18 14:30:22 2013][09776] 37.232: parallel nursery GC 2955328K->3000128K (3145728K), 10.592 ms
+[gcpause][Mon Feb 18 14:30:22 2013][09776] nursery collection pause time: 10.592045 ms
+[gcpause][Mon Feb 18 14:30:22 2013][09776] Threads waited for memory 406.699 ms starting at 37.262 s
+[gcpause][Mon Feb 18 14:30:22 2013][09776] old collection phase 1-0 pause time: 391.943640 ms, (start time: 37.277 s)
+[gcpause][Mon Feb 18 14:30:22 2013][09776] (pause includes compaction: 1.386 ms (internal), update ref: 4.110 ms)
+[memory ][Mon Feb 18 14:30:22 2013][09776] 37.277-37.669: GC 3019328K->2791823K (3145728K), 391.944 ms
+[gcpause][Mon Feb 18 14:30:23 2013][09776] Threads waited for memory 788.549 ms starting at 37.669 s
+[gcpause][Mon Feb 18 14:30:23 2013][09776] old collection phase 1-0 pause time: 763.420722 ms, (start time: 37.694 s)
+[gcpause][Mon Feb 18 14:30:23 2013][09776] (pause includes compaction: 419.631 ms (external), update ref: 10.448 ms)
+[memory ][Mon Feb 18 14:30:23 2013][09776] 37.694-38.458: GC 3064128K->2787248K (3145728K), 763.421 ms
+[gcpause][Mon Feb 18 14:30:23 2013][09776] Threads waited for memory 73.473 ms starting at 38.562 s
+[gcpause][Mon Feb 18 14:30:23 2013][09776] old collection phase 1-0 pause time: 54.336261 ms, (start time: 38.582 s)
+[gcpause][Mon Feb 18 14:30:23 2013][09776] (pause includes compaction: 2.234 ms (internal), update ref: 3.043 ms)
+[memory ][Mon Feb 18 14:30:23 2013][09776] 38.582-38.636: GC 3116928K->2813218K (3145728K), 54.336 ms
+[gcpause][Mon Feb 18 14:30:24 2013][09776] Threads waited for memory 360.824 ms starting at 38.636 s
+[gcpause][Mon Feb 18 14:30:24 2013][09776] old collection phase 1-0 pause time: 333.141547 ms, (start time: 38.664 s)
+[gcpause][Mon Feb 18 14:30:24 2013][09776] (pause includes compaction: 267.430 ms (external), update ref: 7.569 ms)
+[memory ][Mon Feb 18 14:30:24 2013][09776] 38.664-38.997: GC 3139328K->2819135K (3145728K), 333.142 ms
+[gcpause][Mon Feb 18 14:30:24 2013][09776] Threads waited for memory 185.003 ms starting at 39.170 s
+[gcpause][Mon Feb 18 14:30:24 2013][09776] old collection phase 1-0 pause time: 174.418957 ms, (start time: 39.180 s)
+[gcpause][Mon Feb 18 14:30:24 2013][09776] (pause includes compaction: 6.023 ms (internal), update ref: 3.360 ms)
+[memory ][Mon Feb 18 14:30:24 2013][09776] 39.180-39.355: GC 3145728K->2767693K (3145728K), 174.419 ms
+[gcpause][Mon Feb 18 14:30:24 2013][09776] Threads waited for memory 310.810 ms starting at 39.358 s
+[gcpause][Mon Feb 18 14:30:24 2013][09776] old collection phase 1-0 pause time: 256.249265 ms, (start time: 39.413 s)
+[gcpause][Mon Feb 18 14:30:24 2013][09776] (pause includes compaction: 10.898 ms (external), update ref: 6.275 ms)
+[memory ][Mon Feb 18 14:30:24 2013][09776] 39.413-39.669: GC 3145728K->2779995K (3145728K), 256.249 ms
+[gcpause][Mon Feb 18 14:30:25 2013][09776] Threads waited for memory 378.993 ms starting at 40.208 s
+[gcpause][Mon Feb 18 14:30:25 2013][09776] old collection phase 1-0 pause time: 359.830811 ms, (start time: 40.228 s)
+[gcpause][Mon Feb 18 14:30:25 2013][09776] (pause includes compaction: 0.682 ms (internal), update ref: 3.396 ms)
+[memory ][Mon Feb 18 14:30:25 2013][09776] 40.228-40.587: GC 3145728K->2810909K (3145728K), 359.831 ms
+[gcpause][Mon Feb 18 14:30:25 2013][09776] Threads waited for memory 71.650 ms starting at 40.594 s
+[gcpause][Mon Feb 18 14:30:25 2013][09776] old collection phase 1-0 pause time: 55.629664 ms, (start time: 40.610 s)
+[gcpause][Mon Feb 18 14:30:25 2013][09776] (pause includes compaction: 7.462 ms (external), update ref: 6.236 ms)
+[memory ][Mon Feb 18 14:30:25 2013][09776] 40.610-40.666: GC 3145728K->2798895K (3145728K), 55.630 ms
+[gcpause][Mon Feb 18 14:30:26 2013][09776] Threads waited for memory 59.608 ms starting at 41.332 s
+[gcpause][Mon Feb 18 14:30:26 2013][09776] old collection phase 1-0 pause time: 51.891114 ms, (start time: 41.340 s)
+[gcpause][Mon Feb 18 14:30:26 2013][09776] (pause includes compaction: 1.054 ms (internal), update ref: 3.061 ms)
+[memory ][Mon Feb 18 14:30:26 2013][09776] 41.340-41.392: GC 3145728K->2823665K (3145728K), 51.891 ms
+[gcpause][Mon Feb 18 14:30:26 2013][09776] Threads waited for memory 59.745 ms starting at 41.399 s
+[gcpause][Mon Feb 18 14:30:26 2013][09776] old collection phase 1-0 pause time: 44.582362 ms, (start time: 41.414 s)
+[gcpause][Mon Feb 18 14:30:26 2013][09776] (pause includes compaction: 5.442 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:26 2013][09776] 41.414-41.459: GC 3145728K->2813830K (3145728K), 44.582 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] Threads waited for memory 51.542 ms starting at 42.234 s
+[gcpause][Mon Feb 18 14:30:27 2013][09776] old collection phase 1-0 pause time: 47.057791 ms, (start time: 42.239 s)
+[gcpause][Mon Feb 18 14:30:27 2013][09776] (pause includes compaction: 2.320 ms (internal), update ref: 3.897 ms)
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.239-42.286: GC 3145728K->2796822K (3145728K), 47.058 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.295: parallel nursery GC 3145728K->3145633K (3145728K), 7.045 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.045452 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.303: parallel nursery GC 3145728K->3145728K (3145728K), 5.451 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 5.450769 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] Threads waited for memory 56.915 ms starting at 42.303 s
+[gcpause][Mon Feb 18 14:30:27 2013][09776] old collection phase 1-0 pause time: 42.051501 ms, (start time: 42.318 s)
+[gcpause][Mon Feb 18 14:30:27 2013][09776] (pause includes compaction: 3.701 ms (external), update ref: 4.086 ms)
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.318-42.360: GC 3145728K->2802278K (3145728K), 42.052 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.366: parallel nursery GC 3145728K->3145679K (3145728K), 4.013 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 4.013141 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.371: parallel nursery GC 3145728K->3145679K (3145728K), 1.358 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 1.358073 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.372: parallel nursery GC 3145728K->3145679K (3145728K), 1.368 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 1.367825 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.374: parallel nursery GC 3145728K->3145679K (3145728K), 7.022 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.022356 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.381: parallel nursery GC 3145728K->3145679K (3145728K), 8.659 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 8.659126 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.390: parallel nursery GC 3145728K->3145679K (3145728K), 11.060 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 11.060133 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.402: parallel nursery GC 3145728K->3145679K (3145728K), 11.795 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 11.794601 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.420: parallel nursery GC 3145728K->3145679K (3145728K), 3.501 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 3.500913 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.430: parallel nursery GC 3145728K->3145679K (3145728K), 6.768 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 6.768295 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.444: parallel nursery GC 3145728K->3145679K (3145728K), 7.104 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.104477 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.458: parallel nursery GC 3145728K->3145679K (3145728K), 9.202 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 9.202150 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.473: parallel nursery GC 3145728K->3145679K (3145728K), 7.989 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.988815 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.488: parallel nursery GC 3145728K->3145679K (3145728K), 8.300 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 8.300361 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.503: parallel nursery GC 3145728K->3145679K (3145728K), 7.891 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.890783 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.518: parallel nursery GC 3145728K->3145679K (3145728K), 8.117 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 8.116616 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.532: parallel nursery GC 3145728K->3145679K (3145728K), 5.484 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 5.484130 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.545: parallel nursery GC 3145728K->3145679K (3145728K), 6.980 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 6.979756 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.558: parallel nursery GC 3145728K->3145679K (3145728K), 9.010 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 9.009679 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.575: parallel nursery GC 3145728K->3145679K (3145728K), 11.264 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 11.264409 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.593: parallel nursery GC 3145728K->3145679K (3145728K), 7.743 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.742966 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.608: parallel nursery GC 3145728K->3145679K (3145728K), 8.377 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 8.377349 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.623: parallel nursery GC 3145728K->3145679K (3145728K), 7.699 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.699339 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.637: parallel nursery GC 3145728K->3145679K (3145728K), 8.091 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 8.090953 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.652: parallel nursery GC 3145728K->3145679K (3145728K), 6.926 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 6.925864 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.665: parallel nursery GC 3145728K->3145679K (3145728K), 7.733 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.732701 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.679: parallel nursery GC 3145728K->3145679K (3145728K), 7.033 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.032621 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.693: parallel nursery GC 3145728K->3145679K (3145728K), 7.717 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.717303 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.707: parallel nursery GC 3145728K->3145679K (3145728K), 5.668 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 5.667876 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.719: parallel nursery GC 3145728K->3145679K (3145728K), 8.311 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 8.310626 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.734: parallel nursery GC 3145728K->3145679K (3145728K), 7.304 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.303620 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.748: parallel nursery GC 3145728K->3145679K (3145728K), 5.676 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 5.676088 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.761: parallel nursery GC 3145728K->3145679K (3145728K), 7.696 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.696260 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.776: parallel nursery GC 3145728K->3145679K (3145728K), 3.879 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 3.878669 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.786: parallel nursery GC 3145728K->3145679K (3145728K), 7.473 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 7.472994 ms
+[memory ][Mon Feb 18 14:30:27 2013][09776] 42.800: parallel nursery GC 3145728K->3145679K (3145728K), 10.486 ms
+[gcpause][Mon Feb 18 14:30:27 2013][09776] nursery collection pause time: 10.486314 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.818: parallel nursery GC 3145728K->3145679K (3145728K), 8.319 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.318838 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.833: parallel nursery GC 3145728K->3145679K (3145728K), 8.135 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.134580 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.848: parallel nursery GC 3145728K->3145679K (3145728K), 7.560 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.559734 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.862: parallel nursery GC 3145728K->3145679K (3145728K), 7.851 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.851263 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.876: parallel nursery GC 3145728K->3145679K (3145728K), 5.112 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.111507 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.888: parallel nursery GC 3145728K->3145679K (3145728K), 6.868 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 6.867866 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.901: parallel nursery GC 3145728K->3145679K (3145728K), 9.355 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.354587 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.917: parallel nursery GC 3145728K->3145679K (3145728K), 9.152 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.152364 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.933: parallel nursery GC 3145728K->3145679K (3145728K), 9.406 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.406426 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.949: parallel nursery GC 3145728K->3145679K (3145728K), 8.972 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.971699 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.965: parallel nursery GC 3145728K->3145679K (3145728K), 6.749 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 6.748791 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.979: parallel nursery GC 3145728K->3145679K (3145728K), 5.198 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.198247 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 42.990: parallel nursery GC 3145728K->3145679K (3145728K), 7.050 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.050072 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.004: parallel nursery GC 3145728K->3145679K (3145728K), 9.117 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.116950 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.019: parallel nursery GC 3145728K->3145679K (3145728K), 8.015 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.014991 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.034: parallel nursery GC 3145728K->3145679K (3145728K), 9.090 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.089747 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.050: parallel nursery GC 3145728K->3145679K (3145728K), 6.869 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 6.868893 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.064: parallel nursery GC 3145728K->3145679K (3145728K), 6.934 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 6.933563 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.077: parallel nursery GC 3145728K->3145679K (3145728K), 5.777 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.776686 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.090: parallel nursery GC 3145728K->3145679K (3145728K), 5.832 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.832117 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.103: parallel nursery GC 3145728K->3145679K (3145728K), 6.899 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 6.899175 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.117: parallel nursery GC 3145728K->3145679K (3145728K), 10.574 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 10.573568 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.135: parallel nursery GC 3145728K->3145679K (3145728K), 7.836 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.835865 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.149: parallel nursery GC 3145728K->3145679K (3145728K), 9.267 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.267334 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.165: parallel nursery GC 3145728K->3145679K (3145728K), 6.870 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 6.869919 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.179: parallel nursery GC 3145728K->3145679K (3145728K), 7.614 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.614139 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.193: parallel nursery GC 3145728K->3145679K (3145728K), 7.889 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.889244 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.207: parallel nursery GC 3145728K->3145679K (3145728K), 8.083 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.083254 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.222: parallel nursery GC 3145728K->3145679K (3145728K), 8.062 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.061697 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.237: parallel nursery GC 3145728K->3145679K (3145728K), 7.685 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.685481 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.251: parallel nursery GC 3145728K->3145679K (3145728K), 7.801 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.800964 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.266: parallel nursery GC 3145728K->3145679K (3145728K), 9.656 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.656381 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.283: parallel nursery GC 3145728K->3145679K (3145728K), 9.930 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.930459 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.301: parallel nursery GC 3145728K->3145679K (3145728K), 9.277 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.277085 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.318: parallel nursery GC 3145728K->3145679K (3145728K), 9.528 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.528067 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.334: parallel nursery GC 3145728K->3145679K (3145728K), 8.393 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.392747 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.350: parallel nursery GC 3145728K->3145679K (3145728K), 5.756 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.755642 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.362: parallel nursery GC 3145728K->3145679K (3145728K), 5.730 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.730493 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.374: parallel nursery GC 3145728K->3145679K (3145728K), 5.130 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.129984 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.386: parallel nursery GC 3145728K->3145679K (3145728K), 7.516 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.516107 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.400: parallel nursery GC 3145728K->3145679K (3145728K), 7.572 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.571539 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.414: parallel nursery GC 3145728K->3145679K (3145728K), 8.045 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.045273 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.428: parallel nursery GC 3145728K->3145679K (3145728K), 7.683 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.683428 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.443: parallel nursery GC 3145728K->3145679K (3145728K), 7.967 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.967258 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.457: parallel nursery GC 3145728K->3145679K (3145728K), 7.894 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.894376 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.472: parallel nursery GC 3145728K->3145679K (3145728K), 7.911 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.910800 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.486: parallel nursery GC 3145728K->3145679K (3145728K), 8.628 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.627818 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.501: parallel nursery GC 3145728K->3145679K (3145728K), 8.822 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.822341 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.517: parallel nursery GC 3145728K->3145679K (3145728K), 8.016 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.015504 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.531: parallel nursery GC 3145728K->3145679K (3145728K), 7.975 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.975471 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.546: parallel nursery GC 3145728K->3145679K (3145728K), 8.082 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.082228 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.561: parallel nursery GC 3145728K->3145679K (3145728K), 7.913 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 7.913367 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.618: parallel nursery GC 3145728K->3145679K (3145728K), 5.844 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.844435 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.630: parallel nursery GC 3145728K->3145679K (3145728K), 9.509 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 9.508563 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.646: parallel nursery GC 3145728K->3145679K (3145728K), 8.045 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.044760 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.661: parallel nursery GC 3145728K->3145679K (3145728K), 8.231 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.230558 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.676: parallel nursery GC 3145728K->3145679K (3145728K), 8.884 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.883932 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.692: parallel nursery GC 3145728K->3145679K (3145728K), 8.329 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.328590 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.707: parallel nursery GC 3145728K->3145679K (3145728K), 8.075 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.074529 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.722: parallel nursery GC 3145728K->3145679K (3145728K), 8.085 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.084794 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.737: parallel nursery GC 3145728K->3145679K (3145728K), 8.474 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.474354 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.752: parallel nursery GC 3145728K->3145679K (3145728K), 8.073 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 8.072989 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.766: parallel nursery GC 3145728K->3145679K (3145728K), 5.406 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.406116 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.778: parallel nursery GC 3145728K->3145679K (3145728K), 5.082 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.082252 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.789: parallel nursery GC 3145728K->3145679K (3145728K), 5.893 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.893195 ms
+[memory ][Mon Feb 18 14:30:28 2013][09776] 43.802: parallel nursery GC 3145728K->3145679K (3145728K), 5.872 ms
+[gcpause][Mon Feb 18 14:30:28 2013][09776] nursery collection pause time: 5.872151 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.815: parallel nursery GC 3145728K->3145679K (3145728K), 8.765 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 8.765370 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.830: parallel nursery GC 3145728K->3145679K (3145728K), 9.047 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 9.047147 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.846: parallel nursery GC 3145728K->3145679K (3145728K), 8.816 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 8.815669 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.864: parallel nursery GC 3145728K->3145679K (3145728K), 6.087 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.086692 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.877: parallel nursery GC 3145728K->3145679K (3145728K), 6.355 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.355124 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.889: parallel nursery GC 3145728K->3145679K (3145728K), 6.972 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.972057 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.902: parallel nursery GC 3145728K->3145679K (3145728K), 4.962 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.961637 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.913: parallel nursery GC 3145728K->3145679K (3145728K), 4.583 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.582855 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.922: parallel nursery GC 3145728K->3145679K (3145728K), 6.457 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.456749 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.933: parallel nursery GC 3145728K->3145679K (3145728K), 5.348 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.348118 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.942: parallel nursery GC 3145728K->3145679K (3145728K), 6.122 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.122106 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.952: parallel nursery GC 3145728K->3145679K (3145728K), 5.854 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.854187 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.961: parallel nursery GC 3145728K->3145679K (3145728K), 5.827 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.827498 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.970: parallel nursery GC 3145728K->3145679K (3145728K), 5.895 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.894734 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.979: parallel nursery GC 3145728K->3145679K (3145728K), 5.268 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.267537 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.986: parallel nursery GC 3145728K->3145679K (3145728K), 5.202 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.201840 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 43.993: parallel nursery GC 3145728K->3145679K (3145728K), 6.624 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.623557 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.001: parallel nursery GC 3145728K->3145679K (3145728K), 5.817 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.817233 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.008: parallel nursery GC 3145728K->3145679K (3145728K), 6.051 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.050764 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.015: parallel nursery GC 3145728K->3145679K (3145728K), 4.733 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.732725 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.020: parallel nursery GC 3145728K->3145679K (3145728K), 1.472 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 1.471502 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.022: parallel nursery GC 3145728K->3145679K (3145728K), 3.766 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.766266 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.026: parallel nursery GC 3145728K->3145679K (3145728K), 3.831 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.831449 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.031: parallel nursery GC 3145728K->3145679K (3145728K), 5.182 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.181823 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.036: parallel nursery GC 3145728K->3145679K (3145728K), 4.504 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.503813 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.041: parallel nursery GC 3145728K->3145679K (3145728K), 3.694 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.694410 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.045: parallel nursery GC 3145728K->3145679K (3145728K), 4.361 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.361128 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.050: parallel nursery GC 3145728K->3145679K (3145728K), 4.026 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.025973 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.054: parallel nursery GC 3145728K->3145679K (3145728K), 3.181 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.181155 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.058: parallel nursery GC 3145728K->3145679K (3145728K), 3.417 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.417252 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.062: parallel nursery GC 3145728K->3145679K (3145728K), 4.185 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.185082 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.066: parallel nursery GC 3145728K->3145679K (3145728K), 4.528 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.528449 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.071: parallel nursery GC 3145728K->3145679K (3145728K), 4.480 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.480203 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.076: parallel nursery GC 3145728K->3145679K (3145728K), 3.847 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.846847 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.080: parallel nursery GC 3145728K->3145679K (3145728K), 3.280 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.280213 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.084: parallel nursery GC 3145728K->3145679K (3145728K), 3.305 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.305363 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.088: parallel nursery GC 3145728K->3145679K (3145728K), 4.855 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.855393 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.093: parallel nursery GC 3145728K->3145679K (3145728K), 4.884 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.883622 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.098: parallel nursery GC 3145728K->3145679K (3145728K), 3.246 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.246338 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.102: parallel nursery GC 3145728K->3145679K (3145728K), 3.006 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.005622 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.105: parallel nursery GC 3145728K->3145679K (3145728K), 3.693 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.693383 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.109: parallel nursery GC 3145728K->3145679K (3145728K), 3.818 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.818104 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.114: parallel nursery GC 3145728K->3145679K (3145728K), 3.994 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.994151 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.118: parallel nursery GC 3145728K->3145679K (3145728K), 3.246 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.245825 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.122: parallel nursery GC 3145728K->3145679K (3145728K), 3.804 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.803733 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.126: parallel nursery GC 3145728K->3145679K (3145728K), 5.891 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.891142 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.132: parallel nursery GC 3145728K->3145679K (3145728K), 4.161 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.161472 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.137: parallel nursery GC 3145728K->3145679K (3145728K), 3.048 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.047709 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.140: parallel nursery GC 3145728K->3145679K (3145728K), 4.612 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.611597 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.145: parallel nursery GC 3145728K->3145679K (3145728K), 4.477 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.477124 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.150: parallel nursery GC 3145728K->3145679K (3145728K), 2.989 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.988684 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.153: parallel nursery GC 3145728K->3145679K (3145728K), 3.748 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.748302 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.158: parallel nursery GC 3145728K->3145679K (3145728K), 3.613 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.612802 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.162: parallel nursery GC 3145728K->3145679K (3145728K), 1.499 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 1.499218 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.163: parallel nursery GC 3145728K->3145679K (3145728K), 5.620 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.620143 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.169: parallel nursery GC 3145728K->3145679K (3145728K), 6.267 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 6.266844 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.176: parallel nursery GC 3145728K->3145679K (3145728K), 4.120 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.119898 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.181: parallel nursery GC 3145728K->3145679K (3145728K), 5.703 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.703290 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.187: parallel nursery GC 3145728K->3145679K (3145728K), 3.889 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.889447 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.191: parallel nursery GC 3145728K->3145679K (3145728K), 4.082 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.081918 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.195: parallel nursery GC 3145728K->3145679K (3145728K), 5.456 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 5.456415 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.201: parallel nursery GC 3145728K->3145679K (3145728K), 4.044 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.044450 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.206: parallel nursery GC 3145728K->3145679K (3145728K), 3.241 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.241206 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.209: parallel nursery GC 3145728K->3145679K (3145728K), 2.955 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.954809 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.212: parallel nursery GC 3145728K->3145679K (3145728K), 4.045 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.044963 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.217: parallel nursery GC 3145728K->3145679K (3145728K), 3.807 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.806813 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.221: parallel nursery GC 3145728K->3145679K (3145728K), 2.719 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.718712 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.224: parallel nursery GC 3145728K->3145679K (3145728K), 2.986 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.985605 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.228: parallel nursery GC 3145728K->3145679K (3145728K), 3.755 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.754974 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.232: parallel nursery GC 3145728K->3145679K (3145728K), 3.694 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.694410 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.236: parallel nursery GC 3145728K->3145679K (3145728K), 2.847 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.847026 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.239: parallel nursery GC 3145728K->3145679K (3145728K), 2.833 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.833168 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.242: parallel nursery GC 3145728K->3145679K (3145728K), 3.814 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.813998 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.247: parallel nursery GC 3145728K->3145679K (3145728K), 3.692 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.691844 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.251: parallel nursery GC 3145728K->3145679K (3145728K), 3.488 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.488081 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.255: parallel nursery GC 3145728K->3145679K (3145728K), 2.610 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.610415 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.258: parallel nursery GC 3145728K->3145679K (3145728K), 3.940 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.940259 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.262: parallel nursery GC 3145728K->3145679K (3145728K), 3.822 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.822210 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.267: parallel nursery GC 3145728K->3145679K (3145728K), 1.511 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 1.510510 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.269: parallel nursery GC 3145728K->3145679K (3145728K), 2.748 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.748481 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.272: parallel nursery GC 3145728K->3145679K (3145728K), 4.510 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.509972 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.277: parallel nursery GC 3145728K->3145679K (3145728K), 4.111 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.110660 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.281: parallel nursery GC 3145728K->3145679K (3145728K), 2.973 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.973287 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.284: parallel nursery GC 3145728K->3145679K (3145728K), 2.939 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.938899 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.288: parallel nursery GC 3145728K->3145679K (3145728K), 1.805 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 1.805118 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.290: parallel nursery GC 3145728K->3145679K (3145728K), 2.098 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.097673 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.292: parallel nursery GC 3145728K->3145679K (3145728K), 4.860 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.860012 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.298: parallel nursery GC 3145728K->3145679K (3145728K), 4.372 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 4.371907 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.303: parallel nursery GC 3145728K->3145679K (3145728K), 3.339 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.339237 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.306: parallel nursery GC 3145728K->3145679K (3145728K), 2.881 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.881414 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.309: parallel nursery GC 3145728K->3145679K (3145728K), 1.400 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 1.400160 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.311: parallel nursery GC 3145728K->3145679K (3145728K), 2.859 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.859344 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.315: parallel nursery GC 3145728K->3145679K (3145728K), 3.680 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.680039 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.319: parallel nursery GC 3145728K->3145679K (3145728K), 3.351 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.350529 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.323: parallel nursery GC 3145728K->3145679K (3145728K), 3.231 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.231454 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.326: parallel nursery GC 3145728K->3145679K (3145728K), 3.013 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 3.012807 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.330: parallel nursery GC 3145728K->3145679K (3145728K), 2.312 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.311701 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.332: parallel nursery GC 3145728K->3145679K (3145728K), 2.356 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.355841 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.335: parallel nursery GC 3145728K->3145679K (3145728K), 2.873 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.873202 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.338: parallel nursery GC 3145728K->3145679K (3145728K), 2.710 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.709987 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.341: parallel nursery GC 3145728K->3145679K (3145728K), 2.434 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.433856 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.344: parallel nursery GC 3145728K->3145679K (3145728K), 2.828 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.827522 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.348: parallel nursery GC 3145728K->3145679K (3145728K), 2.915 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.914776 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.351: parallel nursery GC 3145728K->3145679K (3145728K), 2.346 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.345576 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.354: parallel nursery GC 3145728K->3145679K (3145728K), 1.266 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 1.265687 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.358: parallel nursery GC 3145728K->3145679K (3145728K), 2.385 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 2.385096 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] Threads waited for memory 51.763 ms starting at 44.355 s
+[gcpause][Mon Feb 18 14:30:29 2013][09776] old collection phase 1-0 pause time: 44.135830 ms, (start time: 44.363 s)
+[gcpause][Mon Feb 18 14:30:29 2013][09776] (pause includes compaction: 2.592 ms (internal), update ref: 3.588 ms)
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.363-44.407: GC 3145728K->2810536K (3145728K), 44.136 ms
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.407: parallel nursery GC 2810536K->2852176K (3145728K), 9.470 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] nursery collection pause time: 9.469556 ms
+[gcpause][Mon Feb 18 14:30:29 2013][09776] Threads waited for memory 56.798 ms starting at 44.420 s
+[gcpause][Mon Feb 18 14:30:29 2013][09776] old collection phase 1-0 pause time: 46.853002 ms, (start time: 44.430 s)
+[gcpause][Mon Feb 18 14:30:29 2013][09776] (pause includes compaction: 5.146 ms (external), update ref: 6.573 ms)
+[memory ][Mon Feb 18 14:30:29 2013][09776] 44.430-44.477: GC 3030528K->2807460K (3145728K), 46.853 ms
+[gcpause][Mon Feb 18 14:30:30 2013][09776] Threads waited for memory 63.792 ms starting at 45.142 s
+[gcpause][Mon Feb 18 14:30:30 2013][09776] old collection phase 1-0 pause time: 42.741316 ms, (start time: 45.163 s)
+[gcpause][Mon Feb 18 14:30:30 2013][09776] (pause includes compaction: 3.454 ms (internal), update ref: 3.227 ms)
+[memory ][Mon Feb 18 14:30:30 2013][09776] 45.163-45.206: GC 3072128K->2811159K (3145728K), 42.741 ms
+[gcpause][Mon Feb 18 14:30:30 2013][09776] Threads waited for memory 67.339 ms starting at 45.212 s
+[gcpause][Mon Feb 18 14:30:30 2013][09776] old collection phase 1-0 pause time: 48.340415 ms, (start time: 45.231 s)
+[gcpause][Mon Feb 18 14:30:30 2013][09776] (pause includes compaction: 5.054 ms (external), update ref: 6.164 ms)
+[memory ][Mon Feb 18 14:30:30 2013][09776] 45.231-45.280: GC 3120128K->2813062K (3145728K), 48.340 ms
+[gcpause][Mon Feb 18 14:30:31 2013][09776] Threads waited for memory 51.161 ms starting at 46.646 s
+[gcpause][Mon Feb 18 14:30:31 2013][09776] old collection phase 1-0 pause time: 50.947238 ms, (start time: 46.646 s)
+[gcpause][Mon Feb 18 14:30:31 2013][09776] (pause includes compaction: 0.519 ms (internal), update ref: 3.089 ms)
+[memory ][Mon Feb 18 14:30:31 2013][09776] 46.646-46.697: GC 3142528K->2824423K (3145728K), 50.947 ms
+[gcpause][Mon Feb 18 14:30:31 2013][09776] Threads waited for memory 54.293 ms starting at 46.703 s
+[gcpause][Mon Feb 18 14:30:31 2013][09776] old collection phase 1-0 pause time: 39.246562 ms, (start time: 46.718 s)
+[gcpause][Mon Feb 18 14:30:31 2013][09776] (pause includes compaction: 4.956 ms (external), update ref: 0.001 ms)
+[memory ][Mon Feb 18 14:30:31 2013][09776] 46.718-46.757: GC 3145728K->2828506K (3145728K), 39.247 ms
+[gcpause][Mon Feb 18 14:30:32 2013][09776] Threads waited for memory 80.464 ms starting at 46.945 s
+[gcpause][Mon Feb 18 14:30:32 2013][09776] old collection phase 1-0 pause time: 55.903742 ms, (start time: 46.969 s)
+[gcpause][Mon Feb 18 14:30:32 2013][09776] (pause includes compaction: 1.070 ms (internal), update ref: 3.095 ms)
+[memory ][Mon Feb 18 14:30:32 2013][09776] 46.969-47.025: GC 3145728K->2830594K (3145728K), 55.904 ms
+[gcpause][Mon Feb 18 14:30:32 2013][09776] old collection phase 1-0 pause time: 373.581940 ms, (start time: 47.030 s)
+[gcpause][Mon Feb 18 14:30:32 2013][09776] (pause includes compaction: 309.783 ms (external), update ref: 7.372 ms)
+[memory ][Mon Feb 18 14:30:32 2013][09776] 47.030-47.404: GC 2830594K->2830220K (3145728K), 373.582 ms
+[memory ][Mon Feb 18 14:30:32 2013][09776] 47.404: parallel nursery GC 2831563K->2830256K (3145728K), 2.220 ms
+[gcpause][Mon Feb 18 14:30:32 2013][09776] nursery collection pause time: 2.220341 ms
+[gcpause][Mon Feb 18 14:30:32 2013][09776] Threads waited for memory 114.487 ms starting at 47.441 s
+[gcpause][Mon Feb 18 14:30:32 2013][09776] old collection phase 1-0 pause time: 94.171014 ms, (start time: 47.462 s)
+[gcpause][Mon Feb 18 14:30:32 2013][09776] (pause includes compaction: 5.419 ms (external), update ref: 6.656 ms)
+[memory ][Mon Feb 18 14:30:32 2013][09776] 47.462-47.556: GC 3145728K->2839042K (3145728K), 94.171 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] Threads waited for memory 73.448 ms starting at 48.166 s
+[gcpause][Mon Feb 18 14:30:33 2013][09776] old collection phase 1-0 pause time: 54.486645 ms, (start time: 48.185 s)
+[gcpause][Mon Feb 18 14:30:33 2013][09776] (pause includes compaction: 1.303 ms (internal), update ref: 3.114 ms)
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.185-48.239: GC 3145728K->2852611K (3145728K), 54.487 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] old collection phase 1-0 pause time: 164.063009 ms, (start time: 48.245 s)
+[gcpause][Mon Feb 18 14:30:33 2013][09776] (pause includes compaction: 98.206 ms (external), update ref: 8.857 ms)
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.245-48.409: GC 2852611K->2852527K (3145728K), 164.063 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] Threads waited for memory 61.165 ms starting at 48.424 s
+[gcpause][Mon Feb 18 14:30:33 2013][09776] old collection phase 1-0 pause time: 47.233837 ms, (start time: 48.438 s)
+[gcpause][Mon Feb 18 14:30:33 2013][09776] (pause includes compaction: 5.496 ms (external), update ref: 7.986 ms)
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.438-48.485: GC 3145728K->2843738K (3145728K), 47.234 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.493: parallel nursery GC 3145728K->3145644K (3145728K), 10.808 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 10.808125 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.519: parallel nursery GC 3145728K->3145644K (3145728K), 10.569 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 10.568948 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.544: parallel nursery GC 3145728K->3145644K (3145728K), 8.866 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 8.866481 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.562: parallel nursery GC 3145728K->3145644K (3145728K), 6.411 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 6.411069 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.577: parallel nursery GC 3145728K->3145644K (3145728K), 7.978 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 7.977524 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.593: parallel nursery GC 3145728K->3145644K (3145728K), 8.389 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 8.389154 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.610: parallel nursery GC 3145728K->3145644K (3145728K), 6.888 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 6.888396 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.625: parallel nursery GC 3145728K->3145644K (3145728K), 7.580 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 7.580264 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.641: parallel nursery GC 3145728K->3145644K (3145728K), 8.762 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 8.762291 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.658: parallel nursery GC 3145728K->3145644K (3145728K), 10.655 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 10.655175 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.677: parallel nursery GC 3145728K->3145644K (3145728K), 10.745 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 10.744995 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.696: parallel nursery GC 3145728K->3145644K (3145728K), 8.468 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 8.467682 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.713: parallel nursery GC 3145728K->3145644K (3145728K), 9.896 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 9.895558 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.731: parallel nursery GC 3145728K->3145644K (3145728K), 8.449 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 8.449205 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.748: parallel nursery GC 3145728K->3145644K (3145728K), 6.914 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 6.914059 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.763: parallel nursery GC 3145728K->3145644K (3145728K), 6.554 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 6.553754 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.778: parallel nursery GC 3145728K->3145644K (3145728K), 6.953 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 6.952553 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.793: parallel nursery GC 3145728K->3145644K (3145728K), 10.269 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 10.268694 ms
+[memory ][Mon Feb 18 14:30:33 2013][09776] 48.812: parallel nursery GC 3145728K->3145644K (3145728K), 7.837 ms
+[gcpause][Mon Feb 18 14:30:33 2013][09776] nursery collection pause time: 7.836892 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.828: parallel nursery GC 3145728K->3145644K (3145728K), 9.629 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.629178 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.847: parallel nursery GC 3145728K->3145644K (3145728K), 9.986 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.986404 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.866: parallel nursery GC 3145728K->3145644K (3145728K), 9.204 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.203690 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.884: parallel nursery GC 3145728K->3145644K (3145728K), 11.586 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 11.585707 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.904: parallel nursery GC 3145728K->3145644K (3145728K), 9.408 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.407965 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.922: parallel nursery GC 3145728K->3145644K (3145728K), 8.470 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.470248 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.939: parallel nursery GC 3145728K->3145644K (3145728K), 9.344 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.344322 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.957: parallel nursery GC 3145728K->3145644K (3145728K), 8.797 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.796679 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.974: parallel nursery GC 3145728K->3145644K (3145728K), 10.439 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.438582 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 48.993: parallel nursery GC 3145728K->3145644K (3145728K), 9.007 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.007113 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.010: parallel nursery GC 3145728K->3145644K (3145728K), 7.045 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 7.044939 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.025: parallel nursery GC 3145728K->3145644K (3145728K), 8.641 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.640649 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.042: parallel nursery GC 3145728K->3145644K (3145728K), 9.102 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.102065 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.059: parallel nursery GC 3145728K->3145644K (3145728K), 8.552 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.552369 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.076: parallel nursery GC 3145728K->3145644K (3145728K), 9.973 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.972546 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.095: parallel nursery GC 3145728K->3145644K (3145728K), 9.174 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.173921 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.112: parallel nursery GC 3145728K->3145644K (3145728K), 10.061 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.061339 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.131: parallel nursery GC 3145728K->3145644K (3145728K), 8.991 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.991202 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.148: parallel nursery GC 3145728K->3145644K (3145728K), 8.531 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.530812 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.165: parallel nursery GC 3145728K->3145644K (3145728K), 8.869 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.868534 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.182: parallel nursery GC 3145728K->3145644K (3145728K), 9.051 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.050740 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.200: parallel nursery GC 3145728K->3145644K (3145728K), 6.506 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 6.505508 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.214: parallel nursery GC 3145728K->3145644K (3145728K), 8.445 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.445099 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.231: parallel nursery GC 3145728K->3145644K (3145728K), 7.811 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 7.811229 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.247: parallel nursery GC 3145728K->3145644K (3145728K), 9.241 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.241158 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.265: parallel nursery GC 3145728K->3145644K (3145728K), 9.126 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.126188 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.282: parallel nursery GC 3145728K->3145644K (3145728K), 10.403 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.402654 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.301: parallel nursery GC 3145728K->3145644K (3145728K), 9.043 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.043041 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.325: parallel nursery GC 3145728K->3145644K (3145728K), 4.946 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 4.946239 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.338: parallel nursery GC 3145728K->3145644K (3145728K), 10.464 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.463731 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.365: parallel nursery GC 3145728K->3145644K (3145728K), 8.310 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.309600 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.382: parallel nursery GC 3145728K->3145644K (3145728K), 10.689 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.688537 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.401: parallel nursery GC 3145728K->3145644K (3145728K), 11.104 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 11.104273 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.420: parallel nursery GC 3145728K->3145644K (3145728K), 9.604 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.604029 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.438: parallel nursery GC 3145728K->3145644K (3145728K), 7.915 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 7.914906 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.455: parallel nursery GC 3145728K->3145644K (3145728K), 5.029 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 5.028873 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.468: parallel nursery GC 3145728K->3145644K (3145728K), 8.849 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.848517 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.485: parallel nursery GC 3145728K->3145644K (3145728K), 9.135 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.135427 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.502: parallel nursery GC 3145728K->3145644K (3145728K), 8.431 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.430728 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.519: parallel nursery GC 3145728K->3145644K (3145728K), 8.741 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.740734 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.536: parallel nursery GC 3145728K->3145644K (3145728K), 10.621 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.621300 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.556: parallel nursery GC 3145728K->3145644K (3145728K), 9.548 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.548084 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.574: parallel nursery GC 3145728K->3145644K (3145728K), 10.189 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.188626 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.592: parallel nursery GC 3145728K->3145644K (3145728K), 8.717 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.717124 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.610: parallel nursery GC 3145728K->3145644K (3145728K), 9.630 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.630205 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.628: parallel nursery GC 3145728K->3145644K (3145728K), 9.345 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.344835 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.646: parallel nursery GC 3145728K->3145644K (3145728K), 9.190 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.189832 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.663: parallel nursery GC 3145728K->3145644K (3145728K), 8.483 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 8.483080 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.680: parallel nursery GC 3145728K->3145644K (3145728K), 9.891 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.891452 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.698: parallel nursery GC 3145728K->3145644K (3145728K), 7.933 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 7.932870 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.715: parallel nursery GC 3145728K->3145644K (3145728K), 6.919 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 6.918678 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.730: parallel nursery GC 3145728K->3145644K (3145728K), 5.824 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 5.824419 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.744: parallel nursery GC 3145728K->3145644K (3145728K), 10.293 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 10.293330 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.763: parallel nursery GC 3145728K->3145644K (3145728K), 9.433 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.433115 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.780: parallel nursery GC 3145728K->3145644K (3145728K), 9.255 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.255015 ms
+[memory ][Mon Feb 18 14:30:34 2013][09776] 49.798: parallel nursery GC 3145728K->3145644K (3145728K), 9.517 ms
+[gcpause][Mon Feb 18 14:30:34 2013][09776] nursery collection pause time: 9.516775 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.816: parallel nursery GC 3145728K->3145644K (3145728K), 9.543 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.542951 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.835: parallel nursery GC 3145728K->3145644K (3145728K), 9.375 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.375117 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.853: parallel nursery GC 3145728K->3145644K (3145728K), 11.035 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 11.034984 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.873: parallel nursery GC 3145728K->3145644K (3145728K), 11.632 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 11.632413 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.893: parallel nursery GC 3145728K->3145644K (3145728K), 10.822 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 10.821983 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.913: parallel nursery GC 3145728K->3145644K (3145728K), 9.856 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.856037 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.931: parallel nursery GC 3145728K->3145644K (3145728K), 10.660 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 10.660308 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.951: parallel nursery GC 3145728K->3145644K (3145728K), 9.848 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.848338 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.969: parallel nursery GC 3145728K->3145644K (3145728K), 10.237 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 10.237386 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 49.988: parallel nursery GC 3145728K->3145644K (3145728K), 9.321 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.321225 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.006: parallel nursery GC 3145728K->3145644K (3145728K), 7.138 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 7.138351 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.021: parallel nursery GC 3145728K->3145644K (3145728K), 9.833 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.833454 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.039: parallel nursery GC 3145728K->3145644K (3145728K), 9.673 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.673318 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.057: parallel nursery GC 3145728K->3145644K (3145728K), 7.832 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 7.832272 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.080: parallel nursery GC 3145728K->3145644K (3145728K), 9.788 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.788287 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.098: parallel nursery GC 3145728K->3145644K (3145728K), 3.787 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 3.787309 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.111: parallel nursery GC 3145728K->3145644K (3145728K), 10.318 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 10.317967 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.130: parallel nursery GC 3145728K->3145644K (3145728K), 10.159 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 10.159371 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.149: parallel nursery GC 3145728K->3145644K (3145728K), 11.013 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 11.012914 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.168: parallel nursery GC 3145728K->3145644K (3145728K), 9.827 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.826782 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.187: parallel nursery GC 3145728K->3145644K (3145728K), 10.159 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 10.159371 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.205: parallel nursery GC 3145728K->3145644K (3145728K), 8.576 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 8.576492 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.222: parallel nursery GC 3145728K->3145644K (3145728K), 8.500 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 8.500017 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.239: parallel nursery GC 3145728K->3145644K (3145728K), 8.279 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 8.279318 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.255: parallel nursery GC 3145728K->3145644K (3145728K), 9.013 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.012759 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.271: parallel nursery GC 3145728K->3145644K (3145728K), 9.022 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.021998 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.287: parallel nursery GC 3145728K->3145644K (3145728K), 8.582 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 8.581625 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.302: parallel nursery GC 3145728K->3145644K (3145728K), 5.404 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 5.404063 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.314: parallel nursery GC 3145728K->3145644K (3145728K), 9.867 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.866815 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.329: parallel nursery GC 3145728K->3145644K (3145728K), 6.458 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 6.458289 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.341: parallel nursery GC 3145728K->3145644K (3145728K), 5.829 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 5.828525 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.351: parallel nursery GC 3145728K->3145644K (3145728K), 5.204 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 5.203893 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.360: parallel nursery GC 3145728K->3145644K (3145728K), 8.396 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 8.396340 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.372: parallel nursery GC 3145728K->3145644K (3145728K), 5.161 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 5.161293 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.380: parallel nursery GC 3145728K->3145644K (3145728K), 5.352 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 5.352224 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] Threads waited for memory 66.637 ms starting at 50.372 s
+[gcpause][Mon Feb 18 14:30:35 2013][09776] old collection phase 1-0 pause time: 50.577694 ms, (start time: 50.388 s)
+[gcpause][Mon Feb 18 14:30:35 2013][09776] (pause includes compaction: 2.631 ms (internal), update ref: 3.290 ms)
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.388-50.439: GC 3145728K->2840908K (3145728K), 50.578 ms
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.439: parallel nursery GC 2841572K->2878414K (3145728K), 9.766 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] nursery collection pause time: 9.766217 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] Threads waited for memory 67.547 ms starting at 50.449 s
+[gcpause][Mon Feb 18 14:30:35 2013][09776] old collection phase 1-0 pause time: 55.585524 ms, (start time: 50.461 s)
+[gcpause][Mon Feb 18 14:30:35 2013][09776] (pause includes compaction: 5.030 ms (external), update ref: 8.159 ms)
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.461-50.517: GC 3044928K->2807335K (3145728K), 55.586 ms
+[gcpause][Mon Feb 18 14:30:35 2013][09776] Threads waited for memory 73.709 ms starting at 50.523 s
+[gcpause][Mon Feb 18 14:30:35 2013][09776] old collection phase 1-0 pause time: 61.002931 ms, (start time: 50.536 s)
+[gcpause][Mon Feb 18 14:30:35 2013][09776] (pause includes compaction: 3.270 ms (internal), update ref: 3.495 ms)
+[memory ][Mon Feb 18 14:30:35 2013][09776] 50.536-50.597: GC 3086528K->2817788K (3145728K), 61.003 ms
+[gcpause][Mon Feb 18 14:30:36 2013][09776] Threads waited for memory 741.442 ms starting at 50.598 s
+[gcpause][Mon Feb 18 14:30:36 2013][09776] old collection phase 1-0 pause time: 730.854688 ms, (start time: 50.608 s)
+[gcpause][Mon Feb 18 14:30:36 2013][09776] (pause includes compaction: 659.737 ms (external), update ref: 20.954 ms)
+[memory ][Mon Feb 18 14:30:36 2013][09776] 50.608-51.339: GC 3108928K->2816673K (3145728K), 730.855 ms
+[gcpause][Mon Feb 18 14:30:36 2013][09776] Threads waited for memory 99.686 ms starting at 51.437 s
+[gcpause][Mon Feb 18 14:30:36 2013][09776] old collection phase 1-0 pause time: 86.912560 ms, (start time: 51.450 s)
+[gcpause][Mon Feb 18 14:30:36 2013][09776] (pause includes compaction: 26.562 ms (internal), update ref: 5.801 ms)
+[memory ][Mon Feb 18 14:30:36 2013][09776] 51.450-51.537: GC 3145728K->2836431K (3145728K), 86.913 ms
+[gcpause][Mon Feb 18 14:30:36 2013][09776] Threads waited for memory 117.195 ms starting at 51.538 s
+[gcpause][Mon Feb 18 14:30:36 2013][09776] old collection phase 1-0 pause time: 80.067791 ms, (start time: 51.575 s)
+[gcpause][Mon Feb 18 14:30:36 2013][09776] (pause includes compaction: 6.962 ms (internal), update ref: 11.360 ms)
+[memory ][Mon Feb 18 14:30:36 2013][09776] 51.575-51.655: GC 3145728K->2846485K (3145728K), 80.068 ms
+[gcpause][Mon Feb 18 14:30:36 2013][09776] old collection phase 1-0 pause time: 96.288191 ms, (start time: 51.661 s)
+[gcpause][Mon Feb 18 14:30:36 2013][09776] (pause includes compaction: 19.479 ms (external), update ref: 16.189 ms)
+[memory ][Mon Feb 18 14:30:36 2013][09776] 51.661-51.757: GC 2846485K->2846032K (3145728K), 96.288 ms
+[gcpause][Mon Feb 18 14:30:37 2013][09776] Threads waited for memory 108.713 ms starting at 51.807 s
+[gcpause][Mon Feb 18 14:30:37 2013][09776] old collection phase 1-0 pause time: 92.468546 ms, (start time: 51.823 s)
+[gcpause][Mon Feb 18 14:30:37 2013][09776] (pause includes compaction: 22.593 ms (external), update ref: 12.078 ms)
+[memory ][Mon Feb 18 14:30:37 2013][09776] 51.823-51.915: GC 3145728K->2865743K (3145728K), 92.469 ms
+[gcpause][Mon Feb 18 14:30:37 2013][09776] Threads waited for memory 120.201 ms starting at 51.933 s
+[gcpause][Mon Feb 18 14:30:37 2013][09776] old collection phase 1-0 pause time: 95.074342 ms, (start time: 51.958 s)
+[gcpause][Mon Feb 18 14:30:37 2013][09776] (pause includes compaction: 0.466 ms (internal), update ref: 3.464 ms)
+[memory ][Mon Feb 18 14:30:37 2013][09776] 51.958-52.053: GC 3145728K->2877647K (3145728K), 95.074 ms
+[gcpause][Mon Feb 18 14:30:37 2013][09776] old collection phase 1-0 pause time: 74.864924 ms, (start time: 52.059 s)
+[gcpause][Mon Feb 18 14:30:37 2013][09776] (pause includes compaction: 10.395 ms (external), update ref: 5.941 ms)
+[memory ][Mon Feb 18 14:30:37 2013][09776] 52.059-52.134: GC 2877647K->2877617K (3145728K), 74.865 ms
