@@ -74,6 +74,19 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                     if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     continue;
                 }
+                else if (line.indexOf("GC strategy") != -1) {
+                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
+                    continue;
+                }
+                else if (line.indexOf("OutOfMemory") != -1) {
+                    if (LOG.isLoggable(Level.INFO)) LOG.warning("GC log contains OutOfMemory error: " + line.substring(startLog));
+                    continue;
+                }                
+                else if (line.substring(startLog).startsWith("<")) {
+                    // ignore
+                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
+                    continue;
+                }                
                 else if (line.toLowerCase().indexOf("heap size:") != -1) {
                     if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startLog));
                     final int nurserySizeStart = line.indexOf(NURSERY_SIZE);
@@ -83,7 +96,7 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                     }
                     continue;
                 }
-                else if (line.indexOf("C#") == -1) {
+                else if ((line.indexOf("C#") == -1) || (line.indexOf("->") == -1)){
                     // No [YC#] or [OC#] logs which we are interested in
                     if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startLog));
                     continue;
@@ -96,12 +109,13 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                 int startGCStats = line.indexOf("C#"); // skip to OC# or YC# 
                 // Example: 
                 final int startTimeIndex = line.indexOf(']', startGCStats) + 1; // go to end of "[OC#2]" in above example                                 
-             
+                
                 final int colon = line.indexOf(':', startTimeIndex);
                 if (colon == -1) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning("Malformed line (" + in.getLineNumber() + "). Missing colon after start time: " + line);
                     continue;
                 }
+                
                 event = new GCEvent();
                 
                 //34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.                

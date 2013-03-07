@@ -1,0 +1,101 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Parallel Mark, Concurrent Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][memory ] [OC#1] 24.930-24.979: OC 464309KB->282831KB (524288KB), 0.049 s, sum of pauses 21.081 ms, longest pause 20.957 ms.
+[INFO ][memory ] [OC#2] 26.694-26.732: OC 461202KB->214425KB (524288KB), 0.038 s, sum of pauses 11.247 ms, longest pause 11.199 ms.
+[INFO ][memory ] [OC#3] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#3] 27.641-27.656: OC 332952KB->214035KB (524288KB), 0.014 s, sum of pauses 12.501 ms, longest pause 12.501 ms.
+[INFO ][memory ] [OC#4] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#4] 27.656-27.683: OC 214035KB->334851KB (524288KB), 0.027 s, sum of pauses 20.491 ms, longest pause 19.522 ms.
+[INFO ][memory ] [OC#5] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#5] 27.904-27.922: OC 335150KB->205365KB (524288KB), 0.018 s, sum of pauses 16.234 ms, longest pause 16.234 ms.
+[INFO ][memory ] [OC#6] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#6] 27.923-28.038: OC 205365KB->194262KB (524288KB), 0.116 s, sum of pauses 109.943 ms, longest pause 109.867 ms.
+[INFO ][memory ] [OC#7] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#7] 28.039-28.173: OC 194262KB->431944KB (524288KB), 0.134 s, sum of pauses 131.153 ms, longest pause 131.153 ms.
+[INFO ][memory ] [OC#8] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#8] 29.146-29.160: OC 432090KB->431944KB (524288KB), 0.013 s, sum of pauses 8.569 ms, longest pause 8.522 ms.
+[INFO ][memory ] [OC#9] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#9] 29.160-29.179: OC 431944KB->431944KB (524288KB), 0.019 s, sum of pauses 16.728 ms, longest pause 16.728 ms.
+[INFO ][memory ] [OC#10] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#10] 29.180-29.243: OC 431944KB->431944KB (524288KB), 0.063 s, sum of pauses 58.712 ms, longest pause 58.677 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 118101136
+[INFO ][memory ] [OC#11] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#11] 34.123-34.140: OC 433572KB->69130KB (524288KB), 0.017 s, sum of pauses 7.574 ms, longest pause 7.574 ms.
+[INFO ][memory ] [OC#12] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#12] 41.862-41.877: OC 524288KB->198243KB (524288KB), 0.015 s, sum of pauses 10.176 ms, longest pause 10.093 ms.
+[INFO ][memory ] [OC#13] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#13] 42.732-42.753: OC 412585KB->190058KB (524288KB), 0.020 s, sum of pauses 14.044 ms, longest pause 14.044 ms.
+[INFO ][memory ] [OC#14] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#14] 42.754-42.790: OC 190058KB->190026KB (524288KB), 0.035 s, sum of pauses 25.367 ms, longest pause 25.295 ms.
+[INFO ][memory ] [OC#15] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#15] 42.790-42.893: OC 190026KB->431976KB (524288KB), 0.103 s, sum of pauses 99.379 ms, longest pause 99.379 ms.
+[INFO ][memory ] [OC#16] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#16] 43.629-43.647: OC 432122KB->431977KB (524288KB), 0.018 s, sum of pauses 14.465 ms, longest pause 14.364 ms.
+[INFO ][memory ] [OC#17] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#17] 43.647-43.679: OC 431977KB->431976KB (524288KB), 0.031 s, sum of pauses 29.151 ms, longest pause 29.151 ms.
+[INFO ][memory ] [OC#18] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#18] 43.679-43.745: OC 431976KB->431976KB (524288KB), 0.066 s, sum of pauses 62.416 ms, longest pause 62.378 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 118101136
+[INFO ][memory ] [OC#19] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#19] 47.401-47.416: OC 432316KB->69094KB (524288KB), 0.015 s, sum of pauses 13.090 ms, longest pause 13.090 ms.
+[INFO ][memory ] [OC#20] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#20] 55.420-55.433: OC 524288KB->198043KB (524288KB), 0.013 s, sum of pauses 9.728 ms, longest pause 9.676 ms.
+[INFO ][memory ] [OC#21] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#21] 56.139-56.152: OC 412521KB->190081KB (524288KB), 0.012 s, sum of pauses 9.773 ms, longest pause 9.773 ms.
+[INFO ][memory ] [OC#22] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#22] 56.152-56.185: OC 190081KB->190039KB (524288KB), 0.033 s, sum of pauses 25.536 ms, longest pause 25.484 ms.
+[INFO ][memory ] [OC#23] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#23] 56.187-56.289: OC 190039KB->431979KB (524288KB), 0.101 s, sum of pauses 98.731 ms, longest pause 98.731 ms.
+[INFO ][memory ] [OC#24] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#24] 56.950-56.966: OC 432125KB->431979KB (524288KB), 0.015 s, sum of pauses 12.030 ms, longest pause 11.987 ms.
+[INFO ][memory ] [OC#25] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#25] 56.966-56.990: OC 431979KB->431979KB (524288KB), 0.024 s, sum of pauses 22.360 ms, longest pause 22.360 ms.
+[INFO ][memory ] [OC#26] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#26] 56.990-57.031: OC 431979KB->431978KB (524288KB), 0.040 s, sum of pauses 37.559 ms, longest pause 37.520 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 118101136
+[INFO ][memory ] [OC#27] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#27] 60.050-60.109: OC 432313KB->69083KB (524288KB), 0.059 s, sum of pauses 12.237 ms, longest pause 12.237 ms.
+[INFO ][memory ] [OC#28] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#28] 67.892-67.906: OC 524288KB->198137KB (524288KB), 0.014 s, sum of pauses 9.464 ms, longest pause 9.350 ms.
+[INFO ][memory ] [OC#29] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#29] 68.695-68.708: OC 412505KB->190082KB (524288KB), 0.014 s, sum of pauses 11.268 ms, longest pause 11.268 ms.
+[INFO ][memory ] [OC#30] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#30] 68.708-68.732: OC 190082KB->190025KB (524288KB), 0.024 s, sum of pauses 16.033 ms, longest pause 15.879 ms.
+[INFO ][memory ] [OC#31] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#31] 68.733-68.848: OC 190025KB->431978KB (524288KB), 0.115 s, sum of pauses 111.920 ms, longest pause 111.920 ms.
+[INFO ][memory ] [OC#32] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#32] 69.436-69.449: OC 432124KB->431979KB (524288KB), 0.013 s, sum of pauses 10.068 ms, longest pause 10.027 ms.
+[INFO ][memory ] [OC#33] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#33] 69.449-69.467: OC 431979KB->431979KB (524288KB), 0.017 s, sum of pauses 15.416 ms, longest pause 15.416 ms.
+[INFO ][memory ] [OC#34] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#34] 69.467-69.504: OC 431979KB->431978KB (524288KB), 0.037 s, sum of pauses 34.049 ms, longest pause 34.016 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 118101136
+[INFO ][memory ] [OC#35] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#35] 73.112-73.148: OC 432474KB->69090KB (524288KB), 0.036 s, sum of pauses 18.030 ms, longest pause 18.030 ms.
+[INFO ][memory ] [OC#36] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#36] 80.807-80.821: OC 524288KB->198036KB (524288KB), 0.014 s, sum of pauses 9.367 ms, longest pause 9.312 ms.
+[INFO ][memory ] [OC#37] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#37] 81.582-81.594: OC 412345KB->190076KB (524288KB), 0.012 s, sum of pauses 9.743 ms, longest pause 9.743 ms.
+[INFO ][memory ] [OC#38] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#38] 81.595-81.623: OC 190076KB->190033KB (524288KB), 0.029 s, sum of pauses 19.209 ms, longest pause 19.167 ms.
+[INFO ][memory ] [OC#39] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#39] 81.624-81.739: OC 190033KB->431979KB (524288KB), 0.115 s, sum of pauses 112.698 ms, longest pause 112.698 ms.
+[INFO ][memory ] [OC#40] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#40] 82.332-82.346: OC 432125KB->431979KB (524288KB), 0.014 s, sum of pauses 11.057 ms, longest pause 11.008 ms.
+[INFO ][memory ] [OC#41] Changing GC strategy from: singleparcon to: singleparpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#41] 82.346-82.361: OC 431979KB->431979KB (524288KB), 0.015 s, sum of pauses 12.298 ms, longest pause 12.298 ms.
+[INFO ][memory ] [OC#42] Changing GC strategy from: singleparpar to: singleparcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#42] 82.361-82.397: OC 431979KB->431979KB (524288KB), 0.036 s, sum of pauses 32.745 ms, longest pause 32.706 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 118101136

@@ -1,0 +1,226 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Generational Concurrent Mark & Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB, nursery size: 262144KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][memory ] [OC#1] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#1] 40.665-40.774: OC 271342KB->194542KB (524288KB), 0.109 s, sum of pauses 86.367 ms, longest pause 81.431 ms.
+[INFO ][memory ] [OC#2] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#2] 40.775-40.981: OC 194544KB->185824KB (524288KB), 0.206 s, sum of pauses 81.463 ms, longest pause 74.262 ms.
+[INFO ][memory ] [OC#3] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#3] 40.983-41.091: OC 185824KB->126499KB (524288KB), 0.108 s, sum of pauses 95.661 ms, longest pause 86.972 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][memory ] [OC#4] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#4] 66.131-66.225: OC 250440KB->126667KB (524288KB), 0.093 s, sum of pauses 54.281 ms, longest pause 47.896 ms.
+[INFO ][memory ] [OC#5] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#5] 66.225-66.259: OC 126667KB->126630KB (524288KB), 0.034 s, sum of pauses 14.607 ms, longest pause 9.690 ms.
+[INFO ][memory ] [OC#6] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#6] 66.259-66.352: OC 126630KB->126628KB (524288KB), 0.093 s, sum of pauses 78.449 ms, longest pause 70.405 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][memory ] [OC#7] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#7] 181.920-182.222: OC 430691KB->73226KB (524288KB), 0.302 s, sum of pauses 71.259 ms, longest pause 48.740 ms.
+[INFO ][memory ] [OC#8] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#8] 182.223-183.966: OC 73226KB->202126KB (524288KB), 1.743 s, sum of pauses 591.957 ms, longest pause 583.293 ms.
+[INFO ][memory ] [YC#1] 185.929-185.931: YC 464270KB->202265KB (524288KB), 0.002 s, sum of pauses 2.331 ms, longest pause 2.331 ms.
+[INFO ][memory ] [OC#9] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#9] 186.836-186.865: OC 359571KB->199164KB (524288KB), 0.029 s, sum of pauses 8.319 ms, longest pause 5.581 ms.
+[INFO ][memory ] [OC#10] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#10] 186.866-186.893: OC 199164KB->320147KB (524288KB), 0.027 s, sum of pauses 12.609 ms, longest pause 8.307 ms.
+[INFO ][memory ] [OC#11] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#11] 187.387-187.454: OC 320147KB->191204KB (524288KB), 0.067 s, sum of pauses 8.017 ms, longest pause 5.402 ms.
+[INFO ][memory ] [OC#12] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#12] 187.556-187.604: OC 191214KB->191203KB (524288KB), 0.048 s, sum of pauses 34.295 ms, longest pause 31.881 ms.
+[INFO ][memory ] [OC#13] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#13] 187.604-187.631: OC 191203KB->191201KB (524288KB), 0.027 s, sum of pauses 10.442 ms, longest pause 5.238 ms.
+[INFO ][memory ] [OC#14] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#14] 187.631-187.764: OC 191201KB->191189KB (524288KB), 0.133 s, sum of pauses 113.702 ms, longest pause 108.835 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [B, size 247772184
+[INFO ][memory ] [OC#15] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#15] 213.919-213.969: OC 256508KB->191236KB (524288KB), 0.050 s, sum of pauses 10.498 ms, longest pause 6.377 ms.
+[INFO ][memory ] [OC#16] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#16] 213.969-214.042: OC 191236KB->320152KB (524288KB), 0.073 s, sum of pauses 57.484 ms, longest pause 50.021 ms.
+[INFO ][memory ] [OC#17] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#17] 214.093-214.114: OC 324961KB->320153KB (524288KB), 0.021 s, sum of pauses 9.841 ms, longest pause 7.380 ms.
+[INFO ][memory ] [OC#18] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#18] 214.114-214.155: OC 320354KB->321499KB (524288KB), 0.041 s, sum of pauses 11.586 ms, longest pause 7.500 ms.
+[INFO ][memory ] [OC#19] 214.155-214.188: OC 322043KB->321372KB (524288KB), 0.032 s, sum of pauses 10.215 ms, longest pause 7.798 ms.
+[INFO ][memory ] [OC#20] 214.188-214.231: OC 321692KB->320154KB (524288KB), 0.043 s, sum of pauses 8.650 ms, longest pause 5.323 ms.
+[INFO ][memory ] [OC#21] 214.233-214.276: OC 320450KB->320347KB (524288KB), 0.044 s, sum of pauses 6.952 ms, longest pause 4.292 ms.
+[INFO ][memory ] [OC#22] 214.277-214.299: OC 320539KB->320315KB (524288KB), 0.022 s, sum of pauses 7.678 ms, longest pause 3.924 ms.
+[INFO ][memory ] [OC#23] 214.299-214.321: OC 320539KB->320227KB (524288KB), 0.022 s, sum of pauses 8.375 ms, longest pause 4.424 ms.
+[INFO ][memory ] [OC#24] 214.321-214.346: OC 320483KB->320379KB (524288KB), 0.025 s, sum of pauses 12.362 ms, longest pause 9.410 ms.
+[INFO ][memory ] [OC#25] 214.346-214.371: OC 320635KB->320381KB (524288KB), 0.025 s, sum of pauses 4.858 ms, longest pause 2.489 ms.
+[INFO ][memory ] [OC#26] 214.371-214.398: OC 320637KB->320636KB (524288KB), 0.027 s, sum of pauses 7.409 ms, longest pause 4.759 ms.
+[INFO ][memory ] [OC#27] 214.398-214.421: OC 320892KB->320379KB (524288KB), 0.024 s, sum of pauses 7.737 ms, longest pause 4.046 ms.
+[INFO ][memory ] [OC#28] 214.422-214.447: OC 320635KB->320508KB (524288KB), 0.026 s, sum of pauses 6.346 ms, longest pause 3.158 ms.
+[INFO ][memory ] [OC#29] 214.447-214.473: OC 320604KB->320380KB (524288KB), 0.026 s, sum of pauses 6.706 ms, longest pause 4.263 ms.
+[INFO ][memory ] [OC#30] 214.474-214.498: OC 320796KB->320221KB (524288KB), 0.024 s, sum of pauses 8.421 ms, longest pause 4.320 ms.
+[INFO ][memory ] [OC#31] 214.498-214.523: OC 320413KB->320380KB (524288KB), 0.025 s, sum of pauses 9.889 ms, longest pause 5.596 ms.
+[INFO ][memory ] [OC#32] 214.523-214.553: OC 320636KB->320444KB (524288KB), 0.030 s, sum of pauses 11.532 ms, longest pause 6.550 ms.
+[INFO ][memory ] [OC#33] 214.553-214.580: OC 320636KB->320447KB (524288KB), 0.026 s, sum of pauses 7.803 ms, longest pause 5.158 ms.
+[INFO ][memory ] [OC#34] 214.580-214.602: OC 320767KB->320381KB (524288KB), 0.023 s, sum of pauses 8.210 ms, longest pause 5.309 ms.
+[INFO ][memory ] [OC#35] 214.603-214.625: OC 320637KB->320381KB (524288KB), 0.022 s, sum of pauses 7.415 ms, longest pause 4.989 ms.
+[INFO ][memory ] [OC#36] 214.625-214.653: OC 320637KB->320828KB (524288KB), 0.027 s, sum of pauses 7.245 ms, longest pause 4.201 ms.
+[INFO ][memory ] [OC#37] 214.653-214.676: OC 321084KB->320380KB (524288KB), 0.023 s, sum of pauses 7.006 ms, longest pause 3.885 ms.
+[INFO ][memory ] [OC#38] 214.676-214.702: OC 320668KB->320381KB (524288KB), 0.026 s, sum of pauses 6.679 ms, longest pause 4.003 ms.
+[INFO ][memory ] [OC#39] 214.702-214.724: OC 320637KB->320381KB (524288KB), 0.022 s, sum of pauses 5.958 ms, longest pause 3.494 ms.
+[INFO ][memory ] [OC#40] 214.724-214.752: OC 320573KB->320381KB (524288KB), 0.028 s, sum of pauses 11.327 ms, longest pause 7.381 ms.
+[INFO ][memory ] [OC#41] 214.752-214.777: OC 320637KB->320351KB (524288KB), 0.025 s, sum of pauses 5.652 ms, longest pause 3.121 ms.
+[INFO ][memory ] [OC#42] 214.777-214.801: OC 320607KB->320508KB (524288KB), 0.024 s, sum of pauses 8.561 ms, longest pause 5.579 ms.
+[INFO ][memory ] [OC#43] 214.801-214.840: OC 320764KB->320155KB (524288KB), 0.039 s, sum of pauses 9.164 ms, longest pause 5.883 ms.
+[INFO ][memory ] [OC#44] 214.892-214.920: OC 324388KB->320316KB (524288KB), 0.028 s, sum of pauses 4.966 ms, longest pause 2.475 ms.
+[INFO ][memory ] [OC#45] 214.970-214.992: OC 327868KB->320348KB (524288KB), 0.022 s, sum of pauses 5.002 ms, longest pause 2.481 ms.
+[INFO ][memory ] [OC#46] 214.992-215.018: OC 320636KB->320380KB (524288KB), 0.026 s, sum of pauses 7.555 ms, longest pause 4.490 ms.
+[INFO ][memory ] [OC#47] 215.018-215.039: OC 320828KB->320382KB (524288KB), 0.022 s, sum of pauses 5.727 ms, longest pause 3.243 ms.
+[INFO ][memory ] [OC#48] 215.040-215.063: OC 320798KB->320508KB (524288KB), 0.024 s, sum of pauses 6.899 ms, longest pause 4.347 ms.
+[INFO ][memory ] [OC#49] 215.063-215.098: OC 320828KB->320931KB (524288KB), 0.035 s, sum of pauses 8.037 ms, longest pause 5.403 ms.
+[INFO ][memory ] [OC#50] 215.098-215.125: OC 321219KB->320380KB (524288KB), 0.026 s, sum of pauses 11.282 ms, longest pause 7.620 ms.
+[INFO ][memory ] [OC#51] 215.125-215.153: OC 320636KB->320348KB (524288KB), 0.028 s, sum of pauses 11.420 ms, longest pause 7.043 ms.
+[INFO ][memory ] [OC#52] 215.153-215.179: OC 320636KB->320380KB (524288KB), 0.026 s, sum of pauses 10.395 ms, longest pause 6.608 ms.
+[INFO ][memory ] [OC#53] 215.179-215.202: OC 320700KB->320380KB (524288KB), 0.023 s, sum of pauses 8.177 ms, longest pause 4.817 ms.
+[INFO ][memory ] [OC#54] 215.202-215.231: OC 320604KB->320380KB (524288KB), 0.029 s, sum of pauses 9.126 ms, longest pause 4.561 ms.
+[INFO ][memory ] [OC#55] 215.231-215.256: OC 320732KB->320380KB (524288KB), 0.025 s, sum of pauses 9.858 ms, longest pause 5.794 ms.
+[INFO ][memory ] [OC#56] 215.256-215.282: OC 320636KB->320154KB (524288KB), 0.025 s, sum of pauses 6.034 ms, longest pause 3.064 ms.
+[INFO ][memory ] [OC#57] 215.282-215.306: OC 320355KB->320348KB (524288KB), 0.024 s, sum of pauses 7.879 ms, longest pause 4.327 ms.
+[INFO ][memory ] [OC#58] 215.306-215.329: OC 320604KB->320380KB (524288KB), 0.022 s, sum of pauses 7.179 ms, longest pause 4.064 ms.
+[INFO ][memory ] [OC#59] 215.329-215.353: OC 320636KB->320154KB (524288KB), 0.024 s, sum of pauses 9.546 ms, longest pause 6.164 ms.
+[INFO ][memory ] [OC#60] 215.353-215.388: OC 321923KB->320380KB (524288KB), 0.036 s, sum of pauses 5.166 ms, longest pause 2.707 ms.
+[INFO ][memory ] [OC#61] 215.389-215.414: OC 320700KB->320349KB (524288KB), 0.026 s, sum of pauses 6.835 ms, longest pause 4.060 ms.
+[INFO ][memory ] [OC#62] 215.414-215.440: OC 320669KB->320380KB (524288KB), 0.026 s, sum of pauses 6.846 ms, longest pause 4.405 ms.
+[INFO ][memory ] [OC#63] 215.440-215.471: OC 320668KB->320350KB (524288KB), 0.031 s, sum of pauses 8.269 ms, longest pause 4.984 ms.
+[INFO ][memory ] [OC#64] 215.471-215.495: OC 320606KB->320380KB (524288KB), 0.024 s, sum of pauses 7.237 ms, longest pause 4.777 ms.
+[INFO ][memory ] [OC#65] 215.495-215.518: OC 320636KB->320154KB (524288KB), 0.023 s, sum of pauses 8.400 ms, longest pause 4.277 ms.
+[INFO ][memory ] [OC#66] 215.568-215.601: OC 328067KB->320412KB (524288KB), 0.033 s, sum of pauses 10.289 ms, longest pause 5.878 ms.
+[INFO ][memory ] [OC#67] 215.601-215.628: OC 320668KB->320348KB (524288KB), 0.027 s, sum of pauses 12.816 ms, longest pause 9.007 ms.
+[INFO ][memory ] [OC#68] 215.628-215.654: OC 320636KB->320380KB (524288KB), 0.026 s, sum of pauses 12.444 ms, longest pause 8.230 ms.
+[INFO ][memory ] [OC#69] 215.654-215.676: OC 320636KB->320350KB (524288KB), 0.021 s, sum of pauses 7.888 ms, longest pause 5.228 ms.
+[INFO ][memory ] [OC#70] 215.676-215.697: OC 320542KB->320316KB (524288KB), 0.022 s, sum of pauses 7.473 ms, longest pause 5.071 ms.
+[INFO ][memory ] [OC#71] 215.698-215.724: OC 320572KB->320380KB (524288KB), 0.026 s, sum of pauses 7.345 ms, longest pause 4.717 ms.
+[INFO ][memory ] [OC#72] 215.724-215.744: OC 320508KB->320382KB (524288KB), 0.021 s, sum of pauses 5.506 ms, longest pause 3.071 ms.
+[INFO ][memory ] [OC#73] 215.745-215.770: OC 320766KB->320348KB (524288KB), 0.025 s, sum of pauses 8.794 ms, longest pause 4.499 ms.
+[INFO ][memory ] [OC#74] 215.770-215.793: OC 320604KB->320380KB (524288KB), 0.024 s, sum of pauses 8.295 ms, longest pause 5.503 ms.
+[INFO ][memory ] [OC#75] 215.793-215.819: OC 320636KB->320444KB (524288KB), 0.025 s, sum of pauses 7.562 ms, longest pause 3.941 ms.
+[INFO ][memory ] [OC#76] 215.819-215.843: OC 320700KB->320285KB (524288KB), 0.024 s, sum of pauses 5.488 ms, longest pause 3.103 ms.
+[INFO ][memory ] [OC#77] 215.843-215.864: OC 320701KB->320348KB (524288KB), 0.021 s, sum of pauses 7.067 ms, longest pause 3.860 ms.
+[INFO ][memory ] [OC#78] 215.865-215.890: OC 320700KB->320508KB (524288KB), 0.025 s, sum of pauses 10.045 ms, longest pause 6.007 ms.
+[INFO ][memory ] [OC#79] 215.890-215.919: OC 320764KB->320316KB (524288KB), 0.028 s, sum of pauses 10.129 ms, longest pause 5.246 ms.
+[INFO ][memory ] [OC#80] 215.919-215.944: OC 320572KB->320220KB (524288KB), 0.026 s, sum of pauses 7.286 ms, longest pause 4.193 ms.
+[INFO ][memory ] [OC#81] 215.945-215.976: OC 320796KB->320348KB (524288KB), 0.032 s, sum of pauses 8.466 ms, longest pause 5.803 ms.
+[INFO ][memory ] [OC#82] 215.976-216.003: OC 320476KB->320476KB (524288KB), 0.027 s, sum of pauses 7.952 ms, longest pause 4.010 ms.
+[INFO ][memory ] [OC#83] 216.003-216.028: OC 320764KB->320348KB (524288KB), 0.025 s, sum of pauses 5.922 ms, longest pause 3.167 ms.
+[INFO ][memory ] [OC#84] 216.028-216.050: OC 320604KB->320382KB (524288KB), 0.022 s, sum of pauses 5.634 ms, longest pause 3.052 ms.
+[INFO ][memory ] [OC#85] 216.050-216.072: OC 320702KB->320349KB (524288KB), 0.023 s, sum of pauses 7.939 ms, longest pause 4.807 ms.
+[INFO ][memory ] [OC#86] 216.072-216.101: OC 320605KB->320255KB (524288KB), 0.028 s, sum of pauses 8.929 ms, longest pause 5.137 ms.
+[INFO ][memory ] [OC#87] 216.101-216.149: OC 320415KB->320350KB (524288KB), 0.048 s, sum of pauses 31.530 ms, longest pause 28.304 ms.
+[INFO ][memory ] [OC#88] 216.149-216.173: OC 320894KB->320383KB (524288KB), 0.024 s, sum of pauses 7.909 ms, longest pause 4.265 ms.
+[INFO ][memory ] [OC#89] 216.173-216.197: OC 320767KB->320383KB (524288KB), 0.023 s, sum of pauses 6.543 ms, longest pause 4.254 ms.
+[INFO ][memory ] [OC#90] 216.197-216.220: OC 320511KB->320641KB (524288KB), 0.024 s, sum of pauses 6.100 ms, longest pause 3.452 ms.
+[INFO ][memory ] [OC#91] 216.220-216.243: OC 320929KB->320320KB (524288KB), 0.022 s, sum of pauses 7.182 ms, longest pause 4.273 ms.
+[INFO ][memory ] [OC#92] 216.243-216.265: OC 320576KB->320352KB (524288KB), 0.022 s, sum of pauses 7.162 ms, longest pause 3.988 ms.
+[INFO ][memory ] [OC#93] 216.265-216.287: OC 320640KB->320289KB (524288KB), 0.022 s, sum of pauses 7.814 ms, longest pause 4.216 ms.
+[INFO ][memory ] [OC#94] 216.287-216.311: OC 320577KB->320386KB (524288KB), 0.023 s, sum of pauses 6.109 ms, longest pause 3.077 ms.
+[INFO ][memory ] [OC#95] 216.311-216.332: OC 320642KB->320322KB (524288KB), 0.021 s, sum of pauses 6.351 ms, longest pause 3.206 ms.
+[INFO ][memory ] [OC#96] 216.332-216.354: OC 320610KB->320387KB (524288KB), 0.022 s, sum of pauses 8.281 ms, longest pause 4.175 ms.
+[INFO ][memory ] [OC#97] 216.354-216.377: OC 320643KB->320355KB (524288KB), 0.022 s, sum of pauses 7.432 ms, longest pause 5.039 ms.
+[INFO ][memory ] [OC#98] 216.377-216.399: OC 320611KB->320388KB (524288KB), 0.022 s, sum of pauses 6.198 ms, longest pause 3.286 ms.
+[INFO ][memory ] [OC#99] 216.399-216.423: OC 320612KB->320420KB (524288KB), 0.025 s, sum of pauses 8.040 ms, longest pause 4.888 ms.
+[INFO ][memory ] [OC#100] 216.423-216.445: OC 320708KB->320389KB (524288KB), 0.021 s, sum of pauses 6.976 ms, longest pause 4.445 ms.
+[INFO ][memory ] [OC#101] 216.445-216.466: OC 320645KB->320357KB (524288KB), 0.021 s, sum of pauses 5.879 ms, longest pause 3.488 ms.
+[INFO ][memory ] [OC#102] 216.467-216.491: OC 320677KB->320390KB (524288KB), 0.025 s, sum of pauses 8.727 ms, longest pause 6.023 ms.
+[INFO ][memory ] [OC#103] 216.492-216.512: OC 320710KB->320326KB (524288KB), 0.021 s, sum of pauses 6.459 ms, longest pause 4.032 ms.
+[INFO ][memory ] [OC#104] 216.512-216.536: OC 320582KB->320454KB (524288KB), 0.024 s, sum of pauses 8.996 ms, longest pause 6.465 ms.
+[INFO ][memory ] [OC#105] 216.537-216.560: OC 320870KB->320390KB (524288KB), 0.023 s, sum of pauses 6.624 ms, longest pause 4.165 ms.
+[INFO ][memory ] [OC#106] 216.560-216.587: OC 320646KB->320551KB (524288KB), 0.027 s, sum of pauses 7.411 ms, longest pause 4.076 ms.
+[INFO ][memory ] [OC#107] 216.587-216.615: OC 320807KB->320359KB (524288KB), 0.028 s, sum of pauses 8.353 ms, longest pause 4.688 ms.
+[INFO ][memory ] [OC#108] 216.615-216.641: OC 320551KB->320392KB (524288KB), 0.026 s, sum of pauses 10.935 ms, longest pause 7.027 ms.
+[INFO ][memory ] [OC#109] 216.641-216.666: OC 320648KB->320391KB (524288KB), 0.024 s, sum of pauses 7.817 ms, longest pause 5.355 ms.
+[INFO ][memory ] [OC#110] 216.666-216.691: OC 320647KB->320424KB (524288KB), 0.025 s, sum of pauses 9.009 ms, longest pause 5.774 ms.
+[INFO ][memory ] [OC#111] 216.691-216.717: OC 320680KB->320296KB (524288KB), 0.026 s, sum of pauses 7.703 ms, longest pause 4.601 ms.
+[INFO ][memory ] [OC#112] 216.717-216.753: OC 320552KB->320392KB (524288KB), 0.036 s, sum of pauses 9.603 ms, longest pause 5.887 ms.
+[INFO ][memory ] [OC#113] 216.753-216.775: OC 320680KB->320392KB (524288KB), 0.022 s, sum of pauses 7.800 ms, longest pause 5.095 ms.
+[INFO ][memory ] [OC#114] 216.775-216.796: OC 320584KB->320393KB (524288KB), 0.021 s, sum of pauses 7.548 ms, longest pause 4.920 ms.
+[INFO ][memory ] [OC#115] 216.796-216.825: OC 320553KB->320425KB (524288KB), 0.028 s, sum of pauses 11.414 ms, longest pause 7.173 ms.
+[INFO ][memory ] [OC#116] 216.825-216.848: OC 320681KB->320394KB (524288KB), 0.024 s, sum of pauses 7.806 ms, longest pause 4.022 ms.
+[INFO ][memory ] [OC#117] 216.849-216.872: OC 320586KB->320489KB (524288KB), 0.023 s, sum of pauses 8.966 ms, longest pause 5.222 ms.
+[INFO ][memory ] [OC#118] 216.872-216.894: OC 320745KB->320394KB (524288KB), 0.022 s, sum of pauses 8.062 ms, longest pause 5.576 ms.
+[INFO ][memory ] [OC#119] 216.895-216.921: OC 320714KB->320389KB (524288KB), 0.026 s, sum of pauses 7.131 ms, longest pause 4.265 ms.
+[INFO ][memory ] [OC#120] 216.921-216.946: OC 320933KB->320390KB (524288KB), 0.024 s, sum of pauses 6.683 ms, longest pause 4.211 ms.
+[INFO ][memory ] [OC#121] 216.946-216.970: OC 320646KB->320357KB (524288KB), 0.024 s, sum of pauses 8.219 ms, longest pause 4.099 ms.
+[INFO ][memory ] [OC#122] 216.970-216.993: OC 320677KB->320391KB (524288KB), 0.023 s, sum of pauses 8.376 ms, longest pause 5.940 ms.
+[INFO ][memory ] [OC#123] 216.993-217.015: OC 320647KB->320390KB (524288KB), 0.022 s, sum of pauses 5.669 ms, longest pause 3.231 ms.
+[INFO ][memory ] [OC#124] 217.015-217.039: OC 320646KB->320552KB (524288KB), 0.024 s, sum of pauses 8.368 ms, longest pause 5.692 ms.
+[INFO ][memory ] [OC#125] 217.039-217.060: OC 320808KB->320391KB (524288KB), 0.020 s, sum of pauses 6.968 ms, longest pause 4.408 ms.
+[INFO ][memory ] [OC#126] 217.060-217.082: OC 320647KB->320392KB (524288KB), 0.022 s, sum of pauses 6.116 ms, longest pause 3.302 ms.
+[INFO ][memory ] [OC#127] 217.083-217.106: OC 320648KB->320487KB (524288KB), 0.024 s, sum of pauses 8.771 ms, longest pause 5.923 ms.
+[INFO ][memory ] [OC#128] 217.107-217.129: OC 320711KB->320392KB (524288KB), 0.022 s, sum of pauses 7.024 ms, longest pause 4.555 ms.
+[INFO ][memory ] [OC#129] 217.129-217.166: OC 320648KB->321096KB (524288KB), 0.037 s, sum of pauses 7.733 ms, longest pause 4.557 ms.
+[INFO ][memory ] [OC#130] 217.216-217.238: OC 329736KB->320394KB (524288KB), 0.021 s, sum of pauses 5.311 ms, longest pause 2.674 ms.
+[INFO ][memory ] [OC#131] 217.238-217.262: OC 320938KB->320393KB (524288KB), 0.024 s, sum of pauses 10.505 ms, longest pause 7.633 ms.
+[INFO ][memory ] [OC#132] 217.262-217.291: OC 320585KB->320490KB (524288KB), 0.029 s, sum of pauses 11.503 ms, longest pause 8.376 ms.
+[INFO ][memory ] [OC#133] 217.291-217.314: OC 320778KB->320393KB (524288KB), 0.022 s, sum of pauses 7.216 ms, longest pause 4.405 ms.
+[INFO ][memory ] [OC#134] 217.314-217.337: OC 320681KB->320395KB (524288KB), 0.023 s, sum of pauses 7.855 ms, longest pause 5.244 ms.
+[INFO ][memory ] [OC#135] 217.337-217.361: OC 320651KB->320394KB (524288KB), 0.024 s, sum of pauses 9.536 ms, longest pause 6.932 ms.
+[INFO ][memory ] [OC#136] 217.361-217.389: OC 320682KB->320555KB (524288KB), 0.028 s, sum of pauses 7.458 ms, longest pause 4.236 ms.
+[INFO ][memory ] [OC#137] 217.389-217.415: OC 320715KB->320330KB (524288KB), 0.025 s, sum of pauses 7.138 ms, longest pause 4.374 ms.
+[INFO ][memory ] [OC#138] 217.415-217.438: OC 320874KB->320395KB (524288KB), 0.023 s, sum of pauses 7.359 ms, longest pause 4.895 ms.
+[INFO ][memory ] [OC#139] 217.438-217.465: OC 320651KB->320908KB (524288KB), 0.027 s, sum of pauses 6.671 ms, longest pause 4.128 ms.
+[INFO ][memory ] [OC#140] 217.465-217.491: OC 321164KB->320460KB (524288KB), 0.027 s, sum of pauses 6.377 ms, longest pause 3.761 ms.
+[INFO ][memory ] [OC#141] 217.492-217.531: OC 321068KB->320364KB (524288KB), 0.040 s, sum of pauses 7.756 ms, longest pause 5.020 ms.
+[INFO ][memory ] [OC#142] 217.531-217.556: OC 320844KB->320397KB (524288KB), 0.024 s, sum of pauses 7.867 ms, longest pause 5.255 ms.
+[INFO ][memory ] [OC#143] 217.556-217.583: OC 320749KB->320364KB (524288KB), 0.027 s, sum of pauses 7.040 ms, longest pause 4.586 ms.
+[INFO ][memory ] [OC#144] 217.583-217.607: OC 320940KB->320493KB (524288KB), 0.024 s, sum of pauses 8.590 ms, longest pause 5.601 ms.
+[INFO ][memory ] [OC#145] 217.607-217.639: OC 320781KB->320461KB (524288KB), 0.031 s, sum of pauses 13.070 ms, longest pause 7.507 ms.
+[INFO ][memory ] [OC#146] 217.639-217.669: OC 320781KB->320428KB (524288KB), 0.030 s, sum of pauses 11.098 ms, longest pause 6.637 ms.
+[INFO ][memory ] [OC#147] 217.669-217.701: OC 320844KB->320463KB (524288KB), 0.032 s, sum of pauses 12.245 ms, longest pause 8.116 ms.
+[INFO ][memory ] [OC#148] 217.702-217.763: OC 321518KB->320333KB (524288KB), 0.061 s, sum of pauses 40.448 ms, longest pause 37.184 ms.
+[INFO ][memory ] [OC#149] 217.763-217.787: OC 320589KB->320334KB (524288KB), 0.024 s, sum of pauses 7.021 ms, longest pause 4.513 ms.
+[INFO ][memory ] [OC#150] 217.788-217.813: OC 320686KB->320333KB (524288KB), 0.025 s, sum of pauses 8.228 ms, longest pause 4.526 ms.
+[INFO ][memory ] [OC#151] 217.813-217.834: OC 320845KB->320398KB (524288KB), 0.022 s, sum of pauses 7.444 ms, longest pause 4.260 ms.
+[INFO ][memory ] [OC#152] 217.834-217.857: OC 320686KB->320461KB (524288KB), 0.023 s, sum of pauses 8.721 ms, longest pause 5.344 ms.
+[INFO ][memory ] [OC#153] 217.857-217.881: OC 320781KB->320399KB (524288KB), 0.023 s, sum of pauses 8.661 ms, longest pause 6.120 ms.
+[INFO ][memory ] [OC#154] 217.881-217.904: OC 320655KB->320397KB (524288KB), 0.023 s, sum of pauses 8.236 ms, longest pause 5.748 ms.
+[INFO ][memory ] [OC#155] 217.904-217.928: OC 320685KB->320397KB (524288KB), 0.025 s, sum of pauses 7.221 ms, longest pause 4.546 ms.
+[INFO ][memory ] [OC#156] 217.928-217.950: OC 320685KB->320397KB (524288KB), 0.021 s, sum of pauses 7.450 ms, longest pause 4.998 ms.
+[INFO ][memory ] [OC#157] 217.950-217.975: OC 320717KB->320429KB (524288KB), 0.025 s, sum of pauses 7.606 ms, longest pause 5.008 ms.
+[INFO ][memory ] [OC#158] 218.025-218.050: OC 328104KB->320397KB (524288KB), 0.025 s, sum of pauses 5.141 ms, longest pause 2.623 ms.
+[INFO ][memory ] [OC#159] 218.050-218.073: OC 320685KB->320399KB (524288KB), 0.023 s, sum of pauses 7.048 ms, longest pause 4.406 ms.
+[INFO ][memory ] [OC#160] 218.073-218.097: OC 320783KB->320399KB (524288KB), 0.024 s, sum of pauses 7.503 ms, longest pause 4.841 ms.
+[INFO ][memory ] [OC#161] 218.097-218.117: OC 320687KB->320397KB (524288KB), 0.020 s, sum of pauses 5.699 ms, longest pause 3.196 ms.
+[INFO ][memory ] [OC#162] 218.117-218.136: OC 320749KB->320365KB (524288KB), 0.020 s, sum of pauses 6.446 ms, longest pause 4.031 ms.
+[INFO ][memory ] [OC#163] 218.137-218.160: OC 320621KB->320462KB (524288KB), 0.024 s, sum of pauses 10.170 ms, longest pause 7.004 ms.
+[INFO ][memory ] [OC#164] 218.160-218.182: OC 320750KB->320397KB (524288KB), 0.021 s, sum of pauses 6.942 ms, longest pause 4.529 ms.
+[INFO ][memory ] [OC#165] 218.182-218.208: OC 320685KB->320462KB (524288KB), 0.026 s, sum of pauses 8.060 ms, longest pause 5.281 ms.
+[INFO ][memory ] [OC#166] 218.208-218.235: OC 320590KB->320366KB (524288KB), 0.026 s, sum of pauses 8.195 ms, longest pause 4.598 ms.
+[INFO ][memory ] [OC#167] 218.235-218.258: OC 320878KB->320398KB (524288KB), 0.023 s, sum of pauses 8.123 ms, longest pause 5.499 ms.
+[INFO ][memory ] [OC#168] 218.258-218.286: OC 320654KB->320589KB (524288KB), 0.028 s, sum of pauses 8.035 ms, longest pause 5.582 ms.
+[INFO ][memory ] [OC#169] 218.286-218.308: OC 320877KB->320397KB (524288KB), 0.022 s, sum of pauses 6.270 ms, longest pause 3.602 ms.
+[INFO ][memory ] [OC#170] 218.308-218.333: OC 320749KB->320397KB (524288KB), 0.024 s, sum of pauses 6.827 ms, longest pause 4.467 ms.
+[INFO ][memory ] [OC#171] 218.333-218.363: OC 320685KB->320397KB (524288KB), 0.030 s, sum of pauses 8.899 ms, longest pause 5.129 ms.
+[INFO ][memory ] [OC#172] 218.363-218.387: OC 320653KB->320397KB (524288KB), 0.023 s, sum of pauses 7.601 ms, longest pause 4.497 ms.
+[INFO ][memory ] [OC#173] 218.387-218.416: OC 320685KB->320365KB (524288KB), 0.029 s, sum of pauses 13.295 ms, longest pause 7.546 ms.
+[INFO ][memory ] [OC#174] 218.416-218.444: OC 320717KB->320172KB (524288KB), 0.027 s, sum of pauses 12.123 ms, longest pause 8.119 ms.
+[INFO ][memory ] [OC#175] 218.444-218.476: OC 320526KB->320238KB (524288KB), 0.032 s, sum of pauses 8.695 ms, longest pause 4.842 ms.
+[INFO ][memory ] [OC#176] 218.476-218.498: OC 320686KB->320365KB (524288KB), 0.023 s, sum of pauses 8.258 ms, longest pause 5.563 ms.
+[INFO ][memory ] [OC#177] 218.498-218.530: OC 320589KB->320491KB (524288KB), 0.031 s, sum of pauses 9.652 ms, longest pause 5.488 ms.
+[INFO ][memory ] [OC#178] 218.530-218.552: OC 321099KB->320396KB (524288KB), 0.022 s, sum of pauses 8.080 ms, longest pause 4.413 ms.
+[INFO ][memory ] [OC#179] 218.552-218.616: OC 320652KB->320296KB (524288KB), 0.064 s, sum of pauses 46.935 ms, longest pause 43.540 ms.
+[INFO ][memory ] [OC#180] 218.617-218.640: OC 320840KB->320424KB (524288KB), 0.024 s, sum of pauses 7.699 ms, longest pause 4.152 ms.
+[INFO ][memory ] [OC#181] 218.640-218.664: OC 320712KB->320425KB (524288KB), 0.023 s, sum of pauses 9.940 ms, longest pause 5.360 ms.
+[INFO ][memory ] [OC#182] 218.664-218.696: OC 320617KB->320393KB (524288KB), 0.032 s, sum of pauses 13.275 ms, longest pause 8.197 ms.
+[INFO ][memory ] [OC#183] 218.696-218.716: OC 320649KB->320393KB (524288KB), 0.020 s, sum of pauses 6.712 ms, longest pause 4.089 ms.
+[INFO ][memory ] [OC#184] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#184] 218.716-218.738: OC 320457KB->320145KB (524288KB), 0.021 s, sum of pauses 9.603 ms, longest pause 5.099 ms.
+[INFO ][memory ] [OC#185] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#185] 218.739-218.769: OC 320145KB->320146KB (524288KB), 0.030 s, sum of pauses 12.002 ms, longest pause 8.318 ms.
+[INFO ][memory ] [OC#186] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#186] 218.769-218.934: OC 320146KB->320141KB (524288KB), 0.165 s, sum of pauses 149.654 ms, longest pause 143.042 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 123886416

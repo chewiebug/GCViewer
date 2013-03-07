@@ -1,0 +1,146 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Generational Concurrent Mark, Parallel Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB, nursery size: 262144KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][gcpause] [OC#1] [---]   148.756 ms (34.223000-34.372000)  OC
+[INFO ][gcpause] [OC#1] [con]     0.005 ms (34.223000-34.223000)  OC:PreGC
+[INFO ][gcpause] [OC#1] [pau]    97.604 ms (34.224000-34.321000)  OC:Initial
+[INFO ][gcpause] [OC#1] [con]    10.418 ms (34.321000-34.332000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#1] [pau]     6.811 ms (34.332000-34.339000)  OC:Main
+[INFO ][gcpause] [OC#1] [con]    33.575 ms (34.339000-34.372000)  OC:PostGC
+[INFO ][memory ] [OC#1] 34.223-34.372: OC 271014KB->194359KB (524288KB), 0.149 s, sum of pauses 104.415 ms, longest pause 97.604 ms.
+[INFO ][gcpause] [OC#2] [---]   235.236 ms (34.373000-34.608000)  OC
+[INFO ][gcpause] [OC#2] [con]     0.001 ms (34.373000-34.373000)  OC:PreGC
+[INFO ][gcpause] [OC#2] [pau]     4.057 ms (34.373000-34.377000)  OC:Initial
+[INFO ][gcpause] [OC#2] [con]   112.856 ms (34.378000-34.490000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#2] [pau]    98.290 ms (34.490000-34.589000)  OC:Main
+[INFO ][gcpause] [OC#2] [con]    18.395 ms (34.590000-34.608000)  OC:PostGC
+[INFO ][memory ] [OC#2] 34.373-34.608: OC 194361KB->168985KB (524288KB), 0.235 s, sum of pauses 102.347 ms, longest pause 98.290 ms.
+[INFO ][gcpause] [OC#3] [---]   124.469 ms (34.609000-34.733000)  OC
+[INFO ][gcpause] [OC#3] [con]     0.002 ms (34.609000-34.609000)  OC:PreGC
+[INFO ][gcpause] [OC#3] [pau]     7.974 ms (34.609000-34.617000)  OC:Initial
+[INFO ][gcpause] [OC#3] [con]    12.696 ms (34.617000-34.630000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#3] [pau]   100.113 ms (34.630000-34.730000)  OC:Main
+[INFO ][gcpause] [OC#3] [con]     3.593 ms (34.730000-34.733000)  OC:PostGC
+[INFO ][memory ] [OC#3] 34.609-34.733: OC 168987KB->126311KB (524288KB), 0.124 s, sum of pauses 108.087 ms, longest pause 100.113 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][gcpause] [OC#4] [---]    88.482 ms (55.206000-55.294000)  OC
+[INFO ][gcpause] [OC#4] [con]     0.003 ms (55.206000-55.206000)  OC:PreGC
+[INFO ][gcpause] [OC#4] [pau]     5.242 ms (55.206000-55.211000)  OC:Initial
+[INFO ][gcpause] [OC#4] [con]    24.165 ms (55.211000-55.235000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#4] [pau]    52.246 ms (55.235000-55.288000)  OC:Main
+[INFO ][gcpause] [OC#4] [con]     6.752 ms (55.288000-55.294000)  OC:PostGC
+[INFO ][memory ] [OC#4] 55.206-55.294: OC 249895KB->126383KB (524288KB), 0.088 s, sum of pauses 57.488 ms, longest pause 52.246 ms.
+[INFO ][gcpause] [OC#5] [---]    30.545 ms (55.295000-55.326000)  OC
+[INFO ][gcpause] [OC#5] [con]     0.001 ms (55.295000-55.295000)  OC:PreGC
+[INFO ][gcpause] [OC#5] [pau]     8.722 ms (55.296000-55.305000)  OC:Initial
+[INFO ][gcpause] [OC#5] [con]    10.806 ms (55.305000-55.316000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#5] [pau]     6.095 ms (55.316000-55.322000)  OC:Main
+[INFO ][gcpause] [OC#5] [con]     3.811 ms (55.322000-55.326000)  OC:PostGC
+[INFO ][memory ] [OC#5] 55.295-55.326: OC 126383KB->126348KB (524288KB), 0.031 s, sum of pauses 14.816 ms, longest pause 8.722 ms.
+[INFO ][gcpause] [OC#6] [---]    93.900 ms (55.326000-55.420000)  OC
+[INFO ][gcpause] [OC#6] [con]     0.002 ms (55.326000-55.326000)  OC:PreGC
+[INFO ][gcpause] [OC#6] [pau]     5.941 ms (55.326000-55.332000)  OC:Initial
+[INFO ][gcpause] [OC#6] [con]    12.236 ms (55.332000-55.344000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#6] [pau]    72.458 ms (55.344000-55.417000)  OC:Main
+[INFO ][gcpause] [OC#6] [con]     3.114 ms (55.417000-55.420000)  OC:PostGC
+[INFO ][memory ] [OC#6] 55.326-55.420: OC 126348KB->126344KB (524288KB), 0.094 s, sum of pauses 78.399 ms, longest pause 72.458 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][gcpause] [OC#7] [---]    26.404 ms (76.370000-76.396000)  OC
+[INFO ][gcpause] [OC#7] [con]     0.003 ms (76.370000-76.370000)  OC:PreGC
+[INFO ][gcpause] [OC#7] [pau]     3.878 ms (76.370000-76.374000)  OC:Initial
+[INFO ][gcpause] [OC#7] [con]    10.581 ms (76.374000-76.385000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#7] [pau]    10.178 ms (76.385000-76.395000)  OC:Main
+[INFO ][gcpause] [OC#7] [con]     1.681 ms (76.395000-76.396000)  OC:PostGC
+[INFO ][memory ] [OC#7] 76.370-76.396: OC 248812KB->126382KB (524288KB), 0.026 s, sum of pauses 14.056 ms, longest pause 10.178 ms.
+[INFO ][gcpause] [OC#8] [---]    45.364 ms (76.397000-76.442000)  OC
+[INFO ][gcpause] [OC#8] [con]     0.054 ms (76.397000-76.397000)  OC:PreGC
+[INFO ][gcpause] [OC#8] [pau]    13.281 ms (76.397000-76.410000)  OC:Initial
+[INFO ][gcpause] [OC#8] [con]    17.177 ms (76.410000-76.428000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#8] [pau]     9.195 ms (76.428000-76.437000)  OC:Main
+[INFO ][gcpause] [OC#8] [con]     5.537 ms (76.437000-76.442000)  OC:PostGC
+[INFO ][memory ] [OC#8] 76.397-76.442: OC 126382KB->126350KB (524288KB), 0.045 s, sum of pauses 22.476 ms, longest pause 13.281 ms.
+[INFO ][gcpause] [OC#9] [---]    88.545 ms (76.443000-76.531000)  OC
+[INFO ][gcpause] [OC#9] [con]     0.001 ms (76.443000-76.443000)  OC:PreGC
+[INFO ][gcpause] [OC#9] [pau]    14.576 ms (76.443000-76.457000)  OC:Initial
+[INFO ][gcpause] [OC#9] [con]    12.056 ms (76.457000-76.469000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#9] [pau]    57.732 ms (76.469000-76.527000)  OC:Main
+[INFO ][gcpause] [OC#9] [con]     4.044 ms (76.527000-76.531000)  OC:PostGC
+[INFO ][memory ] [OC#9] 76.443-76.531: OC 126350KB->126347KB (524288KB), 0.089 s, sum of pauses 72.308 ms, longest pause 57.732 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][gcpause] [OC#10] [---]    23.899 ms (92.675000-92.699000)  OC
+[INFO ][gcpause] [OC#10] [con]     0.002 ms (92.675000-92.675000)  OC:PreGC
+[INFO ][gcpause] [OC#10] [pau]     3.519 ms (92.675000-92.679000)  OC:Initial
+[INFO ][gcpause] [OC#10] [con]    10.735 ms (92.679000-92.690000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#10] [pau]     4.968 ms (92.690000-92.695000)  OC:Main
+[INFO ][gcpause] [OC#10] [con]     4.602 ms (92.695000-92.699000)  OC:PostGC
+[INFO ][memory ] [OC#10] 92.675-92.699: OC 248831KB->126381KB (524288KB), 0.024 s, sum of pauses 8.488 ms, longest pause 4.968 ms.
+[INFO ][gcpause] [OC#11] [---]    30.856 ms (92.700000-92.730000)  OC
+[INFO ][gcpause] [OC#11] [con]     0.001 ms (92.700000-92.700000)  OC:PreGC
+[INFO ][gcpause] [OC#11] [pau]     7.128 ms (92.700000-92.707000)  OC:Initial
+[INFO ][gcpause] [OC#11] [con]    13.087 ms (92.707000-92.720000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#11] [pau]     4.865 ms (92.720000-92.725000)  OC:Main
+[INFO ][gcpause] [OC#11] [con]     5.619 ms (92.725000-92.730000)  OC:PostGC
+[INFO ][memory ] [OC#11] 92.700-92.730: OC 126381KB->126351KB (524288KB), 0.031 s, sum of pauses 11.993 ms, longest pause 7.128 ms.
+[INFO ][gcpause] [OC#12] [---]    94.385 ms (92.731000-92.826000)  OC
+[INFO ][gcpause] [OC#12] [con]     0.002 ms (92.731000-92.731000)  OC:PreGC
+[INFO ][gcpause] [OC#12] [pau]     4.500 ms (92.731000-92.736000)  OC:Initial
+[INFO ][gcpause] [OC#12] [con]    12.880 ms (92.736000-92.749000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#12] [pau]    73.212 ms (92.749000-92.822000)  OC:Main
+[INFO ][gcpause] [OC#12] [con]     3.664 ms (92.822000-92.826000)  OC:PostGC
+[INFO ][memory ] [OC#12] 92.731-92.826: OC 126351KB->126346KB (524288KB), 0.094 s, sum of pauses 77.712 ms, longest pause 73.212 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][gcpause] [OC#13] [---]    29.131 ms (106.650000-106.679000)  OC
+[INFO ][gcpause] [OC#13] [con]     0.003 ms (106.650000-106.650000)  OC:PreGC
+[INFO ][gcpause] [OC#13] [pau]     2.944 ms (106.650000-106.653000)  OC:Initial
+[INFO ][gcpause] [OC#13] [con]    11.982 ms (106.653000-106.665000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#13] [pau]    11.853 ms (106.665000-106.677000)  OC:Main
+[INFO ][gcpause] [OC#13] [con]     2.235 ms (106.677000-106.679000)  OC:PostGC
+[INFO ][memory ] [OC#13] 106.650-106.679: OC 248654KB->126385KB (524288KB), 0.029 s, sum of pauses 14.797 ms, longest pause 11.853 ms.
+[INFO ][gcpause] [OC#14] [---]    33.535 ms (106.680000-106.713000)  OC
+[INFO ][gcpause] [OC#14] [con]     0.001 ms (106.680000-106.680000)  OC:PreGC
+[INFO ][gcpause] [OC#14] [pau]     5.667 ms (106.688000-106.694000)  OC:Initial
+[INFO ][gcpause] [OC#14] [con]     9.909 ms (106.694000-106.704000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#14] [pau]     5.691 ms (106.704000-106.709000)  OC:Main
+[INFO ][gcpause] [OC#14] [con]     3.928 ms (106.709000-106.713000)  OC:PostGC
+[INFO ][memory ] [OC#14] 106.680-106.713: OC 126385KB->126351KB (524288KB), 0.034 s, sum of pauses 11.358 ms, longest pause 5.691 ms.
+[INFO ][gcpause] [OC#15] [---]    40.888 ms (106.714000-106.755000)  OC
+[INFO ][gcpause] [OC#15] [con]     0.001 ms (106.714000-106.714000)  OC:PreGC
+[INFO ][gcpause] [OC#15] [pau]     6.633 ms (106.714000-106.721000)  OC:Initial
+[INFO ][gcpause] [OC#15] [con]    12.165 ms (106.721000-106.733000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#15] [pau]    18.599 ms (106.733000-106.752000)  OC:Main
+[INFO ][gcpause] [OC#15] [con]     3.352 ms (106.752000-106.755000)  OC:PostGC
+[INFO ][memory ] [OC#15] 106.714-106.755: OC 126351KB->126347KB (524288KB), 0.041 s, sum of pauses 25.232 ms, longest pause 18.599 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][gcpause] [OC#16] [---]    21.823 ms (119.955000-119.976000)  OC
+[INFO ][gcpause] [OC#16] [con]     0.002 ms (119.955000-119.955000)  OC:PreGC
+[INFO ][gcpause] [OC#16] [pau]     3.085 ms (119.955000-119.958000)  OC:Initial
+[INFO ][gcpause] [OC#16] [con]    12.684 ms (119.958000-119.970000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#16] [pau]     4.081 ms (119.970000-119.975000)  OC:Main
+[INFO ][gcpause] [OC#16] [con]     1.884 ms (119.975000-119.976000)  OC:PostGC
+[INFO ][memory ] [OC#16] 119.955-119.976: OC 248671KB->126379KB (524288KB), 0.022 s, sum of pauses 7.166 ms, longest pause 4.081 ms.
+[INFO ][gcpause] [OC#17] [---]    26.620 ms (119.977000-120.003000)  OC
+[INFO ][gcpause] [OC#17] [con]     0.001 ms (119.977000-119.977000)  OC:PreGC
+[INFO ][gcpause] [OC#17] [pau]     2.938 ms (119.977000-119.980000)  OC:Initial
+[INFO ][gcpause] [OC#17] [con]    12.196 ms (119.980000-119.992000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#17] [pau]     4.841 ms (119.992000-119.997000)  OC:Main
+[INFO ][gcpause] [OC#17] [con]     6.495 ms (119.997000-120.003000)  OC:PostGC
+[INFO ][memory ] [OC#17] 119.977-120.003: OC 126379KB->126350KB (524288KB), 0.027 s, sum of pauses 7.779 ms, longest pause 4.841 ms.
+[INFO ][gcpause] [OC#18] [---]    91.327 ms (120.004000-120.095000)  OC
+[INFO ][gcpause] [OC#18] [con]     0.001 ms (120.004000-120.004000)  OC:PreGC
+[INFO ][gcpause] [OC#18] [pau]     4.195 ms (120.004000-120.008000)  OC:Initial
+[INFO ][gcpause] [OC#18] [con]    12.221 ms (120.008000-120.020000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#18] [pau]    71.204 ms (120.021000-120.092000)  OC:Main
+[INFO ][gcpause] [OC#18] [con]     3.385 ms (120.092000-120.095000)  OC:PostGC
+[INFO ][memory ] [OC#18] 120.004-120.095: OC 126350KB->126346KB (524288KB), 0.091 s, sum of pauses 75.399 ms, longest pause 71.204 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544

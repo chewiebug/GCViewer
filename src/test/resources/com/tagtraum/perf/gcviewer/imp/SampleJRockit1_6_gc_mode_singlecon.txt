@@ -1,0 +1,38 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Concurrent Mark & Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][memory ] [OC#1] Changing GC strategy from: singleconcon to: singleconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#1] 24.404-24.451: OC 271022KB->211135KB (524288KB), 0.047 s, sum of pauses 10.892 ms, longest pause 8.078 ms.
+[INFO ][memory ] [OC#2] Changing GC strategy from: singleconpar to: singleconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#2] 24.451-24.601: OC 211137KB->167446KB (524288KB), 0.150 s, sum of pauses 10.293 ms, longest pause 8.828 ms.
+[INFO ][memory ] [OC#3] Changing GC strategy from: singleconcon to: singleconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#3] 24.601-24.716: OC 167446KB->126498KB (524288KB), 0.115 s, sum of pauses 93.981 ms, longest pause 92.983 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][memory ] [OC#4] Changing GC strategy from: singleconpar to: singleconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#4] 42.428-42.478: OC 250233KB->370312KB (524288KB), 0.050 s, sum of pauses 14.336 ms, longest pause 13.376 ms.
+[INFO ][memory ] [OC#5] 43.841-43.878: OC 461918KB->370443KB (524288KB), 0.037 s, sum of pauses 3.016 ms, longest pause 2.342 ms.
+[INFO ][memory ] [OC#6] 44.634-44.661: OC 463970KB->370493KB (524288KB), 0.027 s, sum of pauses 8.145 ms, longest pause 7.479 ms.
+[INFO ][memory ] [OC#7] 45.316-45.336: OC 465505KB->370314KB (524288KB), 0.020 s, sum of pauses 2.910 ms, longest pause 2.299 ms.
+[INFO ][memory ] [OC#8] 45.991-46.017: OC 467794KB->370466KB (524288KB), 0.026 s, sum of pauses 4.452 ms, longest pause 3.434 ms.
+[INFO ][memory ] [OC#9] 46.674-46.692: OC 468674KB->370512KB (524288KB), 0.018 s, sum of pauses 3.271 ms, longest pause 2.247 ms.
+[INFO ][memory ] [OC#10] 47.348-47.369: OC 466302KB->370533KB (524288KB), 0.021 s, sum of pauses 2.481 ms, longest pause 1.643 ms.
+[INFO ][memory ] [OC#11] 48.024-48.045: OC 466276KB->370511KB (524288KB), 0.021 s, sum of pauses 4.175 ms, longest pause 3.536 ms.
+[INFO ][memory ] [OC#12] 48.701-48.720: OC 466494KB->370311KB (524288KB), 0.018 s, sum of pauses 2.675 ms, longest pause 2.048 ms.
+[INFO ][memory ] [OC#13] Changing GC strategy from: singleconcon to: singleconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#13] 48.788-48.804: OC 380830KB->370311KB (524288KB), 0.016 s, sum of pauses 3.905 ms, longest pause 3.011 ms.
+[INFO ][memory ] [OC#14] Changing GC strategy from: singleconpar to: singleconcon, reason: Return to basic strategy.
+[INFO ][memory ] [OC#14] 48.810-48.841: OC 370311KB->370261KB (524288KB), 0.031 s, sum of pauses 7.100 ms, longest pause 6.454 ms.
+[INFO ][memory ] [OC#15] Changing GC strategy from: singleconcon to: singleconpar, reason: Emergency parallel sweep requested.
+[INFO ][memory ] [OC#15] 48.841-49.013: OC 370261KB->370205KB (524288KB), 0.172 s, sum of pauses 154.333 ms, longest pause 152.510 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 234478896

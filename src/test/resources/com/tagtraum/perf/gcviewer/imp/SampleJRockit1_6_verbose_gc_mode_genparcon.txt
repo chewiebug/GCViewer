@@ -1,0 +1,445 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Generational Parallel Mark, Concurrent Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB, nursery size: 262144KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][memory ] [OC#1] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#1] [---]    46.917 ms (38.807000-38.854000)  OC
+[INFO ][gcpause] [OC#1] [con]     0.028 ms (38.807000-38.807000)  OC:PreGC
+[INFO ][gcpause] [OC#1] [pau]    32.344 ms (38.807000-38.839000)  OC:Main
+[INFO ][gcpause] [OC#1] [con]    14.482 ms (38.839000-38.854000)  OC:PostGC
+[INFO ][memory ] [OC#1] 38.807-38.854: OC 271017KB->210933KB (524288KB), 0.047 s, sum of pauses 32.344 ms, longest pause 32.344 ms.
+[INFO ][memory ] [OC#2] Changing GC strategy from: genparpar to: genparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#2] [---]    92.210 ms (38.854000-38.946000)  OC
+[INFO ][gcpause] [OC#2] [con]     0.001 ms (38.854000-38.854000)  OC:PreGC
+[INFO ][gcpause] [OC#2] [pau]    51.160 ms (38.854000-38.905000)  OC:Main
+[INFO ][gcpause] [OC#2] [con]     0.798 ms (38.906000-38.906000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#2] [pau]     0.066 ms (38.906000-38.906000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#2] [con]     0.089 ms (38.907000-38.907000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#2] [pau]     0.629 ms (38.907000-38.908000)  OC:Cleanup
+[INFO ][gcpause] [OC#2] [con]    38.772 ms (38.908000-38.946000)  OC:PostGC
+[INFO ][memory ] [OC#2] 38.854-38.946: OC 210935KB->199796KB (524288KB), 0.092 s, sum of pauses 51.855 ms, longest pause 51.160 ms.
+[INFO ][memory ] [OC#3] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#3] [---]   229.543 ms (38.947000-39.176000)  OC
+[INFO ][gcpause] [OC#3] [con]     0.002 ms (38.947000-38.947000)  OC:PreGC
+[INFO ][gcpause] [OC#3] [pau]   225.654 ms (38.948000-39.174000)  OC:Main
+[INFO ][gcpause] [OC#3] [con]     2.631 ms (39.174000-39.176000)  OC:PostGC
+[INFO ][memory ] [OC#3] 38.947-39.176: OC 199796KB->411288KB (524288KB), 0.230 s, sum of pauses 225.654 ms, longest pause 225.654 ms.
+[INFO ][gcpause] Thread "http-0.0.0.0-8000-1" id=15 idx=0x3c tid=29261 was in object alloc 553.286 ms from 38.807 s (3 GCs).
+[INFO ][gcpause] [YC#1] [---]     5.592 ms (41.177000-41.182000)  YC
+[INFO ][gcpause] [YC#1] [con]     0.005 ms (41.177000-41.177000)  YC:PreGC
+[INFO ][gcpause] [YC#1] [pau]     5.412 ms (41.177000-41.182000)  YC:Main
+[INFO ][gcpause] [YC#1] [con]     0.007 ms (41.182000-41.182000)  YC:PostGC
+[INFO ][memory ] [YC#1] 41.177-41.182: YC 518638KB->438191KB (524288KB), 0.006 s, sum of pauses 5.412 ms, longest pause 5.412 ms.
+[INFO ][gcpause] [YC#2] [---]     4.008 ms (41.880000-41.884000)  YC
+[INFO ][gcpause] [YC#2] [con]     0.004 ms (41.880000-41.880000)  YC:PreGC
+[INFO ][gcpause] [YC#2] [pau]     3.645 ms (41.880000-41.884000)  YC:Main
+[INFO ][gcpause] [YC#2] [con]     0.006 ms (41.884000-41.884000)  YC:PostGC
+[INFO ][memory ] [YC#2] 41.880-41.884: YC 518702KB->438255KB (524288KB), 0.004 s, sum of pauses 3.645 ms, longest pause 3.645 ms.
+[INFO ][gcpause] [YC#3] [---]     3.093 ms (42.559000-42.562000)  YC
+[INFO ][gcpause] [YC#3] [con]     0.003 ms (42.559000-42.559000)  YC:PreGC
+[INFO ][gcpause] [YC#3] [pau]     3.032 ms (42.559000-42.562000)  YC:Main
+[INFO ][gcpause] [YC#3] [con]     0.008 ms (42.562000-42.562000)  YC:PostGC
+[INFO ][memory ] [YC#3] 42.559-42.562: YC 518766KB->438319KB (524288KB), 0.003 s, sum of pauses 3.032 ms, longest pause 3.032 ms.
+[INFO ][gcpause] [YC#4] [---]     3.188 ms (43.228000-43.231000)  YC
+[INFO ][gcpause] [YC#4] [con]     0.004 ms (43.228000-43.228000)  YC:PreGC
+[INFO ][gcpause] [YC#4] [pau]     3.118 ms (43.228000-43.231000)  YC:Main
+[INFO ][gcpause] [YC#4] [con]     0.004 ms (43.231000-43.231000)  YC:PostGC
+[INFO ][memory ] [YC#4] 43.228-43.231: YC 518830KB->438383KB (524288KB), 0.003 s, sum of pauses 3.118 ms, longest pause 3.118 ms.
+[INFO ][gcpause] [YC#5] [---]     3.719 ms (43.859000-43.863000)  YC
+[INFO ][gcpause] [YC#5] [con]     0.004 ms (43.859000-43.859000)  YC:PreGC
+[INFO ][gcpause] [YC#5] [pau]     3.661 ms (43.859000-43.863000)  YC:Main
+[INFO ][gcpause] [YC#5] [con]     0.007 ms (43.863000-43.863000)  YC:PostGC
+[INFO ][memory ] [YC#5] 43.859-43.863: YC 518894KB->438447KB (524288KB), 0.004 s, sum of pauses 3.661 ms, longest pause 3.661 ms.
+[INFO ][gcpause] [YC#6] [---]     4.564 ms (44.460000-44.465000)  YC
+[INFO ][gcpause] [YC#6] [con]     0.004 ms (44.460000-44.460000)  YC:PreGC
+[INFO ][gcpause] [YC#6] [pau]     4.516 ms (44.460000-44.465000)  YC:Main
+[INFO ][gcpause] [YC#6] [con]     0.005 ms (44.465000-44.465000)  YC:PostGC
+[INFO ][memory ] [YC#6] 44.460-44.465: YC 518958KB->438511KB (524288KB), 0.005 s, sum of pauses 4.516 ms, longest pause 4.516 ms.
+[INFO ][gcpause] [YC#7] [---]     5.344 ms (45.076000-45.081000)  YC
+[INFO ][gcpause] [YC#7] [con]     0.004 ms (45.076000-45.076000)  YC:PreGC
+[INFO ][gcpause] [YC#7] [pau]     4.620 ms (45.076000-45.081000)  YC:Main
+[INFO ][gcpause] [YC#7] [con]     0.008 ms (45.081000-45.081000)  YC:PostGC
+[INFO ][memory ] [YC#7] 45.076-45.081: YC 519022KB->438575KB (524288KB), 0.005 s, sum of pauses 4.620 ms, longest pause 4.620 ms.
+[INFO ][gcpause] [YC#8] [---]     4.419 ms (45.695000-45.699000)  YC
+[INFO ][gcpause] [YC#8] [con]     0.003 ms (45.695000-45.695000)  YC:PreGC
+[INFO ][gcpause] [YC#8] [pau]     4.346 ms (45.695000-45.699000)  YC:Main
+[INFO ][gcpause] [YC#8] [con]     0.005 ms (45.699000-45.699000)  YC:PostGC
+[INFO ][memory ] [YC#8] 45.695-45.699: YC 519086KB->438639KB (524288KB), 0.004 s, sum of pauses 4.346 ms, longest pause 4.346 ms.
+[INFO ][gcpause] [YC#9] [---]     4.404 ms (46.302000-46.306000)  YC
+[INFO ][gcpause] [YC#9] [con]     0.005 ms (46.302000-46.302000)  YC:PreGC
+[INFO ][gcpause] [YC#9] [pau]     4.353 ms (46.302000-46.306000)  YC:Main
+[INFO ][gcpause] [YC#9] [con]     0.007 ms (46.306000-46.306000)  YC:PostGC
+[INFO ][memory ] [YC#9] 46.302-46.306: YC 519150KB->438703KB (524288KB), 0.004 s, sum of pauses 4.353 ms, longest pause 4.353 ms.
+[INFO ][memory ] [OC#4] Changing GC strategy from: genparpar to: genparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#4] [---]    39.325 ms (46.612000-46.651000)  OC
+[INFO ][gcpause] [OC#4] [con]     0.004 ms (46.612000-46.612000)  OC:PreGC
+[INFO ][gcpause] [OC#4] [pau]    30.848 ms (46.612000-46.643000)  OC:Main
+[INFO ][gcpause] [OC#4] [con]     0.623 ms (46.643000-46.644000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#4] [pau]     0.029 ms (46.644000-46.644000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#4] [con]     1.157 ms (46.644000-46.645000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#4] [pau]     0.158 ms (46.645000-46.645000)  OC:Cleanup
+[INFO ][gcpause] [OC#4] [con]     6.365 ms (46.645000-46.651000)  OC:PostGC
+[INFO ][memory ] [OC#4] 46.612-46.651: OC 472519KB->369962KB (524288KB), 0.039 s, sum of pauses 31.035 ms, longest pause 30.848 ms.
+[INFO ][memory ] [OC#5] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#5] [---]    33.668 ms (46.653000-46.687000)  OC
+[INFO ][gcpause] [OC#5] [con]     0.002 ms (46.653000-46.653000)  OC:PreGC
+[INFO ][gcpause] [OC#5] [pau]    29.232 ms (46.653000-46.683000)  OC:Main
+[INFO ][gcpause] [OC#5] [con]     3.976 ms (46.683000-46.687000)  OC:PostGC
+[INFO ][memory ] [OC#5] 46.653-46.687: OC 369962KB->369955KB (524288KB), 0.034 s, sum of pauses 29.232 ms, longest pause 29.232 ms.
+[INFO ][memory ] [OC#6] Changing GC strategy from: genparpar to: genparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#6] [---]   198.371 ms (46.689000-46.887000)  OC
+[INFO ][gcpause] [OC#6] [con]     0.002 ms (46.689000-46.689000)  OC:PreGC
+[INFO ][gcpause] [OC#6] [pau]   194.973 ms (46.689000-46.884000)  OC:Main
+[INFO ][gcpause] [OC#6] [con]     0.006 ms (46.884000-46.884000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#6] [pau]     0.008 ms (46.884000-46.884000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#6] [con]     0.003 ms (46.884000-46.884000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#6] [pau]     0.039 ms (46.884000-46.884000)  OC:Cleanup
+[INFO ][gcpause] [OC#6] [con]     2.761 ms (46.884000-46.887000)  OC:PostGC
+[INFO ][memory ] [OC#6] 46.689-46.887: OC 369955KB->369891KB (524288KB), 0.198 s, sum of pauses 195.020 ms, longest pause 194.973 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 234478896
+[INFO ][gcpause] [YC#10] [---]     6.085 ms (46.893000-46.899000)  YC
+[INFO ][gcpause] [YC#10] [con]     0.003 ms (46.893000-46.893000)  YC:PreGC
+[INFO ][gcpause] [YC#10] [pau]     5.967 ms (46.893000-46.899000)  YC:Main
+[INFO ][gcpause] [YC#10] [con]     0.007 ms (46.899000-46.899000)  YC:PostGC
+[INFO ][memory ] [YC#10] 46.893-46.899: YC 369927KB->369966KB (524288KB), 0.006 s, sum of pauses 5.967 ms, longest pause 5.967 ms.
+[INFO ][gcpause] [YC#11] [---]     6.710 ms (46.903000-46.910000)  YC
+[INFO ][gcpause] [YC#11] [con]     0.004 ms (46.903000-46.903000)  YC:PreGC
+[INFO ][gcpause] [YC#11] [pau]     6.633 ms (46.903000-46.910000)  YC:Main
+[INFO ][gcpause] [YC#11] [con]     0.008 ms (46.910000-46.910000)  YC:PostGC
+[INFO ][memory ] [YC#11] 46.903-46.910: YC 370019KB->370058KB (524288KB), 0.007 s, sum of pauses 6.633 ms, longest pause 6.633 ms.
+[INFO ][gcpause] [YC#12] [---]     9.277 ms (46.914000-46.923000)  YC
+[INFO ][gcpause] [YC#12] [con]     0.009 ms (46.914000-46.914000)  YC:PreGC
+[INFO ][gcpause] [YC#12] [pau]     9.127 ms (46.914000-46.923000)  YC:Main
+[INFO ][gcpause] [YC#12] [con]     0.010 ms (46.923000-46.923000)  YC:PostGC
+[INFO ][memory ] [YC#12] 46.914-46.923: YC 370087KB->370126KB (524288KB), 0.009 s, sum of pauses 9.127 ms, longest pause 9.127 ms.
+[INFO ][gcpause] [YC#13] [---]     7.513 ms (46.925000-46.932000)  YC
+[INFO ][gcpause] [YC#13] [con]     0.002 ms (46.925000-46.925000)  YC:PreGC
+[INFO ][gcpause] [YC#13] [pau]     7.477 ms (46.925000-46.932000)  YC:Main
+[INFO ][gcpause] [YC#13] [con]     0.007 ms (46.932000-46.932000)  YC:PostGC
+[INFO ][memory ] [YC#13] 46.925-46.932: YC 370151KB->370190KB (524288KB), 0.008 s, sum of pauses 7.477 ms, longest pause 7.477 ms.
+[INFO ][gcpause] [YC#14] [---]    11.478 ms (46.933000-46.945000)  YC
+[INFO ][gcpause] [YC#14] [con]     0.001 ms (46.933000-46.933000)  YC:PreGC
+[INFO ][gcpause] [YC#14] [pau]    11.403 ms (46.933000-46.945000)  YC:Main
+[INFO ][gcpause] [YC#14] [con]     0.009 ms (46.945000-46.945000)  YC:PostGC
+[INFO ][memory ] [YC#14] 46.933-46.945: YC 370217KB->370320KB (524288KB), 0.011 s, sum of pauses 11.403 ms, longest pause 11.403 ms.
+[INFO ][gcpause] [YC#15] [---]     4.256 ms (46.946000-46.950000)  YC
+[INFO ][gcpause] [YC#15] [con]     0.001 ms (46.946000-46.946000)  YC:PreGC
+[INFO ][gcpause] [YC#15] [pau]     4.178 ms (46.946000-46.950000)  YC:Main
+[INFO ][gcpause] [YC#15] [con]     0.009 ms (46.950000-46.950000)  YC:PostGC
+[INFO ][memory ] [YC#15] 46.946-46.950: YC 370363KB->370466KB (524288KB), 0.004 s, sum of pauses 4.178 ms, longest pause 4.178 ms.
+[INFO ][gcpause] [YC#16] [---]     9.277 ms (46.951000-46.961000)  YC
+[INFO ][gcpause] [YC#16] [con]     0.001 ms (46.951000-46.951000)  YC:PreGC
+[INFO ][gcpause] [YC#16] [pau]     9.212 ms (46.951000-46.961000)  YC:Main
+[INFO ][gcpause] [YC#16] [con]     0.009 ms (46.961000-46.961000)  YC:PostGC
+[INFO ][memory ] [YC#16] 46.951-46.961: YC 370495KB->370470KB (524288KB), 0.009 s, sum of pauses 9.212 ms, longest pause 9.212 ms.
+[INFO ][gcpause] [YC#17] [---]     9.034 ms (46.963000-46.972000)  YC
+[INFO ][gcpause] [YC#17] [con]     0.004 ms (46.963000-46.963000)  YC:PreGC
+[INFO ][gcpause] [YC#17] [pau]     8.940 ms (46.963000-46.972000)  YC:Main
+[INFO ][gcpause] [YC#17] [con]     0.017 ms (46.972000-46.972000)  YC:PostGC
+[INFO ][memory ] [YC#17] 46.963-46.972: YC 370495KB->370487KB (524288KB), 0.009 s, sum of pauses 8.940 ms, longest pause 8.940 ms.
+[INFO ][gcpause] [YC#18] [---]     4.651 ms (46.973000-46.978000)  YC
+[INFO ][gcpause] [YC#18] [con]     0.001 ms (46.973000-46.973000)  YC:PreGC
+[INFO ][gcpause] [YC#18] [pau]     4.608 ms (46.973000-46.978000)  YC:Main
+[INFO ][gcpause] [YC#18] [con]     0.009 ms (46.978000-46.978000)  YC:PostGC
+[INFO ][memory ] [YC#18] 46.973-46.978: YC 370512KB->370551KB (524288KB), 0.005 s, sum of pauses 4.608 ms, longest pause 4.608 ms.
+[INFO ][gcpause] [YC#19] [---]     4.785 ms (46.979000-46.984000)  YC
+[INFO ][gcpause] [YC#19] [con]     0.002 ms (46.979000-46.979000)  YC:PreGC
+[INFO ][gcpause] [YC#19] [pau]     4.711 ms (46.979000-46.984000)  YC:Main
+[INFO ][gcpause] [YC#19] [con]     0.010 ms (46.984000-46.984000)  YC:PostGC
+[INFO ][memory ] [YC#19] 46.979-46.984: YC 370576KB->370679KB (524288KB), 0.005 s, sum of pauses 4.711 ms, longest pause 4.711 ms.
+[INFO ][gcpause] [YC#20] [---]     7.833 ms (46.985000-46.993000)  YC
+[INFO ][gcpause] [YC#20] [con]     0.004 ms (46.985000-46.985000)  YC:PreGC
+[INFO ][gcpause] [YC#20] [pau]     7.756 ms (46.985000-46.993000)  YC:Main
+[INFO ][gcpause] [YC#20] [con]     0.010 ms (46.993000-46.993000)  YC:PostGC
+[INFO ][memory ] [YC#20] 46.985-46.993: YC 370704KB->370743KB (524288KB), 0.008 s, sum of pauses 7.756 ms, longest pause 7.756 ms.
+[INFO ][gcpause] [YC#21] [---]     5.058 ms (46.994000-46.999000)  YC
+[INFO ][gcpause] [YC#21] [con]     0.002 ms (46.994000-46.994000)  YC:PreGC
+[INFO ][gcpause] [YC#21] [pau]     4.474 ms (46.995000-46.999000)  YC:Main
+[INFO ][gcpause] [YC#21] [con]     0.009 ms (46.999000-46.999000)  YC:PostGC
+[INFO ][memory ] [YC#21] 46.994-46.999: YC 370771KB->370874KB (524288KB), 0.005 s, sum of pauses 4.474 ms, longest pause 4.474 ms.
+[INFO ][gcpause] [YC#22] [---]     9.369 ms (47.001000-47.010000)  YC
+[INFO ][gcpause] [YC#22] [con]     0.002 ms (47.001000-47.001000)  YC:PreGC
+[INFO ][gcpause] [YC#22] [pau]     9.251 ms (47.001000-47.010000)  YC:Main
+[INFO ][gcpause] [YC#22] [con]     0.008 ms (47.010000-47.010000)  YC:PostGC
+[INFO ][memory ] [YC#22] 47.001-47.010: YC 370906KB->370945KB (524288KB), 0.009 s, sum of pauses 9.251 ms, longest pause 9.251 ms.
+[INFO ][gcpause] [YC#23] [---]     5.127 ms (47.011000-47.016000)  YC
+[INFO ][gcpause] [YC#23] [con]     0.002 ms (47.011000-47.011000)  YC:PreGC
+[INFO ][gcpause] [YC#23] [pau]     5.060 ms (47.011000-47.016000)  YC:Main
+[INFO ][gcpause] [YC#23] [con]     0.014 ms (47.016000-47.016000)  YC:PostGC
+[INFO ][memory ] [YC#23] 47.011-47.016: YC 370970KB->370999KB (524288KB), 0.005 s, sum of pauses 5.060 ms, longest pause 5.060 ms.
+[INFO ][gcpause] [YC#24] [---]     4.480 ms (47.018000-47.023000)  YC
+[INFO ][gcpause] [YC#24] [con]     0.003 ms (47.018000-47.018000)  YC:PreGC
+[INFO ][gcpause] [YC#24] [pau]     4.369 ms (47.018000-47.023000)  YC:Main
+[INFO ][gcpause] [YC#24] [con]     0.011 ms (47.023000-47.023000)  YC:PostGC
+[INFO ][memory ] [YC#24] 47.018-47.023: YC 371054KB->371093KB (524288KB), 0.004 s, sum of pauses 4.369 ms, longest pause 4.369 ms.
+[INFO ][gcpause] [YC#25] [---]     3.693 ms (47.025000-47.028000)  YC
+[INFO ][gcpause] [YC#25] [con]     0.004 ms (47.025000-47.025000)  YC:PreGC
+[INFO ][gcpause] [YC#25] [pau]     3.605 ms (47.025000-47.028000)  YC:Main
+[INFO ][gcpause] [YC#25] [con]     0.026 ms (47.028000-47.028000)  YC:PostGC
+[INFO ][memory ] [YC#25] 47.025-47.028: YC 371120KB->371159KB (524288KB), 0.004 s, sum of pauses 3.605 ms, longest pause 3.605 ms.
+[INFO ][gcpause] [YC#26] [---]     4.416 ms (47.030000-47.034000)  YC
+[INFO ][gcpause] [YC#26] [con]     0.002 ms (47.030000-47.030000)  YC:PreGC
+[INFO ][gcpause] [YC#26] [pau]     4.297 ms (47.030000-47.034000)  YC:Main
+[INFO ][gcpause] [YC#26] [con]     0.009 ms (47.034000-47.034000)  YC:PostGC
+[INFO ][memory ] [YC#26] 47.030-47.034: YC 371184KB->371223KB (524288KB), 0.004 s, sum of pauses 4.297 ms, longest pause 4.297 ms.
+[INFO ][gcpause] [YC#27] [---]     5.844 ms (47.038000-47.044000)  YC
+[INFO ][gcpause] [YC#27] [con]     0.008 ms (47.038000-47.038000)  YC:PreGC
+[INFO ][gcpause] [YC#27] [pau]     5.735 ms (47.038000-47.044000)  YC:Main
+[INFO ][gcpause] [YC#27] [con]     0.024 ms (47.044000-47.044000)  YC:PostGC
+[INFO ][memory ] [YC#27] 47.038-47.044: YC 371248KB->371287KB (524288KB), 0.006 s, sum of pauses 5.735 ms, longest pause 5.735 ms.
+[INFO ][gcpause] [YC#28] [---]     6.003 ms (47.045000-47.051000)  YC
+[INFO ][gcpause] [YC#28] [con]     0.001 ms (47.045000-47.045000)  YC:PreGC
+[INFO ][gcpause] [YC#28] [pau]     5.753 ms (47.045000-47.051000)  YC:Main
+[INFO ][gcpause] [YC#28] [con]     0.010 ms (47.051000-47.051000)  YC:PostGC
+[INFO ][memory ] [YC#28] 47.045-47.051: YC 371312KB->371351KB (524288KB), 0.006 s, sum of pauses 5.753 ms, longest pause 5.753 ms.
+[INFO ][gcpause] [YC#29] [---]     7.217 ms (47.052000-47.059000)  YC
+[INFO ][gcpause] [YC#29] [con]     0.002 ms (47.052000-47.052000)  YC:PreGC
+[INFO ][gcpause] [YC#29] [pau]     6.968 ms (47.052000-47.059000)  YC:Main
+[INFO ][gcpause] [YC#29] [con]     0.015 ms (47.059000-47.059000)  YC:PostGC
+[INFO ][memory ] [YC#29] 47.052-47.059: YC 371376KB->371415KB (524288KB), 0.007 s, sum of pauses 6.968 ms, longest pause 6.968 ms.
+[INFO ][gcpause] [YC#30] [---]     4.309 ms (47.060000-47.065000)  YC
+[INFO ][gcpause] [YC#30] [con]     0.003 ms (47.060000-47.060000)  YC:PreGC
+[INFO ][gcpause] [YC#30] [pau]     4.235 ms (47.061000-47.065000)  YC:Main
+[INFO ][gcpause] [YC#30] [con]     0.007 ms (47.065000-47.065000)  YC:PostGC
+[INFO ][memory ] [YC#30] 47.060-47.065: YC 371440KB->371511KB (524288KB), 0.004 s, sum of pauses 4.235 ms, longest pause 4.235 ms.
+[INFO ][gcpause] [YC#31] [---]     9.299 ms (47.066000-47.075000)  YC
+[INFO ][gcpause] [YC#31] [con]     0.003 ms (47.066000-47.066000)  YC:PreGC
+[INFO ][gcpause] [YC#31] [pau]     9.207 ms (47.066000-47.075000)  YC:Main
+[INFO ][gcpause] [YC#31] [con]     0.013 ms (47.075000-47.075000)  YC:PostGC
+[INFO ][memory ] [YC#31] 47.066-47.075: YC 371536KB->371639KB (524288KB), 0.009 s, sum of pauses 9.207 ms, longest pause 9.207 ms.
+[INFO ][gcpause] [YC#32] [---]    12.278 ms (47.077000-47.089000)  YC
+[INFO ][gcpause] [YC#32] [con]     0.003 ms (47.077000-47.077000)  YC:PreGC
+[INFO ][gcpause] [YC#32] [pau]    12.172 ms (47.077000-47.089000)  YC:Main
+[INFO ][gcpause] [YC#32] [con]     0.016 ms (47.089000-47.089000)  YC:PostGC
+[INFO ][memory ] [YC#32] 47.077-47.089: YC 371664KB->371703KB (524288KB), 0.012 s, sum of pauses 12.172 ms, longest pause 12.172 ms.
+[INFO ][gcpause] [YC#33] [---]     4.506 ms (47.091000-47.095000)  YC
+[INFO ][gcpause] [YC#33] [con]     0.001 ms (47.091000-47.091000)  YC:PreGC
+[INFO ][gcpause] [YC#33] [pau]     4.421 ms (47.091000-47.095000)  YC:Main
+[INFO ][gcpause] [YC#33] [con]     0.011 ms (47.095000-47.095000)  YC:PostGC
+[INFO ][memory ] [YC#33] 47.091-47.095: YC 371728KB->371767KB (524288KB), 0.005 s, sum of pauses 4.421 ms, longest pause 4.421 ms.
+[INFO ][gcpause] [YC#34] [---]     4.079 ms (47.096000-47.101000)  YC
+[INFO ][gcpause] [YC#34] [con]     0.001 ms (47.096000-47.096000)  YC:PreGC
+[INFO ][gcpause] [YC#34] [pau]     4.015 ms (47.096000-47.100000)  YC:Main
+[INFO ][gcpause] [YC#34] [con]     0.008 ms (47.101000-47.101000)  YC:PostGC
+[INFO ][memory ] [YC#34] 47.096-47.101: YC 371792KB->371895KB (524288KB), 0.004 s, sum of pauses 4.015 ms, longest pause 4.015 ms.
+[INFO ][gcpause] [YC#35] [---]     7.827 ms (47.102000-47.110000)  YC
+[INFO ][gcpause] [YC#35] [con]     0.005 ms (47.102000-47.102000)  YC:PreGC
+[INFO ][gcpause] [YC#35] [pau]     7.756 ms (47.102000-47.110000)  YC:Main
+[INFO ][gcpause] [YC#35] [con]     0.013 ms (47.110000-47.110000)  YC:PostGC
+[INFO ][memory ] [YC#35] 47.102-47.110: YC 371920KB->371959KB (524288KB), 0.008 s, sum of pauses 7.756 ms, longest pause 7.756 ms.
+[INFO ][gcpause] [YC#36] [---]     5.555 ms (47.111000-47.117000)  YC
+[INFO ][gcpause] [YC#36] [con]     0.004 ms (47.111000-47.111000)  YC:PreGC
+[INFO ][gcpause] [YC#36] [pau]     4.871 ms (47.112000-47.117000)  YC:Main
+[INFO ][gcpause] [YC#36] [con]     0.009 ms (47.117000-47.117000)  YC:PostGC
+[INFO ][memory ] [YC#36] 47.111-47.117: YC 371984KB->372023KB (524288KB), 0.006 s, sum of pauses 4.871 ms, longest pause 4.871 ms.
+[INFO ][gcpause] [YC#37] [---]     5.672 ms (47.121000-47.126000)  YC
+[INFO ][gcpause] [YC#37] [con]     0.004 ms (47.121000-47.121000)  YC:PreGC
+[INFO ][gcpause] [YC#37] [pau]     5.583 ms (47.121000-47.126000)  YC:Main
+[INFO ][gcpause] [YC#37] [con]     0.015 ms (47.126000-47.126000)  YC:PostGC
+[INFO ][memory ] [YC#37] 47.121-47.126: YC 372053KB->372092KB (524288KB), 0.006 s, sum of pauses 5.583 ms, longest pause 5.583 ms.
+[INFO ][gcpause] [YC#38] [---]     6.398 ms (47.131000-47.137000)  YC
+[INFO ][gcpause] [YC#38] [con]     0.004 ms (47.131000-47.131000)  YC:PreGC
+[INFO ][gcpause] [YC#38] [pau]     6.322 ms (47.131000-47.137000)  YC:Main
+[INFO ][gcpause] [YC#38] [con]     0.008 ms (47.137000-47.137000)  YC:PostGC
+[INFO ][memory ] [YC#38] 47.131-47.137: YC 372117KB->372156KB (524288KB), 0.006 s, sum of pauses 6.322 ms, longest pause 6.322 ms.
+[INFO ][gcpause] [YC#39] [---]     7.190 ms (47.140000-47.147000)  YC
+[INFO ][gcpause] [YC#39] [con]     0.004 ms (47.140000-47.140000)  YC:PreGC
+[INFO ][gcpause] [YC#39] [pau]     7.138 ms (47.140000-47.147000)  YC:Main
+[INFO ][gcpause] [YC#39] [con]     0.007 ms (47.147000-47.147000)  YC:PostGC
+[INFO ][memory ] [YC#39] 47.140-47.147: YC 372194KB->372233KB (524288KB), 0.007 s, sum of pauses 7.138 ms, longest pause 7.138 ms.
+[INFO ][gcpause] [YC#40] [---]     2.918 ms (47.160000-47.163000)  YC
+[INFO ][gcpause] [YC#40] [con]     0.002 ms (47.160000-47.160000)  YC:PreGC
+[INFO ][gcpause] [YC#40] [pau]     2.883 ms (47.160000-47.163000)  YC:Main
+[INFO ][gcpause] [YC#40] [con]     0.005 ms (47.163000-47.163000)  YC:PostGC
+[INFO ][memory ] [YC#40] 47.160-47.163: YC 372258KB->372297KB (524288KB), 0.003 s, sum of pauses 2.883 ms, longest pause 2.883 ms.
+[INFO ][gcpause] [YC#41] [---]     3.593 ms (47.164000-47.167000)  YC
+[INFO ][gcpause] [YC#41] [con]     0.001 ms (47.164000-47.164000)  YC:PreGC
+[INFO ][gcpause] [YC#41] [pau]     3.554 ms (47.164000-47.167000)  YC:Main
+[INFO ][gcpause] [YC#41] [con]     0.010 ms (47.167000-47.167000)  YC:PostGC
+[INFO ][memory ] [YC#41] 47.164-47.167: YC 372322KB->372361KB (524288KB), 0.004 s, sum of pauses 3.554 ms, longest pause 3.554 ms.
+[INFO ][gcpause] [YC#42] [---]    10.302 ms (47.171000-47.181000)  YC
+[INFO ][gcpause] [YC#42] [con]     0.003 ms (47.171000-47.171000)  YC:PreGC
+[INFO ][gcpause] [YC#42] [pau]     9.707 ms (47.171000-47.180000)  YC:Main
+[INFO ][gcpause] [YC#42] [con]     0.012 ms (47.181000-47.181000)  YC:PostGC
+[INFO ][memory ] [YC#42] 47.171-47.181: YC 372405KB->372444KB (524288KB), 0.010 s, sum of pauses 9.707 ms, longest pause 9.707 ms.
+[INFO ][gcpause] [YC#43] [---]     7.454 ms (47.185000-47.192000)  YC
+[INFO ][gcpause] [YC#43] [con]     0.003 ms (47.185000-47.185000)  YC:PreGC
+[INFO ][gcpause] [YC#43] [pau]     7.379 ms (47.185000-47.192000)  YC:Main
+[INFO ][gcpause] [YC#43] [con]     0.006 ms (47.192000-47.192000)  YC:PostGC
+[INFO ][memory ] [YC#43] 47.185-47.192: YC 372487KB->372526KB (524288KB), 0.007 s, sum of pauses 7.379 ms, longest pause 7.379 ms.
+[INFO ][gcpause] [YC#44] [---]     4.511 ms (47.196000-47.200000)  YC
+[INFO ][gcpause] [YC#44] [con]     0.006 ms (47.196000-47.196000)  YC:PreGC
+[INFO ][gcpause] [YC#44] [pau]     4.424 ms (47.196000-47.200000)  YC:Main
+[INFO ][gcpause] [YC#44] [con]     0.032 ms (47.200000-47.200000)  YC:PostGC
+[INFO ][memory ] [YC#44] 47.196-47.200: YC 372559KB->372543KB (524288KB), 0.005 s, sum of pauses 4.424 ms, longest pause 4.424 ms.
+[INFO ][gcpause] [YC#45] [---]     4.335 ms (47.208000-47.213000)  YC
+[INFO ][gcpause] [YC#45] [con]     0.005 ms (47.208000-47.208000)  YC:PreGC
+[INFO ][gcpause] [YC#45] [pau]     4.281 ms (47.208000-47.213000)  YC:Main
+[INFO ][gcpause] [YC#45] [con]     0.005 ms (47.213000-47.213000)  YC:PostGC
+[INFO ][memory ] [YC#45] 47.208-47.213: YC 372590KB->372693KB (524288KB), 0.004 s, sum of pauses 4.281 ms, longest pause 4.281 ms.
+[INFO ][gcpause] [YC#46] [---]     3.475 ms (47.225000-47.229000)  YC
+[INFO ][gcpause] [YC#46] [con]     0.003 ms (47.225000-47.225000)  YC:PreGC
+[INFO ][gcpause] [YC#46] [pau]     3.400 ms (47.225000-47.229000)  YC:Main
+[INFO ][gcpause] [YC#46] [con]     0.006 ms (47.229000-47.229000)  YC:PostGC
+[INFO ][memory ] [YC#46] 47.225-47.229: YC 372718KB->372757KB (524288KB), 0.003 s, sum of pauses 3.400 ms, longest pause 3.400 ms.
+[INFO ][gcpause] [YC#47] [---]     3.293 ms (47.229000-47.233000)  YC
+[INFO ][gcpause] [YC#47] [con]     0.001 ms (47.229000-47.229000)  YC:PreGC
+[INFO ][gcpause] [YC#47] [pau]     3.178 ms (47.229000-47.232000)  YC:Main
+[INFO ][gcpause] [YC#47] [con]     0.045 ms (47.233000-47.233000)  YC:PostGC
+[INFO ][memory ] [YC#47] 47.229-47.233: YC 372788KB->372891KB (524288KB), 0.003 s, sum of pauses 3.178 ms, longest pause 3.178 ms.
+[INFO ][gcpause] [YC#48] [---]     9.087 ms (47.237000-47.246000)  YC
+[INFO ][gcpause] [YC#48] [con]     0.007 ms (47.237000-47.237000)  YC:PreGC
+[INFO ][gcpause] [YC#48] [pau]     7.342 ms (47.239000-47.246000)  YC:Main
+[INFO ][gcpause] [YC#48] [con]     0.009 ms (47.246000-47.246000)  YC:PostGC
+[INFO ][memory ] [YC#48] 47.237-47.246: YC 372916KB->373019KB (524288KB), 0.009 s, sum of pauses 7.342 ms, longest pause 7.342 ms.
+[INFO ][gcpause] [YC#49] [---]     4.830 ms (47.247000-47.252000)  YC
+[INFO ][gcpause] [YC#49] [con]     0.001 ms (47.247000-47.247000)  YC:PreGC
+[INFO ][gcpause] [YC#49] [pau]     4.795 ms (47.247000-47.252000)  YC:Main
+[INFO ][gcpause] [YC#49] [con]     0.007 ms (47.252000-47.252000)  YC:PostGC
+[INFO ][memory ] [YC#49] 47.247-47.252: YC 373044KB->373111KB (524288KB), 0.005 s, sum of pauses 4.795 ms, longest pause 4.795 ms.
+[INFO ][gcpause] [YC#50] [---]     7.057 ms (47.255000-47.262000)  YC
+[INFO ][gcpause] [YC#50] [con]     0.009 ms (47.255000-47.255000)  YC:PreGC
+[INFO ][gcpause] [YC#50] [pau]     6.961 ms (47.255000-47.262000)  YC:Main
+[INFO ][gcpause] [YC#50] [con]     0.009 ms (47.262000-47.262000)  YC:PostGC
+[INFO ][memory ] [YC#50] 47.255-47.262: YC 373136KB->373175KB (524288KB), 0.007 s, sum of pauses 6.961 ms, longest pause 6.961 ms.
+[INFO ][gcpause] [YC#51] [---]     5.883 ms (47.263000-47.269000)  YC
+[INFO ][gcpause] [YC#51] [con]     0.003 ms (47.263000-47.263000)  YC:PreGC
+[INFO ][gcpause] [YC#51] [pau]     5.766 ms (47.263000-47.269000)  YC:Main
+[INFO ][gcpause] [YC#51] [con]     0.012 ms (47.269000-47.269000)  YC:PostGC
+[INFO ][memory ] [YC#51] 47.263-47.269: YC 373200KB->373239KB (524288KB), 0.006 s, sum of pauses 5.766 ms, longest pause 5.766 ms.
+[INFO ][gcpause] [YC#52] [---]     7.252 ms (47.270000-47.277000)  YC
+[INFO ][gcpause] [YC#52] [con]     0.002 ms (47.270000-47.270000)  YC:PreGC
+[INFO ][gcpause] [YC#52] [pau]     7.170 ms (47.270000-47.277000)  YC:Main
+[INFO ][gcpause] [YC#52] [con]     0.010 ms (47.277000-47.277000)  YC:PostGC
+[INFO ][memory ] [YC#52] 47.270-47.277: YC 373264KB->373367KB (524288KB), 0.007 s, sum of pauses 7.170 ms, longest pause 7.170 ms.
+[INFO ][gcpause] [YC#53] [---]     3.457 ms (47.443000-47.446000)  YC
+[INFO ][gcpause] [YC#53] [con]     0.003 ms (47.443000-47.443000)  YC:PreGC
+[INFO ][gcpause] [YC#53] [pau]     3.351 ms (47.443000-47.446000)  YC:Main
+[INFO ][gcpause] [YC#53] [con]     0.007 ms (47.446000-47.446000)  YC:PostGC
+[INFO ][memory ] [YC#53] 47.443-47.446: YC 373401KB->373440KB (524288KB), 0.003 s, sum of pauses 3.351 ms, longest pause 3.351 ms.
+[INFO ][gcpause] [YC#54] [---]     3.436 ms (51.906000-51.910000)  YC
+[INFO ][gcpause] [YC#54] [con]     0.004 ms (51.906000-51.906000)  YC:PreGC
+[INFO ][gcpause] [YC#54] [pau]     3.329 ms (51.906000-51.910000)  YC:Main
+[INFO ][gcpause] [YC#54] [con]     0.044 ms (51.910000-51.910000)  YC:PostGC
+[INFO ][memory ] [YC#54] 51.906-51.910: YC 373465KB->373623KB (524288KB), 0.003 s, sum of pauses 3.329 ms, longest pause 3.329 ms.
+[INFO ][gcpause] [YC#55] [---]    10.477 ms (51.911000-51.922000)  YC
+[INFO ][gcpause] [YC#55] [con]     0.002 ms (51.911000-51.911000)  YC:PreGC
+[INFO ][gcpause] [YC#55] [pau]    10.310 ms (51.911000-51.922000)  YC:Main
+[INFO ][gcpause] [YC#55] [con]     0.009 ms (51.922000-51.922000)  YC:PostGC
+[INFO ][memory ] [YC#55] 51.911-51.922: YC 373660KB->373699KB (524288KB), 0.010 s, sum of pauses 10.310 ms, longest pause 10.310 ms.
+[INFO ][memory ] [OC#7] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#7] [---]    12.440 ms (51.972000-51.985000)  OC
+[INFO ][gcpause] [OC#7] [con]     0.002 ms (51.972000-51.972000)  OC:PreGC
+[INFO ][gcpause] [OC#7] [pau]    10.414 ms (51.972000-51.983000)  OC:Main
+[INFO ][gcpause] [OC#7] [con]     1.979 ms (51.983000-51.985000)  OC:PostGC
+[INFO ][memory ] [OC#7] 51.972-51.985: OC 495520KB->126404KB (524288KB), 0.012 s, sum of pauses 10.414 ms, longest pause 10.414 ms.
+[INFO ][memory ] [OC#8] Changing GC strategy from: genparpar to: genparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#8] [---]    18.708 ms (62.499000-62.517000)  OC
+[INFO ][gcpause] [OC#8] [con]     0.002 ms (62.499000-62.499000)  OC:PreGC
+[INFO ][gcpause] [OC#8] [pau]    12.703 ms (62.499000-62.511000)  OC:Main
+[INFO ][gcpause] [OC#8] [con]     1.905 ms (62.511000-62.513000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#8] [pau]     0.036 ms (62.513000-62.513000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#8] [con]     1.025 ms (62.513000-62.514000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#8] [pau]     0.075 ms (62.514000-62.514000)  OC:Cleanup
+[INFO ][gcpause] [OC#8] [con]     2.850 ms (62.514000-62.517000)  OC:PostGC
+[INFO ][memory ] [OC#8] 62.499-62.517: OC 126606KB->126405KB (524288KB), 0.019 s, sum of pauses 12.813 ms, longest pause 12.703 ms.
+[INFO ][memory ] [OC#9] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#9] [---]    23.960 ms (62.519000-62.543000)  OC
+[INFO ][gcpause] [OC#9] [con]     0.001 ms (62.519000-62.519000)  OC:PreGC
+[INFO ][gcpause] [OC#9] [pau]    17.590 ms (62.519000-62.537000)  OC:Main
+[INFO ][gcpause] [OC#9] [con]     6.201 ms (62.537000-62.543000)  OC:PostGC
+[INFO ][memory ] [OC#9] 62.519-62.543: OC 126405KB->126369KB (524288KB), 0.024 s, sum of pauses 17.590 ms, longest pause 17.590 ms.
+[INFO ][memory ] [OC#10] Changing GC strategy from: genparpar to: genparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#10] [---]   117.700 ms (62.543000-62.661000)  OC
+[INFO ][gcpause] [OC#10] [con]     0.003 ms (62.543000-62.543000)  OC:PreGC
+[INFO ][gcpause] [OC#10] [pau]   113.040 ms (62.545000-62.658000)  OC:Main
+[INFO ][gcpause] [OC#10] [con]     0.006 ms (62.658000-62.658000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#10] [pau]     0.008 ms (62.658000-62.658000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#10] [con]     0.003 ms (62.658000-62.658000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#10] [pau]     0.038 ms (62.658000-62.658000)  OC:Cleanup
+[INFO ][gcpause] [OC#10] [con]     2.878 ms (62.658000-62.661000)  OC:PostGC
+[INFO ][memory ] [OC#10] 62.543-62.661: OC 126542KB->369924KB (524288KB), 0.118 s, sum of pauses 113.086 ms, longest pause 113.040 ms.
+[INFO ][memory ] [OC#11] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#11] [---]    69.142 ms (62.663000-62.732000)  OC
+[INFO ][gcpause] [OC#11] [con]     0.003 ms (62.663000-62.663000)  OC:PreGC
+[INFO ][gcpause] [OC#11] [pau]    11.949 ms (62.718000-62.730000)  OC:Main
+[INFO ][gcpause] [OC#11] [con]     1.755 ms (62.730000-62.732000)  OC:PostGC
+[INFO ][memory ] [OC#11] 62.663-62.732: OC 369958KB->369937KB (524288KB), 0.069 s, sum of pauses 11.949 ms, longest pause 11.949 ms.
+[INFO ][gcpause] [YC#56] [---]     2.555 ms (63.804000-63.807000)  YC
+[INFO ][gcpause] [YC#56] [con]     0.004 ms (63.804000-63.804000)  YC:PreGC
+[INFO ][gcpause] [YC#56] [pau]     2.504 ms (63.804000-63.807000)  YC:Main
+[INFO ][gcpause] [YC#56] [con]     0.006 ms (63.807000-63.807000)  YC:PostGC
+[INFO ][memory ] [YC#56] 63.804-63.807: YC 516572KB->406724KB (524288KB), 0.003 s, sum of pauses 2.504 ms, longest pause 2.504 ms.
+[INFO ][gcpause] [YC#57] [---]     2.827 ms (64.545000-64.548000)  YC
+[INFO ][gcpause] [YC#57] [con]     0.003 ms (64.545000-64.545000)  YC:PreGC
+[INFO ][gcpause] [YC#57] [pau]     2.763 ms (64.545000-64.548000)  YC:Main
+[INFO ][gcpause] [YC#57] [con]     0.004 ms (64.548000-64.548000)  YC:PostGC
+[INFO ][memory ] [YC#57] 64.545-64.548: YC 516700KB->406790KB (524288KB), 0.003 s, sum of pauses 2.763 ms, longest pause 2.763 ms.
+[INFO ][gcpause] [YC#58] [---]     2.499 ms (65.304000-65.306000)  YC
+[INFO ][gcpause] [YC#58] [con]     0.004 ms (65.304000-65.304000)  YC:PreGC
+[INFO ][gcpause] [YC#58] [pau]     2.458 ms (65.304000-65.306000)  YC:Main
+[INFO ][gcpause] [YC#58] [con]     0.005 ms (65.306000-65.306000)  YC:PostGC
+[INFO ][memory ] [YC#58] 65.304-65.306: YC 516764KB->406852KB (524288KB), 0.002 s, sum of pauses 2.458 ms, longest pause 2.458 ms.
+[INFO ][gcpause] [YC#59] [---]     2.424 ms (66.015000-66.017000)  YC
+[INFO ][gcpause] [YC#59] [con]     0.005 ms (66.015000-66.015000)  YC:PreGC
+[INFO ][gcpause] [YC#59] [pau]     2.379 ms (66.015000-66.017000)  YC:Main
+[INFO ][gcpause] [YC#59] [con]     0.005 ms (66.017000-66.017000)  YC:PostGC
+[INFO ][memory ] [YC#59] 66.015-66.017: YC 516828KB->406918KB (524288KB), 0.002 s, sum of pauses 2.379 ms, longest pause 2.379 ms.
+[INFO ][gcpause] [YC#60] [---]     2.830 ms (66.730000-66.733000)  YC
+[INFO ][gcpause] [YC#60] [con]     0.005 ms (66.730000-66.730000)  YC:PreGC
+[INFO ][gcpause] [YC#60] [pau]     2.766 ms (66.731000-66.733000)  YC:Main
+[INFO ][gcpause] [YC#60] [con]     0.005 ms (66.733000-66.733000)  YC:PostGC
+[INFO ][memory ] [YC#60] 66.730-66.733: YC 516892KB->406980KB (524288KB), 0.003 s, sum of pauses 2.766 ms, longest pause 2.766 ms.
+[INFO ][gcpause] [YC#61] [---]     2.527 ms (67.457000-67.459000)  YC
+[INFO ][gcpause] [YC#61] [con]     0.005 ms (67.457000-67.457000)  YC:PreGC
+[INFO ][gcpause] [YC#61] [pau]     2.484 ms (67.457000-67.459000)  YC:Main
+[INFO ][gcpause] [YC#61] [con]     0.005 ms (67.459000-67.459000)  YC:PostGC
+[INFO ][memory ] [YC#61] 67.457-67.459: YC 516956KB->407046KB (524288KB), 0.003 s, sum of pauses 2.484 ms, longest pause 2.484 ms.
+[INFO ][memory ] [OC#12] Changing GC strategy from: genparpar to: genparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#12] [---]    14.839 ms (68.041000-68.055000)  OC
+[INFO ][gcpause] [OC#12] [con]     0.002 ms (68.041000-68.041000)  OC:PreGC
+[INFO ][gcpause] [OC#12] [pau]     9.197 ms (68.041000-68.050000)  OC:Main
+[INFO ][gcpause] [OC#12] [con]     0.755 ms (68.050000-68.051000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#12] [pau]     0.015 ms (68.051000-68.051000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#12] [con]     0.883 ms (68.051000-68.052000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#12] [pau]     0.049 ms (68.052000-68.052000)  OC:Cleanup
+[INFO ][gcpause] [OC#12] [con]     3.664 ms (68.052000-68.055000)  OC:PostGC
+[INFO ][memory ] [OC#12] 68.041-68.055: OC 495572KB->369936KB (524288KB), 0.015 s, sum of pauses 9.261 ms, longest pause 9.197 ms.
+[INFO ][memory ] [OC#13] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#13] [---]    11.717 ms (68.056000-68.068000)  OC
+[INFO ][gcpause] [OC#13] [con]     0.001 ms (68.056000-68.056000)  OC:PreGC
+[INFO ][gcpause] [OC#13] [pau]     9.456 ms (68.056000-68.066000)  OC:Main
+[INFO ][gcpause] [OC#13] [con]     2.217 ms (68.066000-68.068000)  OC:PostGC
+[INFO ][memory ] [OC#13] 68.056-68.068: OC 369936KB->369935KB (524288KB), 0.012 s, sum of pauses 9.456 ms, longest pause 9.456 ms.
+[INFO ][memory ] [OC#14] Changing GC strategy from: genparpar to: genparcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#14] [---]   120.356 ms (68.068000-68.189000)  OC
+[INFO ][gcpause] [OC#14] [con]     0.001 ms (68.068000-68.068000)  OC:PreGC
+[INFO ][gcpause] [OC#14] [pau]   117.643 ms (68.068000-68.186000)  OC:Main
+[INFO ][gcpause] [OC#14] [con]     0.081 ms (68.186000-68.186000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#14] [pau]     0.007 ms (68.186000-68.186000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#14] [con]     0.005 ms (68.186000-68.186000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#14] [pau]     0.037 ms (68.186000-68.186000)  OC:Cleanup
+[INFO ][gcpause] [OC#14] [con]     2.507 ms (68.186000-68.189000)  OC:PostGC
+[INFO ][memory ] [OC#14] 68.068-68.189: OC 369935KB->369925KB (524288KB), 0.120 s, sum of pauses 117.688 ms, longest pause 117.643 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 234478896
+[INFO ][gcpause] [YC#62] [---]     3.179 ms (68.190000-68.193000)  YC
+[INFO ][gcpause] [YC#62] [con]     0.003 ms (68.190000-68.190000)  YC:PreGC
+[INFO ][gcpause] [YC#62] [pau]     3.070 ms (68.190000-68.193000)  YC:Main
+[INFO ][gcpause] [YC#62] [con]     0.008 ms (68.193000-68.193000)  YC:PostGC
+[INFO ][memory ] [YC#62] 68.190-68.193: YC 369963KB->370066KB (524288KB), 0.003 s, sum of pauses 3.070 ms, longest pause 3.070 ms.
+[INFO ][memory ] [OC#15] Changing GC strategy from: genparcon to: genparpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#15] [---]    12.880 ms (68.193000-68.206000)  OC
+[INFO ][gcpause] [OC#15] [con]     0.001 ms (68.193000-68.193000)  OC:PreGC
+[INFO ][gcpause] [OC#15] [pau]    11.222 ms (68.193000-68.205000)  OC:Main
+[INFO ][gcpause] [OC#15] [con]     1.486 ms (68.205000-68.206000)  OC:PostGC
+[INFO ][memory ] [OC#15] 68.193-68.206: OC 370066KB->4571KB (524288KB), 0.013 s, sum of pauses 11.222 ms, longest pause 11.222 ms.
