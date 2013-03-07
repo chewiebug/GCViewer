@@ -38,12 +38,7 @@ public class DataReaderJRockit1_5_0 implements DataReader {
             String line = null;
             GCEvent event = null;
             int nurserySize = -1;
-            // All of this will break if startTimeIndex has not been computed correctly 
-            // (e.g. if beginning of GC logs was truncated or rolled over)
-            // So we will do a best guess based on typical JRockit 1.5 logs that look like:
-            // [memory ][Mon Feb 18 14:29:50 2013][09776] 4.778-4.849: GC 1643328K->159027K (3145728K), 71.126 ms
-            // startTimeIndex is 43 in the above example logs. We will use this as default
-            int startTimeIndex = 43;
+            int startTimeIndex = 0;
             while ((line = in.readLine()) != null) {
                 final int memoryIndex = line.indexOf(MEMORY_MARKER);
                 if (memoryIndex == -1) {
@@ -53,7 +48,20 @@ public class DataReaderJRockit1_5_0 implements DataReader {
                 if (line.endsWith(MEMORY_MARKER)) {
                     continue;
                 }
-                // startTimeIndex = memoryIndex + MEMORY_MARKER.length();
+                
+                if (startTimeIndex == 0) {
+                    // Not yet initialized. We will initialize position based on this [memory ] log
+                    startTimeIndex = memoryIndex + MEMORY_MARKER.length() + 1;
+                    // GC start time index changes if verbosetimestamp used:
+                    // [INFO ][memory ] 4.817-4.857: GC 1641728K->148365K (3145728K)
+                    // [memory ][Thu Feb 21 15:08:25 2013][09368] 4.817-4.857: GC 1641728K->148365K (3145728K)
+                    // skip to position of last "]" occuring after memory marker "[memory ]"
+                    int verboseTimestampIndex = line.lastIndexOf(']', line.length());
+                    if (verboseTimestampIndex > startTimeIndex) {
+                        if (LOG.isLoggable(Level.FINE)) LOG.fine("Log entries have verbose timestamp");
+                        startTimeIndex = verboseTimestampIndex + 2; // skip "] "
+                    }                    
+                }
 
                 // print some special statements to the log.
                 if (!gcSummary) {
@@ -68,8 +76,6 @@ public class DataReaderJRockit1_5_0 implements DataReader {
                     continue;
                 }
                 else if (line.indexOf("GC mode") != -1) {
-                    //redefine startTimeIndex if beginning of GC logs (GC mode string) is available in file
-                    startTimeIndex = line.indexOf("GC mode");
                     if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
                     continue;
                 }

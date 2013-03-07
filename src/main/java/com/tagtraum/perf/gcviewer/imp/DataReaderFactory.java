@@ -77,16 +77,31 @@ public class DataReaderFactory {
     private DataReader getDataReaderBySample(String s, InputStream in) throws IOException {
         // if there is a [memory ] somewhere in the first chunk of the logs, it is JRockit
         if (s.indexOf("[memory ]") != -1) {
+            int startOfRealLog = s.lastIndexOf("<");
+            // skip ahead of <start>-<end>: <type> <before>KB-><after>KB (<heap>KB
+            String realLog;
+            if (startOfRealLog >= 0){
+                realLog = s.substring(startOfRealLog); 
+                // skip all start report info to real log to determine JRockit version
+            } else {
+                realLog = s;
+            }            
+            if (realLog.indexOf("->") == -1) {
+                return null; // No GC logs of format 1641728K->148365K (3145728K) yet, read next chunk
+            }
             // JRockit 1.5 and 1.6 logs look like: [memory ][Tue Nov 13 08:39:01 2012][01684] [OC#1]
-            if ((s.indexOf("[YC#") != -1) ||(s.indexOf("[OC#") != -1)) {
+            if ((realLog.indexOf("[YC#") != -1) ||(realLog.indexOf("[OC#") != -1)) {
                 if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.6");
                 return new DataReaderJRockit1_6_0(in);
-            } else if (s.indexOf("GC mode:") != -1) {
-                if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.5");
-                return new DataReaderJRockit1_5_0(in);
-            } else {
+            } else if ((realLog.indexOf("\n[memory") == -1) && (realLog.indexOf("[INFO ][memory") == -1)) {
+                // Only JRockit 1.4 can have GC logs with verbose timestamp precedig "[memory ]"
+                //[Wed Nov 16 15:19:38 2005][29147][memory ] 30.485-30.596: GC 23386K->8321K (32768K), 29.223 ms
                 if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.4.2");
                 return new DataReaderJRockit1_4_2(in);
+            } else {
+                // may include some non-verbose JRockit 1.4 logs but should parse correctly as 1.5
+                if (LOG.isLoggable(Level.INFO)) LOG.info("File format: JRockit 1.5");
+                return new DataReaderJRockit1_5_0(in);
             }
         } else if (s.indexOf("since last AF or CON>") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM 1.4.2");
