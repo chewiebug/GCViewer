@@ -29,14 +29,17 @@ public class TotalHeapRenderer extends PolygonChartRenderer {
     public Polygon computePolygon(ModelChart modelChart, GCModel model) {
         ScaledPolygon polygon = createMemoryScaledPolygon();
         polygon.addPoint(0.0d, 0.0d);
+        int lastTotal = 0;
         for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
             GCEvent event = i.next();
             if (event.getTotal() > 0) {
             	// there are events that don't have a heap size associated (like "GC remark" of G1)
             	// -> skip them
             	polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getTotal());
+            	lastTotal = event.getTotal();
             }
         }
+        polygon.addPointNotOptimised(model.getRunningTime(), lastTotal);
         polygon.addPointNotOptimised(model.getRunningTime(), 0.0d);
         return polygon;
     }

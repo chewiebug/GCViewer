@@ -65,7 +65,7 @@ public class GCRectanglesRenderer extends ChartRenderer {
             final int x = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
             final int y = getHeight() - (int) (pause * scaledHeight);
             if (lastX != x || lastY != y || lastWidth != width || lastHeight != height) {
-                if ((x + pause) > leftBoundary && x < rightBoundary) {
+                if ((x + width) > leftBoundary && x < rightBoundary) {
                     // make sure only visible rectangles are drawn
                     if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
                         g2d.setPaint(darker);
