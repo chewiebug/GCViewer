@@ -1,0 +1,100 @@
+[WARN ] Use of -Djrockit.optfile is deprecated and discouraged.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Minimum TLA size is 2048 bytes.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Preferred TLA size is 65536 bytes.
+[memory ][Fri Feb 15 14:02:28 2013][17611] TLA waste limit is 2048 bytes.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Nursery object limit max is 65536 bytes.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Nursery object limit percentage is 1.0%.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Running with 32 bit heap and compressed references.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Java heap regions:
+ [00000000a0000000 - 00000000d0000000] rw-- (pagesize=0x1000)
+ [00000000d0000000 - 0000000100000000] ----
+ 768MB committed, 768MB reserved.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Initial and maximum number of gc threads: 8, of which 8 parallel threads, 4 concurrent threads, and 8 yc threads.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Maximum nursery percentage of free heap is 95%.
+[nursery][Fri Feb 15 14:02:28 2013][17611] Setting keepAreaMarkers[0] to 0xabffffd0.
+[nursery][Fri Feb 15 14:02:28 2013][17611] Setting keepAreaMarkers[1] to 0xb1ffffc0.
+[nursery][Fri Feb 15 14:02:28 2013][17611] Setting keepAreaMarkers[2] to 0xb8000000.
+[nursery][Fri Feb 15 14:02:28 2013][17611] Next keeparea will start at 0xb1ffffc0 and end at 0xb8000000.
+[nursery][Fri Feb 15 14:02:28 2013][17611] Nursery size increased from 0KB to 393216KB. Nursery list consists of 1 parts.
+[nursery][Fri Feb 15 14:02:28 2013][17611] Average part size: 393216KB. Contraharmonic mean (CHM): 393216KB. CHM per part: 393216KB. Normalized CHM: 1.000000.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Prefetch distance in workpacket: 4. Packet size: 493 objects.
+[memory ][Fri Feb 15 14:02:28 2013][17611] GC mode: Garbage collection optimized for throughput, strategy: Generational Parallel Mark & Sweep.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Heap size: 786432KB, maximal heap size: 1572864KB, nursery size: 393216KB.
+[memory ][Fri Feb 15 14:02:28 2013][17611] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[memory ][Fri Feb 15 14:02:28 2013][17611] <start>  - start time of collection (seconds since jvm start).
+[memory ][Fri Feb 15 14:02:28 2013][17611] <type>   - OC (old collection) or YC (young collection).
+[memory ][Fri Feb 15 14:02:28 2013][17611] <end>    - end time of collection (seconds since jvm start).
+[memory ][Fri Feb 15 14:02:28 2013][17611] <before> - memory used by objects before collection (KB).
+[memory ][Fri Feb 15 14:02:28 2013][17611] <after>  - memory used by objects after collection (KB).
+[memory ][Fri Feb 15 14:02:28 2013][17611] <heap>   - size of heap after collection (KB).
+[memory ][Fri Feb 15 14:02:28 2013][17611] <time>   - total time of collection (milliseconds).
+[memory ][Fri Feb 15 14:02:28 2013][17611] <pause>  - total sum of pauses during collection (milliseconds).
+[memory ][Fri Feb 15 14:02:28 2013][17611]            Run with -Xverbose:gcpause to see individual phases.
+[memory ][Fri Feb 15 14:02:28 2013][17611] Using prefetch linesize: 64 bytes chunks: 512 bytes pf_dist: 256 bytes.
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] GC reason: Allocation request failed.
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] 124.644: YC started.
+[alloc  ][Fri Feb 15 14:04:33 2013][17611] [YC#1] Pending requests at 'Before YC' - Total: 1, TLAs: 1 (approx 65536 bytes), objects: 0 (0 bytes). Max age: 0.
+[nursery][Fri Feb 15 14:04:33 2013][17611] [YC#1] Young collection 1 started. This YC is running while the OC is in phase: not running.
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] SemiRef phase WeakJNIHandles run in single threaded mode.
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] SemiRef phase ClassConstraints run in single threaded mode.
+[nursery][Fri Feb 15 14:04:33 2013][17611] [YC#1] Next keeparea will start at 0xabffffd0 and end at 0xb1ffffc0.
+[alloc  ][Fri Feb 15 14:04:33 2013][17611] [YC#1] Satisfied 0 object and 1 tla allocations. Pending requests went from 1 to 0.
+[alloc  ][Fri Feb 15 14:04:33 2013][17611] [YC#1] Pending requests at 'After YC' - Total: 0, TLAs: 0 (approx 0 bytes), objects: 0 (0 bytes). Max age: 0.
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] YC promoted 557804 objects (28103KB).
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] Page faults before YC: 1, page faults after YC: 1, pages in heap: 196608.
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] Nursery size after YC: 393216KB. (Free: 294910KB Parts: 1)
+[memory ][Fri Feb 15 14:04:33 2013][17611] [YC#1] 124.644-124.700: YC 453996KB->188846KB (786432KB), 0.056 s, sum of pauses 55.369 ms, longest pause 55.369 ms.
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] GC reason: Allocation request failed.
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] 133.786: YC started.
+[alloc  ][Fri Feb 15 14:04:42 2013][17611] [YC#2] Pending requests at 'Before YC' - Total: 1, TLAs: 1 (approx 65536 bytes), objects: 0 (0 bytes). Max age: 0.
+[nursery][Fri Feb 15 14:04:42 2013][17611] [YC#2] Young collection 2 started. This YC is running while the OC is in phase: not running.
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] SemiRef phase WeakJNIHandles run in single threaded mode.
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] SemiRef phase ClassConstraints run in single threaded mode.
+[nursery][Fri Feb 15 14:04:42 2013][17611] [YC#2] Next keeparea will start at 0xb1ffffc0 and end at 0xb8000000.
+[alloc  ][Fri Feb 15 14:04:42 2013][17611] [YC#2] Satisfied 0 object and 1 tla allocations. Pending requests went from 1 to 0.
+[alloc  ][Fri Feb 15 14:04:42 2013][17611] [YC#2] Pending requests at 'After YC' - Total: 0, TLAs: 0 (approx 0 bytes), objects: 0 (0 bytes). Max age: 0.
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] YC promoted 393902 objects (21407KB).
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] Page faults before YC: 1, page faults after YC: 1, pages in heap: 196608.
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] Nursery size after YC: 393216KB. (Free: 294910KB Parts: 1)
+[memory ][Fri Feb 15 14:04:42 2013][17611] [YC#2] 133.786-133.931: YC 500177KB->227784KB (786432KB), 0.145 s, sum of pauses 145.359 ms, longest pause 145.359 ms.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] GC reason: Allocation request failed (31576 bytes).
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] 148.254: OC started.
+[alloc  ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Pending requests at 'Before OC' - Total: 1, TLAs: 0 (approx 0 bytes), objects: 1 (31576 bytes). Max age: 0.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compaction reason: Normal.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compacting 256 of 4096 parts at index 3840. Compaction type is external. Exceptional: No.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compaction area start: 0xcd000000, end: 0xd0000000. Timeout: 100.000 ms.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compactset limit (per thread): 37487 (dynamic), not using matrixes.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Starting parallel marking phase.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] SemiRef phase WeakJNIHandles run in single threaded mode.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] SemiRef phase ClassConstraints run in single threaded mode.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] SemiRef phase FinalMemleak run in single threaded mode.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Adding 76 temporary work packets to permanent pool, now 140 packets.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Total mark time: 51.599 ms.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Ending marking phase.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Starting parallel sweeping phase.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Setting keepAreaMarkers[0] to 0xb7fb6a58.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Setting keepAreaMarkers[1] to 0xc09deb38.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Setting keepAreaMarkers[2] to 0xc8a14ae0.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Next keeparea will start at 0xc09deb38 and end at 0xc8a14ae0.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Nursery size increased from 0KB to 393201KB. Nursery list consists of 5057 parts.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Average part size: 78KB. Contraharmonic mean (CHM): 25721KB. CHM per part: 5KB. Normalized CHM: 0.065414.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Total sweep time: 33.788 ms.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Ending sweeping phase.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Nursery size remains at 393201KB. Nursery list consists of 5057 parts.
+[nursery][Fri Feb 15 14:04:56 2013][17611] [OC#1] Average part size: 78KB. Contraharmonic mean (CHM): 25721KB. CHM per part: 5KB. Normalized CHM: 0.065414.
+[alloc  ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Satisfied 1 object and 0 tla allocations. Pending requests went from 1 to 0.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Average compact time ratio (move phase/total time): 0.978268.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Too few references, doubling compact ratio.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Adjusting compactset limit to 77160.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Pause per 1000 refs, current: 0.648000, average: 0.648000. Target pause: 50.000.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compaction time, total: 29.956 ms (target 100.000 ms).
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compaction moved 1924 objects and left 0 objects. Total moved size 46975792B.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compaction added 50331648B of free memory in 1 parts.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compaction time, move phase: 29.305 ms (target 50.000 ms).
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Compaction time, update phase: 0.648 ms (target 50.000 ms).
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Found 1924 references. Internal: 0  External: 1924.
+[compact][Fri Feb 15 14:04:56 2013][17611] [OC#1] Updated 1924 references. Internal: 0  External: 1924.
+[alloc  ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Pending requests at 'After OC' - Total: 0, TLAs: 0 (approx 0 bytes), objects: 0 (0 bytes). Max age: 0.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Page faults before OC: 1, page faults after OC: 1, pages in heap: 196608.
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] Nursery size after OC: 393201KB. (Free: 393120KB Parts: 5057)
+[memory ][Fri Feb 15 14:04:56 2013][17611] [OC#1] 148.254-148.352: OC 691255KB->279876KB (786432KB), 0.098 s, sum of pauses 86.713 ms, longest pause 86.713 ms.

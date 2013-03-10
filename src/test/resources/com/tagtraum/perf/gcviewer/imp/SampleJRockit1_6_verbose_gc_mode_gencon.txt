@@ -1,0 +1,167 @@
+[INFO ][memory ] Running with 32 bit heap and compressed references.
+[INFO ][memory ] GC mode: Garbage collection optimized for short pausetimes, strategy: Generational Concurrent Mark & Sweep.
+[INFO ][memory ] Heap size: 524288KB, maximal heap size: 524288KB, nursery size: 262144KB.
+[INFO ][memory ] <start>-<end>: <type> <before>KB-><after>KB (<heap>KB), <time> ms, sum of pauses <pause> ms.
+[INFO ][memory ] <start>  - start time of collection (seconds since jvm start).
+[INFO ][memory ] <type>   - OC (old collection) or YC (young collection).
+[INFO ][memory ] <end>    - end time of collection (seconds since jvm start).
+[INFO ][memory ] <before> - memory used by objects before collection (KB).
+[INFO ][memory ] <after>  - memory used by objects after collection (KB).
+[INFO ][memory ] <heap>   - size of heap after collection (KB).
+[INFO ][memory ] <time>   - total time of collection (milliseconds).
+[INFO ][memory ] <pause>  - total sum of pauses during collection (milliseconds).
+[INFO ][memory ]            Run with -Xverbose:gcpause to see individual phases.
+[INFO ][memory ] Running on hypervisor Unknown (but probably running on a hypervisor)
+[INFO ][memory ] [OC#1] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#1] [---]   133.744 ms (31.727000-31.861000)  OC
+[INFO ][gcpause] [OC#1] [con]     0.005 ms (31.727000-31.727000)  OC:PreGC
+[INFO ][gcpause] [OC#1] [pau]    87.771 ms (31.727000-31.815000)  OC:Initial
+[INFO ][gcpause] [OC#1] [con]    13.299 ms (31.815000-31.828000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#1] [pau]     8.750 ms (31.828000-31.837000)  OC:Main
+[INFO ][gcpause] [OC#1] [con]    23.733 ms (31.837000-31.861000)  OC:PostGC
+[INFO ][memory ] [OC#1] 31.727-31.861: OC 270886KB->194351KB (524288KB), 0.134 s, sum of pauses 96.521 ms, longest pause 87.771 ms.
+[INFO ][memory ] [OC#2] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#2] [---]   223.265 ms (31.861000-32.084000)  OC
+[INFO ][gcpause] [OC#2] [con]     0.001 ms (31.861000-31.861000)  OC:PreGC
+[INFO ][gcpause] [OC#2] [pau]    10.377 ms (31.862000-31.872000)  OC:Initial
+[INFO ][gcpause] [OC#2] [con]   103.553 ms (31.872000-31.976000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#2] [pau]    79.850 ms (31.976000-32.056000)  OC:Main
+[INFO ][gcpause] [OC#2] [con]     0.955 ms (32.056000-32.057000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#2] [pau]     0.010 ms (32.057000-32.057000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#2] [con]     0.007 ms (32.057000-32.057000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#2] [pau]     0.171 ms (32.057000-32.057000)  OC:Cleanup
+[INFO ][gcpause] [OC#2] [con]    27.221 ms (32.057000-32.084000)  OC:PostGC
+[INFO ][memory ] [OC#2] 31.861-32.084: OC 194353KB->180730KB (524288KB), 0.223 s, sum of pauses 90.407 ms, longest pause 79.850 ms.
+[INFO ][memory ] [OC#3] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#3] [---]   150.334 ms (32.085000-32.235000)  OC
+[INFO ][gcpause] [OC#3] [con]     0.001 ms (32.085000-32.085000)  OC:PreGC
+[INFO ][gcpause] [OC#3] [pau]    10.812 ms (32.085000-32.096000)  OC:Initial
+[INFO ][gcpause] [OC#3] [con]    10.489 ms (32.096000-32.106000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#3] [pau]   125.003 ms (32.106000-32.231000)  OC:Main
+[INFO ][gcpause] [OC#3] [con]     3.755 ms (32.231000-32.235000)  OC:PostGC
+[INFO ][memory ] [OC#3] 32.085-32.235: OC 180730KB->126312KB (524288KB), 0.150 s, sum of pauses 135.815 ms, longest pause 125.003 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][memory ] [OC#4] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#4] [---]    83.943 ms (56.013000-56.097000)  OC
+[INFO ][gcpause] [OC#4] [con]     0.003 ms (56.013000-56.013000)  OC:PreGC
+[INFO ][gcpause] [OC#4] [pau]     5.384 ms (56.013000-56.019000)  OC:Initial
+[INFO ][gcpause] [OC#4] [con]    22.567 ms (56.019000-56.041000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#4] [pau]    47.782 ms (56.041000-56.089000)  OC:Main
+[INFO ][gcpause] [OC#4] [con]     0.775 ms (56.089000-56.090000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#4] [pau]     0.015 ms (56.090000-56.090000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#4] [con]     0.769 ms (56.090000-56.091000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#4] [pau]     0.056 ms (56.091000-56.091000)  OC:Cleanup
+[INFO ][gcpause] [OC#4] [con]     6.360 ms (56.091000-56.097000)  OC:PostGC
+[INFO ][memory ] [OC#4] 56.013-56.097: OC 250052KB->126382KB (524288KB), 0.084 s, sum of pauses 53.237 ms, longest pause 47.782 ms.
+[INFO ][memory ] [OC#5] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#5] [---]    37.196 ms (56.098000-56.135000)  OC
+[INFO ][gcpause] [OC#5] [con]     0.001 ms (56.098000-56.098000)  OC:PreGC
+[INFO ][gcpause] [OC#5] [pau]     8.927 ms (56.098000-56.107000)  OC:Initial
+[INFO ][gcpause] [OC#5] [con]    13.647 ms (56.107000-56.121000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#5] [pau]     7.702 ms (56.121000-56.129000)  OC:Main
+[INFO ][gcpause] [OC#5] [con]     6.517 ms (56.129000-56.135000)  OC:PostGC
+[INFO ][memory ] [OC#5] 56.098-56.135: OC 126382KB->126348KB (524288KB), 0.037 s, sum of pauses 16.629 ms, longest pause 8.927 ms.
+[INFO ][memory ] [OC#6] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#6] [---]   101.356 ms (56.136000-56.237000)  OC
+[INFO ][gcpause] [OC#6] [con]     0.001 ms (56.136000-56.136000)  OC:PreGC
+[INFO ][gcpause] [OC#6] [pau]     5.373 ms (56.136000-56.141000)  OC:Initial
+[INFO ][gcpause] [OC#6] [con]    12.646 ms (56.141000-56.154000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#6] [pau]    79.070 ms (56.154000-56.233000)  OC:Main
+[INFO ][gcpause] [OC#6] [con]     0.145 ms (56.233000-56.233000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#6] [pau]     0.010 ms (56.233000-56.233000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#6] [con]     0.005 ms (56.233000-56.233000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#6] [pau]     0.046 ms (56.233000-56.233000)  OC:Cleanup
+[INFO ][gcpause] [OC#6] [con]     3.924 ms (56.233000-56.237000)  OC:PostGC
+[INFO ][memory ] [OC#6] 56.136-56.237: OC 126348KB->126344KB (524288KB), 0.101 s, sum of pauses 84.498 ms, longest pause 79.070 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][memory ] [OC#7] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#7] [---]    34.976 ms (70.168000-70.203000)  OC
+[INFO ][gcpause] [OC#7] [con]     0.003 ms (70.168000-70.168000)  OC:PreGC
+[INFO ][gcpause] [OC#7] [pau]     4.405 ms (70.168000-70.173000)  OC:Initial
+[INFO ][gcpause] [OC#7] [con]     9.759 ms (70.173000-70.183000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#7] [pau]    13.869 ms (70.183000-70.196000)  OC:Main
+[INFO ][gcpause] [OC#7] [con]     6.798 ms (70.196000-70.203000)  OC:PostGC
+[INFO ][memory ] [OC#7] 70.168-70.203: OC 248686KB->126382KB (524288KB), 0.035 s, sum of pauses 18.273 ms, longest pause 13.869 ms.
+[INFO ][memory ] [OC#8] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#8] [---]    33.794 ms (70.204000-70.238000)  OC
+[INFO ][gcpause] [OC#8] [con]     0.002 ms (70.204000-70.204000)  OC:PreGC
+[INFO ][gcpause] [OC#8] [pau]     5.225 ms (70.204000-70.209000)  OC:Initial
+[INFO ][gcpause] [OC#8] [con]    12.074 ms (70.209000-70.221000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#8] [pau]     7.896 ms (70.222000-70.230000)  OC:Main
+[INFO ][gcpause] [OC#8] [con]     0.160 ms (70.230000-70.230000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#8] [pau]     0.010 ms (70.230000-70.230000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#8] [con]     0.011 ms (70.230000-70.230000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#8] [pau]     0.034 ms (70.230000-70.230000)  OC:Cleanup
+[INFO ][gcpause] [OC#8] [con]     7.484 ms (70.230000-70.238000)  OC:PostGC
+[INFO ][memory ] [OC#8] 70.204-70.238: OC 126382KB->126351KB (524288KB), 0.034 s, sum of pauses 13.166 ms, longest pause 7.896 ms.
+[INFO ][memory ] [OC#9] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#9] [---]    76.818 ms (70.238000-70.315000)  OC
+[INFO ][gcpause] [OC#9] [con]     0.001 ms (70.238000-70.238000)  OC:PreGC
+[INFO ][gcpause] [OC#9] [pau]     5.998 ms (70.238000-70.244000)  OC:Initial
+[INFO ][gcpause] [OC#9] [con]    13.708 ms (70.244000-70.258000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#9] [pau]    53.356 ms (70.258000-70.311000)  OC:Main
+[INFO ][gcpause] [OC#9] [con]     3.671 ms (70.311000-70.315000)  OC:PostGC
+[INFO ][memory ] [OC#9] 70.238-70.315: OC 126351KB->126347KB (524288KB), 0.077 s, sum of pauses 59.354 ms, longest pause 53.356 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][memory ] [OC#10] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#10] [---]    38.812 ms (83.750000-83.788000)  OC
+[INFO ][gcpause] [OC#10] [con]     0.003 ms (83.750000-83.750000)  OC:PreGC
+[INFO ][gcpause] [OC#10] [pau]     4.111 ms (83.750000-83.754000)  OC:Initial
+[INFO ][gcpause] [OC#10] [con]    10.778 ms (83.754000-83.765000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#10] [pau]     3.808 ms (83.765000-83.768000)  OC:Main
+[INFO ][gcpause] [OC#10] [con]    14.187 ms (83.768000-83.783000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#10] [pau]     0.034 ms (83.783000-83.783000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#10] [con]     1.434 ms (83.783000-83.784000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#10] [pau]     0.087 ms (83.784000-83.784000)  OC:Cleanup
+[INFO ][gcpause] [OC#10] [con]     4.158 ms (83.784000-83.788000)  OC:PostGC
+[INFO ][memory ] [OC#10] 83.750-83.788: OC 248831KB->126382KB (524288KB), 0.039 s, sum of pauses 8.041 ms, longest pause 4.111 ms.
+[INFO ][memory ] [OC#11] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#11] [---]    30.816 ms (83.789000-83.820000)  OC
+[INFO ][gcpause] [OC#11] [con]     0.002 ms (83.789000-83.789000)  OC:PreGC
+[INFO ][gcpause] [OC#11] [pau]     4.244 ms (83.790000-83.794000)  OC:Initial
+[INFO ][gcpause] [OC#11] [con]    12.449 ms (83.794000-83.806000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#11] [pau]     6.637 ms (83.806000-83.813000)  OC:Main
+[INFO ][gcpause] [OC#11] [con]     7.285 ms (83.813000-83.820000)  OC:PostGC
+[INFO ][memory ] [OC#11] 83.789-83.820: OC 126382KB->126352KB (524288KB), 0.031 s, sum of pauses 10.882 ms, longest pause 6.637 ms.
+[INFO ][memory ] [OC#12] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#12] [---]   104.069 ms (83.821000-83.925000)  OC
+[INFO ][gcpause] [OC#12] [con]     0.001 ms (83.821000-83.821000)  OC:PreGC
+[INFO ][gcpause] [OC#12] [pau]     5.498 ms (83.821000-83.826000)  OC:Initial
+[INFO ][gcpause] [OC#12] [con]    12.687 ms (83.826000-83.839000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#12] [pau]    82.237 ms (83.839000-83.921000)  OC:Main
+[INFO ][gcpause] [OC#12] [con]     0.004 ms (83.921000-83.921000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#12] [pau]     0.008 ms (83.921000-83.921000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#12] [con]     0.005 ms (83.921000-83.921000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#12] [pau]     0.033 ms (83.921000-83.921000)  OC:Cleanup
+[INFO ][gcpause] [OC#12] [con]     3.440 ms (83.921000-83.925000)  OC:PostGC
+[INFO ][memory ] [OC#12] 83.821-83.925: OC 126352KB->126346KB (524288KB), 0.104 s, sum of pauses 87.776 ms, longest pause 82.237 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544
+[INFO ][memory ] [OC#13] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#13] [---]    25.653 ms (97.015000-97.040000)  OC
+[INFO ][gcpause] [OC#13] [con]     0.004 ms (97.015000-97.015000)  OC:PreGC
+[INFO ][gcpause] [OC#13] [pau]     3.764 ms (97.015000-97.018000)  OC:Initial
+[INFO ][gcpause] [OC#13] [con]     9.910 ms (97.018000-97.028000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#13] [pau]     5.643 ms (97.028000-97.034000)  OC:Main
+[INFO ][gcpause] [OC#13] [con]     6.210 ms (97.034000-97.040000)  OC:PostGC
+[INFO ][memory ] [OC#13] 97.015-97.040: OC 248670KB->126382KB (524288KB), 0.026 s, sum of pauses 9.407 ms, longest pause 5.643 ms.
+[INFO ][memory ] [OC#14] Changing GC strategy from: genconpar to: genconcon, reason: Return to basic strategy.
+[INFO ][gcpause] [OC#14] [---]    39.885 ms (97.041000-97.081000)  OC
+[INFO ][gcpause] [OC#14] [con]     0.002 ms (97.041000-97.041000)  OC:PreGC
+[INFO ][gcpause] [OC#14] [pau]     9.952 ms (97.043000-97.053000)  OC:Initial
+[INFO ][gcpause] [OC#14] [con]    11.252 ms (97.053000-97.064000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#14] [pau]     8.104 ms (97.065000-97.073000)  OC:Main
+[INFO ][gcpause] [OC#14] [con]     0.143 ms (97.073000-97.073000)  OC:ConcurrentSweep1
+[INFO ][gcpause] [OC#14] [pau]     0.012 ms (97.073000-97.073000)  OC:SweepSwitch
+[INFO ][gcpause] [OC#14] [con]     0.012 ms (97.073000-97.073000)  OC:ConcurrentSweep2
+[INFO ][gcpause] [OC#14] [pau]     0.034 ms (97.073000-97.073000)  OC:Cleanup
+[INFO ][gcpause] [OC#14] [con]     8.019 ms (97.073000-97.081000)  OC:PostGC
+[INFO ][memory ] [OC#14] 97.041-97.081: OC 126382KB->126350KB (524288KB), 0.040 s, sum of pauses 18.102 ms, longest pause 9.952 ms.
+[INFO ][memory ] [OC#15] Changing GC strategy from: genconcon to: genconpar, reason: Emergency parallel sweep requested.
+[INFO ][gcpause] [OC#15] [---]    48.798 ms (97.082000-97.131000)  OC
+[INFO ][gcpause] [OC#15] [con]     0.002 ms (97.082000-97.082000)  OC:PreGC
+[INFO ][gcpause] [OC#15] [pau]     6.256 ms (97.082000-97.088000)  OC:Initial
+[INFO ][gcpause] [OC#15] [con]    12.350 ms (97.088000-97.101000)  OC:ConcurrentMark
+[INFO ][gcpause] [OC#15] [pau]    26.444 ms (97.101000-97.127000)  OC:Main
+[INFO ][gcpause] [OC#15] [con]     3.625 ms (97.127000-97.131000)  OC:PostGC
+[INFO ][memory ] [OC#15] 97.082-97.131: OC 126350KB->126347KB (524288KB), 0.049 s, sum of pauses 32.700 ms, longest pause 26.444 ms.
+[ERROR][memory ] Throwing OutOfMemory: allocLargeObjectOrArray: [C, size 249424544

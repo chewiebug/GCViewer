@@ -1,0 +1,47 @@
+[memory ][Tue Feb 19 12:02:58 2013][02844] GC mode: Static, strategy: Generational Concurrent Mark & Sweep
+[memory ][Tue Feb 19 12:02:58 2013][02844] heap size: 3145728K, maximal heap size: 3145728K, nursery size: 81920K
+[memory ][Tue Feb 19 12:02:58 2013][02844] <s>-<end>: GC <before>K-><after>K (<heap>K), <pause> ms
+[memory ][Tue Feb 19 12:02:58 2013][02844] <s/start> - start time of collection (seconds since jvm start)
+[memory ][Tue Feb 19 12:02:58 2013][02844] <end>     - end time of collection (seconds since jvm start)
+[memory ][Tue Feb 19 12:02:58 2013][02844] <before>  - memory used by objects before collection (KB)
+[memory ][Tue Feb 19 12:02:58 2013][02844] <after>   - memory used by objects after collection (KB)
+[memory ][Tue Feb 19 12:02:58 2013][02844] <heap>    - size of heap after collection (KB)
+[memory ][Tue Feb 19 12:02:58 2013][02844] <pause>   - total sum of pauses during collection (milliseconds)
+[memory ][Tue Feb 19 12:02:58 2013][02844]             run with -Xverbose:gcpause to see individual pauses
+[gcpause][Tue Feb 19 12:03:04 2013][02844] old collection phase 1 pause time: 16.430321 ms, (start time: 6.038 s)
+[memory ][Tue Feb 19 12:03:04 2013][02844] Changing GC strategy to Generational Concurrent Mark, Parallel Sweep
+[gcpause][Tue Feb 19 12:03:04 2013][02844] old collection phase 4-0 pause time: 102.169581 ms, (start time: 6.105 s)
+[gcpause][Tue Feb 19 12:03:04 2013][02844] (pause includes compaction: 27.151 ms (external), update ref: 9.606 ms)
+[memory ][Tue Feb 19 12:03:04 2013][02844] 6.038-6.207: GC 3089328K->352551K (3145728K), sum of pauses 118.600 ms
+[gcpause][Tue Feb 19 12:03:05 2013][02844] old collection phase 1 pause time: 14.743765 ms, (start time: 7.789 s)
+[gcpause][Tue Feb 19 12:03:05 2013][02844] Threads waited for memory 96.046 ms starting at 7.828 s
+[gcpause][Tue Feb 19 12:03:05 2013][02844] old collection phase 4-0 pause time: 57.628792 ms, (start time: 7.866 s)
+[gcpause][Tue Feb 19 12:03:05 2013][02844] (pause includes compaction: 27.523 ms (internal), update ref: 10.323 ms)
+[memory ][Tue Feb 19 12:03:05 2013][02844] 7.789-7.924: GC 3022536K->785264K (3145728K), sum of pauses 72.373 ms
+[gcpause][Tue Feb 19 12:03:07 2013][02844] old collection phase 1 pause time: 12.655843 ms, (start time: 8.936 s)
+[gcpause][Tue Feb 19 12:03:07 2013][02844] old collection phase 4-0 pause time: 50.100880 ms, (start time: 8.992 s)
+[gcpause][Tue Feb 19 12:03:07 2013][02844] (pause includes compaction: 18.859 ms (external), update ref: 3.804 ms)
+[memory ][Tue Feb 19 12:03:07 2013][02844] 8.936-9.042: GC 3049431K->700378K (3145728K), sum of pauses 62.757 ms
+[gcpause][Tue Feb 19 12:03:08 2013][02844] old collection phase 1 pause time: 13.212212 ms, (start time: 9.953 s)
+[gcpause][Tue Feb 19 12:03:08 2013][02844] old collection phase 4-0 pause time: 49.560936 ms, (start time: 10.024 s)
+[gcpause][Tue Feb 19 12:03:08 2013][02844] (pause includes compaction: 36.449 ms (internal), update ref: 2.645 ms)
+[memory ][Tue Feb 19 12:03:08 2013][02844] 9.953-10.074: GC 2936809K->1072609K (3145728K), sum of pauses 62.773 ms
+[gcpause][Tue Feb 19 12:03:08 2013][02844] old collection phase 1 pause time: 15.456163 ms, (start time: 10.786 s)
+[gcpause][Tue Feb 19 12:03:08 2013][02844] old collection phase 4-0 pause time: 69.225277 ms, (start time: 10.872 s)
+[gcpause][Tue Feb 19 12:03:08 2013][02844] (pause includes compaction: 23.874 ms (external), update ref: 4.904 ms)
+[memory ][Tue Feb 19 12:03:08 2013][02844] 10.786-10.942: GC 3076528K->1524238K (3145728K), sum of pauses 84.681 ms
+[gcpause][Tue Feb 19 12:03:09 2013][02844] old collection phase 1 pause time: 20.910525 ms, (start time: 11.402 s)
+[gcpause][Tue Feb 19 12:03:09 2013][02844] Threads waited for memory 99.058 ms starting at 11.462 s
+[gcpause][Tue Feb 19 12:03:09 2013][02844] old collection phase 4-0 pause time: 52.696411 ms, (start time: 11.509 s)
+[gcpause][Tue Feb 19 12:03:09 2013][02844] (pause includes compaction: 43.615 ms (internal), update ref: 4.371 ms)
+[memory ][Tue Feb 19 12:03:09 2013][02844] 11.402-11.561: GC 3045398K->1789007K (3145728K), sum of pauses 73.607 ms
+[gcpause][Tue Feb 19 12:03:10 2013][02844] old collection phase 1 pause time: 19.244499 ms, (start time: 11.941 s)
+[gcpause][Tue Feb 19 12:03:10 2013][02844] Threads waited for memory 198.346 ms starting at 11.933 s
+[gcpause][Tue Feb 19 12:03:10 2013][02844] old collection phase 4-0 pause time: 74.412746 ms, (start time: 12.057 s)
+[gcpause][Tue Feb 19 12:03:10 2013][02844] (pause includes compaction: 35.758 ms (external), update ref: 6.904 ms)
+[memory ][Tue Feb 19 12:03:10 2013][02844] 11.941-12.131: GC 3071728K->1790920K (3145728K), sum of pauses 93.657 ms
+[gcpause][Tue Feb 19 12:03:10 2013][02844] old collection phase 1 pause time: 18.762039 ms, (start time: 12.442 s)
+[gcpause][Tue Feb 19 12:03:10 2013][02844] Threads waited for memory 87.379 ms starting at 12.507 s
+[gcpause][Tue Feb 19 12:03:10 2013][02844] old collection phase 4-0 pause time: 60.339292 ms, (start time: 12.535 s)
+[gcpause][Tue Feb 19 12:03:10 2013][02844] (pause includes compaction: 46.842 ms (internal), update ref: 3.092 ms)
+[memory ][Tue Feb 19 12:03:10 2013][02844] 12.442-12.595: GC 3001686K->1860073K (3145728K), sum of pauses 79.101 ms

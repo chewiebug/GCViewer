@@ -1,0 +1,62 @@
+[memory ][Thu Feb 21 15:06:32 2013][11844] GC mode: Garbage collection optimized for short pausetimes, initial strategy: Concurrent Mark & Sweep
+[memory ][Thu Feb 21 15:06:32 2013][11844] heap size: 3145728K, maximal heap size: 3145728K
+[memory ][Thu Feb 21 15:06:32 2013][11844] <s>-<end>: GC <before>K-><after>K (<heap>K), <pause> ms
+[memory ][Thu Feb 21 15:06:32 2013][11844] <s/start> - start time of collection (seconds since jvm start)
+[memory ][Thu Feb 21 15:06:32 2013][11844] <end>     - end time of collection (seconds since jvm start)
+[memory ][Thu Feb 21 15:06:32 2013][11844] <before>  - memory used by objects before collection (KB)
+[memory ][Thu Feb 21 15:06:32 2013][11844] <after>   - memory used by objects after collection (KB)
+[memory ][Thu Feb 21 15:06:32 2013][11844] <heap>    - size of heap after collection (KB)
+[memory ][Thu Feb 21 15:06:32 2013][11844] <pause>   - total sum of pauses during collection (milliseconds)
+[memory ][Thu Feb 21 15:06:32 2013][11844]             run with -Xverbose:gcpause to see individual pauses
+[gcpause][Thu Feb 21 15:06:38 2013][11844] old collection phase 1 pause time: 0.550209 ms, (start time: 6.290 s)
+[memory ][Thu Feb 21 15:06:38 2013][11844] Changing GC strategy to Concurrent Mark, Parallel Sweep
+[gcpause][Thu Feb 21 15:06:38 2013][11844] old collection phase 4-0 pause time: 58.534174 ms, (start time: 6.365 s)
+[gcpause][Thu Feb 21 15:06:38 2013][11844] (pause includes compaction: 14.312 ms (external), update ref: 0.371 ms)
+[memory ][Thu Feb 21 15:06:38 2013][11844] 6.290-6.424: GC 3128161K->296406K (3145728K), sum of pauses 59.084 ms
+[gcpause][Thu Feb 21 15:06:40 2013][11844] old collection phase 1 pause time: 0.359792 ms, (start time: 8.031 s)
+[memory ][Thu Feb 21 15:06:40 2013][11844] Changing GC strategy to Generational Concurrent Mark, Parallel Sweep
+[gcpause][Thu Feb 21 15:06:40 2013][11844] old collection phase 4-0 pause time: 22.257819 ms, (start time: 8.060 s)
+[gcpause][Thu Feb 21 15:06:40 2013][11844] (pause includes compaction: 4.604 ms (internal), update ref: 1.104 ms)
+[memory ][Thu Feb 21 15:06:40 2013][11844] 8.031-8.082: GC 3094229K->496949K (3145728K), sum of pauses 22.618 ms
+[gcpause][Thu Feb 21 15:06:41 2013][11844] old collection phase 1 pause time: 13.914858 ms, (start time: 9.193 s)
+[gcpause][Thu Feb 21 15:06:41 2013][11844] old collection phase 4-0 pause time: 26.704661 ms, (start time: 9.251 s)
+[gcpause][Thu Feb 21 15:06:41 2013][11844] (pause includes compaction: 8.538 ms (external), update ref: 0.266 ms)
+[memory ][Thu Feb 21 15:06:41 2013][11844] 9.193-9.277: GC 3084089K->803641K (3145728K), sum of pauses 40.620 ms
+[gcpause][Thu Feb 21 15:06:42 2013][11844] old collection phase 1 pause time: 18.304216 ms, (start time: 10.196 s)
+[gcpause][Thu Feb 21 15:06:42 2013][11844] old collection phase 4-0 pause time: 38.376081 ms, (start time: 10.284 s)
+[gcpause][Thu Feb 21 15:06:42 2013][11844] (pause includes compaction: 0.000 ms (no compaction), update ref: 0.000 ms)
+[memory ][Thu Feb 21 15:06:42 2013][11844] 10.196-10.323: GC 3082528K->1318981K (3145728K), sum of pauses 56.680 ms
+[gcpause][Thu Feb 21 15:06:42 2013][11844] old collection phase 1 pause time: 16.174720 ms, (start time: 10.887 s)
+[gcpause][Thu Feb 21 15:06:43 2013][11844] old collection phase 4-0 pause time: 60.300285 ms, (start time: 10.990 s)
+[gcpause][Thu Feb 21 15:06:43 2013][11844] (pause includes compaction: 24.835 ms (external), update ref: 0.793 ms)
+[memory ][Thu Feb 21 15:06:43 2013][11844] 10.887-11.050: GC 3076128K->1710078K (3145728K), sum of pauses 76.475 ms
+[gcpause][Thu Feb 21 15:07:51 2013][11844] old collection phase 1 pause time: 0.303334 ms, (start time: 79.829 s)
+[gcpause][Thu Feb 21 15:07:52 2013][11844] old collection phase 4-0 pause time: 167.863150 ms, (start time: 79.946 s)
+[gcpause][Thu Feb 21 15:07:52 2013][11844] (pause includes compaction: 39.856 ms (internal), update ref: 122.951 ms)
+[memory ][Thu Feb 21 15:07:52 2013][11844] 79.829-80.114: GC 3145696K->3145687K (3145728K), sum of pauses 168.166 ms
+[memory ][Thu Feb 21 15:07:52 2013][11844] Throwing OutOfMemory: allocLargeObjectOrArray - Object size: 10016, Num elements: 10000
+[gcpause][Thu Feb 21 15:07:52 2013][11844] old collection phase 1 pause time: 0.362871 ms, (start time: 80.124 s)
+[memory ][Thu Feb 21 15:07:52 2013][11844] Changing GC strategy to Generational Concurrent Mark, Parallel Sweep
+[gcpause][Thu Feb 21 15:07:52 2013][11844] old collection phase 4-0 pause time: 79.193204 ms, (start time: 80.257 s)
+[gcpause][Thu Feb 21 15:07:52 2013][11844] (pause includes compaction: 71.349 ms (internal), update ref: 1.956 ms)
+[memory ][Thu Feb 21 15:07:52 2013][11844] 80.124-80.337: GC 3145728K->3142189K (3145728K), sum of pauses 79.556 ms
+[gcpause][Thu Feb 21 15:07:52 2013][11844] old collection phase 1 pause time: 1.442760 ms, (start time: 80.365 s)
+[memory ][Thu Feb 21 15:07:52 2013][11844] Changing GC strategy to Concurrent Mark, Parallel Sweep
+[gcpause][Thu Feb 21 15:07:52 2013][11844] Threads waited for memory 429.093 ms starting at 80.338 s
+[gcpause][Thu Feb 21 15:07:52 2013][11844] old collection phase 4-0 pause time: 273.117393 ms, (start time: 80.494 s)
+[gcpause][Thu Feb 21 15:07:52 2013][11844] (pause includes compaction: 262.477 ms (internal), update ref: 7.665 ms)
+[memory ][Thu Feb 21 15:07:52 2013][11844] 80.365-80.767: GC 3142928K->2934259K (3145728K), sum of pauses 274.560 ms
+[memory ][Thu Feb 21 15:07:52 2013][11844] Throwing OutOfMemory: allocLargeObjectOrArray - Object size: 10016, Num elements: 10000
+[gcpause][Thu Feb 21 15:07:52 2013][11844] old collection phase 1 pause time: 0.318731 ms, (start time: 80.791 s)
+[memory ][Thu Feb 21 15:07:52 2013][11844] Changing GC strategy to Generational Concurrent Mark, Parallel Sweep
+[gcpause][Thu Feb 21 15:07:53 2013][11844] old collection phase 4-0 pause time: 122.430324 ms, (start time: 80.905 s)
+[gcpause][Thu Feb 21 15:07:53 2013][11844] (pause includes compaction: 101.619 ms (external), update ref: 1.763 ms)
+[memory ][Thu Feb 21 15:07:53 2013][11844] 80.791-81.028: GC 2992574K->2770081K (3145728K), sum of pauses 122.749 ms
+[memory ][Thu Feb 21 15:07:53 2013][11844] Throwing OutOfMemory: allocLargeObjectOrArray - Object size: 10016, Num elements: 10000
+[memory ][Thu Feb 21 15:07:53 2013][11844] Throwing OutOfMemory: allocLargeObjectOrArray - Object size: 10016, Num elements: 10000
+[memory ][Thu Feb 21 15:07:53 2013][11844] Throwing OutOfMemory: allocLargeObjectOrArray - Object size: 10016, Num elements: 10000
+[memory ][Thu Feb 21 15:07:53 2013][11844] Throwing OutOfMemory: allocLargeObjectOrArray - Object size: 10016, Num elements: 10000
+[gcpause][Thu Feb 21 15:07:53 2013][11844] old collection phase 1 pause time: 9.818056 ms, (start time: 81.054 s)
+[gcpause][Thu Feb 21 15:07:53 2013][11844] old collection phase 4-0 pause time: 192.865344 ms, (start time: 81.174 s)
+[gcpause][Thu Feb 21 15:07:53 2013][11844] (pause includes compaction: 177.139 ms (internal), update ref: 4.891 ms)
+[memory ][Thu Feb 21 15:07:53 2013][11844] 81.054-81.367: GC 2880553K->1872236K (3145728K), sum of pauses 202.683 ms

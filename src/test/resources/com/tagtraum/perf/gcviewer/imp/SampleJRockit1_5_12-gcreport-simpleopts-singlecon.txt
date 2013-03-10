@@ -1,0 +1,18 @@
+[INFO ][memory ] GC mode: Static, strategy: Concurrent Mark & Sweep
+[INFO ][memory ] heap size: 3145728K, maximal heap size: 3145728K
+[INFO ][memory ] <s>-<end>: GC <before>K-><after>K (<heap>K), <pause> ms
+[INFO ][memory ] <s/start> - start time of collection (seconds since jvm start)
+[INFO ][memory ] <end>     - end time of collection (seconds since jvm start)
+[INFO ][memory ] <before>  - memory used by objects before collection (KB)
+[INFO ][memory ] <after>   - memory used by objects after collection (KB)
+[INFO ][memory ] <heap>    - size of heap after collection (KB)
+[INFO ][memory ] <pause>   - total sum of pauses during collection (milliseconds)
+[INFO ][memory ]             run with -Xverbose:gcpause to see individual pauses
+[INFO ][memory ] Changing GC strategy to Concurrent Mark, Parallel Sweep
+[INFO ][memory ] 6.771-6.912: GC 3145728K->296406K (3145728K), sum of pauses 66.000 ms
+[INFO ][memory ] Changing GC strategy to Concurrent Mark & Sweep
+[INFO ][memory ] 8.528-8.635: GC 3079893K->629445K (3145728K), sum of pauses 35.480 ms
+[INFO ][memory ] Changing GC strategy to Concurrent Mark, Parallel Sweep
+[INFO ][memory ] 9.766-9.902: GC 3138883K->719368K (3145728K), sum of pauses 43.783 ms
+[INFO ][memory ] 10.831-10.924: GC 3107543K->921523K (3145728K), sum of pauses 44.835 ms
+[INFO ][memory ] 11.641-11.801: GC 2980441K->1115538K (3145728K), sum of pauses 62.045 ms

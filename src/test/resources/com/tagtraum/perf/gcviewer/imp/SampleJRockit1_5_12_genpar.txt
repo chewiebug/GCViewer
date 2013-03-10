@@ -1,0 +1,65 @@
+[memory ][Mon Feb 18 14:29:45 2013][09776] GC mode: Static, strategy: Generational Parallel Mark & Sweep
+[memory ][Mon Feb 18 14:29:45 2013][09776] heap size: 3145728K, maximal heap size: 3145728K, nursery size: 1572864K
+[memory ][Mon Feb 18 14:29:45 2013][09776] <s>-<end>: GC <before>K-><after>K (<heap>K), <pause> ms
+[memory ][Mon Feb 18 14:29:45 2013][09776] <s/start> - start time of collection (seconds since jvm start)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <end>     - end time of collection (seconds since jvm start)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <before>  - memory used by objects before collection (KB)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <after>   - memory used by objects after collection (KB)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <heap>    - size of heap after collection (KB)
+[memory ][Mon Feb 18 14:29:45 2013][09776] <pause>   - total sum of pauses during collection (milliseconds)
+[memory ][Mon Feb 18 14:29:45 2013][09776]             run with -Xverbose:gcpause to see individual pauses
+[gcpause][Mon Feb 18 14:29:50 2013][09776] Threads waited for memory 70.909 ms starting at 4.778 s
+[gcpause][Mon Feb 18 14:29:50 2013][09776] old collection phase 1-0 pause time: 71.126374 ms, (start time: 4.778 s)
+[gcpause][Mon Feb 18 14:29:50 2013][09776] (pause includes compaction: 15.170 ms (external), update ref: 3.230 ms)
+[memory ][Mon Feb 18 14:29:50 2013][09776] 4.778-4.849: GC 1643328K->159027K (3145728K), 71.126 ms
+[gcpause][Mon Feb 18 14:29:52 2013][09776] Threads waited for memory 57.452 ms starting at 6.763 s
+[gcpause][Mon Feb 18 14:29:52 2013][09776] old collection phase 1-0 pause time: 52.403343 ms, (start time: 6.768 s)
+[gcpause][Mon Feb 18 14:29:52 2013][09776] (pause includes compaction: 14.092 ms (internal), update ref: 9.523 ms)
+[memory ][Mon Feb 18 14:29:52 2013][09776] 6.768-6.821: GC 2441728K->349358K (3145728K), 52.403 ms
+[gcpause][Mon Feb 18 14:29:53 2013][09776] Threads waited for memory 34.204 ms starting at 8.442 s
+[gcpause][Mon Feb 18 14:29:53 2013][09776] old collection phase 1-0 pause time: 34.039589 ms, (start time: 8.442 s)
+[gcpause][Mon Feb 18 14:29:53 2013][09776] (pause includes compaction: 14.002 ms (external), update ref: 2.973 ms)
+[memory ][Mon Feb 18 14:29:53 2013][09776] 8.442-8.476: GC 2841728K->608966K (3145728K), 34.040 ms
+[gcpause][Mon Feb 18 14:29:55 2013][09776] Threads waited for memory 29.234 ms starting at 9.938 s
+[gcpause][Mon Feb 18 14:29:55 2013][09776] old collection phase 1-0 pause time: 26.694396 ms, (start time: 9.941 s)
+[gcpause][Mon Feb 18 14:29:55 2013][09776] (pause includes compaction: 10.771 ms (internal), update ref: 2.409 ms)
+[memory ][Mon Feb 18 14:29:55 2013][09776] 9.941-9.968: GC 3027328K->803024K (3145728K), 26.694 ms
+[gcpause][Mon Feb 18 14:29:56 2013][09776] Threads waited for memory 53.025 ms starting at 10.879 s
+[gcpause][Mon Feb 18 14:29:56 2013][09776] old collection phase 1-0 pause time: 51.748942 ms, (start time: 10.881 s)
+[gcpause][Mon Feb 18 14:29:56 2013][09776] (pause includes compaction: 27.387 ms (external), update ref: 3.967 ms)
+[memory ][Mon Feb 18 14:29:56 2013][09776] 10.881-10.932: GC 3120128K->977569K (3145728K), 51.749 ms
+[gcpause][Mon Feb 18 14:29:56 2013][09776] Threads waited for memory 44.773 ms starting at 11.706 s
+[gcpause][Mon Feb 18 14:29:56 2013][09776] old collection phase 1-0 pause time: 36.275842 ms, (start time: 11.715 s)
+[gcpause][Mon Feb 18 14:29:56 2013][09776] (pause includes compaction: 20.644 ms (internal), update ref: 2.105 ms)
+[memory ][Mon Feb 18 14:29:56 2013][09776] 11.715-11.751: GC 3142528K->1152983K (3145728K), 36.276 ms
+[gcpause][Mon Feb 18 14:29:57 2013][09776] Threads waited for memory 75.882 ms starting at 12.402 s
+[gcpause][Mon Feb 18 14:29:57 2013][09776] old collection phase 1-0 pause time: 65.496479 ms, (start time: 12.413 s)
+[gcpause][Mon Feb 18 14:29:57 2013][09776] (pause includes compaction: 30.469 ms (external), update ref: 5.024 ms)
+[memory ][Mon Feb 18 14:29:57 2013][09776] 12.413-12.478: GC 3145728K->1318248K (3145728K), 65.496 ms
+[gcpause][Mon Feb 18 14:29:58 2013][09776] Threads waited for memory 55.878 ms starting at 13.035 s
+[gcpause][Mon Feb 18 14:29:58 2013][09776] old collection phase 1-0 pause time: 42.950724 ms, (start time: 13.048 s)
+[gcpause][Mon Feb 18 14:29:58 2013][09776] (pause includes compaction: 26.418 ms (internal), update ref: 3.031 ms)
+[memory ][Mon Feb 18 14:29:58 2013][09776] 13.048-13.091: GC 3145728K->1467838K (3145728K), 42.951 ms
+[gcpause][Mon Feb 18 14:29:58 2013][09776] Threads waited for memory 89.354 ms starting at 13.580 s
+[gcpause][Mon Feb 18 14:29:58 2013][09776] old collection phase 1-0 pause time: 77.405537 ms, (start time: 13.592 s)
+[gcpause][Mon Feb 18 14:29:58 2013][09776] (pause includes compaction: 36.112 ms (external), update ref: 6.716 ms)
+[memory ][Mon Feb 18 14:29:58 2013][09776] 13.592-13.669: GC 3145728K->1584656K (3145728K), 77.406 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.130: parallel nursery GC 3145728K->3142656K (3145728K), 38.687 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 38.687114 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] Threads waited for memory 106.103 ms starting at 14.129 s
+[gcpause][Mon Feb 18 14:29:59 2013][09776] old collection phase 1-0 pause time: 55.019404 ms, (start time: 14.180 s)
+[gcpause][Mon Feb 18 14:29:59 2013][09776] (pause includes compaction: 33.640 ms (internal), update ref: 3.129 ms)
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.180-14.235: GC 3145728K->1687917K (3145728K), 55.019 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.434: parallel nursery GC 2523288K->2521752K (3145728K), 21.552 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 21.552094 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.456: parallel nursery GC 2523288K->2521752K (3145728K), 3.394 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 3.393643 ms
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.595: parallel nursery GC 3083792K->3082256K (3145728K), 14.096 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] nursery collection pause time: 14.096037 ms
+[gcpause][Mon Feb 18 14:29:59 2013][09776] Threads waited for memory 85.253 ms starting at 14.643 s
+[gcpause][Mon Feb 18 14:29:59 2013][09776] old collection phase 1-0 pause time: 72.952536 ms, (start time: 14.656 s)
+[gcpause][Mon Feb 18 14:29:59 2013][09776] (pause includes compaction: 31.859 ms (external), update ref: 6.390 ms)
+[memory ][Mon Feb 18 14:29:59 2013][09776] 14.656-14.729: GC 3145728K->1800174K (3145728K), 72.953 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 14.926: parallel nursery GC 2649495K->2647957K (3145728K), 23.758 ms
+[gcpause][Mon Feb 18 14:30:00 2013][09776] nursery collection pause time: 23.757551 ms
+[memory ][Mon Feb 18 14:30:00 2013][09776] 14.950: parallel nursery GC 2649495K->2647957K (3145728K), 9.739 ms
