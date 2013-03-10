@@ -30,7 +30,8 @@ import org.junit.runners.Suite;
     TestDataReaderIBMJ9_5_0.class,
     TestDataReaderHPUX1_2.class,
     TestDataReaderJRockit1_4_2.class,
-    TestDataReaderJRockit1_5_0.class
+    TestDataReaderJRockit1_5_0.class,
+    TestDataReaderJRockit1_6_0.class,
 })
 public class TestAll {
 }

@@ -5,12 +5,23 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
+/**
+ * Simple implementation of a handler for java.util.logging to support checks of logging
+ * in unittests.
+ *  
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
+ * <p>created on: 08.03.2013</p>
+ */
 public class TestLogHandler extends Handler {
 
     private List<LogRecord> recordList = new LinkedList<LogRecord>();
 	
 	public int getCount() {
 		return recordList.size();
+	}
+	
+	public List<LogRecord> getLogRecords() {
+	    return recordList;
 	}
 	
 	@Override
