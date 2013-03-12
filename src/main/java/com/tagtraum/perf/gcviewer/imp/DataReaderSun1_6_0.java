@@ -155,6 +155,17 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final int PRINT_CMS_STATISTICS_ITERATIONS_GROUP_AFTER = 2;
     private static final String PRINT_CMS_STATISTICS_SURVIVOR = "  (Survivor:";
     
+    // -XX:+PrintTenuringDistribution in OpenJDK 1.6.0_22 (RHEL 64-bit) 
+    // outputs the following line (looks similar but not identical to what older versions of jdk1.5 wrote):
+    // 3.141: [GCDesired survivor size 134217728 bytes, new threshold 7 (max 2) [PSYoungGen: 188744K->13345K(917504K)] 188744K->13345K(4063232K), 0.0285820 secs] [Times: user=0.06 sys=0.01, real=0.03 secs]
+    // in JDK1.4 / 1.5 it looked like this:
+    // 5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]
+    private static final String PRINT_TENURING_DISTRIBUTION = "Desired survivor size"; 
+    private static Pattern printTenuringDistributionPattern = Pattern.compile("(.*GC)[ ]?Desired.*(?:[0-9]\\)|total)( \\[.*|[ ][0-9]*.*)");
+    private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE = 1;
+    private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER = 2;
+    
+    
     private Date firstDateStamp = null;
 
     public DataReaderSun1_6_0(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
@@ -171,6 +182,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             Matcher adaptiveSizePolicyMatcher = adaptiveSizePolicyPattern.matcher("");
             Matcher printAdaptiveSizePolicyMatcher = printAdaptiveSizePolicyPattern.matcher("");
             Matcher printCmsStatisticsIterationsMatcher = printCmsStatisticsIterationsPattern.matcher("");
+            Matcher printTenuringDistributionMatcher = printTenuringDistributionPattern.matcher("");
             String line;
             // beginningOfLine must be a stack because more than one beginningOfLine might be needed
             Deque<String> beginningOfLine = new LinkedList<String>();
@@ -220,6 +232,16 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         }
                         beginningOfLine.addFirst(currentBeginning + line.substring(0, line.indexOf(PRINT_CMS_STATISTICS_SURVIVOR)));
                         continue;
+                    }
+                    if (line.indexOf(PRINT_TENURING_DISTRIBUTION) > 0) {
+                        printTenuringDistributionMatcher.reset(line);
+                        if (!printTenuringDistributionMatcher.matches()) {
+                            LOG.severe("printDistributionMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            continue;
+                        }
+                        
+                        line = printTenuringDistributionMatcher.group(PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE)
+                                    + printTenuringDistributionMatcher.group(PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER);
                     }
 
                     if (isCmsScavengeBeforeRemark(line)) {

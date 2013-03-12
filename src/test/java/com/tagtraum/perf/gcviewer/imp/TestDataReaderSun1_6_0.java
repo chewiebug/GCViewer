@@ -809,4 +809,18 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC pause", 0.3541657, model.getGCPause().getMax(), 0.0000001);
         assertEquals("GC timestamp", 12.655, model.get(0).getTimestamp(), 0.000001);
     }
+    
+    @Test
+    public void testPrintTenuringDistributionOpenJdk6() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "3.141: [GCDesired survivor size 134217728 bytes, new threshold 7 (max 2) [PSYoungGen: 188744K->13345K(917504K)] 188744K->13345K(4063232K), 0.0285820 secs] [Times: user=0.06 sys=0.01, real=0.03 secs]" 
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+        
+        assertEquals("count", 1, model.size());
+        assertEquals("main type", "GC", model.get(0).getType().getType());
+        assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getType().getType());
+    }
 }

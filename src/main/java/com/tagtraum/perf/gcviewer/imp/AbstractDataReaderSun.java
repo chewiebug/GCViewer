@@ -368,15 +368,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
             final String s = sb.toString();
             GCEvent.Type gcType = AbstractGCEvent.Type.parse(s);
             if (gcType == null) {
-                // special case: 5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]
-                String type = s.trim();
-                if (type.startsWith(AbstractGCEvent.Type.GC.getType()) && type.indexOf("Desired survivor") != -1) {
-                    i = line.indexOf("total", i);
-                    i += 5;
-                    gcType = AbstractGCEvent.Type.GC;
-                }
-            }
-            if (gcType == null) {
                 throw new UnknownGcTypeException(s, line, pos);
             }
             return gcType;
