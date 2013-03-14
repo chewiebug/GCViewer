@@ -56,7 +56,7 @@ public class AboutDialog extends JDialog implements ActionListener {
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         versionPanel.setLayout(new GridBagLayout());
         
-        JLabel copyright = new JLabel("\u00A9" + " 2011-2012: Joerg Wuethrich", JLabel.CENTER);
+        JLabel copyright = new JLabel("\u00A9" + " 2011-2013: Joerg Wuethrich", JLabel.CENTER);
         
         JLabel contributorsLabel = new JLabel("contributors (alphabetically ordered):", JLabel.CENTER);
         contributorsLabel.setForeground(Color.GRAY);

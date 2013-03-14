@@ -22,7 +22,7 @@ Supported verbose:gc formats are:
 - IBM JDK 1.3.1/1.3.0/1.2.2 with the option -verbose:gc
 - IBM iSeries Classic JVM 1.4.2 with option -verbose:gc
 - HP-UX JDK 1.2/1.3/1.4.x with the option -Xverbosegc
-- BEA JRockit 1.4.2/1.5 with the option -verbose:memory
+- BEA JRockit 1.4.2/1.5/1.6 with the option -verbose:memory [-Xverbose:gcpause,gcreport] [-Xverbosetimestamp]
 
 Best results are achieved with: -Xloggc:<file> -XX:+PrintGCDetails -XX:+PrintGCDateStamps
 
@@ -268,9 +268,12 @@ CMS and G1 collector sometimes mix concurrent events with stop the world
 collections in the output. In some cases the parser can recover from 
 such mixed lines, sometimes it can't and will show an error message.
 
+If G1 collector is used with -XX:-PrintGCTimeStamps (without timestamps)
+but with -XX:+PrintGCDateStamps (with full date information) GCViewer can't 
+parse the log.
 
-BEA JRockit 1.4.2/1.5
----------------------
+BEA JRockit 1.4.2/1.5/1.6
+-------------------------
 
 Concurrently collected garbage may not be reflected correctly in the
 data panel.
@@ -278,11 +281,19 @@ data panel.
 
 Export formats
 --------------
-
+-> Comma Separated Values
 The CSV format is quite useful for importing the data to a
 spreadsheet application. However, it does not export all
 data.
 
+-> Plain Data
+Plain text representation of the gc log. If written from Sun / Oracle gc log
+it is usually compatible with HPjmeter.
+
+-> Simple GC Log
+Very simple representation of a gc log in the format
+<name of event> <secondes since start of log> <pause time>.
+This format is compatible with gchisto (http://java.net/projects/gchisto)
 
 Internationalization
 --------------------
