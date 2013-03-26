@@ -66,18 +66,18 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @param line line that is parsed
      * @return amount of memory in kilobyte
      */
-    private int getMemoryInKiloByte(int memoryValue, char memUnit, String line) {
+    private int getMemoryInKiloByte(double memoryValue, char memUnit, String line) {
         if ('B' == memUnit) {
-            return memoryValue / 1024;
+            return (int) (memoryValue / 1024);
         }
         else if ('K' == memUnit) {
-            return memoryValue;
+            return (int) memoryValue;
         }
         else if ('M' == memUnit) {
-            return memoryValue * 1024;
+            return (int) (memoryValue * 1024);
         }
         else if ('G' == memUnit) {
-            return memoryValue * 1024*1024;
+            return (int) (memoryValue * 1024*1024);
         }
         else {
             if (LOG.isLoggable(Level.WARNING)) {
@@ -142,7 +142,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
             // if format is "before"->"after"("total"), the next parentesis is the one of the "total"
             endOfNextNumber = separatorPos;
         }
-        event.setPreUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, endOfNextNumber-currentPos-1),
+        event.setPreUsed(getMemoryInKiloByte(NumberParser.parseDouble(line, currentPos, endOfNextNumber-currentPos-1),
                 line.charAt(endOfNextNumber-1),
                 line));
         
@@ -158,13 +158,13 @@ public abstract class AbstractDataReaderSun implements DataReader {
             endOfNextNumber = currentPos;
             // goto end of next number
             
-            while (Character.isDigit(line.charAt(endOfNextNumber))) {
+            for (char c = line.charAt(endOfNextNumber); Character.isDigit(c) || c == '.'; c = line.charAt(endOfNextNumber)) {
                 ++endOfNextNumber;
             }
             
             ++endOfNextNumber;
         }
-        event.setPostUsed(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, endOfNextNumber-currentPos-1),
+        event.setPostUsed(getMemoryInKiloByte(NumberParser.parseDouble(line, currentPos, endOfNextNumber-currentPos-1),
                 line.charAt(endOfNextNumber-1),
                 line));
         currentPos = endOfNextNumber;
@@ -173,7 +173,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
             // skip "(" and read heap size
             ++currentPos;
             endOfNextNumber = line.indexOf(")", currentPos);
-            event.setTotal(getMemoryInKiloByte(NumberParser.parseInt(line, currentPos, endOfNextNumber-currentPos-1),
+            event.setTotal(getMemoryInKiloByte(NumberParser.parseDouble(line, currentPos, endOfNextNumber-currentPos-1),
                     line.charAt(endOfNextNumber-1),
                     line));
             currentPos = endOfNextNumber;

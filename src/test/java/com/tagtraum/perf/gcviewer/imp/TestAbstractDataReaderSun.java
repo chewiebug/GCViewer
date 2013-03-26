@@ -78,6 +78,23 @@ public class TestAbstractDataReaderSun {
     }
     
     /**
+     * Tests parsing of memory information like "118.5M(118.0M)->128.4K(112.0M)" (notice the dots).
+     */
+    @Test
+    public void setExtendedMemoryFloatingPointPreEden_postEden() throws ParseException {
+        String line = "   [Eden: 118.5M(118.0M)->128.4K(112.0M) Survivors: 10.0M->16.0M Heap: 548.6M(640.0M)->440.6M(640.0M)]";
+        
+        ParsePosition pos = new ParsePosition(0);
+        pos.setIndex(line.indexOf("Eden:") + "Eden:".length() + 1);
+        
+        GCEvent event = new GCEvent();
+        dataReader.setMemoryExtended(event, line, pos);
+        
+        assertEquals("heap before", 121344, event.getPreUsed());
+        assertEquals("heap after", 128, event.getPostUsed());
+    }
+    
+    /**
      * Subclass of {@link AbstractDataReaderSun} which makes those methods public, I want to test here.
      * 
      * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
