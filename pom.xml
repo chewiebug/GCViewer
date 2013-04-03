@@ -1,11 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.tagtraum</groupId>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<groupId>com.github.chewiebug</groupId>
 	<artifactId>gcviewer</artifactId>
 	<version>1.33-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>GCViewer</name>
+	<description>GCViewer</description>
 	<url>http://github.com/chewiebug/GCViewer/wiki</url>
 
 	<developers>
@@ -48,6 +54,9 @@
 		<developer>
 			<name>Andrey Skripalschikov</name>
 		</developer>
+		<developer>
+			<name>Reinhard Nägele</name>
+		</developer>
 	</developers>
 
 	<licenses>
@@ -58,17 +67,19 @@
 	</licenses>
 
 	<properties>
-		<github.global.server>github</github.global.server>
-
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<source.plugin.version>2.2.1</source.plugin.version>
+		<javadoc.plugin.version>2.9</javadoc.plugin.version>
+		<gpg.plugin.version>1.4</gpg.plugin.version>
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
-
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss ZZ</maven.build.timestamp.format>
 	</properties>
 
 	<scm>
 		<url>https://github.com/chewiebug/GCViewer</url>
-		<connection>scm:git:git://https://github.com/chewiebug/GCViewer.git</connection>
-		<developerConnection>scm:git:git@github.com/chewiebug/GCViewer.git</developerConnection>
+		<connection>scm:git:ssh://git@github.com/chewiebug/GCViewer.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/chewiebug/GCViewer.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<dependencies>
@@ -81,31 +92,144 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>build.info.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>build.info.properties</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/mac</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/Info.plist</include>
+				</includes>
+				<targetPath>${project.build.directory}/mac</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/mac</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/Info.plist</exclude>
+				</excludes>
+				<targetPath>${project.build.directory}/mac</targetPath>
+			</resource>
+			<resource>
+				<directory>${basedir}</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>README</include>
+				</includes>
+				<targetPath>${project.build.directory}</targetPath>
+			</resource>
+		</resources>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
+					<version>3.0</version>
 					<configuration>
-						<encoding>UTF-8</encoding>
+						<source>1.6</source>
+						<target>1.6</target>
 					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3.1</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
+					<version>2.4</version>
 					<configuration>
-						<encoding>UTF-8</encoding>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<mainClass>com.tagtraum.perf.gcviewer.GCViewer</mainClass>
+								<addClasspath>true</addClasspath>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Date>${maven.build.timestamp}</Implementation-Date>
+							</manifestEntries>
+						</archive>
+						<excludes>
+							<exclude>**/*.psd</exclude>
+						</excludes>
 					</configuration>
 				</plugin>
 				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.7</version>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${javadoc.plugin.version}</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Date>${timestamp}</Implementation-Date>
+								<Implementation-Revision>${revision}</Implementation-Revision>
+							</manifestEntries>
+						</archive>
+						<links>
+							<link>http://docs.oracle.com/javase/6/docs/api/</link>
+						</links>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${source.plugin.version}</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Date>${timestamp}</Implementation-Date>
+								<Implementation-Revision>${revision}</Implementation-Revision>
+							</manifestEntries>
+						</archive>
+						<excludeResources>true</excludeResources>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.10</version>
+					<configuration>
+						<includes>
+							<include>com/tagtraum/perf/gcviewer/TestAll.java</include>
+						</includes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<localCheckout>true</localCheckout>
+						<pushChanges>false</pushChanges>
+						<goals>deploy</goals>
+						<tagNameFormat>@{project.version}</tagNameFormat>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>${gpg.plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.geronimo.genesis.plugins</groupId>
@@ -117,7 +241,11 @@
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.7</version>
 				</plugin>
-
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.6.2.201302030002</version>
+				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
@@ -129,19 +257,11 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.apache.geronimo.genesis.plugins
-										</groupId>
-										<artifactId>
-											tools-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.4,)
-										</versionRange>
+										<groupId>org.apache.geronimo.genesis.plugins</groupId>
+										<artifactId>tools-maven-plugin</artifactId>
+										<versionRange>[1.4,)</versionRange>
 										<goals>
-											<goal>
-												copy-legal-files
-											</goal>
+											<goal>copy-legal-files</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -151,12 +271,8 @@
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>org.jacoco</groupId>
-										<artifactId>
-											jacoco-maven-plugin
-										</artifactId>
-										<versionRange>
-											[0.6.2.201302030002,)
-										</versionRange>
+										<artifactId>jacoco-maven-plugin</artifactId>
+										<versionRange>[0.6.2.201302030002,)</versionRange>
 										<goals>
 											<goal>prepare-agent</goal>
 										</goals>
@@ -173,58 +289,31 @@
 		</pluginManagement>
 
 		<plugins>
-
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<!-- disable the deploy plugin for now to suppress error messages related 
-						to failed maven repository deployments; currently scp is used to copy the 
-						.jar file to sourceforge -->
-					<skip>true</skip>
-				</configuration>
+				<groupId>org.apache.geronimo.genesis.plugins</groupId>
+				<artifactId>tools-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install-legal-files</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-legal-files</goal>
+						</goals>
+						<configuration>
+							<fileset>
+								<basedir>${pom.basedir}</basedir>
+								<includes>
+									<include>README</include>
+									<include>LICENSE.txt</include>
+								</includes>
+							</fileset>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<includes>
-						<include>com/tagtraum/perf/gcviewer/TestAll.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.tagtraum.perf.gcviewer.GCViewer</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-					<excludes>
-						<exclude>**/*.psd</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.6.2.201302030002</version>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -257,159 +346,101 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/src/main/templates</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>build.info.properties</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>copy-distribution-resources</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}</directory>
-									<filtering>false</filtering>
-									<includes>
-										<include>README</include>
-										<include>LICENSE.txt</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>copy-mac-resources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/mac</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/src/main/templates</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>Info.plist</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.geronimo.genesis.plugins</groupId>
-				<artifactId>tools-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>install-legal-files</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-legal-files</goal>
-						</goals>
-						<configuration>
-							<fileset>
-								<basedir>${pom.basedir}</basedir>
-								<includes>
-									<include>README</include>
-									<include>LICENSE.txt</include>
-								</includes>
-							</fileset>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>mac-distribution</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<mkdir dir="target" />
-								<zip destfile="target/gcviewer-mac-${project.version}.zip">
-									<zipfileset dir="src/main/mac" excludes="**/JavaApplicationStub" />
-									<zipfileset dir="src/main/mac/GCViewer.app/Contents/MacOS/"
-										prefix="GCViewer.app/Contents/MacOS/" filemode="755" />
-									<zipfileset dir="target" includes="gcviewer-${project.version}.jar"
-										prefix="GCViewer.app/Contents/Resources/" />
-									<zipfileset dir="target/mac" includes="Info.plist"
-										prefix="GCViewer.app/Contents/" />
-								</zip>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-
-					<execution>
-						<id>copy-to-sourceforge</id>
-						<phase>deploy</phase>
-						<configuration>
-							<target>
-								<scp
-									todir="${scp.username}:${scp.password}@frs.sourceforge.net:/home/frs/project/gcviewer/"
-									trust="true" failonerror="true">
-									<fileset dir="${project.basedir}/target">
-										<include name="${project.build.finalName}.${project.packaging}" />
-										<include name="gcviewer-mac-${project.version}.zip" />
-										<include name="README" />
-									</fileset>
-								</scp>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>ant</groupId>
-						<artifactId>ant-jsch</artifactId>
-						<version>1.6.5</version>
-					</dependency>
-					<dependency>
-						<groupId>com.jcraft</groupId>
-						<artifactId>jsch</artifactId>
-						<version>0.1.44-1</version>
-					</dependency>
-				</dependencies>
-
-			</plugin>
-
 		</plugins>
+
 	</build>
+
+	<profiles>
+		<profile>
+			<!-- Override plugin versions of Sonatype profile. This needs to be done 
+				here because profiles are not inherited. -->
+			<id>sonatype-oss-release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${source.plugin.version}</version>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${javadoc.plugin.version}</version>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${gpg.plugin.version}</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>sourceforge-release</id>
+			<build>
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>create-distributions</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<descriptors>
+										<descriptor>src/main/assembly/dist_mac.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-to-sourceforge</id>
+								<phase>deploy</phase>
+								<configuration>
+									<target>
+										<scp
+											todir="${scp.username}:${scp.password}@frs.sourceforge.net:/home/frs/project/gcviewer/"
+											trust="true" failonerror="true">
+											<fileset dir="${project.basedir}/target">
+												<include name="${project.build.finalName}.${project.packaging}" />
+												<include name="${project.build.finalName}-dist-mac.zip" />
+												<include name="README" />
+											</fileset>
+										</scp>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+
+						<dependencies>
+							<dependency>
+								<groupId>ant</groupId>
+								<artifactId>ant-jsch</artifactId>
+								<version>1.6.5</version>
+							</dependency>
+							<dependency>
+								<groupId>com.jcraft</groupId>
+								<artifactId>jsch</artifactId>
+								<version>0.1.44-1</version>
+							</dependency>
+						</dependencies>
+
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
