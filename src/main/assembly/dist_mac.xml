@@ -7,14 +7,6 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>/</directory>
-			<outputDirectory>GCViewer.app/Contents/Resources</outputDirectory>
-			<includes>
-				<include>README</include>
-				<include>LICENSE.txt</include>
-			</includes>
-		</fileSet>
-		<fileSet>
 			<directory>${project.build.directory}/mac</directory>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
