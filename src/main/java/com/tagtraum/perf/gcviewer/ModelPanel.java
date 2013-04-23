@@ -386,7 +386,7 @@ public class ModelPanel extends JTabbedPane {
             		true);
             updateValue(localStrings.getString("data_panel_avg_fullgcpause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getFullGCPause().standardDeviation()) +")" : "n/a", 
-            		fullGCDataAvailable ? isSignificant(model.getFullGCPause().average(), model.getPause().standardDeviation()) : false);
+            		fullGCDataAvailable ? isSignificant(model.getFullGCPause().average(), model.getFullGCPause().standardDeviation()) : false);
             updateValue(localStrings.getString("data_panel_min_max_full_gc_pause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMin()) + "s / " + pauseFormatter.format(model.getFullGCPause().getMax()) + "s" : "n/a", 
             		fullGCDataAvailable);
