@@ -150,7 +150,7 @@ public class OSXSupport {
        
     /**
      * Determine whether we are running on MAC OS X or not
-     * @return
+     * @return <code>true</code> if is running on MAC OS X
      */
     public static boolean isOSX() {
         String osName = System.getProperty("os.name");
