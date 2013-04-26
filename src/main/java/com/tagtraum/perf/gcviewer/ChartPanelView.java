@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
-import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +28,7 @@ import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 
 /**
@@ -43,8 +43,6 @@ public class ChartPanelView {
 
     public static final String EVENT_MINIMIZED = "minimized";
     
-    private static final ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
-
     private GCPreferences preferences;
     
     private ModelChartImpl modelChart;
@@ -77,8 +75,8 @@ public class ChartPanelView {
         vScrollBar.setUnitIncrement(10);
         
         this.modelChartAndDetailsPanel = new JTabbedPane();
-        this.modelChartAndDetailsPanel.addTab(localStrings.getString("data_panel_tab_chart"), modelChart);
-        this.modelChartAndDetailsPanel.addTab(localStrings.getString("data_panel_tab_details"), modelDetailsScrollPane);
+        this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_chart"), modelChart);
+        this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_details"), modelDetailsScrollPane);
         
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);

@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,10 +50,12 @@ import com.tagtraum.perf.gcviewer.action.About;
 import com.tagtraum.perf.gcviewer.action.Arrange;
 import com.tagtraum.perf.gcviewer.action.Exit;
 import com.tagtraum.perf.gcviewer.action.Export;
+import com.tagtraum.perf.gcviewer.action.LicenseAction;
 import com.tagtraum.perf.gcviewer.action.OSXFullScreen;
 import com.tagtraum.perf.gcviewer.action.OpenFile;
 import com.tagtraum.perf.gcviewer.action.OpenRecent;
 import com.tagtraum.perf.gcviewer.action.OpenURL;
+import com.tagtraum.perf.gcviewer.action.ReadmeAction;
 import com.tagtraum.perf.gcviewer.action.Refresh;
 import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
@@ -71,6 +72,7 @@ import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.UsedYoungRenderer;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 import com.tagtraum.perf.gcviewer.util.OSXSupport;
 
@@ -84,8 +86,6 @@ import com.tagtraum.perf.gcviewer.util.OSXSupport;
  */
 public class GCViewerGui extends JFrame {
 
-    public static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
-    
     private static final Logger LOGGER = Logger.getLogger(GCViewerGui.class.getName());
 
     private JToolBar toolBar;
@@ -100,6 +100,8 @@ public class GCViewerGui extends JFrame {
     // actions
     private Exit exitAction = new Exit(this);
     private About aboutAction = new About(this);
+    private ReadmeAction readmeAction = new ReadmeAction(this);
+    private LicenseAction licenseAction = new LicenseAction(this);
     private OpenFile openFileAction = new OpenFile(this);
     private OpenURL openURLAction = new OpenURL(this);
     private Refresh refreshAction = new Refresh(this);
@@ -306,10 +308,10 @@ public class GCViewerGui extends JFrame {
             open(urls);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             //e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -338,7 +340,7 @@ public class GCViewerGui extends JFrame {
             e.printStackTrace();
         } catch (PropertyVetoException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -349,10 +351,10 @@ public class GCViewerGui extends JFrame {
             add(urls);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             //e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -428,8 +430,8 @@ public class GCViewerGui extends JFrame {
     private JMenuBar initMenuBar() {
         final JMenuBar menuBar = new JMenuBar();
 
-        fileMenu = new JMenu(localStrings.getString("main_frame_menu_file"));
-        fileMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_file").charAt(0));
+        fileMenu = new JMenu(LocalisationHelper.getString("main_frame_menu_file"));
+        fileMenu.setMnemonic(LocalisationHelper.getString("main_frame_menu_mnemonic_file").charAt(0));
         menuBar.add(fileMenu);
 
         JMenuItem menuItem = new JMenuItem(openFileAction);
@@ -455,17 +457,17 @@ public class GCViewerGui extends JFrame {
             fileMenu.add(menuItem);
         }
 
-        final JMenu viewMenu = new JMenu(localStrings.getString("main_frame_menu_view"));
+        final JMenu viewMenu = new JMenu(LocalisationHelper.getString("main_frame_menu_view"));
 
-        viewMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_view").charAt(0));
+        viewMenu.setMnemonic(LocalisationHelper.getString("main_frame_menu_mnemonic_view").charAt(0));
         menuBar.add(viewMenu);
 
         gcLineMenuItems = new HashMap<String, JCheckBoxMenuItem>();
 
-        menuItemShowDataPanel = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_show_data_panel"), true);
-        menuItemShowDataPanel.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_show_data_panel").charAt(0));
+        menuItemShowDataPanel = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_show_data_panel"), true);
+        menuItemShowDataPanel.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_show_data_panel").charAt(0));
         menuItemShowDataPanel.setIcon(createEmptyImageIcon(20, 20));
-        menuItemShowDataPanel.setToolTipText(localStrings.getString("main_frame_menuitem_hint_show_data_panel"));
+        menuItemShowDataPanel.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_show_data_panel"));
         menuItemShowDataPanel.setActionCommand(GCPreferences.SHOW_DATA_PANEL);
         menuItemShowDataPanel.addActionListener(new ActionListener(){
             public void actionPerformed(final ActionEvent e) {
@@ -479,10 +481,10 @@ public class GCViewerGui extends JFrame {
         viewMenu.addSeparator();
         gcLineMenuItems.put(GCPreferences.SHOW_DATA_PANEL, menuItemShowDataPanel);
 
-        menuItemAntiAlias = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_antialias"), true);
-        menuItemAntiAlias.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_antialias").charAt(0));
+        menuItemAntiAlias = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_antialias"), true);
+        menuItemAntiAlias.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_antialias").charAt(0));
         menuItemAntiAlias.setIcon(createEmptyImageIcon(20, 20));
-        menuItemAntiAlias.setToolTipText(localStrings.getString("main_frame_menuitem_hint_antialias"));
+        menuItemAntiAlias.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_antialias"));
         menuItemAntiAlias.setActionCommand(GCPreferences.ANTI_ALIAS);
         menuItemAntiAlias.addActionListener(new ActionListener(){
             public void actionPerformed(final ActionEvent e) {
@@ -498,108 +500,108 @@ public class GCViewerGui extends JFrame {
         viewMenu.addSeparator();
         gcLineMenuItems.put(GCPreferences.ANTI_ALIAS, menuItemAntiAlias);
 
-        menuItemFullGCLines = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_full_gc_lines"), true);
-        menuItemFullGCLines.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_full_gc_lines").charAt(0));
-        menuItemFullGCLines.setToolTipText(localStrings.getString("main_frame_menuitem_hint_full_gc_lines"));
+        menuItemFullGCLines = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_full_gc_lines"), true);
+        menuItemFullGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_full_gc_lines").charAt(0));
+        menuItemFullGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_full_gc_lines"));
         menuItemFullGCLines.setIcon(createMonoColoredImageIcon(FullGCLineRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemFullGCLines.setActionCommand(GCPreferences.FULL_GC_LINES);
         menuItemFullGCLines.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemFullGCLines);
         gcLineMenuItems.put(GCPreferences.FULL_GC_LINES, menuItemFullGCLines);
 
-        menuItemIncGCLines = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_inc_gc_lines"), true);
-        menuItemIncGCLines.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_inc_gc_lines").charAt(0));
-        menuItemIncGCLines.setToolTipText(localStrings.getString("main_frame_menuitem_hint_inc_gc_lines"));
+        menuItemIncGCLines = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"), true);
+        menuItemIncGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_inc_gc_lines").charAt(0));
+        menuItemIncGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_inc_gc_lines"));
         menuItemIncGCLines.setIcon(createMonoColoredImageIcon(IncLineRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemIncGCLines.setActionCommand(GCPreferences.INC_GC_LINES);
         menuItemIncGCLines.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemIncGCLines);
         gcLineMenuItems.put(GCPreferences.INC_GC_LINES, menuItemIncGCLines);
 
-        menuItemGcTimesLine = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_gc_times_line"), true);
-        menuItemGcTimesLine.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_gc_times_line").charAt(0));
-        menuItemGcTimesLine.setToolTipText(localStrings.getString("main_frame_menuitem_hint_gc_times_line"));
+        menuItemGcTimesLine = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_gc_times_line"), true);
+        menuItemGcTimesLine.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_line").charAt(0));
+        menuItemGcTimesLine.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_line"));
         menuItemGcTimesLine.setIcon(createMonoColoredImageIcon(GCTimesRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemGcTimesLine.setActionCommand(GCPreferences.GC_LINES_LINE);
         menuItemGcTimesLine.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemGcTimesLine);
         gcLineMenuItems.put(GCPreferences.GC_LINES_LINE, menuItemGcTimesLine);
 
-        menuItemGcTimesRectangle = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_gc_times_rectangles"), true);
-        menuItemGcTimesRectangle.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_gc_times_rectangles").charAt(0));
-        menuItemGcTimesRectangle.setToolTipText(localStrings.getString("main_frame_menuitem_hint_gc_times_rectangles"));
+        menuItemGcTimesRectangle = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_gc_times_rectangles"), true);
+        menuItemGcTimesRectangle.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_rectangles").charAt(0));
+        menuItemGcTimesRectangle.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_rectangles"));
         menuItemGcTimesRectangle.setIcon(createMonoColoredImageIcon(GCRectanglesRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemGcTimesRectangle.setActionCommand(GCPreferences.GC_TIMES_RECTANGLES);
         menuItemGcTimesRectangle.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemGcTimesRectangle);
         gcLineMenuItems.put(GCPreferences.GC_TIMES_RECTANGLES, menuItemGcTimesRectangle);
 
-        menuItemTotalMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_total_memory"), true);
-        menuItemTotalMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_total_memory").charAt(0));
-        menuItemTotalMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_total_memory"));
+        menuItemTotalMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_total_memory"), true);
+        menuItemTotalMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_total_memory").charAt(0));
+        menuItemTotalMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_total_memory"));
         menuItemTotalMemory.setIcon(createMonoColoredImageIcon(TotalHeapRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemTotalMemory.setActionCommand(GCPreferences.TOTAL_MEMORY);
         menuItemTotalMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemTotalMemory);
         gcLineMenuItems.put(GCPreferences.TOTAL_MEMORY, menuItemTotalMemory);
 
-        menuItemTenuredMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_tenured_memory"), true);
-        menuItemTenuredMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_tenured_memory").charAt(0));
-        menuItemTenuredMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_tenured_memory"));
+        menuItemTenuredMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_tenured_memory"), true);
+        menuItemTenuredMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_tenured_memory").charAt(0));
+        menuItemTenuredMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_tenured_memory"));
         menuItemTenuredMemory.setIcon(createMonoColoredImageIcon(TotalTenuredRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemTenuredMemory.setActionCommand(GCPreferences.TENURED_MEMORY);
         menuItemTenuredMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemTenuredMemory);
         gcLineMenuItems.put(GCPreferences.TENURED_MEMORY, menuItemTenuredMemory);
 
-        menuItemYoungMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_young_memory"), true);
-        menuItemYoungMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_young_memory").charAt(0));
-        menuItemYoungMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_young_memory"));
+        menuItemYoungMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_young_memory"), true);
+        menuItemYoungMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_young_memory").charAt(0));
+        menuItemYoungMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_young_memory"));
         menuItemYoungMemory.setIcon(createMonoColoredImageIcon(TotalYoungRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemYoungMemory.setActionCommand(GCPreferences.YOUNG_MEMORY);
         menuItemYoungMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemYoungMemory);
         gcLineMenuItems.put(GCPreferences.YOUNG_MEMORY, menuItemYoungMemory);
 
-        menuItemUsedMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_used_memory"), true);
-        menuItemUsedMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_used_memory").charAt(0));
-        menuItemUsedMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_used_memory"));
+        menuItemUsedMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_memory"), true);
+        menuItemUsedMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_used_memory").charAt(0));
+        menuItemUsedMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_memory"));
         menuItemUsedMemory.setIcon(createMonoColoredImageIcon(UsedHeapRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemUsedMemory.setActionCommand(GCPreferences.USED_MEMORY);
         menuItemUsedMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemUsedMemory);
         gcLineMenuItems.put(GCPreferences.USED_MEMORY, menuItemUsedMemory);
 
-        menuItemUsedTenuredMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_used_tenured_memory"), true);
-        menuItemUsedTenuredMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_used_tenured_memory").charAt(0));
-        menuItemUsedTenuredMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_used_tenured_memory"));
+        menuItemUsedTenuredMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_tenured_memory"), true);
+        menuItemUsedTenuredMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_used_tenured_memory").charAt(0));
+        menuItemUsedTenuredMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_tenured_memory"));
         menuItemUsedTenuredMemory.setIcon(createMonoColoredImageIcon(UsedTenuredRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemUsedTenuredMemory.setActionCommand(GCPreferences.USED_TENURED_MEMORY);
         menuItemUsedTenuredMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemUsedTenuredMemory);
         gcLineMenuItems.put(GCPreferences.USED_TENURED_MEMORY, menuItemUsedTenuredMemory);
 
-        menuItemUsedYoungMemory = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_used_young_memory"), true);
-        menuItemUsedYoungMemory.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_used_young_memory").charAt(0));
-        menuItemUsedYoungMemory.setToolTipText(localStrings.getString("main_frame_menuitem_hint_used_young_memory"));
+        menuItemUsedYoungMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_young_memory"), true);
+        menuItemUsedYoungMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_used_young_memory").charAt(0));
+        menuItemUsedYoungMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_young_memory"));
         menuItemUsedYoungMemory.setIcon(createMonoColoredImageIcon(UsedYoungRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemUsedYoungMemory.setActionCommand(GCPreferences.USED_YOUNG_MEMORY);
         menuItemUsedYoungMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemUsedYoungMemory);
         gcLineMenuItems.put(GCPreferences.USED_YOUNG_MEMORY, menuItemUsedYoungMemory);
 
-        menuItemInitialMarkLevel = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_initial_mark_level"), true);
-        menuItemInitialMarkLevel.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_initial_mark_level").charAt(0));
-        menuItemInitialMarkLevel.setToolTipText(localStrings.getString("main_frame_menuitem_hint_initial_mark_level"));
+        menuItemInitialMarkLevel = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_initial_mark_level"), true);
+        menuItemInitialMarkLevel.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_initial_mark_level").charAt(0));
+        menuItemInitialMarkLevel.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_initial_mark_level"));
         menuItemInitialMarkLevel.setIcon(createMonoColoredImageIcon(InitialMarkLevelRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemInitialMarkLevel.setActionCommand(GCPreferences.INITIAL_MARK_LEVEL);
         menuItemInitialMarkLevel.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemInitialMarkLevel);
         gcLineMenuItems.put(GCPreferences.INITIAL_MARK_LEVEL, menuItemInitialMarkLevel);
 
-        menuItemConcurrentGcBeginEnd = new JCheckBoxMenuItem(localStrings.getString("main_frame_menuitem_concurrent_collection_begin_end"), true);
-        menuItemConcurrentGcBeginEnd.setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_concurrent_collection_begin_end").charAt(0));
-        menuItemConcurrentGcBeginEnd.setToolTipText(localStrings.getString("main_frame_menuitem_hint_concurrent_collection_begin_end"));
+        menuItemConcurrentGcBeginEnd = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_concurrent_collection_begin_end"), true);
+        menuItemConcurrentGcBeginEnd.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_concurrent_collection_begin_end").charAt(0));
+        menuItemConcurrentGcBeginEnd.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_concurrent_collection_begin_end"));
         menuItemConcurrentGcBeginEnd.setIcon(createMonoColoredImageIcon(ConcurrentGcBegionEndRenderer.CONCURRENT_COLLECTION_BEGIN, 20, 20));
         menuItemConcurrentGcBeginEnd.setActionCommand(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END);
         menuItemConcurrentGcBeginEnd.addActionListener(viewMenuActionListener);
@@ -611,8 +613,8 @@ public class GCViewerGui extends JFrame {
             viewMenu.add(new JMenuItem(osxFullScreenAction));
         }
         
-        windowMenu = new JMenu(localStrings.getString("main_frame_menu_window"));
-        windowMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_window").charAt(0));
+        windowMenu = new JMenu(LocalisationHelper.getString("main_frame_menu_window"));
+        windowMenu.setMnemonic(LocalisationHelper.getString("main_frame_menu_mnemonic_window").charAt(0));
         menuBar.add(windowMenu);
 
         menuItem = new JMenuItem(arrangeAction);
@@ -621,9 +623,15 @@ public class GCViewerGui extends JFrame {
 
         if ( ! OSXSupport.isOSX()) {
 
-            final JMenu helpMenu = new JMenu(localStrings.getString("main_frame_menu_help"));
-            helpMenu.setMnemonic(localStrings.getString("main_frame_menu_mnemonic_help").charAt(0));
+            final JMenu helpMenu = new JMenu(LocalisationHelper.getString("main_frame_menu_help"));
+            helpMenu.setMnemonic(LocalisationHelper.getString("main_frame_menu_mnemonic_help").charAt(0));
             menuBar.add(helpMenu);
+
+            menuItem = new JMenuItem(readmeAction);
+            helpMenu.add(menuItem);
+
+            menuItem = new JMenuItem(licenseAction);
+            helpMenu.add(menuItem);
 
             menuItem = new JMenuItem(aboutAction);
             helpMenu.add(menuItem);

@@ -1,11 +1,16 @@
 package com.tagtraum.perf.gcviewer.action;
 
-import com.tagtraum.perf.gcviewer.GCViewerGui;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
+
+import javax.swing.AbstractAction;
+import javax.swing.DesktopManager;
+import javax.swing.JInternalFrame;
+import javax.swing.KeyStroke;
+
+import com.tagtraum.perf.gcviewer.GCViewerGui;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -19,9 +24,9 @@ public class Arrange extends AbstractAction {
 
     public Arrange(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_arrange"));
-        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_arrange"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_arrange").charAt(0)));
+        putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_arrange"));
+        putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_arrange"));
+        putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_arrange").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "arrange");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('G', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         setEnabled(false);

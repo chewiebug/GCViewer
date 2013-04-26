@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * Factory for all available {@link DataWriter} implementations.
@@ -17,8 +17,6 @@ import com.tagtraum.perf.gcviewer.exp.DataWriterType;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class DataWriterFactory {
-
-    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
 
     /**
      * Standard factory method to retrieve one of the <code>DataWriter</code> implementations.
@@ -55,7 +53,7 @@ public class DataWriterFactory {
             case CSV     : return new CSVDataWriter(outputStream);
             case SIMPLE  : return new SimpleGcWriter(outputStream);
             case SUMMARY : return new SummaryDataWriter(outputStream, configuration); 
-            default : throw new IOException(localStrings.getString("datawriterfactory_instantiation_failed") + " " + file);
+            default : throw new IOException(LocalisationHelper.getString("datawriterfactory_instantiation_failed") + " " + file);
         }
     }
 

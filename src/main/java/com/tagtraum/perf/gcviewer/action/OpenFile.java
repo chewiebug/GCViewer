@@ -1,12 +1,22 @@
 package com.tagtraum.perf.gcviewer.action;
 
-import com.tagtraum.perf.gcviewer.GCViewerGui;
-import com.tagtraum.perf.gcviewer.util.ExtensionFileFilter;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.File;
+
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+
+import com.tagtraum.perf.gcviewer.GCViewerGui;
+import com.tagtraum.perf.gcviewer.util.ExtensionFileFilter;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -24,21 +34,21 @@ public class OpenFile extends AbstractAction {
 
     public OpenFile(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_open_file"));
-        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_open_file"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_open_file").charAt(0)));
+        putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_open_file"));
+        putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_open_file"));
+        putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_open_file").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "open");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/open.png"))));
         openDialog = new JFileChooser();
-        openDialog.setDialogTitle(GCViewerGui.localStrings.getString("fileopen_dialog_title"));
+        openDialog.setDialogTitle(LocalisationHelper.getString("fileopen_dialog_title"));
         openDialog.setMultiSelectionEnabled(true);
         openDialog.addChoosableFileFilter(ExtensionFileFilter.GcExtensionFilter);
         openDialog.addChoosableFileFilter(ExtensionFileFilter.TxtExtensionFilter);
         openDialog.addChoosableFileFilter(ExtensionFileFilter.LogExtensionFilter);
-        addURLCheckBox = new JCheckBox(GCViewerGui.localStrings.getString("fileopen_dialog_add_checkbox"), false);
+        addURLCheckBox = new JCheckBox(LocalisationHelper.getString("fileopen_dialog_add_checkbox"), false);
         addURLCheckBox.setVerticalTextPosition(SwingConstants.TOP);
-        addURLCheckBox.setToolTipText(GCViewerGui.localStrings.getString("fileopen_dialog_hint_add_checkbox"));
+        addURLCheckBox.setToolTipText(LocalisationHelper.getString("fileopen_dialog_hint_add_checkbox"));
 
         final JPanel panel = new JPanel(new GridBagLayout());
         final GridBagConstraints gridBagConstraints = new GridBagConstraints();

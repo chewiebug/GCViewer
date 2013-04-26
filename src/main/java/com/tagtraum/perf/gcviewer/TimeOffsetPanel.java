@@ -1,13 +1,24 @@
 package com.tagtraum.perf.gcviewer;
 
-import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import java.awt.event.*;
-import java.util.ResourceBundle;
-import java.util.Date;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSpinner;
+import javax.swing.KeyStroke;
+import javax.swing.SpinnerDateModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * TimeOffsetPanel.
@@ -18,7 +29,6 @@ import java.text.SimpleDateFormat;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class TimeOffsetPanel extends JPanel {
-    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
 
     private JSpinner timeSpinner;
     private JCheckBox setOffsetCheckBox;
@@ -33,7 +43,7 @@ public class TimeOffsetPanel extends JPanel {
         timeSpinner = new JSpinner(new SpinnerDateModel());
         timeSpinner.setEditor(new JSpinner.DateEditor(timeSpinner, getPattern()));
         //.setLayout(new GridLayout(1, 2, 10, 10));
-        setOffsetCheckBox = new JCheckBox(localStrings.getString("timeoffset_prompt"), true);
+        setOffsetCheckBox = new JCheckBox(LocalisationHelper.getString("timeoffset_prompt"), true);
         setOffsetCheckBox.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 timeSpinner.setEnabled(setOffsetCheckBox.isSelected());

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -21,6 +20,7 @@ import javax.swing.table.TableModel;
 
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * Lists detailed information about gc events.
@@ -29,8 +29,6 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * <p>created on: 05.12.2011</p>
  */
 public class ModelDetailsPanel extends JPanel {
-    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
-
     private static NumberFormat pauseFormatter;
     private static NumberFormat percentFormatter;
     
@@ -55,9 +53,9 @@ public class ModelDetailsPanel extends JPanel {
         fullGcEventModel = new DoubleDataMapModel();
         concurrentGcEventModel = new DoubleDataMapModel();
         
-        DoubleDataMapTable gcTable = new DoubleDataMapTable(localStrings.getString("data_panel_group_gc_pauses"), gcEventModel);
-        DoubleDataMapTable fullGcTable = new DoubleDataMapTable(localStrings.getString("data_panel_group_full_gc_pauses"), fullGcEventModel);
-        DoubleDataMapTable concurrentGcTable = new DoubleDataMapTable(localStrings.getString("data_panel_group_concurrent_gc_events"), concurrentGcEventModel);
+        DoubleDataMapTable gcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_gc_pauses"), gcEventModel);
+        DoubleDataMapTable fullGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_full_gc_pauses"), fullGcEventModel);
+        DoubleDataMapTable concurrentGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_concurrent_gc_events"), concurrentGcEventModel);
 
         GridBagConstraints constraints = createGridBagConstraints();
         add(gcTable, constraints);
@@ -299,14 +297,14 @@ public class ModelDetailsPanel extends JPanel {
         private List<String> createColumnNamesList() {
             List<String> columnNames = new ArrayList<String>();
             
-            columnNames.add(localStrings.getString("data_panel_details_name"));
-            columnNames.add(localStrings.getString("data_panel_details_count"));
-            columnNames.add(localStrings.getString("data_panel_details_min"));
-            columnNames.add(localStrings.getString("data_panel_details_max"));
-            columnNames.add(localStrings.getString("data_panel_details_avg"));
-            columnNames.add(localStrings.getString("data_panel_details_stddev"));
-            columnNames.add(localStrings.getString("data_panel_details_sum"));
-            columnNames.add(localStrings.getString("data_panel_details_sum_percent"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_name"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_count"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_min"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_max"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_avg"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_stddev"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_sum"));
+            columnNames.add(LocalisationHelper.getString("data_panel_details_sum_percent"));
             
             return columnNames;
         }
@@ -371,7 +369,7 @@ public class ModelDetailsPanel extends JPanel {
             }
             
             List<String> totalList = new ArrayList<String>();
-            totalList.add(localStrings.getString("data_panel_details_total"));
+            totalList.add(LocalisationHelper.getString("data_panel_details_total"));
             totalList.add(totalNumber + "");
             totalList.add("");
             totalList.add("");

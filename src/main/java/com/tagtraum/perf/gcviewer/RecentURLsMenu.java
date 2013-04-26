@@ -1,9 +1,10 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.action.OpenRecent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
-import javax.swing.*;
-import java.util.ResourceBundle;
+import com.tagtraum.perf.gcviewer.action.OpenRecent;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * RecentFilesMenu.
@@ -14,12 +15,10 @@ import java.util.ResourceBundle;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class RecentURLsMenu extends JMenu {
-    public static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
-
     private RecentURLsModel model;
 
     public RecentURLsMenu(final GCViewerGui gcViewer) {
-        super(localStrings.getString("main_frame_menuitem_recent_files"));
+        super(LocalisationHelper.getString("main_frame_menuitem_recent_files"));
         this.model = new RecentURLsModel();
         this.model.addRecentURLsListener(new RecentURLsListener(){
             public void remove(RecentURLEvent e) {
@@ -30,8 +29,8 @@ public class RecentURLsMenu extends JMenu {
                 RecentURLsMenu.this.add(new JMenuItem(new OpenRecent(gcViewer, e.getURLSet().getUrls())), e.getPosition());
             }
         });
-        setMnemonic(localStrings.getString("main_frame_menuitem_mnemonic_recent_files").charAt(0));
-        setToolTipText(localStrings.getString("main_frame_menuitem_hint_recent_files"));
+        setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_recent_files").charAt(0));
+        setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_recent_files"));
     }
 
     public RecentURLsModel getRecentURLsModel() {

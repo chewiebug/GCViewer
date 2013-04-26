@@ -8,46 +8,38 @@ import java.awt.GridBagLayout;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.KeyStroke;
 import javax.swing.border.SoftBevelBorder;
 
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.util.UrlDisplayHelper;
 
 /**
- * About dialog.
+ * About dialog showing version and contributors information.
  * 
  * @author Hendrik Schreiber
- * @version $Id: $
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
-public class AboutDialog extends JDialog implements ActionListener {
+public class AboutDialog extends ScreenCenteredDialog implements ActionListener {
 
-    public static String vcid = "$Id: AboutDialog.java,v 1.1.1.1 2002/01/15 19:48:45 hendriks73 Exp $";
-    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
     private static final String GCVIEWER_HOMEPAGE = "https://github.com/chewiebug/gcviewer/wiki";
 
-    private Frame frame;
+    private static final String ACTION_OK = "ok";
+    private static final String ACTION_HOMEPAGE = "homepage";
+    
+    private JButton homePageButton;
+    private JButton okButton;
 
     public AboutDialog(Frame f) {
-        super(f, localStrings.getString("about_dialog_title"), true);
-        this.frame = f;
-        setLocation(20, 20);
+        super(f, LocalisationHelper.getString("about_dialog_title"));
         Panel logoPanel = new Panel();
-        ImageIcon logoIcon = new ImageIcon(getClass().getResource(localStrings.getString("about_dialog_image")));
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource(LocalisationHelper.getString("about_dialog_image")));
         JLabel la_icon = new JLabel(logoIcon);
         la_icon.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
         logoPanel.add(la_icon);
@@ -98,20 +90,15 @@ public class AboutDialog extends JDialog implements ActionListener {
         
         Panel buttonPanel = new Panel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        if (ExternalViewer.isSupported()) {
-            try {
-                JButton homepageButton = new JButton("Homepage");
-                homepageButton.addActionListener(new ExternalViewer(new URL(
-                        GCVIEWER_HOMEPAGE)));
-                buttonPanel.add(homepageButton);
-            } catch (MalformedURLException e) {
-                // should never happen
-                e.printStackTrace();
-            }
+        if (UrlDisplayHelper.displayUrlIsSupported()) {
+            homePageButton = new JButton("Homepage");
+            homePageButton.setActionCommand(ACTION_HOMEPAGE);
+            homePageButton.addActionListener(this);
+            buttonPanel.add(homePageButton);
         }
 
-        JButton okButton = new JButton(localStrings.getString("button_ok"));
-        okButton.setActionCommand("ok");
+        okButton = new JButton(LocalisationHelper.getString("button_ok"));
+        okButton.setActionCommand(ACTION_OK);
         okButton.addActionListener(this);
         buttonPanel.add(okButton);
         getContentPane().add("North", logoPanel);
@@ -122,107 +109,13 @@ public class AboutDialog extends JDialog implements ActionListener {
         setVisible(false);
     }
 
-    protected JRootPane createRootPane() {
-        KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        KeyStroke enterStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        
-        JRootPane rootPane = new JRootPane();
-        rootPane.registerKeyboardAction(this, escapeStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
-        rootPane.registerKeyboardAction(this, enterStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
-        
-        return rootPane;
-    }
-    
     public void actionPerformed(ActionEvent e) {
-        setVisible(false);
-    }
-
-    public void setVisible(boolean visible) {
-        if (visible) {
-            setLocation((int) frame.getLocation().getX() + (frame.getWidth() / 2) - (getWidth() / 2), 
-                    (int) frame.getLocation().getY() + (frame.getHeight() / 2) - (getHeight() / 2));
+        if (ACTION_HOMEPAGE.equals(e.getActionCommand())) {
+            UrlDisplayHelper.displayUrl(this, GCVIEWER_HOMEPAGE);
         }
-        
-        super.setVisible(visible);
-    }
-
-    private static class ExternalViewer implements ActionListener {
-
-        private static final boolean WINDOWS = System.getProperty("os.name")
-                .toLowerCase().startsWith("win");
-        private static final boolean MAC = System.getProperty("os.name")
-                .toLowerCase().indexOf("mac") != -1;
-
-        // The default system browser under Mac OS X.
-        private static final String MAC_PATH = "open";
-        // The default system browser under WINDOWS.
-        private static final String WIN_PATH = "rundll32";
-        // The flag to display a url.
-        private static final String WIN_FLAG = "url.dll,FileProtocolHandler";
-
-        private URL url;
-
-        public ExternalViewer(URL url) {
-            this.url = url;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            try {
-                displayURL(url);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
-
-        /**
-         * Display a file in the system browser. If you want to display a file,
-         * you must include the absolute path name.
-         * 
-         * @param url
-         *            the file's url (the url must start with either "http://"
-         *            or "file://").
-         */
-        public static void displayURL(URL url) throws IOException {
-            String cmd = null;
-            String urlString = url.toString();
-            if (WINDOWS) {
-                // cmd = 'rundll32 url.dll,FileProtocolHandler http://...'
-                // make sure, file URLs start with file:// instead of just
-                // file:/
-                if (urlString.startsWith("file:/")) {
-                    if (!urlString.startsWith("file://")) {
-                        urlString = "file://"
-                                + urlString.substring("file:/".length());
-                    }
-                }
-                // replace %20 with spaces
-                try {
-                    urlString = URLDecoder.decode(urlString, "UTF-8");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                cmd = WIN_PATH + " " + WIN_FLAG + " " + urlString;
-                /*
-                 * if (urlString.startsWith("file:")) { } else { cmd =
-                 * "rundll32.exe msconf.dll,CallToProtocolHandler " + urlString;
-                 * }
-                 */
-                Runtime.getRuntime().exec(cmd);
-            } else if (MAC) {
-                // TODO: fix this!
-                // hack to display jsps in TextEdit
-                if (urlString.endsWith(".jsp") || urlString.endsWith(".jspx")) {
-                    cmd = MAC_PATH + " -e "
-                            + urlString.substring("file:".length());
-                } else {
-                    cmd = MAC_PATH + " " + url;
-                }
-                Runtime.getRuntime().exec(cmd);
-            }
-        }
-
-        public static boolean isSupported() {
-            return WINDOWS || MAC;
+        else {
+            // default action
+            super.actionPerformed(e);
         }
     }
 

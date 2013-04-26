@@ -1,11 +1,16 @@
 package com.tagtraum.perf.gcviewer.action;
 
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+
 import com.tagtraum.perf.gcviewer.GCDocument;
 import com.tagtraum.perf.gcviewer.GCViewerGui;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -19,9 +24,9 @@ public class Refresh extends AbstractAction {
 
     public Refresh(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_refresh"));
-        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_refresh"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_refresh").charAt(0)));
+        putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_refresh"));
+        putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_refresh"));
+        putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_refresh").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "refresh");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/refresh.png"))));
@@ -34,10 +39,10 @@ public class Refresh extends AbstractAction {
             if (gcDocument != null) gcDocument.reloadModels(false);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(gcViewer, e.toString() + " " + e.getLocalizedMessage(), GCViewerGui.localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(gcViewer, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             //e.printStackTrace();
-            JOptionPane.showMessageDialog(gcViewer, e.getLocalizedMessage(), GCViewerGui.localStrings.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(gcViewer, e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
         }
     }
 }

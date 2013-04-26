@@ -3,10 +3,11 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -17,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class DataReaderFactory {
 
-    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
     private static Logger LOG = Logger.getLogger(DataReaderFactory.class.getName());
     private static final int ONE_KB = 1024;
     private static final int FOUR_KB = ONE_KB * 4;
@@ -66,10 +66,10 @@ public class DataReaderFactory {
         }
 
         if (dataReader == null) {
-            if (LOG.isLoggable(Level.SEVERE)) LOG.severe(localStrings.getString("datareaderfactory_instantiation_failed")
+            if (LOG.isLoggable(Level.SEVERE)) LOG.severe(LocalisationHelper.getString("datareaderfactory_instantiation_failed")
                     + "\ncontent:"
                     + "\n" + s);
-            throw new IOException(localStrings.getString("datareaderfactory_instantiation_failed"));
+            throw new IOException(LocalisationHelper.getString("datareaderfactory_instantiation_failed"));
         }
         return dataReader;
     }

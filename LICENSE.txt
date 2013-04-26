@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-For LGPL see <http://www.gnu.org/licenses/lgpl.html>
+For LGPL see http://www.gnu.org/licenses/lgpl.html
 
 Feedback
 ========
@@ -30,5 +30,5 @@ improve the Software. Send all such feedback to:
 <gcviewer@gmx.ch>
 
 For more information on tagtraum industries incorporated and GCViewer
-please see <http://www.tagtraum.com/>. For more information on the latest
-development of GCViewer please see <http://github.com/chewiebug/GCViewer/wiki>.
+please see http://www.tagtraum.com/. For more information on the latest
+development of GCViewer please see http://github.com/chewiebug/GCViewer/wiki.

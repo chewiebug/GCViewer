@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -20,6 +19,7 @@ import javax.swing.SwingUtilities;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file
@@ -29,8 +29,6 @@ import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
  * <p>created on: 24.11.2012</p>
  */
 public class DataReaderFacade {
-
-    private static final ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
 
     private static final Logger PARSER_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer");
     private static final Logger LOGGER = Logger.getLogger(DataReaderFacade.class.getName());
@@ -58,12 +56,12 @@ public class DataReaderFacade {
             model.setURL(url);
         } 
         catch (RuntimeException e) {
-            LOGGER.severe(localStrings.getString("fileopen_dialog_read_file_failed")
+            LOGGER.severe(LocalisationHelper.getString("fileopen_dialog_read_file_failed")
                     + "\n" + e.toString() + " " + e.getLocalizedMessage());
             dataReaderException.initCause(e);
         } 
         catch (IOException e) {
-            LOGGER.severe(localStrings.getString("fileopen_dialog_read_file_failed")
+            LOGGER.severe(LocalisationHelper.getString("fileopen_dialog_read_file_failed")
                     + "\n" + e.toString() + " " + e.getLocalizedMessage());
             dataReaderException.initCause(e);
         }
@@ -105,7 +103,7 @@ public class DataReaderFacade {
      */
     private void showErrorDialog(final URL url, TextAreaLogHandler textAreaLogHandler, final Component parent) {
         final JPanel panel = new JPanel(new BorderLayout());
-        final JLabel messageLabel = new JLabel(new MessageFormat(localStrings.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
+        final JLabel messageLabel = new JLabel(new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
         messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         panel.add(messageLabel, BorderLayout.NORTH);
         final JScrollPane textAreaScrollPane = new JScrollPane(textAreaLogHandler.getTextArea());
@@ -113,7 +111,7 @@ public class DataReaderFacade {
         panel.add(textAreaScrollPane, BorderLayout.CENTER);
         SwingUtilities.invokeLater(new Runnable(){
             public void run() {
-                JOptionPane.showMessageDialog(parent, panel, new MessageFormat(localStrings.getString("datareader_parseerror_dialog_title")).format(new Object[]{url}), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(parent, panel, new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_title")).format(new Object[]{url}), JOptionPane.ERROR_MESSAGE);
             }
         });
     }

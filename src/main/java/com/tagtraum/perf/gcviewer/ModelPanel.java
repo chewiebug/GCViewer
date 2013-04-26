@@ -8,7 +8,6 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -18,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.util.MemoryFormat;
 import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
@@ -30,8 +30,6 @@ import com.tagtraum.perf.gcviewer.util.TimeFormat;
  * @version $Id: $
  */
 public class ModelPanel extends JTabbedPane {
-
-    private static ResourceBundle localStrings = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
 
     private NumberFormat pauseFormatter;
     private DateFormat totalTimeFormatter;
@@ -51,7 +49,7 @@ public class ModelPanel extends JTabbedPane {
 
 
     public ModelPanel() {
-        //setBorder(new TitledBorder(localStrings.getString("data_panel_title")));
+        //setBorder(new TitledBorder(LocalisationHelper.getString("data_panel_title")));
         pauseFormatter = NumberFormat.getInstance();
         pauseFormatter.setMaximumFractionDigits(5);
 
@@ -82,11 +80,11 @@ public class ModelPanel extends JTabbedPane {
         percentFormatter.setMinimumFractionDigits(1);
 
         summaryTab = new SummaryTab();
-        addTab(localStrings.getString("data_panel_tab_summary"), summaryTab);
+        addTab(LocalisationHelper.getString("data_panel_tab_summary"), summaryTab);
         memoryTab = new MemoryTab();
-        addTab(localStrings.getString("data_panel_tab_memory"), memoryTab);
+        addTab(LocalisationHelper.getString("data_panel_tab_memory"), memoryTab);
         pauseTab = new PauseTab();
-        addTab(localStrings.getString("data_panel_tab_pause"), pauseTab);
+        addTab(LocalisationHelper.getString("data_panel_tab_pause"), pauseTab);
     }
 
     private String sigmaMemoryFormat(double value) {
@@ -212,29 +210,29 @@ public class ModelPanel extends JTabbedPane {
         public MemoryTab() {
             super();
             
-            addEntry(localStrings.getString("data_panel_memory_heap_usage"));
-            addEntry(localStrings.getString("data_panel_memory_tenured_heap_usage"));
-            addEntry(localStrings.getString("data_panel_memory_young_heap_usage"));
-            addEntry(localStrings.getString("data_panel_memory_perm_heap_usage"));
-            addEntry(localStrings.getString("data_panel_footprintafterfullgc"));
-            addEntry(localStrings.getString("data_panel_footprintaftergc"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_heap_usage"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_tenured_heap_usage"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_young_heap_usage"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_perm_heap_usage"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintaftergc"));
             
-            addEntry(localStrings.getString("data_panel_freedmemorybyfullgc"));
-            addEntry(localStrings.getString("data_panel_freedmemorybygc"));
+            addEntry(LocalisationHelper.getString("data_panel_freedmemorybyfullgc"));
+            addEntry(LocalisationHelper.getString("data_panel_freedmemorybygc"));
             
-            addEntry(localStrings.getString("data_panel_avgfreedmemorybyfullgc"));
-            addEntry(localStrings.getString("data_panel_avgfreedmemorybygc"));
+            addEntry(LocalisationHelper.getString("data_panel_avgfreedmemorybyfullgc"));
+            addEntry(LocalisationHelper.getString("data_panel_avgfreedmemorybygc"));
             
-            addEntry(localStrings.getString("data_panel_avgrelativepostfullgcincrease"));
-            addEntry(localStrings.getString("data_panel_avgrelativepostgcincrease"));
+            addEntry(LocalisationHelper.getString("data_panel_avgrelativepostfullgcincrease"));
+            addEntry(LocalisationHelper.getString("data_panel_avgrelativepostgcincrease"));
             
-            addEntry(localStrings.getString("data_panel_slopeafterfullgc"));
-            addEntry(localStrings.getString("data_panel_slopeaftergc"));
+            addEntry(LocalisationHelper.getString("data_panel_slopeafterfullgc"));
+            addEntry(LocalisationHelper.getString("data_panel_slopeaftergc"));
             
-            addEntry(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_initiatingoccupancyfraction"));
             
-            addEntry(localStrings.getString("data_panel_memory_promotion_avg"));
-            addEntry(localStrings.getString("data_panel_memory_promotion_total"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_promotion_avg"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_promotion_total"));
        }
         
         public void setModel(GCModel model) {
@@ -245,83 +243,83 @@ public class ModelPanel extends JTabbedPane {
             final boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
             final boolean promotionAvailable = model.getPromotion().getN() > 0;
 
-            updateValue(localStrings.getString("data_panel_memory_heap_usage"),
+            updateValue(LocalisationHelper.getString("data_panel_memory_heap_usage"),
                     footprintFormatter.format(model.getHeapUsedSizes().getMax()) 
                         + " (" + percentFormatter.format(model.getHeapUsedSizes().getMax() / (double)model.getHeapAllocatedSizes().getMax() * 100) + "%)"
                         + " / " + footprintFormatter.format(model.getHeapAllocatedSizes().getMax()),
                     true);
-            updateValue(localStrings.getString("data_panel_memory_tenured_heap_usage"),
+            updateValue(LocalisationHelper.getString("data_panel_memory_tenured_heap_usage"),
                     model.getTenuredAllocatedSizes().getN() > 0 ? footprintFormatter.format(model.getTenuredUsedSizes().getMax()) 
                         + " (" + percentFormatter.format(model.getTenuredUsedSizes().getMax() / (double)model.getTenuredAllocatedSizes().getMax() * 100) + "%)"
                         + " / " + footprintFormatter.format(model.getTenuredAllocatedSizes().getMax()) : "n/a",
                     model.getTenuredAllocatedSizes().getN() > 0);
-            updateValue(localStrings.getString("data_panel_memory_young_heap_usage"),
+            updateValue(LocalisationHelper.getString("data_panel_memory_young_heap_usage"),
                     model.getYoungUsedSizes().getN() > 0 ? footprintFormatter.format(model.getYoungUsedSizes().getMax()) 
                         + " (" + percentFormatter.format(model.getYoungUsedSizes().getMax() / (double)model.getYoungAllocatedSizes().getMax() * 100) + "%)"
                         + " / " + footprintFormatter.format(model.getYoungAllocatedSizes().getMax()) : "n/a",
                     model.getYoungAllocatedSizes().getN() > 0);
-            updateValue(localStrings.getString("data_panel_memory_perm_heap_usage"),
+            updateValue(LocalisationHelper.getString("data_panel_memory_perm_heap_usage"),
                     model.getPermUsedSizes().getN() > 0 ? footprintFormatter.format(model.getPermUsedSizes().getMax()) 
                             + " (" + percentFormatter.format(model.getPermUsedSizes().getMax() / (double)model.getPermAllocatedSizes().getMax() * 100) + "%)"
                             + " / " + footprintFormatter.format(model.getPermAllocatedSizes().getMax()) : "n/a",
                     model.getPermAllocatedSizes().getN() > 0);
-            updateValue(localStrings.getString("data_panel_footprintafterfullgc"),
+            updateValue(LocalisationHelper.getString("data_panel_footprintafterfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation()) +")" : "n/a",
                     fullGCDataVailable && isSignificant(model.getFootprintAfterFullGC().average(),
                             model.getFootprintAfterFullGC().standardDeviation()));
-            updateValue(localStrings.getString("data_panel_footprintaftergc"),
+            updateValue(LocalisationHelper.getString("data_panel_footprintaftergc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFootprintAfterGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterGC().standardDeviation()) + ")" : "n/a",
                     gcDataAvailable && isSignificant(model.getFootprintAfterGC().average(),
                                     model.getFootprintAfterGC().standardDeviation()));
         	
-            updateValue(localStrings.getString("data_panel_freedmemorybyfullgc"),
+            updateValue(LocalisationHelper.getString("data_panel_freedmemorybyfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum())
                             + " (" + percentFormatter.format(model.getFreedMemoryByFullGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
                     fullGCDataVailable);
-            updateValue(localStrings.getString("data_panel_freedmemorybygc"),
+            updateValue(LocalisationHelper.getString("data_panel_freedmemorybygc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().getSum())
                             + " (" + percentFormatter.format(model.getFreedMemoryByGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
                     gcDataAvailable);
         	
-            updateValue(localStrings.getString("data_panel_avgfreedmemorybyfullgc"),
+            updateValue(LocalisationHelper.getString("data_panel_avgfreedmemorybyfullgc"),
         			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().average())
                             + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByFullGC().standardDeviation()) + ")" : "n/a",
                     fullGCDataVailable && isSignificant(model.getFreedMemoryByFullGC().average(),
                             model.getFreedMemoryByFullGC().standardDeviation()));
-            updateValue(localStrings.getString("data_panel_avgfreedmemorybygc"),
+            updateValue(LocalisationHelper.getString("data_panel_avgfreedmemorybygc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().average())
                             + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByGC().standardDeviation()) + ")" : "n/a",
                     gcDataAvailable && isSignificant(model.getFreedMemoryByGC().average(),
                             model.getFreedMemoryByGC().standardDeviation()));
         	
-            updateValue(localStrings.getString("data_panel_avgrelativepostfullgcincrease"),
+            updateValue(LocalisationHelper.getString("data_panel_avgrelativepostfullgcincrease"),
         			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostFullGCIncrease().slope()) + "/coll" : "n/a",
         			fullGCSlopeDataAvailable);
-            updateValue(localStrings.getString("data_panel_avgrelativepostgcincrease"),
+            updateValue(LocalisationHelper.getString("data_panel_avgrelativepostgcincrease"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostGCIncrease().average()) + "/coll" : "n/a",
         			gcSlopeDataAvailable);
         	
-            updateValue(localStrings.getString("data_panel_slopeafterfullgc"),
+            updateValue(LocalisationHelper.getString("data_panel_slopeafterfullgc"),
         			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostFullGCSlope().slope()) + "/s" : "n/a",
         			fullGCSlopeDataAvailable);
-            updateValue(localStrings.getString("data_panel_slopeaftergc"),
+            updateValue(LocalisationHelper.getString("data_panel_slopeaftergc"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostGCSlope()) + "/s" : "n/a",
         			gcSlopeDataAvailable);
         	
-            updateValue(localStrings.getString("data_panel_memory_initiatingoccupancyfraction"),
+            updateValue(LocalisationHelper.getString("data_panel_memory_initiatingoccupancyfraction"),
         	        initiatingOccFractionAvailable ? 
         	                percentFormatter.format(model.getCmsInitiatingOccupancyFraction().average()*100) + "%"
         	                + " / " + percentFormatter.format(model.getCmsInitiatingOccupancyFraction().getMax()*100) + "%": "n/a",
         	        initiatingOccFractionAvailable);
 
-            updateValue(localStrings.getString("data_panel_memory_promotion_avg"),
+            updateValue(LocalisationHelper.getString("data_panel_memory_promotion_avg"),
                     promotionAvailable ? promotionFormatter.format(model.getPromotion().average()) + "/coll"+
                             " (\u03c3=" + sigmaMemoryFormat(model.getPromotion().standardDeviation()) + ")" : "n/a",
                     promotionAvailable && isSignificant(model.getPromotion().average(),
                             model.getPromotion().standardDeviation()));
-            updateValue(localStrings.getString("data_panel_memory_promotion_total"),
+            updateValue(LocalisationHelper.getString("data_panel_memory_promotion_total"),
                     promotionAvailable ? promotionFormatter.format(model.getPromotion().getSum()) : "n/a",
                     promotionAvailable);
         }
@@ -332,25 +330,25 @@ public class ModelPanel extends JTabbedPane {
         public PauseTab() {
             super();
             
-            newGroup(localStrings.getString("data_panel_group_total_pause"), true);
-            addEntry(localStrings.getString("data_panel_acc_pauses"));
-            addEntry(localStrings.getString("data_panel_count_pauses"));
-            addEntry(localStrings.getString("data_panel_avg_pause"));
-            addEntry(localStrings.getString("data_panel_min_max_pause"));
-            addEntry(localStrings.getString("data_panel_avg_pause_interval"));
-            addEntry(localStrings.getString("data_panel_min_max_pause_interval"));
+            newGroup(LocalisationHelper.getString("data_panel_group_total_pause"), true);
+            addEntry(LocalisationHelper.getString("data_panel_acc_pauses"));
+            addEntry(LocalisationHelper.getString("data_panel_count_pauses"));
+            addEntry(LocalisationHelper.getString("data_panel_avg_pause"));
+            addEntry(LocalisationHelper.getString("data_panel_min_max_pause"));
+            addEntry(LocalisationHelper.getString("data_panel_avg_pause_interval"));
+            addEntry(LocalisationHelper.getString("data_panel_min_max_pause_interval"));
 
-            newGroup(localStrings.getString("data_panel_group_full_gc_pauses"), true);
-            addEntry(localStrings.getString("data_panel_acc_fullgcpauses"));
-            addEntry(localStrings.getString("data_panel_count_full_gc_pauses"));
-            addEntry(localStrings.getString("data_panel_avg_fullgcpause"));
-            addEntry(localStrings.getString("data_panel_min_max_full_gc_pause"));
+            newGroup(LocalisationHelper.getString("data_panel_group_full_gc_pauses"), true);
+            addEntry(LocalisationHelper.getString("data_panel_acc_fullgcpauses"));
+            addEntry(LocalisationHelper.getString("data_panel_count_full_gc_pauses"));
+            addEntry(LocalisationHelper.getString("data_panel_avg_fullgcpause"));
+            addEntry(LocalisationHelper.getString("data_panel_min_max_full_gc_pause"));
 
-            newGroup(localStrings.getString("data_panel_group_gc_pauses"), true);
-            addEntry(localStrings.getString("data_panel_acc_gcpauses"));
-            addEntry(localStrings.getString("data_panel_count_gc_pauses"));
-            addEntry(localStrings.getString("data_panel_avg_gcpause"));
-            addEntry(localStrings.getString("data_panel_min_max_gc_pause"));
+            newGroup(LocalisationHelper.getString("data_panel_group_gc_pauses"), true);
+            addEntry(LocalisationHelper.getString("data_panel_acc_gcpauses"));
+            addEntry(LocalisationHelper.getString("data_panel_count_gc_pauses"));
+            addEntry(LocalisationHelper.getString("data_panel_avg_gcpause"));
+            addEntry(LocalisationHelper.getString("data_panel_min_max_gc_pause"));
         }
         
         public void setModel(GCModel model) {
@@ -359,48 +357,48 @@ public class ModelPanel extends JTabbedPane {
             final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
             final boolean pauseIntervalDataAvailable = model.getPauseInterval().getN() > 0; // fix for "Exception if only one GC log line in file"
             
-            updateValue(localStrings.getString("data_panel_acc_pauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_acc_pauses"), 
             		gcTimeFormatter.format(model.getPause().getSum()) + "s", 
             		true);
-            updateValue(localStrings.getString("data_panel_count_pauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_count_pauses"), 
             		Integer.toString(model.getPause().getN()), 
             		true);
-            updateValue(localStrings.getString("data_panel_avg_pause"), 
+            updateValue(LocalisationHelper.getString("data_panel_avg_pause"), 
             		pauseDataAvailable ? pauseFormatter.format(model.getPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPause().standardDeviation()) +")" : "n/a", 
             		pauseDataAvailable ? isSignificant(model.getPause().average(), model.getPause().standardDeviation()) : false);
-            updateValue(localStrings.getString("data_panel_min_max_pause"), 
+            updateValue(LocalisationHelper.getString("data_panel_min_max_pause"), 
             		pauseDataAvailable ? pauseFormatter.format(model.getPause().getMin()) + "s / " +pauseFormatter.format(model.getPause().getMax()) + "s" : "n/a", 
             		pauseDataAvailable);
-            updateValue(localStrings.getString("data_panel_avg_pause_interval"), 
+            updateValue(LocalisationHelper.getString("data_panel_avg_pause_interval"), 
                     pauseIntervalDataAvailable ? pauseFormatter.format(model.getPauseInterval().average()) + "s (\u03c3=" + pauseFormatter.format(model.getPauseInterval().standardDeviation()) +")" : "n/a", 
                     pauseIntervalDataAvailable ? isSignificant(model.getPauseInterval().average(), model.getPauseInterval().standardDeviation()) : false);
-            updateValue(localStrings.getString("data_panel_min_max_pause_interval"), 
+            updateValue(LocalisationHelper.getString("data_panel_min_max_pause_interval"), 
                     pauseIntervalDataAvailable ? pauseFormatter.format(model.getPauseInterval().getMin()) + "s / " +pauseFormatter.format(model.getPauseInterval().getMax()) + "s" : "n/a", 
                     pauseIntervalDataAvailable);
 
-            updateValue(localStrings.getString("data_panel_acc_fullgcpauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_acc_fullgcpauses"), 
             		gcTimeFormatter.format(model.getFullGCPause().getSum())+ "s (" + percentFormatter.format(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 
             		true);
-            updateValue(localStrings.getString("data_panel_count_full_gc_pauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_count_full_gc_pauses"), 
             		Integer.toString(model.getFullGCPause().getN()), 
             		true);
-            updateValue(localStrings.getString("data_panel_avg_fullgcpause"), 
+            updateValue(LocalisationHelper.getString("data_panel_avg_fullgcpause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getFullGCPause().standardDeviation()) +")" : "n/a", 
             		fullGCDataAvailable ? isSignificant(model.getFullGCPause().average(), model.getFullGCPause().standardDeviation()) : false);
-            updateValue(localStrings.getString("data_panel_min_max_full_gc_pause"), 
+            updateValue(LocalisationHelper.getString("data_panel_min_max_full_gc_pause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMin()) + "s / " + pauseFormatter.format(model.getFullGCPause().getMax()) + "s" : "n/a", 
             		fullGCDataAvailable);
 
-            updateValue(localStrings.getString("data_panel_acc_gcpauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_acc_gcpauses"), 
             		gcTimeFormatter.format(model.getGCPause().getSum())+ "s (" + percentFormatter.format(model.getGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 
             		true);
-            updateValue(localStrings.getString("data_panel_count_gc_pauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_count_gc_pauses"), 
             		Integer.toString(model.getGCPause().getN()), 
             		true);
-            updateValue(localStrings.getString("data_panel_avg_gcpause"), 
+            updateValue(LocalisationHelper.getString("data_panel_avg_gcpause"), 
             		gcDataAvailable ? pauseFormatter.format(model.getGCPause().average()) + "s (\u03c3=" + pauseFormatter.format(model.getGCPause().standardDeviation()) +")" : "n/a", 
             		gcDataAvailable ? isSignificant(model.getGCPause().average(), model.getGCPause().standardDeviation()) : false);
-            updateValue(localStrings.getString("data_panel_min_max_gc_pause"), 
+            updateValue(LocalisationHelper.getString("data_panel_min_max_gc_pause"), 
             		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMin()) + "s / " + pauseFormatter.format(model.getGCPause().getMax()) + "s": "n/a", 
             		gcDataAvailable);
             
@@ -412,49 +410,49 @@ public class ModelPanel extends JTabbedPane {
         public SummaryTab() {
             super();
             
-            addEntry(localStrings.getString("data_panel_footprint"));
-            addEntry(localStrings.getString("data_panel_freedmemory"));
-            addEntry(localStrings.getString("data_panel_freedmemorypermin"));
-            addEntry(localStrings.getString("data_panel_total_time"));
-            addEntry(localStrings.getString("data_panel_acc_pauses"));
-            addEntry(localStrings.getString("data_panel_throughput"));
-            addEntry(localStrings.getString("data_panel_count_full_gc_pauses"));
-            addEntry(localStrings.getString("data_panel_performance_fullgc"));
-            addEntry(localStrings.getString("data_panel_count_gc_pauses"));
-            addEntry(localStrings.getString("data_panel_performance_gc"));
+            addEntry(LocalisationHelper.getString("data_panel_footprint"));
+            addEntry(LocalisationHelper.getString("data_panel_freedmemory"));
+            addEntry(LocalisationHelper.getString("data_panel_freedmemorypermin"));
+            addEntry(LocalisationHelper.getString("data_panel_total_time"));
+            addEntry(LocalisationHelper.getString("data_panel_acc_pauses"));
+            addEntry(LocalisationHelper.getString("data_panel_throughput"));
+            addEntry(LocalisationHelper.getString("data_panel_count_full_gc_pauses"));
+            addEntry(LocalisationHelper.getString("data_panel_performance_fullgc"));
+            addEntry(LocalisationHelper.getString("data_panel_count_gc_pauses"));
+            addEntry(LocalisationHelper.getString("data_panel_performance_gc"));
         }
         
         public void setModel(GCModel model) {
-        	updateValue(localStrings.getString("data_panel_footprint"),
+        	updateValue(LocalisationHelper.getString("data_panel_footprint"),
         			footprintFormatter.format(model.getFootprint()), 
         			true);
-        	updateValue(localStrings.getString("data_panel_freedmemory"),
+        	updateValue(LocalisationHelper.getString("data_panel_freedmemory"),
         			footprintFormatter.format(model.getFreedMemory()),
         			true);
-        	updateValue(localStrings.getString("data_panel_freedmemorypermin"),
+        	updateValue(LocalisationHelper.getString("data_panel_freedmemorypermin"),
         			freedMemoryPerMinFormatter.format(model.getFreedMemory()/model.getRunningTime()*60.0) + "/min",
         			true);
-        	updateValue(localStrings.getString("data_panel_total_time"),
+        	updateValue(LocalisationHelper.getString("data_panel_total_time"),
         			model.hasCorrectTimestamp() ? totalTimeFormatter.format(new Date((long)model.getRunningTime()*1000l)) : "n/a",
         			model.hasCorrectTimestamp());
-        	updateValue(localStrings.getString("data_panel_acc_pauses"),
+        	updateValue(LocalisationHelper.getString("data_panel_acc_pauses"),
         			gcTimeFormatter.format(model.getPause().getSum()) + "s",
         			true);
-        	updateValue(localStrings.getString("data_panel_throughput"),
+        	updateValue(LocalisationHelper.getString("data_panel_throughput"),
         			model.hasCorrectTimestamp() ? throughputFormatter.format(model.getThroughput()) + "%" : "n/a",
         			model.hasCorrectTimestamp());
-            updateValue(localStrings.getString("data_panel_count_full_gc_pauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_count_full_gc_pauses"), 
                     Integer.toString(model.getFullGCPause().getN()), 
                     true);
-        	updateValue(localStrings.getString("data_panel_performance_fullgc"),
+        	updateValue(LocalisationHelper.getString("data_panel_performance_fullgc"),
         			model.getFullGCPause().getN() > 0  
         					? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum()/model.getFullGCPause().getSum()) + "/s"
         					: "n/a",
         			model.getFullGCPause().getN() > 0);
-            updateValue(localStrings.getString("data_panel_count_gc_pauses"), 
+            updateValue(LocalisationHelper.getString("data_panel_count_gc_pauses"), 
                     Integer.toString(model.getGCPause().getN()), 
                     true);
-        	updateValue(localStrings.getString("data_panel_performance_gc"),
+        	updateValue(LocalisationHelper.getString("data_panel_performance_gc"),
         			model.getGCPause().getN() > 0 
         				? footprintFormatter.format(model.getFreedMemoryByGC().getSum()/model.getGCPause().getSum()) + "/s"
         				: "n/a",

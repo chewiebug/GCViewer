@@ -1,11 +1,5 @@
 package com.tagtraum.perf.gcviewer.action;
 
-import com.tagtraum.perf.gcviewer.GCViewerGui;
-import com.tagtraum.perf.gcviewer.util.OSXSupport;
-
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 import java.awt.Event;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -14,6 +8,14 @@ import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+
+import com.tagtraum.perf.gcviewer.GCViewerGui;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.util.OSXSupport;
 
 /**
  * Used to enter and exit full screen mode on Mac OS X Lion and later.
@@ -26,8 +28,8 @@ public class OSXFullScreen extends AbstractAction {
 
     public OSXFullScreen(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_enter_fullscreen"));
-        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_enter_fullscreen"));
+        putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_enter_fullscreen"));
+        putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_enter_fullscreen"));
         putValue(ACTION_COMMAND_KEY, "fullscreen");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('F', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | Event.SHIFT_MASK));
 
@@ -41,15 +43,15 @@ public class OSXFullScreen extends AbstractAction {
                                            @Override
                                            public Object invoke(Object o, Method method, Object[] args) throws Throwable {
                                                if (method.getName().equals("windowEnteredFullScreen")) {
-                                                   putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_leave_fullscreen"));
-                                                   putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_leave_fullscreen"));
+                                                   putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_leave_fullscreen"));
+                                                   putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_leave_fullscreen"));
                                                    gcViewer.getDesktopPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                                                                                                                   "leaveFullScreen");
                                                    gcViewer.getDesktopPane().getActionMap().put("leaveFullScreen", OSXFullScreen.this);
                                                }
                                                if (method.getName().equals("windowExitedFullScreen")) {
-                                                   putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_enter_fullscreen"));
-                                                   putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_enter_fullscreen"));
+                                                   putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_enter_fullscreen"));
+                                                   putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_enter_fullscreen"));
                                                    gcViewer.getDesktopPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
                                                    gcViewer.getDesktopPane().getActionMap().remove("leaveFullScreen");
                                                }

@@ -1,14 +1,23 @@
 package com.tagtraum.perf.gcviewer.action;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
 import com.tagtraum.perf.gcviewer.AutoCompletionComboBox;
 import com.tagtraum.perf.gcviewer.GCViewerGui;
 import com.tagtraum.perf.gcviewer.RecentURLsModel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.net.URL;
-import java.net.MalformedURLException;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -25,9 +34,9 @@ public class OpenURL extends AbstractAction {
     public OpenURL(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
         this.autoCompletionComboBox = new AutoCompletionComboBox();
-        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_open_url"));
-        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_open_url"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_open_url").charAt(0)));
+        putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_open_url"));
+        putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_open_url"));
+        putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_open_url").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "open_url");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('U', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/open_url.png"))));
@@ -44,13 +53,13 @@ public class OpenURL extends AbstractAction {
         panel.add(autoCompletionComboBox, gridBagConstraints);
         gridBagConstraints.gridy = 1;
 
-        final JCheckBox addURLCheckBox = new JCheckBox(GCViewerGui.localStrings.getString("urlopen_dialog_add_checkbox"), false);
+        final JCheckBox addURLCheckBox = new JCheckBox(LocalisationHelper.getString("urlopen_dialog_add_checkbox"), false);
         final boolean aDocumentIsAlreadyOpen = gcViewer.getSelectedGCDocument() != null;
         addURLCheckBox.setVisible(aDocumentIsAlreadyOpen);
         addURLCheckBox.setEnabled(aDocumentIsAlreadyOpen);
-        addURLCheckBox.setToolTipText(GCViewerGui.localStrings.getString("urlopen_dialog_hint_add_checkbox"));
+        addURLCheckBox.setToolTipText(LocalisationHelper.getString("urlopen_dialog_hint_add_checkbox"));
         panel.add(addURLCheckBox, gridBagConstraints);
-        final int result = JOptionPane.showConfirmDialog(gcViewer, panel, GCViewerGui.localStrings.getString("urlopen_dialog_title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        final int result = JOptionPane.showConfirmDialog(gcViewer, panel, LocalisationHelper.getString("urlopen_dialog_title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (JOptionPane.OK_OPTION == result) {
             try {
                 final URL[] urls = new URL[]{new URL((String)autoCompletionComboBox.getSelectedItem())};

@@ -1,11 +1,12 @@
 package com.tagtraum.perf.gcviewer.action;
 
-import com.tagtraum.perf.gcviewer.GCViewerGui;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+
+import com.tagtraum.perf.gcviewer.GCViewerGui;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -19,9 +20,9 @@ public class Zoom extends AbstractAction {
 
     public Zoom(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewerGui.localStrings.getString("action_zoom"));
-        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("action_zoom_hint"));
-        //putValue(Action.MNEMONIC_KEY, new Integer(localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
+        putValue(NAME, LocalisationHelper.getString("action_zoom"));
+        putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("action_zoom_hint"));
+        //putValue(Action.MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "zoom");
         //putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         setEnabled(false);

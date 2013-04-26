@@ -18,6 +18,7 @@ import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -32,20 +33,20 @@ public class Export extends AbstractAction {
 
     public Export(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;
-        putValue(NAME, GCViewerGui.localStrings.getString("main_frame_menuitem_export"));
-        putValue(MNEMONIC_KEY, new Integer(GCViewerGui.localStrings.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
-        putValue(SHORT_DESCRIPTION, GCViewerGui.localStrings.getString("main_frame_menuitem_hint_export"));
+        putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_export"));
+        putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_export").charAt(0)));
+        putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_export"));
         putValue(ACTION_COMMAND_KEY, "export");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/save.png"))));
         setEnabled(false);
         
         saveDialog = new JFileChooser();
-        saveDialog.setDialogTitle(GCViewerGui.localStrings.getString("fileexport_dialog_title"));
+        saveDialog.setDialogTitle(LocalisationHelper.getString("fileexport_dialog_title"));
         saveDialog.removeChoosableFileFilter(saveDialog.getAcceptAllFileFilter());
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", GCViewerGui.localStrings.getString("fileexport_dialog_csv"), DataWriterType.CSV));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".txt", GCViewerGui.localStrings.getString("fileexport_dialog_txt"), DataWriterType.PLAIN));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".simple.log", GCViewerGui.localStrings.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE));
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV));
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN));
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE));
     }
 
     public void actionPerformed(final ActionEvent e) {
@@ -59,7 +60,7 @@ public class Export extends AbstractAction {
             if (val == JFileChooser.APPROVE_OPTION) {
                 exportFile(chartPanelView.getModel(), saveDialog.getSelectedFile(), ((ExtensionFileFilter)saveDialog.getFileFilter()).getExtension(), ((ExtensionFileFilter)saveDialog.getFileFilter()).getDataWriterType());
             } else if (val == JFileChooser.ERROR_OPTION) {
-                JOptionPane.showMessageDialog(gcViewer, GCViewerGui.localStrings.getString("fileexport_dialog_error_occured"), GCViewerGui.localStrings.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(gcViewer, LocalisationHelper.getString("fileexport_dialog_error_occured"), LocalisationHelper.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -68,13 +69,13 @@ public class Export extends AbstractAction {
         DataWriter writer = null;
         try {
             if (file.toString().indexOf('.') == -1) file = new File(file.toString() + extension);
-            if (!file.exists() || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, GCViewerGui.localStrings.getString("fileexport_dialog_confirm_overwrite"), GCViewerGui.localStrings.getString("fileexport_dialog_title"), JOptionPane.YES_NO_OPTION)) {
+            if (!file.exists() || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, LocalisationHelper.getString("fileexport_dialog_confirm_overwrite"), LocalisationHelper.getString("fileexport_dialog_title"), JOptionPane.YES_NO_OPTION)) {
                 writer = DataWriterFactory.getDataWriter(file, dataWriterType);
                 writer.write(model);
             }
         } catch (Exception ioe) {
             //ioe.printStackTrace();
-            JOptionPane.showMessageDialog(gcViewer, ioe.getLocalizedMessage(), GCViewerGui.localStrings.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(gcViewer, ioe.getLocalizedMessage(), LocalisationHelper.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
         } finally {
             if (writer != null) {
                 writer.close();
