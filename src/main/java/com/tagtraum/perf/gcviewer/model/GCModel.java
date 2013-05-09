@@ -478,35 +478,29 @@ public class GCModel implements Serializable {
             heapUsedSizes.add(event.getPreUsed());
         }
         
-        // if there are details, young, tenured and perm sizes can be extracted
-        Iterator<GCEvent> i = event.details();
-        while (i.hasNext()) {
-            GCEvent abstractGCEvent = i.next();
-            updateHeapSize((GCEvent)abstractGCEvent);
+        if (event.hasDetails()) {
+            // if details are present, young and tenured are always assumed to be present
+            // because one can be derived from the other
+            GCEvent young = event.getYoung();
+            if (young != null) {
+                youngAllocatedSizes.add(young.getTotal());
+                youngUsedSizes.add(young.getPreUsed());
+            }
+            
+            GCEvent tenured = event.getTenured();
+            if (tenured != null) {
+                tenuredAllocatedSizes.add(tenured.getTotal());
+                tenuredUsedSizes.add(tenured.getPreUsed());
+            }
+            
+            GCEvent perm = event.getPerm();
+            if (perm != null) {
+                permAllocatedSizes.add(perm.getTotal());
+                permUsedSizes.add(perm.getPreUsed());
+            }
         }
     }
     
-    private void updateHeapSize(GCEvent event) {
-        if (event.getTotal() > 0) {
-            if (event.getGeneration().equals(Generation.ALL)) {
-                heapAllocatedSizes.add(event.getTotal());
-                heapUsedSizes.add(event.getPreUsed());
-            }
-            else if (event.getGeneration().equals(Generation.PERM)) {
-                permAllocatedSizes.add(event.getTotal());
-                permUsedSizes.add(event.getPreUsed());
-            }
-            else if (event.getGeneration().equals(Generation.TENURED)) {
-                tenuredAllocatedSizes.add(event.getTotal());
-                tenuredUsedSizes.add(event.getPreUsed());
-            }
-            else if (event.getGeneration().equals(Generation.YOUNG)) {
-                youngAllocatedSizes.add(event.getTotal());
-                youngUsedSizes.add(event.getPreUsed());
-            }
-        }
-    }
-
     public int size() {
         return allEvents.size();
     }

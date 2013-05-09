@@ -406,9 +406,9 @@ public class TestDataReaderSun1_6_0 {
 
         assertEquals("heap min used", 80841, model.getHeapUsedSizes().getMin());
         assertEquals("heap max used", 209896, model.getHeapUsedSizes().getMax());
-        assertEquals("young min used", 104960, model.getYoungUsedSizes().getMin());
+        assertEquals("young min used", 15160, model.getYoungUsedSizes().getMin());
         assertEquals("young max used", 118010, model.getYoungUsedSizes().getMax());
-        assertEquals("tenured min used", 65665, model.getTenuredUsedSizes().getMin());
+        assertEquals("tenured min used", 0, model.getTenuredUsedSizes().getMin());
         assertEquals("tenured max used", 115034, model.getTenuredUsedSizes().getMax());
         assertEquals("perm min used", 2560, model.getPermUsedSizes().getMin());
         assertEquals("perm max used", 2561, model.getPermUsedSizes().getMax());
@@ -808,6 +808,27 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 1, model.size());
         assertEquals("GC pause", 0.3541657, model.getGCPause().getMax(), 0.0000001);
         assertEquals("GC timestamp", 12.655, model.get(0).getTimestamp(), 0.000001);
+    }
+    
+    /**
+     * Often only the young generation information is explicitly present. Old generation memory
+     * size can be derived from heap - young size. This test checks for presence of derived memory
+     * information.
+     */
+    @Test
+    public void testDerivedGenerationValues() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "10.675: [GC [PSYoungGen: 21051K->4947K(22656K)] 23342K->7238K(67712K), 0.0191817 secs] [Times: user=0.09 sys=0.01, real=0.02 secs]" 
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("young used", 21051, model.getYoungUsedSizes().getMin());
+        assertEquals("young allocated", 22656, model.getYoungAllocatedSizes().getMax());
+        assertEquals("tenured used", 23342-21051, model.getTenuredUsedSizes().getMin());
+        assertEquals("tenured allocated", 67712-22656, model.getTenuredAllocatedSizes().getMax());
     }
     
     @Test
