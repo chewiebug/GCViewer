@@ -86,7 +86,12 @@ public class NumberParser {
                 limit = -Integer.MAX_VALUE;
             }
             while (i < length) {
-                digit = s.charAt(offset + i++)-'0';
+                char c = s.charAt(offset + i++);
+                if (c == '.') {
+                    i = length;
+                    continue;
+                }
+                digit = c -'0';
                 if (digit < 0 || digit > 9) {
                     throw new NumberFormatException(s);
                 }

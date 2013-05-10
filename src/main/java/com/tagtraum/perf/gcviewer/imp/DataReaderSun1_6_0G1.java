@@ -61,6 +61,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String SURVIVOR_AGE = "- age"; // -XX:+PrintTenuringDistribution
     private static final String MARK_STACK_IS_FULL = "Mark stack is full.";
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
+    private static final String G1_ERGONOMICS = "G1Ergonomics";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
@@ -87,7 +88,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     // or "...Full GC<timestamp>..."
     // or "...)<timestamp>:  (initial-mark)..." (where the timestamp including ":" belongs to a concurrent event and the rest not)
     // or "...)<timestamp> (initial-mark)..." (where only the timestamp belongs to a concurrent event)
-    private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)"); 
+    private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)");
+
+    private static Pattern PATTERN_G1_ERGONOMICS = Pattern.compile("(.*)\\W\\d+\\.\\d{3}\\W{2}\\[G1Ergonomics .+\\].*");
 
     private static final int GC_DATESTAMP = 1;
     private static final int GC_TIMESTAMP = 2;
@@ -122,6 +125,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             final ParsePosition parsePosition = new ParsePosition(0);
             Matcher gcPauseMatcher = PATTERN_GC_PAUSE.matcher("");
             Matcher linesMixedMatcher = PATTERN_LINES_MIXED.matcher("");
+            Matcher ergonomicsMatcher = PATTERN_G1_ERGONOMICS.matcher("");
             GCEvent gcEvent = null;
             int lineNumber = 0;
             String beginningOfLine = null;
@@ -138,6 +142,16 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     for (String i : EXCLUDE_STRINGS) {
                         if (line.indexOf(i) == 0) continue OUTERLOOP;
                     }
+                    // remove G1 ergonomics pieces
+                    ergonomicsMatcher.reset(line);
+                    if (ergonomicsMatcher.matches()) {
+                        String firstMatch = (ergonomicsMatcher.group(1));
+                        if (firstMatch.length() > 0) {
+                            beginningOfLine = firstMatch;
+                        }
+                        continue;
+                    }
+
                     // if a new timestamp occurs in the middle of a line, that should be treated as a new line
                     // -> the rest of the old line appears on the next line
                     linesMixedMatcher.reset(line); 
