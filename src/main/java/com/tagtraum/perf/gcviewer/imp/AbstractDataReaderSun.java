@@ -189,13 +189,13 @@ public abstract class AbstractDataReaderSun implements DataReader {
         boolean foundPreUsed = end != -2 && parenthesis > end;
         if (foundPreUsed) {
             start = line.lastIndexOf(' ', end) + 1;
-            event.setPreUsed(getMemoryInKiloByte(extractNumber(line.substring(start, end-start)),
+            event.setPreUsed(getMemoryInKiloByte(extractNumber(line.substring(start, end)),
                     line.charAt(end),
                     line));
             start = end + 3;
         }
         for (end = start; Character.isDigit(line.charAt(end)); ++end);
-        event.setPostUsed(getMemoryInKiloByte(extractNumber(line.substring(start, end - start)),
+        event.setPostUsed(getMemoryInKiloByte(extractNumber(line.substring(start, end)),
                 line.charAt(end),
                 line));
         if (!foundPreUsed) {
@@ -204,7 +204,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 
         start = end + 2;
         end = line.indexOf(')', start) - 1;
-        event.setTotal(getMemoryInKiloByte(extractNumber(line.substring(start, end - start)),
+        event.setTotal(getMemoryInKiloByte(extractNumber(line.substring(start, end)),
                 line.charAt(end),
                 line));
         if (line.charAt(end + 1) == ')') pos.setIndex(end+2);
@@ -216,14 +216,14 @@ public abstract class AbstractDataReaderSun implements DataReader {
             detailEvent.setType(type);
             start = pos.getIndex();
             end = line.indexOf("K", pos.getIndex());
-            detailEvent.setPreUsed((int) extractNumber(line.substring(start, end - start)));
+            detailEvent.setPreUsed((int) extractNumber(line.substring(start, end)));
             start = end + 3;
             end = line.indexOf("K", start);
-            detailEvent.setPostUsed((int) extractNumber(line.substring(start, end - start)));
+            detailEvent.setPostUsed((int) extractNumber(line.substring(start, end)));
             if (line.charAt(end+1) == '(') {
                 start = end+2;
                 end = line.indexOf('K', start);
-                detailEvent.setTotal((int) extractNumber(line.substring(start, end - start)));
+                detailEvent.setTotal((int) extractNumber(line.substring(start, end)));
                 // skip ')'
                 end++;
             }
