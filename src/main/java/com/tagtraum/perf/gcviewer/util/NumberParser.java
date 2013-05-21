@@ -208,4 +208,12 @@ public class NumberParser {
             return -result;
         }
     }
+    
+    public static double parseDouble(String s, int offset, int length) {
+        // Currently, this method is unlikely to be as efficient as those above.
+        // This logic is factored out so as to allow future optimisations. For
+        // example, we might want to make some simplifying assumptions about the
+        // kind of doubles present in GC logs.
+        return Double.parseDouble(s.substring(offset, offset + length));
+    }
 }
