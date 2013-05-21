@@ -54,9 +54,10 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         contributorsLabel.setForeground(Color.GRAY);
         JLabel contributors = new JLabel(
                 "<html><center>Peter Bilstein | Cka3o4Huk | Bernd Eckenfels<br>" +
-        		"Neil Gentleman | Johan Kaving | Carl Meyer<br>" +
-        		"Reinhard Nägele | Rupesh Ramachandran<br>" +
-        		"Serafín Sedano | Andrey Skripalschikov | Yin Xunjun</center><html>",
+        		"Ryan Gardner | Neil Gentleman | Johan Kaving<br>" +
+        		"Carl Meyer | Reinhard Nägele | Rupesh Ramachandran<br>" +
+        		"Stephan Schroevers | Serafín Sedano<br>" +
+        		"Andrey Skripalschikov | Yin Xunjun</center><html>",
         		JLabel.CENTER);
         
         JLabel version = new JLabel("<html><font color=\"gray\">version:</font> " + BuildInfoReader.getVersion() + "</html>", JLabel.CENTER);
