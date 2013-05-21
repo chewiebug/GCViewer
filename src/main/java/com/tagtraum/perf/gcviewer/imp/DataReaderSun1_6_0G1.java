@@ -40,6 +40,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
  * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
+ * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
@@ -77,6 +78,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
     // "[<datestamp>: ]0.295: [GC pause (young), 0.00594747 secs]"
     private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9-T:.+]{29})?[ ]?([0-9.]+)[: \\[]{3}([A-Za-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
+    private static final int GC_PAUSE_GROUP_DATESTAMP = 1;
+    private static final int GC_PAUSE_GROUP_TIMESTAMP = 2;
+    private static final int GC_PAUSE_GROUP_TYPE = 3;
+    private static final int GC_PAUSE_GROUP_PAUSE = 4;
+
     // "   [ 4096K->3936K(16M)]"
     private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[BKMG].*");
 
@@ -91,11 +97,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)");
 
     private static Pattern PATTERN_G1_ERGONOMICS = Pattern.compile("(.*)\\W\\d+\\.\\d{3}\\W{2}\\[G1Ergonomics .+\\].*");
-
-    private static final int GC_DATESTAMP = 1;
-    private static final int GC_TIMESTAMP = 2;
-    private static final int GC_TYPE = 3;
-    private static final int GC_PAUSE = 4;
 
     private static final String HEAP_SIZING_START = "Heap";
 
@@ -142,14 +143,17 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     for (String i : EXCLUDE_STRINGS) {
                         if (line.indexOf(i) == 0) continue OUTERLOOP;
                     }
+                    
                     // remove G1 ergonomics pieces
-                    ergonomicsMatcher.reset(line);
-                    if (ergonomicsMatcher.matches()) {
-                        String firstMatch = (ergonomicsMatcher.group(1));
-                        if (firstMatch.length() > 0) {
-                            beginningOfLine = firstMatch;
+                    if (line.indexOf(G1_ERGONOMICS) >= 0) {
+                        ergonomicsMatcher.reset(line);
+                        if (ergonomicsMatcher.matches()) {
+                            String firstMatch = (ergonomicsMatcher.group(1));
+                            if (firstMatch.length() > 0) {
+                                beginningOfLine = firstMatch;
+                            }
+                            continue;
                         }
-                        continue;
                     }
 
                     // if a new timestamp occurs in the middle of a line, that should be treated as a new line
@@ -214,15 +218,15 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     // all other GC types are the same as in standard G1 mode.
                     gcPauseMatcher.reset(line);
                     if (gcPauseMatcher.matches()) {
-                        AbstractGCEvent.Type type = AbstractGCEvent.Type.parse(gcPauseMatcher.group(GC_TYPE));
+                        AbstractGCEvent.Type type = AbstractGCEvent.Type.parse(gcPauseMatcher.group(GC_PAUSE_GROUP_TYPE));
                         if (type != null && type.getPattern().compareTo(GcPattern.GC_MEMORY_PAUSE) == 0) {
                             // detailed G1 events start with GC_MEMORY pattern, but are of type GC_MEMORY_PAUSE
 
                             gcEvent = new G1GcEvent();
-                            gcEvent.setDateStamp(parseDatestamp(gcPauseMatcher.group(GC_DATESTAMP), parsePosition));
-                            gcEvent.setTimestamp(Double.parseDouble(gcPauseMatcher.group(GC_TIMESTAMP)));
+                            gcEvent.setDateStamp(parseDatestamp(gcPauseMatcher.group(GC_PAUSE_GROUP_DATESTAMP), parsePosition));
+                            gcEvent.setTimestamp(Double.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_TIMESTAMP)));
                             gcEvent.setType(type);
-                            gcEvent.setPause(Double.parseDouble(gcPauseMatcher.group(GC_PAUSE)));
+                            gcEvent.setPause(Double.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_PAUSE)));
                             
                             // now parse the details of this event
                             lineNumber = parseDetails(in, model, parsePosition, lineNumber, gcEvent, beginningOfLine);
