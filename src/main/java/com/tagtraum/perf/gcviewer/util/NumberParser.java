@@ -86,12 +86,7 @@ public class NumberParser {
                 limit = -Integer.MAX_VALUE;
             }
             while (i < length) {
-                char c = s.charAt(offset + i++);
-                if (c == '.') {
-                    i = length;
-                    continue;
-                }
-                digit = c -'0';
+                digit = s.charAt(offset + i++)-'0';
                 if (digit < 0 || digit > 9) {
                     throw new NumberFormatException(s);
                 }
@@ -212,5 +207,13 @@ public class NumberParser {
         } else {
             return -result;
         }
+    }
+    
+    public static double parseDouble(String s, int offset, int length) {
+        // Currently, this method is unlikely to be as efficient as those above.
+        // This logic is factored out so as to allow future optimisations. For
+        // example, we might want to make some simplifying assumptions about the
+        // kind of doubles present in GC logs.
+        return Double.parseDouble(s.substring(offset, offset + length));
     }
 }
