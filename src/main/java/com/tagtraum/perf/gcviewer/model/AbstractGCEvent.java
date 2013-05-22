@@ -21,8 +21,7 @@ import java.util.TreeSet;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable {
-    @SuppressWarnings("unchecked")
-    private final Iterator<T> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+    private final Iterator<T> EMPTY_ITERATOR = Collections.emptyIterator();
     private Date datestamp;
     private double timestamp;
     private Type type = Type.UNDEFINED;
@@ -165,6 +164,16 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     // better than nothing equals
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+           return false;
+        }
+        if (!(obj instanceof AbstractGCEvent<?>)) {
+            return false;
+        }
+        
         return toString().equals(obj.toString());
     }
 

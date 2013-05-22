@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer.log;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 
@@ -21,19 +22,20 @@ public class TextAreaFormatter extends Formatter {
         sb.append(record.getLevel().getLocalizedName());
         sb.append(" [");
         final String logger = record.getLoggerName();
-        sb.append(logger.substring(logger.lastIndexOf('.')+1));
+        sb.append(logger.substring(logger.lastIndexOf('.') + 1));
         sb.append("]: ");
         sb.append(record.getMessage());
         sb.append(LINE_SEPARATOR);
         if (record.getThrown() != null) {
-            try {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
+            try (StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw)) {
+                
                 record.getThrown().printStackTrace(pw);
-                pw.close();
-            sb.append(sw.toString());
-            } catch (Exception ex) {
-            }
+                sb.append(sw.toString());
+            } 
+            catch (IOException e) {
+                // ignore
+            } 
         }
         return sb.toString();
     }

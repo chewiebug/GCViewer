@@ -10,7 +10,6 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * Date: Jan 30, 2002
  * Time: 6:19:45 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class ParseException extends IOException {
     private String line;

@@ -38,15 +38,11 @@ public class GCViewer {
     }
 	
 	private static void exportSummary(String summaryFilePath, String gcFilename) throws DataReaderException, IOException {
-	    DataWriter summaryWriter = DataWriterFactory.getDataWriter(new File(summaryFilePath), DataWriterType.SUMMARY);
-	    try {
+	    try (DataWriter summaryWriter = DataWriterFactory.getDataWriter(new File(summaryFilePath), DataWriterType.SUMMARY)) {
 	        DataReaderFacade dataReaderFacade = new DataReaderFacade();
 	        GCModel model = dataReaderFacade.loadModel(new File(gcFilename).toURI().toURL(), false, null);
 	        summaryWriter.write(model);
 	    } 
-	    finally {
-            summaryWriter.close();
-	    }
 	}
     
 	private static void usage() {

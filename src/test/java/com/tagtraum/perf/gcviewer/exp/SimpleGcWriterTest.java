@@ -57,38 +57,40 @@ public class SimpleGcWriterTest {
     @Test
     public void exportLocaleDe() throws Exception {
         Locale.setDefault(new Locale("de", "ch"));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        SimpleGcWriter writer = new SimpleGcWriter(outputStream);
-        
-        writer.write(gcModel);
-        
-        String[] lines = outputStream.toString().split(System.getProperty("line.separator"));
-        assertEquals("line count", 2, lines.length);
-        
-        String[] firstLine = lines[0].split(" ");
-        assertEquals("number of parts in line 1", 3, firstLine.length);
-        assertEquals("name of event", "YoungGC", firstLine[0]);
-        assertEquals("timestamp", "0.677000", firstLine[1]);
-        assertEquals("duration", "0.030063", firstLine[2]);
-        
-        String[] secondLine = lines[1].split(" ");
-        assertEquals("number of parts in line 2", 3, secondLine.length);
-        assertEquals("name of event 2", "InitialMarkGC", secondLine[0]);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                SimpleGcWriter writer = new SimpleGcWriter(outputStream)) {
+            
+            writer.write(gcModel);
+            
+            String[] lines = outputStream.toString().split(System.getProperty("line.separator"));
+            assertEquals("line count", 2, lines.length);
+            
+            String[] firstLine = lines[0].split(" ");
+            assertEquals("number of parts in line 1", 3, firstLine.length);
+            assertEquals("name of event", "YoungGC", firstLine[0]);
+            assertEquals("timestamp", "0.677000", firstLine[1]);
+            assertEquals("duration", "0.030063", firstLine[2]);
+            
+            String[] secondLine = lines[1].split(" ");
+            assertEquals("number of parts in line 2", 3, secondLine.length);
+            assertEquals("name of event 2", "InitialMarkGC", secondLine[0]);
+        }
     }
 
     @Test
     public void exportLocaleSv() throws Exception {
         Locale.setDefault(new Locale("sv", "se"));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        SimpleGcWriter writer = new SimpleGcWriter(outputStream);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                SimpleGcWriter writer = new SimpleGcWriter(outputStream)) {
         
-        writer.write(gcModel);
-        
-        String[] lines = outputStream.toString().split(System.getProperty("line.separator"));
-        assertEquals("line count", 2, lines.length);
-        
-        String[] firstLine = lines[0].split(" ");
-        assertEquals("number of parts in line 1", 3, firstLine.length);
-        assertEquals("timestamp", "0.677000", firstLine[1]);
+            writer.write(gcModel);
+            
+            String[] lines = outputStream.toString().split(System.getProperty("line.separator"));
+            assertEquals("line count", 2, lines.length);
+            
+            String[] firstLine = lines[0].split(" ");
+            assertEquals("number of parts in line 1", 3, firstLine.length);
+            assertEquals("timestamp", "0.677000", firstLine[1]);
+        }
     }
 }

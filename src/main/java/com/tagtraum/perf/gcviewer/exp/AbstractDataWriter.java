@@ -48,7 +48,7 @@ public abstract class AbstractDataWriter implements DataWriter {
     public abstract void write(GCModel model) throws IOException;
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         out.close();
     }
 }

@@ -20,7 +20,6 @@ import java.util.logging.Logger;
  * Date: Feb 12, 2008
  * Time: 13:25:00
  * @author Ruwin Veldwijk
- * @version $Id: $
  */
 public class DataReaderIBMi5OS1_4_2 implements DataReader {
 

@@ -59,26 +59,29 @@ public class Export extends AbstractAction {
             final int val = saveDialog.showSaveDialog(gcViewer);
             if (val == JFileChooser.APPROVE_OPTION) {
                 exportFile(chartPanelView.getModel(), saveDialog.getSelectedFile(), ((ExtensionFileFilter)saveDialog.getFileFilter()).getExtension(), ((ExtensionFileFilter)saveDialog.getFileFilter()).getDataWriterType());
-            } else if (val == JFileChooser.ERROR_OPTION) {
+            }
+            else if (val == JFileChooser.ERROR_OPTION) {
                 JOptionPane.showMessageDialog(gcViewer, LocalisationHelper.getString("fileexport_dialog_error_occured"), LocalisationHelper.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
             }
         }
     }
     
     public void exportFile(final GCModel model, File file, final String extension, final DataWriterType dataWriterType) {
-        DataWriter writer = null;
-        try {
-            if (file.toString().indexOf('.') == -1) file = new File(file.toString() + extension);
-            if (!file.exists() || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, LocalisationHelper.getString("fileexport_dialog_confirm_overwrite"), LocalisationHelper.getString("fileexport_dialog_title"), JOptionPane.YES_NO_OPTION)) {
-                writer = DataWriterFactory.getDataWriter(file, dataWriterType);
+        if (file.toString().indexOf('.') == -1) {
+            file = new File(file.toString() + extension);
+        }
+        if (!file.exists() 
+                || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, 
+                        LocalisationHelper.getString("fileexport_dialog_confirm_overwrite"), 
+                        LocalisationHelper.getString("fileexport_dialog_title"), 
+                        JOptionPane.YES_NO_OPTION)) {
+            
+            try (DataWriter writer = DataWriterFactory.getDataWriter(file, dataWriterType)) {
                 writer.write(model);
             }
-        } catch (Exception ioe) {
-            //ioe.printStackTrace();
-            JOptionPane.showMessageDialog(gcViewer, ioe.getLocalizedMessage(), LocalisationHelper.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
-        } finally {
-            if (writer != null) {
-                writer.close();
+            catch (Exception ioe) {
+                //ioe.printStackTrace();
+                JOptionPane.showMessageDialog(gcViewer, ioe.getLocalizedMessage(), LocalisationHelper.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
             }
         }
     }

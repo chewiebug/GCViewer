@@ -23,19 +23,15 @@ public class BuildInfoReader {
      */
     private static String readPropertyValue(String propertyName) {
         String propertyValue = "n/a";
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(FILE_NAME);
-        if (in != null) {
-            Properties props = new Properties();
-            try {
-                try {
-                    props.load(in);
-                    propertyValue = props.getProperty(propertyName);
-                } finally {
-                    in.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (in != null) {
+                Properties props = new Properties();
+                props.load(in);
+                propertyValue = props.getProperty(propertyName);
             }
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
         }
 
         return propertyValue;

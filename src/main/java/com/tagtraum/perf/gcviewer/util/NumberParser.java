@@ -6,7 +6,6 @@ package com.tagtraum.perf.gcviewer.util;
  * This class originally stems form the book "Performant Java Programmieren" by Hendrik Schreiber
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  * @see <a href="http://www.tagtraum.com/performance/">"Performant Java Programmieren" by Hendrik Schreiber</a>
  */
 public class NumberParser {

@@ -21,7 +21,7 @@ import org.junit.Test;
 public class TestDataReaderFacade {
 
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final String PARENT_PATH = "src/test/resources/com/tagtraum/perf/gcviewer/imp";
+    private static final String PARENT_PATH = "src/test/resources/" + UnittestHelper.FOLDER_OPENJDK;
     
     private DataReaderFacade dataReaderFacade;
     

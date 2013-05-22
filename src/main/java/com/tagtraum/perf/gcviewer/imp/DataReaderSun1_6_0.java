@@ -191,7 +191,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             boolean lineSkippedForScavengeBeforeRemark = false;
             boolean printTenuringDistributionOn = false;
             final ParsePosition parsePosition = new ParsePosition(0);
-            OUTERLOOP:
+
             while ((line = in.readLine()) != null) {
                 ++lineNumber;
                 parsePosition.setLineNumber(lineNumber);
@@ -200,9 +200,9 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 }
                 try {
                     printTenuringDistributionOn = false;
-                    // filter out [Unloading class com.xyz] statements
-                    for (String i : EXCLUDE_STRINGS) {
-                        if (line.indexOf(i) == 0) continue OUTERLOOP;
+                    // filter out lines that don't need to be parsed
+                    if (startsWith(line, EXCLUDE_STRINGS, false)) {
+                        continue;
                     }
                     if (line.indexOf(CMS_ABORT_PRECLEAN) >= 0) {
                         // line contains like " CMS: abort preclean due to time "

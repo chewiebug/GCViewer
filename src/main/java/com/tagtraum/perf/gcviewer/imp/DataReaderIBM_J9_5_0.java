@@ -30,7 +30,6 @@ import java.util.logging.Logger;
  * Object-Area (loa).
  * 
  * @author <a href="mailto:justink@au1.ibm.com">Justin Kilimnik (IBM)</a>
- * @version $Id: $
  */
 public class DataReaderIBM_J9_5_0 implements DataReader {
 

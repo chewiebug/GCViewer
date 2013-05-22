@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Test;
@@ -18,10 +19,14 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  */
 public class TestDataReaderJRockit1_4_2 {
 
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
+    }
+    
     @Test
     public void testParseGenCon() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2gencon.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2gencon.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -39,7 +44,7 @@ public class TestDataReaderJRockit1_4_2 {
     @Test
     public void testParseGenConBig() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2gencon-big.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2gencon-big.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -57,7 +62,7 @@ public class TestDataReaderJRockit1_4_2 {
     @Test
     public void testParseParallel() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2parallel.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2parallel.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -75,7 +80,7 @@ public class TestDataReaderJRockit1_4_2 {
     @Test
     public void testParsePrioPauseTime() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2priopausetime.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2priopausetime.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -92,7 +97,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportGencon() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2ts-gcreport-gencon.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-gencon.txt");
         DataReader reader = new DataReaderJRockit1_4_2(in);
         GCModel model = reader.read();
         
@@ -109,7 +114,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportParallel() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2ts-gcreport-parallel.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-parallel.txt");
         DataReader reader = new DataReaderJRockit1_4_2(in);
         GCModel model = reader.read();
         
@@ -126,7 +131,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportPrioPauseTime() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2ts-gcreport-gcpriopausetime.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-gcpriopausetime.txt");
         DataReader reader = new DataReaderFactory().getDataReader(in);
         
         assertTrue("should be DataReaderJRockit1_4_2 (but was " + reader.toString() + ")", reader instanceof DataReaderJRockit1_4_2);
@@ -146,7 +151,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportPrioThroughput() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2ts-gcreport-gcpriothroughput.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-gcpriothroughput.txt");
         DataReader reader = new DataReaderJRockit1_4_2(in);
         GCModel model = reader.read();
         
@@ -163,7 +168,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportSinglecon() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_4_2ts-gcreport-singlecon.txt");
+        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-singlecon.txt");
         DataReader reader = new DataReaderJRockit1_4_2(in);
         GCModel model = reader.read();
         

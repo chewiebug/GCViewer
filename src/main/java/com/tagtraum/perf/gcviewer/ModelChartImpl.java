@@ -52,7 +52,6 @@ import com.tagtraum.perf.gcviewer.util.TimeFormat;
  * Date: Jan 30, 2002
  * Time: 7:50:42 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeListener {
 

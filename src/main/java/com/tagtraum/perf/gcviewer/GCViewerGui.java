@@ -82,7 +82,6 @@ import com.tagtraum.perf.gcviewer.util.OSXSupport;
  * Date: Jan 30, 2002
  * Time: 4:59:49 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class GCViewerGui extends JFrame {
 

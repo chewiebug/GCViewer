@@ -13,7 +13,6 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * Date: Feb 1, 2002
  * Time: 10:07:52 AM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class CSVDataWriter extends AbstractDataWriter {
 

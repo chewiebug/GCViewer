@@ -56,7 +56,7 @@ public class TotalYoungRenderer extends PolygonChartRenderer {
                     lastYoung = youngSize;                
                     lastTenured = tenuredSize;
                 }
-                if (lastTenured + lastYoung != tenuredSize + youngSize) {
+                if (((lastTenured + lastYoung) - (tenuredSize + youngSize)) > 0.0000001) {
                     polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), lastTenured + lastYoung);
                 }
                 polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), tenuredSize + youngSize);

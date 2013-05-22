@@ -9,6 +9,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,10 @@ public class TestDataReaderJRockit1_5_0 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
+    }
+    
     @Test
     public void testGcPrioPausetime() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -41,7 +46,7 @@ public class TestDataReaderJRockit1_5_0 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_5_12_gcpriopausetime.txt");
+        InputStream in = getInputStream("SampleJRockit1_5_12_gcpriopausetime.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -60,7 +65,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testGcPrioThroughput() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_5_12_gcpriothroughput.txt");
+        InputStream in = getInputStream("SampleJRockit1_5_12_gcpriothroughput.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -77,7 +82,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testGenCon() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_5_12_gencon.txt");
+        InputStream in = getInputStream("SampleJRockit1_5_12_gencon.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -102,7 +107,7 @@ public class TestDataReaderJRockit1_5_0 {
         // allthough this log file was written with JRockit 1.5 VM, it has the same structure
         // as a JRockit 1.6 gc log file.
         // TODO refactor JRockit DataReader
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_5_20_memstats2.txt");
+        InputStream in = getInputStream("SampleJRockit1_5_20_memstats2.txt");
         DataReader reader = new DataReaderJRockit1_6_0(in);
         GCModel model = reader.read();
         
@@ -111,7 +116,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testGenPar() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_5_12_genpar.txt");
+        InputStream in = getInputStream("SampleJRockit1_5_12_genpar.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         
@@ -151,7 +156,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testSimpleOpts() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_5_12-gcreport-simpleopts-singlecon.txt");
+        InputStream in = getInputStream("SampleJRockit1_5_12-gcreport-simpleopts-singlecon.txt");
         DataReader reader = new DataReaderJRockit1_5_0(in);
         GCModel model = reader.read();
         

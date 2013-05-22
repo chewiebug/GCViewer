@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Test;
@@ -15,16 +16,19 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * Date: Jan 30, 2002
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class TestDataReaderSun1_5_0 {
 
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+    
     /**
      * Test output for -XX:+PrintAdaptiveSizePolicy 
      */
     @Test
     public void testAdaptiveSizePolicy() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0AdaptiveSizePolicy.txt");
+        final InputStream in = getInputStream("SampleSun1_5_0AdaptiveSizePolicy.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
@@ -38,7 +42,7 @@ public class TestDataReaderSun1_5_0 {
     
     @Test
     public void testCMSPrintGCDetails() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0CMS_PrintGCDetails.txt");
+        final InputStream in = getInputStream("SampleSun1_5_0CMS_PrintGCDetails.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
@@ -51,7 +55,7 @@ public class TestDataReaderSun1_5_0 {
 
     @Test
     public void testParallelOldGC() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0ParallelOldGC.txt");
+        final InputStream in = getInputStream("SampleSun1_5_0ParallelOldGC.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
@@ -61,7 +65,7 @@ public class TestDataReaderSun1_5_0 {
 
     @Test
     public void testCMSIncrementalPacing() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0CMS_IncrementalPacing.txt");
+        final InputStream in = getInputStream("SampleSun1_5_0CMS_IncrementalPacing.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         GCModel model = reader.read();
 
@@ -74,7 +78,7 @@ public class TestDataReaderSun1_5_0 {
 
     @Test
     public void testPromotionFailure() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0PromotionFailure.txt");
+        final InputStream in = getInputStream("SampleSun1_5_0PromotionFailure.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
@@ -85,7 +89,7 @@ public class TestDataReaderSun1_5_0 {
 
     @Test
     public void testCMSConcurrentModeFailure() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_5_0ConcurrentModeFailure.txt");
+        final InputStream in = getInputStream("SampleSun1_5_0ConcurrentModeFailure.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         

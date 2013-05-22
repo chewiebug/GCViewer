@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -20,17 +21,20 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * Date: Jan 30, 2002
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class TestDataReaderSun1_4_0 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     
-    /**
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+    
+   /**
      * Test output for -XX:+PrintAdaptiveSizePolicy 
      */
     @Test
     public void testAdaptiveSizePolicy() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleSun1_4_0AdaptiveSizePolicy.txt");
+        InputStream in = getInputStream("SampleSun1_4_0AdaptiveSizePolicy.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         
@@ -77,7 +81,7 @@ public class TestDataReaderSun1_4_0 {
 
     @Test
     public void testNoFullGC() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleSun1_4_2NoFullGC.txt");
+        InputStream in = getInputStream("SampleSun1_4_2NoFullGC.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         // we just look at the first six...
@@ -116,7 +120,7 @@ public class TestDataReaderSun1_4_0 {
 
     @Test
     public void testPrintGCDetails() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleSun1_4_2PrintGCDetails.txt");
+        InputStream in = getInputStream("SampleSun1_4_2PrintGCDetails.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         /*
@@ -155,7 +159,7 @@ public class TestDataReaderSun1_4_0 {
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
 
-        InputStream in = getClass().getResourceAsStream("SampleSun1_4_0PSPrintHeapAtGC.txt");
+        InputStream in = getInputStream("SampleSun1_4_0PSPrintHeapAtGC.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         

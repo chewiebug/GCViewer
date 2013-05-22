@@ -61,14 +61,8 @@ public class GCPreferences {
     }
         
     public void store() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(getPreferencesFile()));
-            try {
-                properties.store(writer, "GCViewer preferences");
-            }
-            finally {
-                writer.close();
-            }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(getPreferencesFile()))) {
+            properties.store(writer, "GCViewer preferences");
         }
         catch (IOException e) {
             if (LOGGER.isLoggable(Level.WARNING)) {
@@ -79,16 +73,11 @@ public class GCPreferences {
     
     public void load() {
         if (getPreferencesFile().exists()) {
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader(getPreferencesFile()));
+            try (BufferedReader reader = new BufferedReader(new FileReader(getPreferencesFile()))) {
                 propertiesLoaded = true;
-                try {
-                    properties.load(reader);
-                }
-                finally {
-                    reader.close();
-                }
-            } catch (IOException e) {
+                properties.load(reader);
+            } 
+            catch (IOException e) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.warning("could not load preferences (" + e.toString() + ")");
                 }

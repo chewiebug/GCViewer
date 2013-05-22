@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -19,8 +20,12 @@ public class TestDataReaderSun1_6_0 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
-    private static final SimpleDateFormat dateParser = new SimpleDateFormat(AbstractDataReaderSun.DATE_STAMP_FORMAT);
+    private final SimpleDateFormat dateParser = new SimpleDateFormat(AbstractDataReaderSun.DATE_STAMP_FORMAT);
 
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+    
     @Test
     public void testPrintGCDateStamps() throws Exception {
 		final ByteArrayInputStream in = new ByteArrayInputStream(
@@ -390,7 +395,7 @@ public class TestDataReaderSun1_6_0 {
 
     @Test
     public void testCmsMemory() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0CMS.txt");
+        final InputStream in = getInputStream("SampleSun1_6_0CMS.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
@@ -436,7 +441,7 @@ public class TestDataReaderSun1_6_0 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0PrintHeapAtGC.txt");
+        final InputStream in = getInputStream("SampleSun1_6_0PrintHeapAtGC.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
@@ -454,7 +459,7 @@ public class TestDataReaderSun1_6_0 {
         // AdaptiveSizeStop: collection: 1 
         //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0AdaptiveSizePolicy.txt");
+        final InputStream in = getInputStream("SampleSun1_6_0AdaptiveSizePolicy.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
@@ -615,7 +620,7 @@ public class TestDataReaderSun1_6_0 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_6_0CMSAdaptiveSizePolicy.txt");
+        final InputStream in = getInputStream("SampleSun1_6_0CMSAdaptiveSizePolicy.txt");
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 

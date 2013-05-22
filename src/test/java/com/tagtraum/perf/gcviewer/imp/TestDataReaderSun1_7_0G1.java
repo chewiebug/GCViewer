@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,10 @@ public class TestDataReaderSun1_7_0G1 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+    
     @Test
     public void youngPause_u1() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -27,7 +32,7 @@ public class TestDataReaderSun1_7_0G1 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0-01_G1_young.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0-01_G1_young.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         
@@ -47,7 +52,7 @@ public class TestDataReaderSun1_7_0G1 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0-02_G1_young.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0-02_G1_young.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         
@@ -79,7 +84,7 @@ public class TestDataReaderSun1_7_0G1 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0_02_G1_young_datestamp.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0_02_G1_young_datestamp.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         
@@ -102,7 +107,7 @@ public class TestDataReaderSun1_7_0G1 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0_12PrintAdaptiveSizePolicy.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0_12PrintAdaptiveSizePolicy.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
@@ -121,7 +126,7 @@ public class TestDataReaderSun1_7_0G1 {
         // parse one detailed event with a mixed line (concurrent event starts in the middle of an stw collection)
         // 2012-02-24T03:49:09.100-0800: 312.402: [GC pause (young)2012-02-24T03:49:09.378-0800: 312.680: [GC concurrent-mark-start]
         //  (initial-mark), 0.28645100 secs]
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine1.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine1.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         
@@ -138,7 +143,7 @@ public class TestDataReaderSun1_7_0G1 {
         // 371.856:    [Parallel Time: 268.0 ms]
         // [GC concurrent-mark-start]
 
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine2.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine2.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         
@@ -154,7 +159,7 @@ public class TestDataReaderSun1_7_0G1 {
         // parse one detailed event with a mixed line
         // -> concurrent event occurs somewhere in the detail lines below the stw event
 
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine3.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine3.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         
@@ -251,7 +256,7 @@ public class TestDataReaderSun1_7_0G1 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
         
-        final InputStream in = getClass().getResourceAsStream("SampleSun1_7_0_02PrintApplicationTimeTenuringDistribution.txt");
+        final InputStream in = getInputStream("SampleSun1_7_0_02PrintApplicationTimeTenuringDistribution.txt");
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         

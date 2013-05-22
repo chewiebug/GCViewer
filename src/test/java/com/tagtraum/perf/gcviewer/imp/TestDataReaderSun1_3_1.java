@@ -1,28 +1,26 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.Iterator;
+
+import org.junit.Test;
+
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  *
  * Date: Jan 30, 2002
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
-public class TestDataReaderSun1_3_1 extends TestCase {
+public class TestDataReaderSun1_3_1 {
 
-    public TestDataReaderSun1_3_1(String name) {
-        super(name);
-    }
-
+    @Test
     public void testParse1() throws Exception {
         AbstractGCEvent<GCEvent> event1 = new GCEvent(0, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
         AbstractGCEvent<GCEvent> event2 = new GCEvent(1, 8968, 8230, 10912, 0.0037192d, AbstractGCEvent.Type.GC);
@@ -45,11 +43,4 @@ public class TestDataReaderSun1_3_1 extends TestCase {
         assertEquals("throughput", 89.13905666, model.getThroughput(), 0.00000001);
     }
 
-    public static TestSuite suite() {
-        return new TestSuite(TestDataReaderSun1_3_1.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
 }

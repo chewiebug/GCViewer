@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
  * Date: Jan 30, 2002
  * Time: 5:15:44 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class DataReaderIBM1_4_2 implements DataReader {
 

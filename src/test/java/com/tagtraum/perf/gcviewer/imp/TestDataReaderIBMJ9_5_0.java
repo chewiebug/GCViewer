@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Test;
@@ -18,9 +19,13 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
  */
 public class TestDataReaderIBMJ9_5_0 {
 
+    private InputStream getInputStream(String filename) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, filename);
+    }
+    
     @Test
     public void afTenuredGlobal() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleIBMJ9_5_0af-global-200811_07.txt");
+        final InputStream in = getInputStream("SampleIBMJ9_5_0af-global-200811_07.txt");
         final DataReader reader = new DataReaderIBM_J9_5_0(in);
         GCModel model = reader.read();
 
@@ -38,7 +43,7 @@ public class TestDataReaderIBMJ9_5_0 {
     
     @Test
     public void afTenuredGlobal_20090417_AA() throws Exception {
-        final InputStream in = getClass().getResourceAsStream("SampleIBMJ9_5_0af-global-20090417_AA.txt");
+        final InputStream in = getInputStream("SampleIBMJ9_5_0af-global-20090417_AA.txt");
         final DataReader reader = new DataReaderIBM_J9_5_0(in);
         GCModel model = reader.read();
 

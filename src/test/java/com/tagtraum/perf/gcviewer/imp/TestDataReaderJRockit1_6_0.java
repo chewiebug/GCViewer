@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,6 +27,10 @@ public class TestDataReaderJRockit1_6_0 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
+    }
+    
     @Test
     public void testGcPrioPauseSingleParCon() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -33,7 +38,7 @@ public class TestDataReaderJRockit1_6_0 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_6_gc_mode_singleparcon.txt");
+        InputStream in = getInputStream("SampleJRockit1_6_gc_mode_singleparcon.txt");
         DataReader reader = new DataReaderJRockit1_6_0(in);
         GCModel model = reader.read();
         
@@ -57,7 +62,7 @@ public class TestDataReaderJRockit1_6_0 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_6_verbose_gc_mode_singleparcon.txt");
+        InputStream in = getInputStream("SampleJRockit1_6_verbose_gc_mode_singleparcon.txt");
         DataReader reader = new DataReaderJRockit1_6_0(in);
         
         assertTrue("should be DataReaderJRockit1_6_0 (but was " + reader.toString() + ")", reader instanceof DataReaderJRockit1_6_0);
@@ -84,7 +89,7 @@ public class TestDataReaderJRockit1_6_0 {
      */
     @Test
     public void testGenConVerbose() throws Exception {
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_6_verbose_gc_mode_gencon.txt");
+        InputStream in = getInputStream("SampleJRockit1_6_verbose_gc_mode_gencon.txt");
         DataReader reader = new DataReaderJRockit1_6_0(in);
         GCModel model = reader.read();
         
@@ -98,7 +103,7 @@ public class TestDataReaderJRockit1_6_0 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
-        InputStream in = getClass().getResourceAsStream("SampleJRockit1_6_33_gc_mode_genpar_verbosenursery.txt");
+        InputStream in = getInputStream("SampleJRockit1_6_33_gc_mode_genpar_verbosenursery.txt");
         DataReader reader = new DataReaderJRockit1_6_0(in);
         GCModel model = reader.read();
         

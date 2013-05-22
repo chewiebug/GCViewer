@@ -28,11 +28,59 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
  * Time: 5:01:45 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class GCModel implements Serializable {
 
 	private static final long serialVersionUID = -6479685723904770990L;
+	
+	/**
+	 * Contains information about a file. 
+	 * 
+	 * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
+	 * <p>created on: 22.05.2013</p>
+	 */
+	private static class FileInformation implements Serializable {
+	    private static final long serialVersionUID = 1L;
+	    
+	    public long lastModified;
+	    public long length;
+	    
+	    public FileInformation() {
+	        this(-1, -1);
+	    }
+	    
+	    public FileInformation(long lastModified, long length) {
+	        super();
+	        
+	        this.lastModified = lastModified;
+	        this.length = length;
+	    }
+	    
+	    public void setFileInformation(FileInformation other) {
+	        this.lastModified = other.lastModified;
+	        this.length = other.length;
+	    }
+	    
+	    /**
+	     * @see java.lang.Object#equals(java.lang.Object)
+	     */
+	    public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+	        if (other == null) {
+	            return false;
+	        }
+	        if (!(other instanceof FileInformation)) {
+	            return false;
+	        }
+	        
+	        FileInformation fileInfo = (FileInformation)other;
+	        
+	        return fileInfo.lastModified == lastModified 
+	                && fileInfo.length == length;
+	    }
+	}
 
 	private static Logger LOG = Logger.getLogger(GCModel.class.getName());
 
@@ -42,8 +90,7 @@ public class GCModel implements Serializable {
     private List<ConcurrentGCEvent> concurrentGCEvents;
     private List<GCEvent> currentNoFullGCEvents;
     private List<GCEvent> fullGCEvents;
-    private long lastModified;
-    private long length;
+    private FileInformation fileInformation = new FileInformation();
 
     private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
     private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
@@ -131,7 +178,7 @@ public class GCModel implements Serializable {
     }
 
     public long getLastModified() {
-        return lastModified;
+        return fileInformation.lastModified;
     }
 
     public URL getURL() {
@@ -174,122 +221,42 @@ public class GCModel implements Serializable {
         printIntData("young size used", youngUsedSizes);
     }
     
+    private FileInformation readFileInformation(final URL url) {
+        FileInformation fileInformation = new FileInformation();
+        URLConnection urlConnection = null;
+        try {
+            urlConnection = url.openConnection();
+            try (InputStream inputStream = urlConnection.getInputStream()) {
+                if (url.getProtocol().startsWith("http")) {
+                    ((HttpURLConnection)urlConnection).setRequestMethod("HEAD");
+                }
+                fileInformation.length = urlConnection.getContentLength();
+                fileInformation.lastModified = urlConnection.getLastModified();
+            }
+        } 
+        catch (IOException e) {
+            if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, "Failed to obtain age and length of URL " + url, e);
+        } 
+        
+        return fileInformation;
+    }
+    
     public void setURL(final URL url) {
         this.url = url;
-        if (url.getProtocol().startsWith("http")) {
-            HttpURLConnection urlConnection = null;
-            try {
-                urlConnection = (HttpURLConnection)url.openConnection();
-                urlConnection.setRequestMethod("HEAD");
-                this.length = urlConnection.getContentLength();
-                this.lastModified = urlConnection.getLastModified();
-            } catch (IOException e) {
-                if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, "Failed to obtain age and length of URL " + url, e);
-            } finally {
-                try {
-                    if (urlConnection != null) {
-                        final InputStream inputStream = urlConnection.getInputStream();
-                        if (inputStream != null) {
-                            try {
-                                inputStream.close();
-                            } catch (IOException ignore) {
-                                // ignore
-                            }
-                        }
-                    }
-                } catch (IOException ignore) {
-                    // ignore
-                }
-            }
-        }
-        else {
-            URLConnection urlConnection = null;
-            try {
-                urlConnection = url.openConnection();
-                this.length = urlConnection.getContentLength();
-                this.lastModified = urlConnection.getLastModified();
-            } catch (IOException e) {
-                if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, "Failed to obtain age and length of URL " + url, e);
-            } finally {
-                try {
-                    if (urlConnection != null) {
-                        final InputStream inputStream = urlConnection.getInputStream();
-                        if (inputStream != null) {
-                            try {
-                                inputStream.close();
-                            } catch (IOException ignore) {
-                                // ignore
-                            }
-                        }
-                    }
-                } catch (IOException ignore) {
-                    // ignore
-                }
-            }
-        }
+        this.fileInformation.setFileInformation(readFileInformation(url));
     }
 
     public boolean isDifferent(File otherFile) {
         // we just ignore the file name for now...
-        return this.lastModified != otherFile.lastModified() || this.length != otherFile.length();
+        FileInformation fileInformation = new FileInformation(otherFile.lastModified(), otherFile.length());
+        
+        return !this.fileInformation.equals(fileInformation);
     }
 
     public boolean isDifferent(URL otherURL) {
-        long otherLength = 0;
-        long otherLastModified = 0;
-        if (otherURL.getProtocol().startsWith("http")) {
-            HttpURLConnection urlConnection = null;
-            try {
-                urlConnection = (HttpURLConnection)otherURL.openConnection();
-                urlConnection.setRequestMethod("HEAD");
-                otherLength = urlConnection.getContentLength();
-                otherLastModified = urlConnection.getLastModified();
-            } catch (IOException e) {
-                if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, "Failed to obtain age and otherLength of URL " + otherURL, e);
-            } finally {
-                try {
-                    if (urlConnection != null) {
-                        final InputStream inputStream = urlConnection.getInputStream();
-                        if (inputStream != null) {
-                            try {
-                                inputStream.close();
-                            } catch (IOException ignore) {
-                                // ignore
-                            }
-                        }
-                    }
-                } catch (IOException ignore) {
-                    // ignore
-                }
-            }
-        }
-        else {
-            URLConnection urlConnection = null;
-            try {
-                urlConnection = otherURL.openConnection();
-                otherLength = urlConnection.getContentLength();
-                otherLastModified = urlConnection.getLastModified();
-            } catch (IOException e) {
-                if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, "Failed to obtain age and otherLength of URL " + otherURL, e);
-            } finally {
-                try {
-                    if (urlConnection != null) {
-                        final InputStream inputStream = urlConnection.getInputStream();
-                        if (inputStream != null) {
-                            try {
-                                inputStream.close();
-                            } catch (IOException ignore) {
-                                // ignore
-                            }
-                        }
-                    }
-                } catch (IOException ignore) {
-                    // ignore
-                }
-            }
-        }
-
-        return this.lastModified != otherLastModified || this.length != otherLength;
+        FileInformation fileInfo = readFileInformation(otherURL);
+        
+        return !this.fileInformation.equals(fileInfo);
     }
 
     /**

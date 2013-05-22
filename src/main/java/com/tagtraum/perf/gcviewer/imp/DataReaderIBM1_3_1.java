@@ -21,7 +21,6 @@ import java.util.logging.Level;
  * Date: Jan 30, 2002
  * Time: 5:15:44 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class DataReaderIBM1_3_1 implements DataReader {
 

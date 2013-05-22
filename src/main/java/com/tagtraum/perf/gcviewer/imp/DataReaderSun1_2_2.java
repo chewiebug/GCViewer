@@ -17,7 +17,6 @@ import java.util.logging.Logger;
  * Date: Jan 30, 2002
  * Time: 5:15:44 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class DataReaderSun1_2_2 implements DataReader {
 

@@ -27,7 +27,6 @@ import com.tagtraum.perf.gcviewer.util.TimeFormat;
  * Date: Feb 3, 2002
  * Time: 9:58:00 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * @version $Id: $
  */
 public class ModelPanel extends JTabbedPane {
 

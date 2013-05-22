@@ -71,8 +71,8 @@ public class TextFileViewer extends ScreenCenteredDialog {
             endIndex = text.length();
         }
         while (text.charAt(endIndex-1) == '.'
-                | text.charAt(endIndex-1) == ')'
-                | text.charAt(endIndex-1) == '>') {
+                || text.charAt(endIndex-1) == ')'
+                || text.charAt(endIndex-1) == '>') {
             
             endIndex--;
         }
@@ -106,20 +106,22 @@ public class TextFileViewer extends ScreenCenteredDialog {
     }
 
     private String readFile(String fileName) throws IOException {
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)) {
 
-        if (in != null) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            
-            StringBuilder text = new StringBuilder();
-            while (reader.ready()) {
-                text.append(addHtmlTags(reader.readLine())).append("<br/>");
+            if (in != null) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+                    
+                    StringBuilder text = new StringBuilder();
+                    while (reader.ready()) {
+                        text.append(addHtmlTags(reader.readLine())).append("<br/>");
+                    }
+                    
+                    return text.toString();
+                }
             }
-            
-            return text.toString();
-        }
-        else {
-            return "'" + fileName + "' not found";
+            else {
+                return "'" + fileName + "' not found";
+            }
         }
     }
     

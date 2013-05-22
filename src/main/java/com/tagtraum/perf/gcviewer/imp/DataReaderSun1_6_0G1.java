@@ -130,7 +130,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             GCEvent gcEvent = null;
             int lineNumber = 0;
             String beginningOfLine = null;
-            OUTERLOOP:
+
             while ((line = in.readLine()) != null) {
                 ++lineNumber;
                 parsePosition.setLineNumber(lineNumber);
@@ -140,8 +140,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 }
                 try {
                     // filter out lines that don't need to be parsed
-                    for (String i : EXCLUDE_STRINGS) {
-                        if (line.indexOf(i) == 0) continue OUTERLOOP;
+                    if (startsWith(line, EXCLUDE_STRINGS, false)) {
+                        continue;
                     }
                     
                     // remove G1 ergonomics pieces

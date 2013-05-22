@@ -39,7 +39,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
     
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
-    private static SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
+    private final SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
     
     /** the reader accessing the log file */
     protected BufferedReader in;
@@ -481,7 +481,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
             ++lineNumber;
             pos.setLineNumber(lineNumber);
             // for now just skip those lines
-            startsWithString = startsWith(line, lineStartStrings);
+            startsWithString = startsWith(line, lineStartStrings, true);
             if (startsWithString) {
                 // don't mark any more if line didn't match -> it is the first line that
                 // is of interest after the skipped block
@@ -504,13 +504,25 @@ public abstract class AbstractDataReaderSun implements DataReader {
         return --lineNumber;
     }
 
-    private boolean startsWith(String line, List<String> lineStartStrings) {
-        boolean containsString = false;
+    /**
+     * Tests if <code>line</code> starts with one of the strings in <code>lineStartStrings</code>.
+     * If <code>trimLine</code> is <code>true</code>, then <code>line</code> is trimmed first. 
+     * 
+     * @param line line to be checked against
+     * @param lineStartStrings list of strings to check
+     * @param trimLine if <code>true</code> then trim <code>line</code>
+     * @return <code>true</code>, if <code>line</code> starts with one of the strings in 
+     * <code>lineStartStrings</code>
+     */
+    protected boolean startsWith(String line, List<String> lineStartStrings, boolean trimLine) {
+        String lineToTest = trimLine ? line.trim() : line;
         for (String lineStartString : lineStartStrings) {
-            containsString |= line.trim().startsWith(lineStartString);
+            if (lineToTest.startsWith(lineStartString)) {
+                return true;
+            }
         }
         
-        return containsString;
+        return false;
     }
 
     /**

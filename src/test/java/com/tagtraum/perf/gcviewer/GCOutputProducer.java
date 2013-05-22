@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: hendrik
@@ -54,7 +56,7 @@ public class GCOutputProducer {
         private int[] array = new int[512];
 
         public String toString() {
-            return array.toString();
+            return Arrays.toString(array);
         }
     }
 }
