@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
@@ -45,6 +47,8 @@ public abstract class AbstractDataReaderSun implements DataReader {
     protected BufferedReader in;
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
+
+    private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
     /**
      * Create an instance of this class passing an inputStream an the type of the logfile.
@@ -213,7 +217,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 
         while (isGeneration(line, pos)) {
             final GCEvent detailEvent = new GCEvent();
-            final AbstractGCEvent.Type type = parseType(line, pos);
+            final AbstractGCEvent.Type type = parseNestedType(line, pos);
             detailEvent.setType(type);
             start = pos.getIndex();
             end = line.indexOf("K", pos.getIndex());
@@ -323,7 +327,8 @@ public abstract class AbstractDataReaderSun implements DataReader {
         return line.charAt(pos.getIndex()) == '[';
     }
 
-    protected GCEvent.Type parseType(String line, ParsePosition pos) throws ParseException {
+
+    protected String parseTypeString(String line, ParsePosition pos) throws ParseException {
         int i = pos.getIndex();
         try {
             // consume all leading spaces and [
@@ -334,7 +339,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 if (c != ' ' && c != '[') break;
             }
             if (i>=lineLength) throw new ParseException("Unexpected end of line.", line);
-            StringBuffer sb = new StringBuffer(20);
+            StringBuilder sb = new StringBuilder(20);
             // check whether the type name starts with a number
             // e.g. 0.406: [GC [1 CMS-initial-mark: 7664K(12288K)] 7666K(16320K), 0.0006855 secs]
             //final int startNumbers = i;
@@ -365,16 +370,43 @@ public abstract class AbstractDataReaderSun implements DataReader {
             for (; i<lineLength; c = lineChars[++i]) {
                 if (c == '[' || c == ']' || Character.isDigit(c)) break;
             }
-            final String s = sb.toString();
-            GCEvent.Type gcType = AbstractGCEvent.Type.parse(s);
-            if (gcType == null) {
-                throw new UnknownGcTypeException(s, line, pos);
-            }
-            return gcType;
+            return sb.toString();
         }
         finally {
             pos.setIndex(i);
         }
+    }
+
+
+    protected GCEvent.Type parseNestedType(String line, ParsePosition pos) throws ParseException {
+        String typeString = parseTypeString(line, pos);
+        GCEvent.Type gcType = AbstractGCEvent.Type.parse(typeString);
+        //GCEvent.Type gcType = extractTypeFromParsedString(s);
+        if (gcType == null) {
+            throw new UnknownGcTypeException(typeString, line, pos);
+        }
+        return gcType;
+    }
+
+    protected GCEvent.Type parseTopType(String line, ParsePosition pos) throws ParseException {
+        String typeString = parseTypeString(line, pos);
+        return extractTypeFromParsedString(typeString);
+    }
+
+
+    protected GCEvent.Type extractTypeFromParsedString(String s) throws UnknownGcTypeException {
+        GCEvent.Type gcType = AbstractGCEvent.Type.parse(s);
+        // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
+        if (gcType == null) {
+            // try to parse it again with the parens removed
+            Matcher parenMatcher = parenthesesPattern.matcher(s);
+            if (parenMatcher.find()) {
+                gcType = AbstractGCEvent.Type.parse(parenMatcher.replaceFirst(""));
+                // retain the full string representation of the GC (including the cause)
+                gcType.setType(s);
+            }
+        }
+        return gcType;
     }
 
     /**

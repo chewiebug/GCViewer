@@ -120,6 +120,32 @@ public class TestDataReaderSun1_7_0G1 {
 
         assertEquals("number of errors", 0, handler.getCount());
     }
+
+
+    /**
+     * Test parsing GC logs that have PrintAdaptiveSizePolicy turned on
+     */
+    @Test
+    public void printGCCause() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        final InputStream in = getInputStream("SampleSun1_7_0_40PrintGCCause.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertEquals("gc pause", 0.077938, model.getPause().getMax(), 0.000000001);
+        GCEvent heap = (GCEvent) model.getEvents().next();
+        assertEquals("heap", 32*1024, heap.getPreUsed());
+        // test parsing of decimal values
+        assertEquals("heap", 7136, (double)heap.getPostUsed(), 1e2);
+        assertEquals("heap", 88.0*1024*1024, (double)heap.getTotal(), 1e2);
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+
     
     @Test
     public void testDetailedCollectionDatestampMixed1() throws Exception {

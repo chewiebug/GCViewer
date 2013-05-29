@@ -82,7 +82,7 @@ public class GCModel implements Serializable {
 	    }
 	}
 
-	private static Logger LOG = Logger.getLogger(GCModel.class.getName());
+	private static final Logger LOG = Logger.getLogger(GCModel.class.getName());
 
     private List<AbstractGCEvent<?>> allEvents;
     private List<GCEvent> stopTheWorldEvents;
