@@ -826,7 +826,9 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 1, model.size());
         assertEquals("GC pause", 0.0035370, model.getGCPause().getMax(), 0.0000001);
         assertEquals("GC timestamp", 111.080, model.get(0).getTimestamp(), 0.000001);
-        assertEquals("GC (Allocation Failure) ParNew:", model.get(0).getTypeAsString());
+        // If types get retained, this will be:
+        // assertEquals("GC (Allocation Failure) ParNew:", model.get(0).getTypeAsString());
+        assertEquals("GC ParNew:", model.get(0).getTypeAsString());
     }
     
     /**

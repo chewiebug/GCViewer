@@ -312,10 +312,6 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
             return type;
         }
 
-        public void setType(String type) {
-            this.type = type;
-        }
-
         public Generation getGeneration() {
             return generation;
         }

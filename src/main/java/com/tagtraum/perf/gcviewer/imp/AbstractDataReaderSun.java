@@ -402,8 +402,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
             Matcher parenMatcher = parenthesesPattern.matcher(s);
             if (parenMatcher.find()) {
                 gcType = AbstractGCEvent.Type.parse(parenMatcher.replaceFirst(""));
-                // retain the full string representation of the GC (including the cause)
-                gcType.setType(s);
+                // TODO: retain the full string representation of the GC (including the cause)
             }
         }
         return gcType;
