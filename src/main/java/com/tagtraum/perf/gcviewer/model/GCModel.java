@@ -226,10 +226,10 @@ public class GCModel implements Serializable {
         URLConnection urlConnection = null;
         try {
             urlConnection = url.openConnection();
+            if (url.getProtocol().startsWith("http")) {
+                ((HttpURLConnection)urlConnection).setRequestMethod("HEAD");
+            }
             try (InputStream inputStream = urlConnection.getInputStream()) {
-                if (url.getProtocol().startsWith("http")) {
-                    ((HttpURLConnection)urlConnection).setRequestMethod("HEAD");
-                }
                 fileInformation.length = urlConnection.getContentLength();
                 fileInformation.lastModified = urlConnection.getLastModified();
             }
