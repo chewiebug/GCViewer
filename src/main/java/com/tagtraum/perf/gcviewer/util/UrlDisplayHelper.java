@@ -24,7 +24,7 @@ public class UrlDisplayHelper {
      * @return <code>true</code> if displaying of urls is supported
      */
     public static boolean displayUrlIsSupported() {
-        return Desktop.getDesktop().isSupported(Action.BROWSE);
+        return Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Action.BROWSE);
     }
     
     /**
