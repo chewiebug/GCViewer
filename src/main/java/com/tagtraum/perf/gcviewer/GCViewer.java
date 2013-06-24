@@ -33,7 +33,7 @@ public class GCViewer {
             usage();
         } 
         else {
-        	GCViewerGui.main(args);
+        	GCViewerGui.start(args.length == 1 ? args[0] : null);
         }
     }
 	
@@ -47,7 +47,8 @@ public class GCViewer {
     
 	private static void usage() {
 		System.out.println("Welcome to GCViewer with cmdline");
-        System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>]");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file|url>] -> opens gui and loads given file");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>] -> cmdline: writes report to <export.csv>");
     }
 
 }

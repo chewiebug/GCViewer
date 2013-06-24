@@ -94,7 +94,7 @@ public class GCViewerGui extends JFrame {
     private JMenuItem exportMenuItem;
     private ButtonGroup windowCheckBoxGroup = new ButtonGroup();
     private JDesktopPane desktopPane;
-    private JComboBox zoomComboBox;
+    private JComboBox<String> zoomComboBox;
     private Image iconImage;
     // actions
     private Exit exitAction = new Exit(this);
@@ -383,7 +383,7 @@ public class GCViewerGui extends JFrame {
         watchToggle.setText("");
         toolBar.add(watchToggle);
         toolBar.addSeparator();
-        zoomComboBox = new JComboBox(new String[] {"1%", "5%", "10%", "50%", "100%", "200%", "300%", "500%", "1000%", "5000%"});
+        zoomComboBox = new JComboBox<String>(new String[] {"1%", "5%", "10%", "50%", "100%", "200%", "300%", "500%", "1000%", "5000%"});
         zoomComboBox.setSelectedIndex(2);
         zoomComboBox.setAction(zoomAction);
         zoomComboBox.setEditable(true);
@@ -743,35 +743,25 @@ public class GCViewerGui extends JFrame {
         preferences.store();
     }
 
-    public static void main(final String[] args) {
-        if (args.length > 1)
-            usage();
-        else {
-//        	try {
-//        	    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//        	        if ("Nimbus".equals(info.getName())) {
-//        	            UIManager.setLookAndFeel(info.getClassName());
-//        	            break;
-//        	        }
-//        	    }
-//        	} catch (Exception e) {
-//        	    // If Nimbus is not available, you can set the GUI to another look and feel.
-//        	}
-
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    final GCViewerGui viewer = new GCViewerGui();
-                    if (args.length == 1) {
-                        viewer.open(new File[] {new File(args[0])});
+    public static void start(final String arg) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                final GCViewerGui viewer = new GCViewerGui();
+                if (arg != null) {
+                    if (arg.startsWith("http")) {
+                        try {
+                            viewer.open(new URL[]{new URL(arg)});
+                        } 
+                        catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        viewer.open(new File[] {new File(arg)});
                     }
                 }
-            });
-        }
-    }
-
-    private static void usage() {
-        System.out.println("GCViewer");
-        System.out.println("java com.tagtraum.perf.gcviewer.GCViewer [<gc-log-file>]");
+            }
+        });
     }
 
     private static class WindowMenuItemAction extends AbstractAction implements PropertyChangeListener {

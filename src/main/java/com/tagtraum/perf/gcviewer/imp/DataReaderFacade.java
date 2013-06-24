@@ -55,16 +55,11 @@ public class DataReaderFacade {
             model = readModel(url);
             model.setURL(url);
         } 
-        catch (RuntimeException e) {
+        catch (RuntimeException | IOException e) {
             LOGGER.severe(LocalisationHelper.getString("fileopen_dialog_read_file_failed")
                     + "\n" + e.toString() + " " + e.getLocalizedMessage());
             dataReaderException.initCause(e);
         } 
-        catch (IOException e) {
-            LOGGER.severe(LocalisationHelper.getString("fileopen_dialog_read_file_failed")
-                    + "\n" + e.toString() + " " + e.getLocalizedMessage());
-            dataReaderException.initCause(e);
-        }
         finally {
             // remove special handler after we are done with reading.
             PARSER_LOGGER.removeHandler(textAreaLogHandler);
