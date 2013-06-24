@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -694,18 +693,21 @@ public class GCViewerGui extends JFrame {
             // recent files
             List<String> recentFiles = preferences.getRecentFiles();
             for (String filename : recentFiles) {
-                final StringTokenizer st = new StringTokenizer(filename, ";");
-                final URL[] urls = new URL[st.countTokens()];
-                for (int j=0; st.hasMoreTokens(); j++) {
+                final String[] tokens = filename.split(";");
+                final List<URL> urls = new LinkedList<>();
+                for (String token : tokens) {
                     try {
-                        urls[j] = new URL(st.nextToken());
-                    } catch (MalformedURLException e) {
+                        urls.add(new URL(token));
+                    } 
+                    catch (MalformedURLException e) {
                         if (LOGGER.isLoggable(Level.FINE)) {
                             LOGGER.fine("problem tokenizing recent file list: " + e.toString());
                         }
                     }
                 }
-                recentURLsMenu.getRecentURLsModel().add(urls);
+                if (urls.size() > 0) {
+                    recentURLsMenu.getRecentURLsModel().add(urls.toArray(new URL[0]));
+                }
             }
         }
         else {
