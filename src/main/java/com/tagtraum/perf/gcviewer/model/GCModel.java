@@ -426,7 +426,7 @@ public class GCModel implements Serializable {
             while (i.hasNext() && initialMarkEvent == null) {
                 GCEvent gcEvent = i.next();
                 if (gcEvent.isInitialMark()) {
-                    initialMarkEvent = (GCEvent)gcEvent;
+                    initialMarkEvent = gcEvent;
                 }
             }
         }

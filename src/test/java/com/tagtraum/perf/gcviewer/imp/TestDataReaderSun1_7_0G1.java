@@ -115,8 +115,8 @@ public class TestDataReaderSun1_7_0G1 {
         GCEvent heap = (GCEvent) model.getEvents().next();
         assertEquals("heap", 65*1024*1024, heap.getPreUsed());
         // test parsing of decimal values
-        assertEquals("heap", 64.3*1024*1024, (double)heap.getPostUsed(), 1e2);
-        assertEquals("heap", 92.0*1024*1024, (double)heap.getTotal(), 1e2);
+        assertEquals("heap", 64.3*1024*1024, heap.getPostUsed(), 1e2);
+        assertEquals("heap", 92.0*1024*1024, heap.getTotal(), 1e2);
 
         assertEquals("number of errors", 0, handler.getCount());
     }

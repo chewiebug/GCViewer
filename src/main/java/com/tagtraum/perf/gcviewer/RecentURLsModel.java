@@ -30,13 +30,13 @@ public class RecentURLsModel {
 
     protected void fireAddEvent(int position, URLSet urlSet) {
         for (int i=0; i<listeners.size(); i++) {
-            ((RecentURLsListener)listeners.get(i)).add(new RecentURLEvent(this, position, urlSet));
+            listeners.get(i).add(new RecentURLEvent(this, position, urlSet));
         }
     }
 
     protected void fireRemoveEvent(int position) {
         for (int i=0; i<listeners.size(); i++) {
-            ((RecentURLsListener)listeners.get(i)).remove(new RecentURLEvent(this, position));
+            listeners.get(i).remove(new RecentURLEvent(this, position));
         }
     }
 
@@ -67,7 +67,7 @@ public class RecentURLsModel {
             }
             else {
                 for (int i = 0; i < urlSetList.size(); i++) {
-                    URLSet existingURLSet = (URLSet)urlSetList.get(i);
+                    URLSet existingURLSet = urlSetList.get(i);
                     if (urlSet.equals(existingURLSet)) {
                         urlSetList.remove(i);
                         fireRemoveEvent(i);
