@@ -32,7 +32,7 @@ public class CSVDataWriter extends AbstractDataWriter {
         
         Iterator<GCEvent> i = model.getGCEvents();
         while (i.hasNext()) {
-            GCEvent event = (GCEvent) i.next();
+            GCEvent event = i.next();
             // write always two lines so that there is a nice used memory curve
             if (model.hasCorrectTimestamp()) {
                 // we have the timestamps therefore we can correct it with the pause time

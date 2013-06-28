@@ -72,7 +72,7 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
     protected AbstractGCEvent<GCEvent> parseLine(String line, ParsePosition pos) throws ParseException {
         AbstractGCEvent<GCEvent> event = new GCEvent();
         try {
-            event.setTimestamp((long) count);
+            event.setTimestamp(count);
             count++;
             StringTokenizer st = new StringTokenizer(line, " ,->()K\r\n");
             String token = st.nextToken();

@@ -28,7 +28,7 @@ public class IntData implements Serializable  {
     public void add(int x, int weight) {
         sum += x * weight;
         n += weight;
-        sumSquares += ((long)x)*((long)x)*((long)weight);
+        sumSquares += ((long)x)*((long)x)*(weight);
         min = Math.min(min, x);
         max = Math.max(max, x);
     }
