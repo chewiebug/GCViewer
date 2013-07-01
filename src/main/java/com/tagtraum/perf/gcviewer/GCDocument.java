@@ -85,7 +85,7 @@ public class GCDocument extends JInternalFrame {
                     if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                         e.acceptDrop(DnDConstants.ACTION_COPY);
                         List<Object> list = (List<Object>)tr.getTransferData(DataFlavor.javaFileListFlavor);
-                        File[] files = (File[])list.toArray(new File[list.size()]);
+                        File[] files = list.toArray(new File[list.size()]);
                         gcViewer.add(files);
                         GCDocument.this.getContentPane().invalidate();
                         e.dropComplete(true);
@@ -176,12 +176,12 @@ public class GCDocument extends JInternalFrame {
         if (chartPanelViews.size() > 1) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                sb.append(((ChartPanelView) chartPanelViews.get(i)).getModel().getURL().getFile());
+                sb.append(chartPanelViews.get(i).getModel().getURL().getFile());
                 if (i + 1 < chartPanelViews.size()) sb.append(", ");
             }
             setTitle(sb.toString());
         } else if (!chartPanelViews.isEmpty())
-            setTitle(((ChartPanelView) chartPanelViews.get(0)).getModel().getURL().toString());
+            setTitle(chartPanelViews.get(0).getModel().getURL().toString());
         else
             setTitle("");
         int row = 0;
@@ -190,7 +190,7 @@ public class GCDocument extends JInternalFrame {
         MasterViewPortChangeListener masterViewPortChangeListener = new MasterViewPortChangeListener();
 
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            final ChartPanelView chartPanelView = (ChartPanelView) chartPanelViews.get(i);
+            final ChartPanelView chartPanelView = chartPanelViews.get(i);
             final ModelChartImpl modelChart = (ModelChartImpl) chartPanelView.getModelChart();
             final ModelPanel modelPanel = chartPanelView.getModelPanel();
             final JTabbedPane modelChartAndDetails = chartPanelView.getModelChartAndDetails();
@@ -288,7 +288,7 @@ public class GCDocument extends JInternalFrame {
     }
 
     public ChartPanelView getChartPanelView(int i) {
-        return (ChartPanelView) chartPanelViews.get(i);
+        return chartPanelViews.get(i);
     }
 
     public void setWatched(boolean watched) {
@@ -323,7 +323,7 @@ public class GCDocument extends JInternalFrame {
     public ChartPanelView getLastMaximizedChartPanelView() {
         ChartPanelView lastMaximizedChartPanelView = null;
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            final ChartPanelView chartPanelView = (ChartPanelView) chartPanelViews.get(i);
+            final ChartPanelView chartPanelView = chartPanelViews.get(i);
             if (!chartPanelView.isMinimized()) lastMaximizedChartPanelView = chartPanelView;
         }
         return lastMaximizedChartPanelView;
@@ -331,7 +331,7 @@ public class GCDocument extends JInternalFrame {
 
     private void scaleModelChart() {
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            final ChartPanelView aChartPanelView = ((ChartPanelView) chartPanelViews.get(i));
+            final ChartPanelView aChartPanelView = (chartPanelViews.get(i));
             aChartPanelView.getModelChart().setFootprint(getMaxFootprint());
             aChartPanelView.getModelChart().setMaxPause(getMaxMaxPause());
             aChartPanelView.getModelChart().setRunningTime(getMaxRunningTime());
@@ -341,7 +341,7 @@ public class GCDocument extends JInternalFrame {
     private double getMaxRunningTime() {
         double max = 0;
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            max = Math.max(max, ((ChartPanelView) chartPanelViews.get(i)).getModel().getRunningTime());
+            max = Math.max(max, chartPanelViews.get(i).getModel().getRunningTime());
         }
         return max;
     }
@@ -349,7 +349,7 @@ public class GCDocument extends JInternalFrame {
     private long getMaxFootprint() {
         long max = 0;
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            max = Math.max(max, ((ChartPanelView) chartPanelViews.get(i)).getModel().getFootprint());
+            max = Math.max(max, chartPanelViews.get(i).getModel().getFootprint());
         }
         return max;
     }
@@ -357,7 +357,7 @@ public class GCDocument extends JInternalFrame {
     private double getMaxMaxPause() {
         double max = 0;
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            max = Math.max(max, ((ChartPanelView) chartPanelViews.get(i)).getModel().getPause().getMax());
+            max = Math.max(max, chartPanelViews.get(i).getModel().getPause().getMax());
         }
         return max;
     }

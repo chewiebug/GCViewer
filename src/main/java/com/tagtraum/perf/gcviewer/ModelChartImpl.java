@@ -203,7 +203,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                     else {
                         long suggestedStartDate = model.getLastModified();
                         if (model.hasDateStamp()) {
-                        	suggestedStartDate = (long)(model.getFirstDateStamp().getTime());
+                        	suggestedStartDate = model.getFirstDateStamp().getTime();
                         }
                         else if (model.hasCorrectTimestamp()) {
                             suggestedStartDate -= (long)(model.getRunningTime() * 1000.0d);
@@ -546,15 +546,15 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             g.setColor(Color.black);
             if (isVertical()) {
                 double halfLineDistance = lineDistance / 2.0d;
-                for (double line = (double) getHeight() - (minUnit % lineDistance); line > 0; line -= lineDistance) {
+                for (double line = getHeight() - (minUnit % lineDistance); line > 0; line -= lineDistance) {
                     g.drawLine(0, (int) line, getWidth(), (int) line);
                 }
-                for (double line = (double) getHeight() - ((minUnit - halfLineDistance) % lineDistance); line > 0; line -= lineDistance) {
+                for (double line = getHeight() - ((minUnit - halfLineDistance) % lineDistance); line > 0; line -= lineDistance) {
                     int inset = 3;
                     g.drawLine(inset, (int) line, getWidth() - inset, (int) line);
                 }
                 String number = null;
-                for (double line = (double) getHeight() - (minUnit % lineDistance); line > 0; line -= lineDistance) {
+                for (double line = getHeight() - (minUnit % lineDistance); line > 0; line -= lineDistance) {
                     g.setFont(font);
                     String newNumber = format((getHeight() - line) / getPixelsPerUnit()) + getUnitName();
                     if (!newNumber.equals(number))
@@ -588,10 +588,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
         public void setOffset(double offset) {
             this.offset = offset;
-        }
-
-        public void setFormatter(Format formatter) {
-            this.formatter = formatter;
         }
 
         private String format(final double val) {
@@ -655,21 +651,13 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         }
 
         private double getPixelsPerUnit() {
-            double pixelPerUnit = (isVertical()?(double) getHeight()/(maxUnit - minUnit):(runningTime * getScaleFactor() / (maxUnit - minUnit)));
+            double pixelPerUnit = (isVertical()?getHeight()/(maxUnit - minUnit):(runningTime * getScaleFactor() / (maxUnit - minUnit)));
             return pixelPerUnit;
-        }
-
-        public double getMinUnit() {
-            return minUnit;
         }
 
         public void setMinUnit(double minUnit) {
             this.minUnit = minUnit;
             configureFormatter();
-        }
-
-        public double getMaxUnit() {
-            return maxUnit;
         }
 
         public void setMaxUnit(double maxUnit) {

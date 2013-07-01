@@ -82,7 +82,7 @@ public class DataReaderSun1_2_2 implements DataReader {
                         //event.setPostUsed(event.getPreUsed());
                         event.setTotal(total / 1024);
                         event.setType(AbstractGCEvent.Type.GC);
-                        event.setPause(((double)pause) / 1000.0d);
+                        event.setPause((pause) / 1000.0d);
                         model.add(event);
                         lastEvent = event;
                         /*

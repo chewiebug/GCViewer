@@ -181,7 +181,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
     }
 
     protected ScaledPolygon createTimeScaledPolygon() {
-        return new ScaledPolygon(getModelChart().getScaleFactor(), getHeight()/((double)getModelChart().getMaxPause()), getHeight());
+        return new ScaledPolygon(getModelChart().getScaleFactor(), getHeight()/(getModelChart().getMaxPause()), getHeight());
     }
 
     protected ScaledPolygon createMemoryScaledPolygon() {

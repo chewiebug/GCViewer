@@ -45,7 +45,6 @@ public class DataWriterFactory {
      * @return instance of DataWriter accorting to <code>type</code> parameter
      * @throws IOException unknown DataWriter or problem creating file
      */
-    @SuppressWarnings("resource")
     public static DataWriter getDataWriter(File file, DataWriterType type, Map<String, Object> configuration) throws IOException {
         FileOutputStream outputStream = new FileOutputStream(file);
         switch (type) {

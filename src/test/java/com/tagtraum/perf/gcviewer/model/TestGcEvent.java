@@ -38,7 +38,7 @@ public class TestGcEvent {
         // when GC was parsed, only "young" information really is present; "tenured" must be inferred
         assertEquals("number of details", 1, gcEvent.details.size());
         
-        GCEvent defNewEvent = (GCEvent) gcEvent.details().next();
+        GCEvent defNewEvent = gcEvent.details().next();
         assertEquals("type", Type.DEF_NEW, defNewEvent.getType());
         assertEquals("getYoung", defNewEvent, gcEvent.getYoung());
         
@@ -51,7 +51,7 @@ public class TestGcEvent {
         // when Full GC was parsed, "young" information was deferred, other were parsed.
         assertEquals("number of details", 2, fullGcEvent.details.size());
         
-        GCEvent tenured = (GCEvent) fullGcEvent.details.get(0);
+        GCEvent tenured = fullGcEvent.details.get(0);
         assertEquals("type", Type.TENURED, tenured.getType());
         assertEquals("getTenured", tenured, fullGcEvent.getTenured());
         
