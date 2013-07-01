@@ -1,0 +1,17 @@
+2.385: {Heap before GC invocations=166 (full 32):
+[GC concurrent-root-region-scan-end, 0.0000684]
+ garbage-first heap  2.385:  total 131072K, used 131072K[GC concurrent-mark-start]
+ [0x04800000, 0x0c800000, 0x0c800000)
+  region size 8192K, 1 young (8192K), 1 survivors (8192K)
+ compacting perm gen  total 8192K, used 1626K [0x0c800000, 0x0d000000, 0x10800000)
+   the space 8192K,  19% used [0x0c800000, 0x0c996bd0, 0x0c996c00, 0x0d000000)
+No shared spaces configured.
+2.385: [Full GC 128M->57M(128M), 0.0326402 secs]
+ [Times: user=0.05 sys=0.00, real=0.05 secs] 
+Heap after GC invocations=167 (full 33):
+ garbage-first heap   total 131072K, used 59219K [0x04800000, 0x0c800000, 0x0c800000)
+  region size 8192K, 0 young (0K), 0 survivors (0K)
+ compacting perm gen  total 8192K, used 1626K [0x0c800000, 0x0d000000, 0x10800000)
+   the space 8192K,  19% used [0x0c800000, 0x0c996bd0, 0x0c996c00, 0x0d000000)
+No shared spaces configured.
+}
