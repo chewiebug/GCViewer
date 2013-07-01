@@ -29,14 +29,16 @@ public class RecentURLsModel {
     }
 
     protected void fireAddEvent(int position, URLSet urlSet) {
-        for (int i=0; i<listeners.size(); i++) {
-            listeners.get(i).add(new RecentURLEvent(this, position, urlSet));
+        RecentURLEvent event = new RecentURLEvent(this, position, urlSet); 
+        for (RecentURLsListener listener : listeners) {
+            listener.add(event);
         }
     }
 
     protected void fireRemoveEvent(int position) {
-        for (int i=0; i<listeners.size(); i++) {
-            listeners.get(i).remove(new RecentURLEvent(this, position));
+        RecentURLEvent event = new RecentURLEvent(this, position);
+        for (RecentURLsListener listener : listeners) {
+            listener.remove(event);
         }
     }
 
