@@ -50,6 +50,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Carl Meyer",
         "Reinhard Nägele",
         "Rupesh Ramachandran",
+        "Heiko W. Rupp",
         "Stephan Schroevers",
         "Serafín Sedano",
         "Andrey Skripalschikov",
