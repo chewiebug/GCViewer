@@ -61,7 +61,7 @@ public class Export extends AbstractAction {
                 ExtensionFileFilter fileFilter = (ExtensionFileFilter) saveDialog.getFileFilter();
                 // On OS/X if you don't select one of the filters and just press "Save" the filter may be null. Use the CSV one then
                 if (fileFilter==null) {
-                    fileFilter = new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV);
+                    fileFilter = (ExtensionFileFilter) saveDialog.getChoosableFileFilters()[0];
                 }
                 exportFile(chartPanelView.getModel(), saveDialog.getSelectedFile(), fileFilter.getExtension(),
                     fileFilter.getDataWriterType());
@@ -123,6 +123,16 @@ public class Export extends AbstractAction {
 
         public DataWriterType getDataWriterType() {
             return dataWriterType;
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(super.toString());
+            sb.append("\ntype=").append(dataWriterType);
+            sb.append("; extension=").append(extension);
+            sb.append("; description=").append(description);
+            
+            return sb.toString();
         }
     }
 }
