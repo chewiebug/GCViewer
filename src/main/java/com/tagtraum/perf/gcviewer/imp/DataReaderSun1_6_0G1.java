@@ -116,6 +116,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("class space"); // java 8
         HEAP_STRINGS.add("}");
         HEAP_STRINGS.add("[0x"); // special case of line following one containing a concurrent event mixed with heap information
+        HEAP_STRINGS.add("total"); // special case of line following one containing a concurrent event mixed with heap information
     }
     
     /** is true, if "[Times ..." information is present in the gc log */
@@ -413,7 +414,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         
         if (event.getTotal() == 0) {
             // is currently the case for jdk 1.7.0_02 which changed the memory format
-            LOG.warning("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
+            // as of 1.7.0_25 for "GC cleanup" events, there seem to be rare cases, where this just happens
+            // => don't log as warning; just log on debug level
+            if (LOG.isLoggable(Level.FINE)) LOG.fine("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
         }
         model.add(event);
 
