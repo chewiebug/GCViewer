@@ -1,49 +1,18 @@
 package com.tagtraum.perf.gcviewer;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.renderer.*;
+import com.tagtraum.perf.gcviewer.util.TimeFormat;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Date;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
-import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
-import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
-import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
-import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
-import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
-import com.tagtraum.perf.gcviewer.renderer.PolygonChartRenderer;
-import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
-import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
-import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
-import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
-import com.tagtraum.perf.gcviewer.renderer.UsedTenuredRenderer;
-import com.tagtraum.perf.gcviewer.renderer.UsedYoungRenderer;
-import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
 /**
  * Graphical chart of the gc file. It contains the chart and all rulers surrounding it but not
@@ -232,6 +201,11 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     
     public double getScaleFactor() {
         return scaleFactor;
+    }
+
+    public void autoSetScaleFactor() {
+        double scaleFactor = getViewport().getWidth() / model.getRunningTime();
+        setScaleFactor(scaleFactor);
     }
 
     public void setScaleFactor(double scaleFactor) {
