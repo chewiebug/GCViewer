@@ -16,11 +16,10 @@ public class GCViewer {
     private static final Logger LOGGER = Logger.getLogger(GCViewer.class.getName());
 
 	public static void main(final String[] args) {
-	    // TODO: unify parameter handling from command line
         if (args.length > 3) {
             usage();
         }
-        if (args.length >= 2) {
+        else if (args.length >= 2) {
         	final String gcfile = args[0];
         	final String summaryFilePath = args[1];
             final String chartFilePath = args.length == 3 ? args[2] : null;
@@ -43,7 +42,7 @@ public class GCViewer {
     private static void export(String gcFilename, String summaryFilePath, String chartFilePath)
             throws IOException, DataReaderException {
         DataReaderFacade dataReaderFacade = new DataReaderFacade();
-        GCModel model = dataReaderFacade.loadModel(new File(gcFilename).toURI().toURL(), false, null);
+        GCModel model = dataReaderFacade.loadModel(gcFilename, false, null);
 
         exportSummary(model, summaryFilePath);
         if (chartFilePath != null)

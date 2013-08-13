@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ import org.junit.Test;
 public class TestDataReaderFacade {
 
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final String PARENT_PATH = "src/test/resources/" + UnittestHelper.FOLDER_OPENJDK;
+    private static final String PARENT_PATH = "src/test/resources/" + UnittestHelper.FOLDER_OPENJDK + "/";
     
     private DataReaderFacade dataReaderFacade;
     
@@ -31,11 +32,62 @@ public class TestDataReaderFacade {
     }
     
     /**
+     * Tests {@link DataReaderFacade#loadModel(String, boolean, java.awt.Component)}
+     * with filename that does exist.
+     */
+    @Test
+    public void loadModelStringFileExistsNoWarnings() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+
+        dataReaderFacade.loadModel(PARENT_PATH + "SampleSun1_6_0PrintHeapAtGC.txt", false, null);
+        
+        assertEquals("has no errors", 0, handler.getCount());
+    }
+
+    /**
+     * Tests {@link DataReaderFacade#loadModel(String, boolean, java.awt.Component)}
+     * with a malformed url.
+     */
+    @Test
+    public void loadModelStringMalformedUrl() throws Exception {
+
+        try {
+            dataReaderFacade.loadModel("httpblabla", false, null);
+        }
+        catch (DataReaderException e) {
+            assertNotNull("cause", e.getCause());
+            assertEquals("expected exception in cause",
+                    MalformedURLException.class.getName(),
+                    e.getCause().getClass().getName());
+        }
+    }
+
+    /**
+     * Tests {@link DataReaderFacade#loadModel(String, boolean, java.awt.Component)}
+     * with a malformed url.
+     */
+    @Test
+    public void loadModelStringIllegalArgument() throws Exception {
+
+        try {
+            dataReaderFacade.loadModel("http://", false, null);
+        }
+        catch (DataReaderException e) {
+            assertNotNull("cause", e.getCause());
+            assertEquals("expected exception in cause",
+                    IllegalArgumentException.class.getName(),
+                    e.getCause().getClass().getName());
+        }
+    }
+
+    /**
      * Tests {@link DataReaderFacade#loadModel(java.net.URL, boolean, java.awt.Component)}
      * with filename that does not exist.
      */
     @Test
-    public void loadModelFileDoesntExists() throws Exception {
+    public void loadModelUrlFileDoesntExists() throws Exception {
         try {
             dataReaderFacade.loadModel(new File("dummy.txt").toURI().toURL(), false, null);
             fail("DataReaderException expected");
@@ -53,7 +105,7 @@ public class TestDataReaderFacade {
      * with filename that does exist.
      */
     @Test
-    public void loadModelFileExistsNoWarnings() throws Exception {
+    public void loadModelUrlFileExistsNoWarnings() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);

@@ -3,8 +3,10 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.logging.Logger;
@@ -33,6 +35,39 @@ public class DataReaderFacade {
     private static final Logger PARSER_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer");
     private static final Logger LOGGER = Logger.getLogger(DataReaderFacade.class.getName());
 
+    /**
+     * Loads a model from a given <code>pathToData</code> logging all exceptions that occur.
+     * 
+     * @param fileOrUrl path to a file or URL
+     * @param showErrorDialog <code>true</code> if a window with an error description should be shown
+     * if one occurred
+     * @param parent parent for the error dialog
+     * @return instance of GCModel containing all information that was parsed
+     * @throws DataReaderException if any exception occurred, it is logged and added as the cause
+     * to this exception
+     * @see {@link #loadModel(URL, boolean, Component)}
+     */
+    public GCModel loadModel(String fileOrUrl, boolean showErrorDialog, Component parent) throws DataReaderException {
+        if (fileOrUrl == null) {
+            throw new NullPointerException("fileOrUrl must never be null");
+        }
+        
+        try {
+            URL url = null;
+            if (fileOrUrl.startsWith("http")) {
+                url = new URL(fileOrUrl);
+            }
+            else {
+                url = new File(fileOrUrl).toURI().toURL();
+            }
+            
+            return loadModel(url, showErrorDialog, parent);
+        }
+        catch (MalformedURLException e) {
+            throw new DataReaderException("could not load from '" + fileOrUrl + "'", e);
+        }
+    }
+    
     /**
      * Loads a model from a given <code>url</code> logging all exceptions that occur.
      * 
