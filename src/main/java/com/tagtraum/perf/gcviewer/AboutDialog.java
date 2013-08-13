@@ -54,7 +54,8 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Stephan Schroevers",
         "Serafín Sedano",
         "Andrey Skripalschikov",
-        "Yin Xunjun"};
+        "Yin Xunjun",
+        "Eugene Zimichev"};
 
     public AboutDialog(Frame f) {
         super(f, LocalisationHelper.getString("about_dialog_title"));

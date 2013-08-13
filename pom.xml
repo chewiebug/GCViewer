@@ -73,8 +73,12 @@
         <developer>
             <name>Yin Xunjun</name>
         </developer>
+        <developer>
+            <name>Eugene Zimichev</name>
+            <url>https://github.com/undefz</url>
+        </developer>
     </developers>
-    
+
     <licenses>
         <license>
             <name>GNU Lesser General Public License 2.1</name>
@@ -262,8 +266,8 @@
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>${gpg.plugin.version}</version>
                     <configuration>
-                        <!-- using gpg2 this should be set to "true", because the option \-\-no-use-agent 
-                            was dropped -->
+                        <!-- using gpg2 this should be set to "true", because 
+                            the option \-\-no-use-agent was dropped -->
                         <useAgent>true</useAgent>
                     </configuration>
                 </plugin>
@@ -280,10 +284,10 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.6.2.201302030002</version>
+                    <version>0.6.3.201306030806</version>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings 
-                    only. It has no influence on the Maven build itself. -->
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -396,14 +400,48 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <check>
-                                <classRatio>32</classRatio>
-                                <instructionRatio>37</instructionRatio>
-                                <methodRatio>31</methodRatio>
-                                <branchRatio>37</branchRatio>
-                                <complexityRatio>28</complexityRatio>
-                                <lineRatio>38</lineRatio>
-                            </check>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.38</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>CLASS</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.33</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.40</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.37</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>METHOD</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.32</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.28</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>CLASS</counter>
+                                            <value>MISSEDCOUNT</value>
+                                            <maximum>107</maximum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
@@ -414,8 +452,8 @@
 
     <profiles>
         <profile>
-            <!-- Override plugin versions of Sonatype profile. This needs to be done 
-                here because profiles are not inherited. -->
+            <!-- Override plugin versions of Sonatype profile. This needs 
+                to be done here because profiles are not inherited. -->
             <id>sonatype-oss-release</id>
             <build>
                 <plugins>
@@ -462,7 +500,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -498,7 +536,7 @@
                             <dependency>
                                 <groupId>com.jcraft</groupId>
                                 <artifactId>jsch</artifactId>
-                                <version>0.1.44-1</version>
+                                <version>0.1.50</version>
                             </dependency>
                         </dependencies>
 
