@@ -2,7 +2,6 @@ package com.tagtraum.perf.gcviewer.renderer;
 
 import com.tagtraum.perf.gcviewer.ChartRenderer;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 
 import java.awt.*;

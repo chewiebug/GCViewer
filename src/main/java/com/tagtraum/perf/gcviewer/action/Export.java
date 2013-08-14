@@ -40,7 +40,7 @@ public class Export extends AbstractAction {
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/save.png"))));
         setEnabled(false);
-        
+
         saveDialog = new JFileChooser();
         saveDialog.setDialogTitle(LocalisationHelper.getString("fileexport_dialog_title"));
         saveDialog.removeChoosableFileFilter(saveDialog.getAcceptAllFileFilter());
@@ -58,24 +58,30 @@ public class Export extends AbstractAction {
             saveDialog.setSelectedFile(file);
             final int val = saveDialog.showSaveDialog(gcViewer);
             if (val == JFileChooser.APPROVE_OPTION) {
-                exportFile(chartPanelView.getModel(), saveDialog.getSelectedFile(), ((ExtensionFileFilter)saveDialog.getFileFilter()).getExtension(), ((ExtensionFileFilter)saveDialog.getFileFilter()).getDataWriterType());
+                ExtensionFileFilter fileFilter = (ExtensionFileFilter) saveDialog.getFileFilter();
+                // On OS/X if you don't select one of the filters and just press "Save" the filter may be null. Use the CSV one then
+                if (fileFilter==null) {
+                    fileFilter = (ExtensionFileFilter) saveDialog.getChoosableFileFilters()[0];
+                }
+                exportFile(chartPanelView.getModel(), saveDialog.getSelectedFile(), fileFilter.getExtension(),
+                    fileFilter.getDataWriterType());
             }
             else if (val == JFileChooser.ERROR_OPTION) {
                 JOptionPane.showMessageDialog(gcViewer, LocalisationHelper.getString("fileexport_dialog_error_occured"), LocalisationHelper.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-    
+
     public void exportFile(final GCModel model, File file, final String extension, final DataWriterType dataWriterType) {
         if (file.toString().indexOf('.') == -1) {
             file = new File(file.toString() + extension);
         }
-        if (!file.exists() 
-                || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer, 
-                        LocalisationHelper.getString("fileexport_dialog_confirm_overwrite"), 
-                        LocalisationHelper.getString("fileexport_dialog_title"), 
+        if (!file.exists()
+                || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(gcViewer,
+                        LocalisationHelper.getString("fileexport_dialog_confirm_overwrite"),
+                        LocalisationHelper.getString("fileexport_dialog_title"),
                         JOptionPane.YES_NO_OPTION)) {
-            
+
             try (DataWriter writer = DataWriterFactory.getDataWriter(file, dataWriterType)) {
                 writer.write(model);
             }
@@ -90,13 +96,13 @@ public class Export extends AbstractAction {
         private String extension;
         private String description;
         private DataWriterType dataWriterType;
-        
+
         public ExtensionFileFilter(final String extension, final String description, final DataWriterType dataWriterType) {
             this.extension = extension.toLowerCase();
             this.description = description;
             this.dataWriterType = dataWriterType;
         }
-        
+
         public boolean accept(final File file) {
         	// TODO refactor
         	try {
@@ -114,9 +120,19 @@ public class Export extends AbstractAction {
         public String getDescription() {
             return description;
         }
-        
+
         public DataWriterType getDataWriterType() {
             return dataWriterType;
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(super.toString());
+            sb.append("\ntype=").append(dataWriterType);
+            sb.append("; extension=").append(extension);
+            sb.append("; description=").append(description);
+            
+            return sb.toString();
         }
     }
 }

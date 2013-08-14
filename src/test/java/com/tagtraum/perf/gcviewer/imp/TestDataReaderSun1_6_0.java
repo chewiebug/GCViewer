@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
-import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -135,7 +134,7 @@ public class TestDataReaderSun1_6_0 {
 
 		assertEquals("GC count", 1, model.size());
 
-		assertEquals("gc pause", 5.3, ((ConcurrentGCEvent) model.getConcurrentGCEvents().next()).getPause(), 0.001);
+		assertEquals("gc pause", 5.3, model.getConcurrentGCEvents().next().getPause(), 0.001);
 	}
 
     @Test
@@ -148,7 +147,7 @@ public class TestDataReaderSun1_6_0 {
 
 		assertEquals("GC count", 1, model.size());
 
-		assertEquals("gc pause", 3.849, ((ConcurrentGCEvent) model.getConcurrentGCEvents().next()).getPause(), 0.0001);
+		assertEquals("gc pause", 3.849, model.getConcurrentGCEvents().next().getPause(), 0.0001);
 	}
 
     @Test

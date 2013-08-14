@@ -8,6 +8,6 @@
 /src/manifest.mf
 /deploy.bat
 /GCViewer.ofp
-/releasenotes.txt
+/*.txt
 /*.iml
 /.idea/
