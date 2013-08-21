@@ -1,11 +1,13 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import java.io.BufferedInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
@@ -22,8 +24,35 @@ public class DataReaderFactory {
     private static final int FOUR_KB = ONE_KB * 4;
     private static final int MAX_ATTEMPT_COUNT = 100;
 
+    /**
+     * Reads unsigned short in Intel byte order and resets the stream to the start position.
+     * 
+     * @param in The input stream
+     * @return The Short value at the start of the stream
+     * @throws IOException
+     */
+    private static int readUShortAndReset(final InputStream in) throws IOException {
+    	in.mark(2);
+        final int b1 = in.read();
+        final int b2 = in.read();
+        if (b2 < 0) {
+            throw new EOFException();
+        }
+        final int result = (b2 << 8) | b1;
+        in.reset();
+        return result;
+    }
+
     public DataReader getDataReader(InputStream inStream) throws IOException {
-        BufferedInputStream in = new BufferedInputStream(inStream, FOUR_KB);
+        BufferedInputStream in = inStream instanceof BufferedInputStream 
+        							? (BufferedInputStream)inStream
+        							: new BufferedInputStream(inStream, FOUR_KB);
+        if (in.markSupported()) {
+        	// See jdk's GZIPInputStream.
+        	if (readUShortAndReset(in) == GZIPInputStream.GZIP_MAGIC) {
+        		in = new BufferedInputStream(new GZIPInputStream(in, FOUR_KB), FOUR_KB);
+        	}
+        }
         DataReader dataReader = null;
         long nextPos = 0;
         String chunkOfLastLine = null;

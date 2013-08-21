@@ -13,12 +13,12 @@ import java.io.File;
  */
 public class ExtensionFileFilter extends FileFilter {
 
-    public static final ExtensionFileFilter TxtExtensionFilter = new ExtensionFileFilter("txt");
-    public static final ExtensionFileFilter GcExtensionFilter = new ExtensionFileFilter("gc");
-    public static final ExtensionFileFilter LogExtensionFilter = new ExtensionFileFilter("log");
+    public static final ExtensionFileFilter[] EXT_FILE_FILTERS = { 
+    	new ExtensionFileFilter("txt"), new ExtensionFileFilter("gc"), new ExtensionFileFilter("log"),
+    	new ExtensionFileFilter("txt.gz"), new ExtensionFileFilter("gc.gz"), new ExtensionFileFilter("log.gz")    	    	
+    };
 
-
-    private String extension;
+    private final String extension;
 
     public ExtensionFileFilter(String extension) {
         this.extension = extension;
