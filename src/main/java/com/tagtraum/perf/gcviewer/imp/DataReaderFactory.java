@@ -44,9 +44,7 @@ public class DataReaderFactory {
     }
 
     public DataReader getDataReader(InputStream inStream) throws IOException {
-        BufferedInputStream in = inStream instanceof BufferedInputStream 
-        							? (BufferedInputStream)inStream
-        							: new BufferedInputStream(inStream, FOUR_KB);
+        BufferedInputStream in = new BufferedInputStream(inStream, FOUR_KB);
         if (in.markSupported()) {
         	// See jdk's GZIPInputStream.
         	if (readUShortAndReset(in) == GZIPInputStream.GZIP_MAGIC) {
