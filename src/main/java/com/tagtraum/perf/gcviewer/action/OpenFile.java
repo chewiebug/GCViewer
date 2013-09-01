@@ -43,9 +43,9 @@ public class OpenFile extends AbstractAction {
         openDialog = new JFileChooser();
         openDialog.setDialogTitle(LocalisationHelper.getString("fileopen_dialog_title"));
         openDialog.setMultiSelectionEnabled(true);
-        openDialog.addChoosableFileFilter(ExtensionFileFilter.GcExtensionFilter);
-        openDialog.addChoosableFileFilter(ExtensionFileFilter.TxtExtensionFilter);
-        openDialog.addChoosableFileFilter(ExtensionFileFilter.LogExtensionFilter);
+        for (ExtensionFileFilter filter:ExtensionFileFilter.EXT_FILE_FILTERS) {
+        	openDialog.addChoosableFileFilter(filter);
+        }
         addURLCheckBox = new JCheckBox(LocalisationHelper.getString("fileopen_dialog_add_checkbox"), false);
         addURLCheckBox.setVerticalTextPosition(SwingConstants.TOP);
         addURLCheckBox.setToolTipText(LocalisationHelper.getString("fileopen_dialog_hint_add_checkbox"));

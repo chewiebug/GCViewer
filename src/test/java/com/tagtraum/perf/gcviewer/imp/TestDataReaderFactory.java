@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +20,9 @@ import org.junit.rules.TestName;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public class TestDataReaderFactory {
+
+    private static final String SAMPLE_GCLOG_SUN1_6_0_GZ = "SampleSun1_6_0PrintHeapAtGC.txt.gz";
+
     @Rule 
     public TestName name = new TestName();
 
@@ -45,6 +49,33 @@ public class TestDataReaderFactory {
             Class<? extends DataReader> actual) {
         
         assertEquals(testName, expected.getCanonicalName(), actual.getCanonicalName());
+    }
+    
+    @Test
+    public void testReadUShortAndReset() throws Exception {
+	    // first two are GZip magic bytes
+     	final byte[] testBytes = new byte[]{ 0x1F, 0x8B-256, 1, 2, 3, 4, 5, 6 };
+    	final InputStream in = new ByteArrayInputStream(testBytes);
+    	final int availableBefore = in.available();
+    	final int actual = DataReaderFactory.readUShortAndReset(in);
+    	final int expected = GZIPInputStream.GZIP_MAGIC;
+    	final int availableAfter = in.available();
+    	// check the magic bytes at the start of the stream:
+    	assertEquals("readUShortAndReset() reads GZIP_MAGIC", expected, actual);
+    	// test that reset works:
+    	assertEquals("in.available() must be equal to in.available() before", availableBefore, availableAfter);
+    }
+    
+    @Test
+    public void testGetDataReaderJDK6GZipped() throws Exception {
+        final InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, SAMPLE_GCLOG_SUN1_6_0_GZ);
+        
+        try {
+	        final DataReader reader = new DataReaderFactory().getDataReader(in);
+    	    assertDataReader("getDataReader() reading " + SAMPLE_GCLOG_SUN1_6_0_GZ, DataReaderSun1_6_0.class, reader.getClass());
+        } finally {
+        	in.close();
+        }
     }
     
     @Test
