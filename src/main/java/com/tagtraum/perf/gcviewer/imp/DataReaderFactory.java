@@ -31,7 +31,7 @@ public class DataReaderFactory {
      * @return The Short value at the start of the stream
      * @throws IOException
      */
-    private static int readUShortAndReset(final InputStream in) throws IOException {
+    protected static int readUShortAndReset(final InputStream in) throws IOException {
     	in.mark(2);
         final int b1 = in.read();
         final int b2 = in.read();
@@ -48,6 +48,7 @@ public class DataReaderFactory {
         if (in.markSupported()) {
         	// See jdk's GZIPInputStream.
         	if (readUShortAndReset(in) == GZIPInputStream.GZIP_MAGIC) {
+        		LOG.info("GZip stream detected");
         		in = new BufferedInputStream(new GZIPInputStream(in, FOUR_KB), FOUR_KB);
         	}
         }
