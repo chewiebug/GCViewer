@@ -848,4 +848,18 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("main type", "GC", model.get(0).getType().getType());
         assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getType().getType());
     }
+    
+    @Test
+    public void testPromotionFailedWithReference() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2013-09-02T18:22:23.195+0000: 1837.498: [GC1837.600: [SoftReference, 0 refs, 0.0000060 secs]1837.600: [WeakReference, 374 refs, 0.0000550 secs]1837.600: [FinalReference, 347 refs, 0.0002090 secs]1837.600: [PhantomReference, 0 refs, 0.0000020 secs]1837.600: [JNI Weak Reference, 0.0000050 secs]-- [PSYoungGen: 1330796K->1330796K(1403264K)] 4172533K->4251241K(4323712K), 0.6580190 secs] [Times: user=2.35 sys=0.02, real=0.66 secs]" 
+                       .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+        
+        assertEquals("count", 1, model.size());
+        assertEquals("main type", "GC--", model.get(0).getType().getType());
+        assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getType().getType());
+    }
 }

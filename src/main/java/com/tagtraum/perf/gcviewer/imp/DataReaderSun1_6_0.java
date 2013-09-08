@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -175,7 +177,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x format...");
         
-        try {
+        try (BufferedReader in = this.in) {
             final GCModel model = new GCModel(false);
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             Matcher mixedLineMatcher = linesMixedPattern.matcher("");
@@ -353,7 +355,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                      }
                      
                      model.add(gcEvent);
-                } catch (Exception pe) {
+                } 
+                catch (Exception pe) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
                     beginningOfLine.clear();
@@ -362,12 +365,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 parsePosition.setIndex(0);
             }
             return model;
-        } finally {
-            if (in != null)
-                try {
-                    in.close();
-                } catch (IOException ioe) {
-                }
+        } 
+        finally {
             if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
         }
     }
@@ -423,7 +422,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 }
                 ae = event;
                 // nothing more to parse...
-            } else {
+            }
+            else {
                 final GCEvent event = new GCEvent();
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
@@ -440,7 +440,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 ae = event;
             }
             return ae;
-        } catch (RuntimeException rte) {
+        }
+        catch (RuntimeException rte) {
             throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
         }
     }
@@ -469,16 +470,40 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 detailEvent.setType(parseType(line, pos));
                 setMemoryAndPauses(detailEvent, line, pos);
                 event.add(detailEvent);
-            } catch (UnknownGcTypeException e) {
+            } 
+            catch (UnknownGcTypeException e) {
                 skipUntilEndOfDetail(line, pos, e);
-            } catch (NumberFormatException e) {
+            } 
+            catch (NumberFormatException e) {
                 skipUntilEndOfDetail(line, pos, e);
             }
             
+            // promotion failed indicators "--" are sometimes separated from their primary
+            // event name -> stick them together here (they are part of the "parent" event)
+            if (nextIsPromotionFailed(line, pos)) {
+                pos.setIndex(pos.getIndex() + 2);
+                event.setType(Type.parse(event.getType() + "--"));
+            }
+
             // in a line with complete garbage the parser must not get stuck; just stop parsing.
             currentIndexHasChanged = currentIndex != pos.getIndex();
             currentIndex = pos.getIndex();
         }
+        
+    }
+
+    private boolean nextIsPromotionFailed(String line, ParsePosition pos) {
+        StringBuffer nextString = new StringBuffer();
+        int index = pos.getIndex();
+        while (line.charAt(index) == ' ') {
+            ++index;
+        }
+        
+        if (index < line.length()-3) {
+            nextString.append(line.charAt(index)).append(line.charAt(index + 1));
+        }
+        
+        return nextString.toString().equals("--");
     }
 
     /**
