@@ -32,13 +32,13 @@ public class DataReaderFactory {
      * @return DataReader appropriate datareader if it could be determined
      * @throws IOException if no appropriate datareader could be determined
      */
-    public DataReader getDataReader(InputStream inStream) throws IOException {
-        InputStream in = inStream;
-        if (isGZipped(inStream)) {
+    public DataReader getDataReader(final InputStream inStream) throws IOException {
+        InputStream in = new BufferedInputStream(inStream, FOUR_KB);
+        // isGZipped relies on streams to support "mark" -> BufferdInputStream does
+        if (isGZipped(in)) {
             LOG.info("GZip stream detected");
-            in = new GZIPInputStream(inStream, FOUR_KB);
+            in = new BufferedInputStream(new GZIPInputStream(in, FOUR_KB), FOUR_KB);
         }
-        in = new BufferedInputStream(in, FOUR_KB);
         
         DataReader dataReader = null;
         long nextPos = 0;
@@ -185,6 +185,9 @@ public class DataReaderFactory {
             }
             firstBytes = (b2 << 8) | b1;
             in.reset();
+        }
+        else {
+            LOG.warning("mark() not supported for current stream!");
         }
         
         return firstBytes == GZIPInputStream.GZIP_MAGIC;
