@@ -23,35 +23,23 @@ public class DataReaderFactory {
     private static final int ONE_KB = 1024;
     private static final int FOUR_KB = ONE_KB * 4;
     private static final int MAX_ATTEMPT_COUNT = 100;
-
+    
     /**
-     * Reads unsigned short in Intel byte order and resets the stream to the start position.
+     * Returns the {@link DataReader} determined by content analysis. If no datareader can
+     * be determined, an Exception is thrown.
      * 
-     * @param in The input stream
-     * @return The Short value at the start of the stream
-     * @throws IOException
+     * @param inStream input stream to be read
+     * @return DataReader appropriate datareader if it could be determined
+     * @throws IOException if no appropriate datareader could be determined
      */
-    protected static int readUShortAndReset(final InputStream in) throws IOException {
-    	in.mark(2);
-        final int b1 = in.read();
-        final int b2 = in.read();
-        if (b2 < 0) {
-            throw new EOFException();
-        }
-        final int result = (b2 << 8) | b1;
-        in.reset();
-        return result;
-    }
-
     public DataReader getDataReader(InputStream inStream) throws IOException {
-        BufferedInputStream in = new BufferedInputStream(inStream, FOUR_KB);
-        if (in.markSupported()) {
-        	// See jdk's GZIPInputStream.
-        	if (readUShortAndReset(in) == GZIPInputStream.GZIP_MAGIC) {
-        		LOG.info("GZip stream detected");
-        		in = new BufferedInputStream(new GZIPInputStream(in, FOUR_KB), FOUR_KB);
-        	}
+        InputStream in = inStream;
+        if (isGZipped(inStream)) {
+            LOG.info("GZip stream detected");
+            in = new GZIPInputStream(inStream, FOUR_KB);
         }
+        in = new BufferedInputStream(in, FOUR_KB);
+        
         DataReader dataReader = null;
         long nextPos = 0;
         String chunkOfLastLine = null;
@@ -177,4 +165,29 @@ public class DataReaderFactory {
         }
         return null;
     }
+
+    /**
+     * Checks whether the given input stream is in GZIP format.
+     * 
+     * @param in The input stream
+     * @return <code>true</code> if the first two bytes are equal to the GZIP_MAGIC number
+     * @throws IOException 
+     */
+    private boolean isGZipped(final InputStream in) throws IOException {
+        int firstBytes = 0;
+        if (in.markSupported()) {
+            // Reads unsigned short in Intel byte order and resets the stream to the start position.
+            in.mark(2);
+            final int b1 = in.read();
+            final int b2 = in.read();
+            if (b2 < 0) {
+                throw new EOFException();
+            }
+            firstBytes = (b2 << 8) | b1;
+            in.reset();
+        }
+        
+        return firstBytes == GZIPInputStream.GZIP_MAGIC;
+    }
+
 }
