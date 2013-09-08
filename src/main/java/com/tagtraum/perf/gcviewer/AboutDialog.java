@@ -40,6 +40,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
     private JButton okButton;
     
     private static final String[] CONTRIBUTORS = {
+        "Hans Bausewein",
         "Peter Bilstein",
         "Cka3o4Huk",
         "Bernd Eckenfels",
