@@ -270,6 +270,20 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("count", 1, model.size());
         assertEquals("gc pause", 0.0005297, model.getGCPause().getMax(), 0.000001);
     }
+
+    @Test
+    public void gcRemarkWithDateTimeStamp() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("2013-09-08T22:11:22.639+0000: 52131.385: [GC remark 2013-09-08T22:11:22.640+0000: 52131.386: [GC ref-proc, 0.0120750 secs], 0.0347170 secs]\n" +
+                        " [Times: user=0.43 sys=0.00, real=0.03 secs] \n")
+                .getBytes());
+
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("gc pause", 0.0347170, model.getGCPause().getMax(), 0.000001);
+    }
     
     @Test
     public void printApplicationTimePrintTenuringDistribution() throws Exception {

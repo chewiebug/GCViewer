@@ -568,7 +568,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
         Date date = null;
         if (nextIsDatestamp(line, pos)) {
             try {
-                date = dateParser.parse(line.substring(pos.getIndex(), LENGTH_OF_DATESTAMP-1));
+                date = dateParser.parse(line.substring(pos.getIndex(), pos.getIndex()+LENGTH_OF_DATESTAMP-1));
                 pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
             }
             catch (java.text.ParseException e) {
@@ -586,11 +586,11 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @param pos current parse position
      * @return <code>true</code> if in current line at current parse position we have a datestamp
      */
-    private boolean nextIsDatestamp(String line, ParsePosition pos) {
+    protected boolean nextIsDatestamp(String line, ParsePosition pos) {
         if (line == null || line.length() < 10) {
             return false;
         }
     
-        return line.indexOf("-", pos.getIndex()) == 4 && line.indexOf("-", pos.getIndex() + 5) == 7;
+        return line.indexOf("-", pos.getIndex()) == pos.getIndex()+4 && line.indexOf("-", pos.getIndex() + 5) == pos.getIndex()+7;
     }
 }
