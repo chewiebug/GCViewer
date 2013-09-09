@@ -198,7 +198,7 @@ public class TestDataReaderSun1_6_0 {
 		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
-		assertEquals("GC count", 1, model.size());
+ 		assertEquals("GC count", 1, model.size());
 
 		assertEquals("gc pause", 1.1490033, model.getGCPause().getSum(), 0.00000001);
 	}
@@ -533,21 +533,21 @@ public class TestDataReaderSun1_6_0 {
     
     @Test
     public void testCMSScavengeBeforeRemarkWithPrintTenuringDistribution() throws Exception {
-        ByteArrayInputStream in = new ByteArrayInputStream(
+        ByteArrayInputStream input = new ByteArrayInputStream(
                 ("2012-03-07T22:19:48.736+0100: 2.104: [GC[YG occupancy: 235952 K (235968 K)]2012-03-07T22:19:48.736+0100: 2.104: [GC 2.104: [ParNew" +
                  "\nDesired survivor size 13402112 bytes, new threshold 4 (max 4)" +
                  "\n- age   1:      24816 bytes,      24816 total" +
                  "\n: 235952K->30K(235968K), 0.0005641 secs] 317151K->81260K(395712K), 0.0006030 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
                  "\n2.105: [Rescan (parallel) , 0.0002003 secs]2.105: [weak refs processing, 0.0000041 secs]2.105: [class unloading, 0.0000946 secs]2.105: [scrub symbol & string tables, 0.0003146 secs] [1 CMS-remark: 81230K(159744K)] 81260K(395712K), 0.0013199 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
-        GCModel model = reader.read();
+        final DataReader reader = new DataReaderSun1_6_0(input, GcLogType.SUN1_6);
+        GCModel gcModel = reader.read();
 
-        assertEquals("GC count", 2, model.size());
-        assertEquals("1st event", "GC ParNew:", model.get(0).getTypeAsString());
-        assertEquals("1st event pause", 0.0006030, ((GCEvent)model.get(0)).getPause(), 0.00000001);
-        assertEquals("2nd event", "GC CMS-remark:", model.get(1).getTypeAsString());
-        assertEquals("2nd event pause", 0.0013199 - 0.0006030, ((GCEvent)model.get(1)).getPause(), 0.00000001);
+        assertEquals("GC count", 2, gcModel.size());
+        assertEquals("1st event", "GC ParNew:", gcModel.get(0).getTypeAsString());
+        assertEquals("1st event pause", 0.0006030, ((GCEvent)gcModel.get(0)).getPause(), 0.00000001);
+        assertEquals("2nd event", "GC CMS-remark:", gcModel.get(1).getTypeAsString());
+        assertEquals("2nd event pause", 0.0013199 - 0.0006030, ((GCEvent)gcModel.get(1)).getPause(), 0.00000001);
     }
      
     @Test
@@ -812,6 +812,22 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 1, model.size());
         assertEquals("GC pause", 0.3541657, model.getGCPause().getMax(), 0.0000001);
         assertEquals("GC timestamp", 12.655, model.get(0).getTimestamp(), 0.000001);
+    }
+
+    @Test
+    public void testPrintGCCause() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "111.080: [GC (Allocation Failure)111.080: [ParNew: 140365K->605K(157248K), 0.0034070 secs] 190158K->50399K(506816K), 0.0035370 secs] [Times: user=0.02 sys=0.00, real=0.00 secs]"
+                       .getBytes());
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+                GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("GC pause", 0.0035370, model.getGCPause().getMax(), 0.0000001);
+        assertEquals("GC timestamp", 111.080, model.get(0).getTimestamp(), 0.000001);
+        // If types get retained, this will be:
+        // assertEquals("GC (Allocation Failure) ParNew:", model.get(0).getTypeAsString());
+        assertEquals("GC ParNew:", model.get(0).getTypeAsString());
     }
     
     /**
