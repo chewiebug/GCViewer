@@ -58,7 +58,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
-    private static Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
+    private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
     
     private static final String UNLOADING_CLASS = "[Unloading class ";
     private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
@@ -140,19 +140,19 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // AdaptiveSizeStop: collection: 1 
     //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
-    private static Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\(System\\))Adaptive.*");
+    private static final Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\(System\\))Adaptive.*");
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
     
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
     // outputs the following line:
     // 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] 
-    private static Pattern printAdaptiveSizePolicyPattern = Pattern.compile("(.*GC)Adaptive.*(true|false)( \\[.*)");
+    private static final Pattern printAdaptiveSizePolicyPattern = Pattern.compile("(.*GC)Adaptive.*(true|false)( \\[.*)");
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_BEFORE = 1;
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_AFTER = 3;
     
     // -XX:PrintCmsStatistics=2
     private static final String PRINT_CMS_STATISTICS_ITERATIONS = "iterations";
-    private static Pattern printCmsStatisticsIterationsPattern = Pattern.compile("(.*)[ ][\\[][0-9]+[ ]iterations[, 0-9]+[ ]waits[, 0-9]+[ ]cards[)][\\]][ ](.*)");
+    private static final Pattern printCmsStatisticsIterationsPattern = Pattern.compile("(.*)[ ][\\[][0-9]+[ ]iterations[, 0-9]+[ ]waits[, 0-9]+[ ]cards[)][\\]][ ](.*)");
     private static final int PRINT_CMS_STATISTICS_ITERATIONS_GROUP_BEFORE = 1;
     private static final int PRINT_CMS_STATISTICS_ITERATIONS_GROUP_AFTER = 2;
     private static final String PRINT_CMS_STATISTICS_SURVIVOR = "  (Survivor:";
@@ -163,7 +163,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // in JDK1.4 / 1.5 it looked like this:
     // 5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]
     private static final String PRINT_TENURING_DISTRIBUTION = "Desired survivor size"; 
-    private static Pattern printTenuringDistributionPattern = Pattern.compile("(.*GC)[ ]?Desired.*(?:[0-9]\\)|total)( \\[.*|[ ][0-9]*.*)");
+    private static final Pattern printTenuringDistributionPattern = Pattern.compile("(.*GC)[ ]?Desired.*(?:[0-9]\\)|total)( \\[.*|[ ][0-9]*.*)");
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE = 1;
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER = 2;
     
@@ -402,7 +402,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             }
             
             double timestamp = getTimeStamp(line, pos, datestamp);
-            final GCEvent.Type type = parseType(line, pos);
+            final GCEvent.Type type = parseTopType(line, pos);
             // special provision for CMS events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 final ConcurrentGCEvent event = new ConcurrentGCEvent();
@@ -467,7 +467,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 } else {
                     detailEvent.setTimestamp(parseTimestamp(line, pos));
                 }
-                detailEvent.setType(parseType(line, pos));
+                detailEvent.setType(parseNestedType(line, pos));
                 setMemoryAndPauses(detailEvent, line, pos);
                 event.add(detailEvent);
             } 

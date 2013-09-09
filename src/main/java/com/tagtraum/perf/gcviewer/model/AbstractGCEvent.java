@@ -239,7 +239,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
     
     public static class Type implements Serializable {
-        private final String type;
+        private String type;
         private final String rep;
         private Generation generation;
         private Concurrency concurrency;
