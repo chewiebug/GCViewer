@@ -201,9 +201,9 @@ public class DataReaderFacade {
     	// from here we're reading the server's response
     	final String contentEncoding = httpConn.getContentEncoding();
     	final String contentType = httpConn.getContentType();
-    	final int contentLength = httpConn.getContentLength();
+    	final long contentLength = httpConn.getContentLengthLong();
     	final long lastModified = httpConn.getLastModified();
-    	LOGGER.log(Level.INFO, "Reading " + (contentLength < 0 ? "?" : Integer.toString(contentLength) ) + " bytes from " + httpConn.getURL() +
+    	LOGGER.log(Level.INFO, "Reading " + (contentLength < 0L ? "?" : Long.toString(contentLength) ) + " bytes from " + httpConn.getURL() +
     			   "; contentType = " + contentType +
     			   "; contentEncoding = " + contentEncoding +
     			   "; last modified = " + (lastModified <= 0L ? "-" : new Date(lastModified).toString()));
