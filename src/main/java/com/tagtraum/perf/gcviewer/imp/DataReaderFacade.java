@@ -214,12 +214,12 @@ public class DataReaderFacade {
 			break;
 		default:
 			final String responseMessage = httpConn.getResponseMessage();
-			String msg = "Server sent " + responseCode + ": " + responseMessage;
+			final String msg = "Server sent " + responseCode + ": " + responseMessage;
 			LOGGER.info(msg);
 			// NOTE: Apache gzips the error page if client sets Accept-Encoding header
-			msg = readAndCloseStream(httpConn.getErrorStream(), contentEncoding, contentType);
-			if (msg != null) {
-				LOGGER.fine(msg);
+			final String detailMsg = readAndCloseStream(httpConn.getErrorStream(), contentEncoding, contentType);
+			if (detailMsg != null) {
+				LOGGER.fine(detailMsg);
 			}
 			throw new IOException(msg);
 		}
