@@ -134,7 +134,7 @@ public class DataReaderFacade {
      * @param in 					content to read
      * @param contentEncoding		optional encoding of stream (gzip)
      * @param contentType			optional; if 'text/xx', may contain charset.
-     * @return Content of InputStream
+     * @return Content of InputStream or null if input is null
      */    
     protected static String readAndCloseStream(InputStream in, final String contentEncoding, final String contentType) {
     	String result = null;
