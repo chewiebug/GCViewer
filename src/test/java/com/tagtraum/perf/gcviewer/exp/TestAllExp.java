@@ -13,6 +13,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 SimpleGcWriterTest.class
 })
-public class TestAll {
+public class TestAllExp {
 
 }

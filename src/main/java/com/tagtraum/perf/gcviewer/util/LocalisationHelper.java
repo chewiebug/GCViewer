@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
  */
 public class LocalisationHelper {
     private static ResourceBundle resourceBundle;
+    private static final Object[] EMPTY_ARRAY = new Object[]{};
     
     /**
      * Returns localised text as result of lookup with <code>key</code>.
@@ -19,7 +20,7 @@ public class LocalisationHelper {
      * @return localised text
      */
     public static String getString(String key) {
-        return getString(key, "");
+        return getString(key, EMPTY_ARRAY);
     }
     
     /**

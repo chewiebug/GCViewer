@@ -107,6 +107,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("compacting perm gen");
         HEAP_STRINGS.add("the space");
         HEAP_STRINGS.add("No shared spaces configured.");
+        HEAP_STRINGS.add("Metaspace");
         HEAP_STRINGS.add("}");
     }
     

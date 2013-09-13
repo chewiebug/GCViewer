@@ -123,7 +123,7 @@ public class TestDataReaderSun1_7_0G1 {
 
 
     /**
-     * Test parsing GC logs that have PrintAdaptiveSizePolicy turned on
+     * Test parsing GC logs that have PrintGCCause turned on
      */
     @Test
     public void printGCCause() throws Exception {
@@ -146,7 +146,28 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("number of errors", 0, handler.getCount());
     }
 
-    
+    /**
+     * Test parsing GC logs that have PrintGCCause turned on
+     */
+    @Test
+    public void printGCCause2() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        final InputStream in = getInputStream("SampleSun1_7_0_40PrintGCCause2.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        GCEvent event = (GCEvent) model.get(0);
+        // TODO: when full type names are retained, the name should be
+        // "GC pause (G1 Evacuation Pause) (young) (to-space exhausted)"
+        assertEquals("type name", "GC pause (young) (to-space exhausted)", event.getTypeAsString());
+        assertEquals("gc pause", 0.0398848, model.getPause().getMax(), 0.000000001);
+    }
+
     @Test
     public void testDetailedCollectionDatestampMixed1() throws Exception {
         // parse one detailed event with a mixed line (concurrent event starts in the middle of an stw collection)
@@ -313,4 +334,25 @@ public class TestDataReaderSun1_7_0G1 {
 
         assertEquals("number of errors", 0, handler.getCount());
     }
+
+    @Test
+    public void printPrintHeapAtGC() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        final InputStream in = getInputStream("SampleSun1_7_0_40PrintHeapAtGC.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        GCEvent event = (GCEvent) model.get(0);
+        // TODO: when full type names are retained, the name should be
+        // "GC pause (G1 Evacuation Pause) (young) (to-space exhausted)"
+        assertEquals("type name", "GC pause (young)", event.getTypeAsString());
+        assertEquals("gc pause", 0.0147015, model.getPause().getMax(), 0.000000001);
+        assertEquals("error count", 0, handler.getCount());
+    }
+
 }

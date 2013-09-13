@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
     TestDataReaderSun1_4_0.class,
     TestDataReaderSun1_5_0.class,
     TestDataReaderSun1_6_0.class,
+    TestDataReaderSun1_7_0.class,
     TestDataReaderSun1_6_0G1.class,
     TestDataReaderSun1_7_0G1.class,
 
@@ -36,5 +37,5 @@ import org.junit.runners.Suite;
     TestDataReaderJRockit1_5_0.class,
     TestDataReaderJRockit1_6_0.class,
 })
-public class TestAll {
+public class TestAllImp {
 }

@@ -128,7 +128,7 @@ public class DataReaderFactory {
             // this should be an IBM JDK < 1.3.0
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM <1.3.0");
             return new DataReaderIBM1_3_0(in);
-        } else if (s.indexOf("pause (young)") > 0 || s.indexOf("G1Ergonomics") > 0) {
+        } else if (s.indexOf(" (young)") > 0 || s.indexOf("G1Ergonomics") > 0) {
             // G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             // but can start with  <timestamp>: [G1Ergonomics (Heap Sizing) expand the heap...
             // with certain logging flaggs.

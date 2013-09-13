@@ -1,0 +1,30 @@
+{Heap before GC invocations=0 (full 0):
+ garbage-first heap   total 65536K, used 8192K [0x00000000f8000000, 0x00000000fc000000, 0x0000000100000000)
+  region size 8192K, 1 young (8192K), 0 survivors (0K)
+ Metaspace total 4490K, used 2592K, reserved 114688K
+2013-05-25T17:05:47.402+0200: 0.231: [GC pause (G1 Evacuation Pause) (young), 0.0147015 secs]
+   [Parallel Time: 14.5 ms, GC Workers: 4]
+      [GC Worker Start (ms): Min: 231.1, Avg: 231.2, Max: 231.2, Diff: 0.0]
+      [Ext Root Scanning (ms): Min: 0.2, Avg: 0.5, Max: 1.3, Diff: 1.1, Sum: 2.2]
+      [Update RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+         [Processed Buffers: Min: 0, Avg: 0.0, Max: 0, Diff: 0, Sum: 0]
+      [Scan RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+      [Object Copy (ms): Min: 0.3, Avg: 5.2, Max: 7.5, Diff: 7.2, Sum: 20.9]
+      [Termination (ms): Min: 0.1, Avg: 3.7, Max: 10.4, Diff: 10.2, Sum: 14.7]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 0.3]
+      [GC Worker Total (ms): Min: 8.5, Avg: 9.5, Max: 11.2, Diff: 2.7, Sum: 38.0]
+      [GC Worker End (ms): Min: 239.7, Avg: 240.7, Max: 242.4, Diff: 2.7]
+   [Code Root Fixup: 0.0 ms]
+   [Clear CT: 0.0 ms]
+   [Other: 0.2 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 0.1 ms]
+      [Ref Enq: 0.0 ms]
+      [Free CSet: 0.0 ms]
+   [Eden: 8192.0K(8192.0K)->0.0B(8192.0K) Survivors: 0.0B->8192.0K Heap: 8192.0K(64.0M)->7835.7K(64.0M)]
+Heap after GC invocations=1 (full 0):
+ garbage-first heap   total 65536K, used 7835K [0x00000000f8000000, 0x00000000fc000000, 0x0000000100000000)
+  region size 8192K, 1 young (8192K), 1 survivors (8192K)
+ Metaspace total 4490K, used 2592K, reserved 114688K
+}
+ [Times: user=0.02 sys=0.01, real=0.02 secs] 

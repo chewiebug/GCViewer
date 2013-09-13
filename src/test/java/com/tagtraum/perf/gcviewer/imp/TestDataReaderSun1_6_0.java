@@ -814,22 +814,6 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC timestamp", 12.655, model.get(0).getTimestamp(), 0.000001);
     }
 
-    @Test
-    public void testPrintGCCause() throws Exception {
-        ByteArrayInputStream in = new ByteArrayInputStream(
-                "111.080: [GC (Allocation Failure)111.080: [ParNew: 140365K->605K(157248K), 0.0034070 secs] 190158K->50399K(506816K), 0.0035370 secs] [Times: user=0.02 sys=0.00, real=0.00 secs]"
-                       .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
-                GCModel model = reader.read();
-
-        assertEquals("GC count", 1, model.size());
-        assertEquals("GC pause", 0.0035370, model.getGCPause().getMax(), 0.0000001);
-        assertEquals("GC timestamp", 111.080, model.get(0).getTimestamp(), 0.000001);
-        // If types get retained, this will be:
-        // assertEquals("GC (Allocation Failure) ParNew:", model.get(0).getTypeAsString());
-        assertEquals("GC ParNew:", model.get(0).getTypeAsString());
-    }
-    
     /**
      * Often only the young generation information is explicitly present. Old generation memory
      * size can be derived from heap - young size. This test checks for presence of derived memory

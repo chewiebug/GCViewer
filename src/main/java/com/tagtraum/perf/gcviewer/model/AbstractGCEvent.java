@@ -362,6 +362,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type TRAIN = new Type("Train", "Train:", Generation.TENURED);
         public static final Type TRAIN_MSC = new Type("Train MSC", "Train MSC:", Generation.TENURED);
         public static final Type PERM = new Type("Perm", "Perm:", Generation.PERM);
+        // java 8: perm gen is moved to metaspace
+        public static final Type Metaspace = new Type("Metaspace", "Metaspace:", Generation.PERM);
 
         // CMS types
         public static final Type CMS = new Type("CMS", "CMS:", Generation.TENURED);
@@ -423,6 +425,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_YOUNG__ = new Type("GC pause (young)--", "GC pause (young)--", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         // the same as above but more verbose in detailed mode
         public static final Type G1_YOUNG_TO_SPACE_OVERFLOW = new Type("GC pause (young) (to-space overflow)", "GC pause (young) (to-space overflow)", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        // java 7 (>u25) / 8 renamed "to-space overflow" to "to-space exhausted"
+        public static final Type G1_YOUNG_TO_SPACE_EXHAUSTED = new Type("GC pause (young) (to-space exhausted)", "GC pause (young) (to-space exhausted)", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         // partially young collection (
         public static final Type G1_PARTIAL = new Type("GC pause (partial)", "GC pause (partial)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_PARTIAL_TO_SPACE_OVERFLOW = new Type("GC pause (partial) (to-space overflow)", "GC pause (partial) (to-space overflow)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
@@ -430,11 +434,13 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_MIXED = new Type("GC pause (mixed)", "GC pause (mixed)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_MIXED__ = new Type("GC pause (mixed)--", "GC pause (mixed)--", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_MIXED_TO_SPACE_OVERFLOW = new Type("GC pause (mixed) (to-space overflow)", "GC pause (mixed) (to-space overflow)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_MIXED_TO_SPACE_EXHAUSTED = new Type("GC pause (mixed) (to-space exhausted)", "GC pause (mixed) (to-space exhausted)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         
         // TODO: Generation: young and tenured!
         public static final Type G1_YOUNG_INITIAL_MARK = new Type("GC pause (young) (initial-mark)", "GC pause (young) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_YOUNG_INITIAL_MARK__ = new Type("GC pause (young) (initial-mark)--", "GC pause (young) (initial-mark)--", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_YOUNG_INITIAL_MARK_TO_SPACE_OVERFLOW = new Type("GC pause (young) (to-space overflow) (initial-mark)", "GC pause (young) (to-space overflow) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type G1_YOUNG_INITIAL_MARK_TO_SPACE_EXHAUSTED = new Type("GC pause (young) (to-space exhausted) (initial-mark)", "GC pause (young) (to-space exhausted) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_PARTIAL_INITIAL_MARK = new Type("GC pause (partial) (initial-mark)", "GC pause (partial) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_PARTIAL_INITIAL_MARK__ = new Type("GC pause (partial) (initial-mark)--", "GC pause (partial) (initial-mark)--", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_PARTIAL_INITIAL_MARK_TO_SPACE_OVERFLOW = new Type("GC pause (partial) (to-space overflow) (initial-mark)", "GC pause (partial) (to-space overflow) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);

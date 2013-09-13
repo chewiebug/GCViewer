@@ -111,6 +111,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("concurrent mark-sweep generation total"); // CMS old collection
         HEAP_STRINGS.add("concurrent-mark-sweep perm gen"); // CMS perm collection
         
+        HEAP_STRINGS.add("Metaspace");
         HEAP_STRINGS.add("No shared spaces configured.");
         
         HEAP_STRINGS.add("}");
@@ -140,15 +141,15 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // AdaptiveSizeStop: collection: 1 
     //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
-    private static final Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\(System\\))Adaptive.*");
+    private static final Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\([a-zA-Z ]*\\))[ ]?Adaptive.*");
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
     
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
     // outputs the following line:
     // 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] 
-    private static final Pattern printAdaptiveSizePolicyPattern = Pattern.compile("(.*GC)Adaptive.*(true|false)( \\[.*)");
+    private static final Pattern printAdaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*GC \\([a-zA-Z ]*\\))[ ]?Adaptive.*(?:true|false)([ ]?\\[.*).*");
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_BEFORE = 1;
-    private static final int PRINT_ADAPTIVE_SIZE_GROUP_AFTER = 3;
+    private static final int PRINT_ADAPTIVE_SIZE_GROUP_AFTER = 2;
     
     // -XX:PrintCmsStatistics=2
     private static final String PRINT_CMS_STATISTICS_ITERATIONS = "iterations";
@@ -304,7 +305,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             parsePosition.setIndex(0);
                         }
                         else {
-                            // -XX:+PrintAdaptiveSizePolicy -XX:+UseAdaptiveSizePolicy
+                            // -XX:+PrintAdaptiveSizePolicy
                             adaptiveSizePolicyMatcher.reset(line);
                             if (!adaptiveSizePolicyMatcher.matches()) {
                                 LOG.severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
