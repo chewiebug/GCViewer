@@ -86,4 +86,18 @@ public class TestDataReaderSun1_7_0 {
         assertEquals("GC pause", 0.0087315, model.getFullGCPause().getMax(), 0.00000001);
     }
     
+    @Test
+    public void CmsRemarkWithTimestamps() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2013-09-11T23:03:44.987+0200: 1518.733: [GC[YG occupancy: 3247177 K (4718592 K)]2013-09-11T23:03:45.231+0200: 1518.977: [Rescan (parallel) , 0.0941360 secs]2013-09-11T23:03:45.325+0200: 1519.071: [weak refs processing, 0.0006010 secs]2013-09-11T23:03:45.325+0200: 1519.071: [scrub string table, 0.0028480 secs] [1 CMS-remark: 4246484K(8388608K)] 4557930K(13107200K), 0.3410220 secs] [Times: user=2.48 sys=0.01, real=0.34 secs]"
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("type name", "GC CMS-remark:", model.get(0).getTypeAsString());
+        assertEquals("GC pause", 0.3410220, model.getPause().getMax(), 0.00000001);
+    }    
+
 }

@@ -318,7 +318,9 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
     
     protected boolean hasNextDetail(String line, ParsePosition pos) {
-        return nextIsTimestamp(line, pos) || nextCharIsBracket(line, pos);
+        return nextIsTimestamp(line, pos) 
+                || nextIsDatestamp(line, pos) 
+                || nextCharIsBracket(line, pos);
     }
 
     protected boolean nextCharIsBracket(String line, ParsePosition pos) {

@@ -464,8 +464,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             final GCEvent detailEvent = new GCEvent();
             try {
                 if (nextCharIsBracket(line, pos)) {
+                    detailEvent.setDateStamp(event.getDatestamp());
                     detailEvent.setTimestamp(event.getTimestamp());
-                } else {
+                } 
+                else {
+                    detailEvent.setDateStamp(parseDatestamp(line, pos));
                     detailEvent.setTimestamp(parseTimestamp(line, pos));
                 }
                 detailEvent.setType(parseNestedType(line, pos));
