@@ -12,6 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestLocalisationHelper.class,
+    TestHttpUrlConnectionHelper.class,
 })
 public class TestAllUtil {
 }

@@ -41,6 +41,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
+ * <li>-XX:+PrintGCCause (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
