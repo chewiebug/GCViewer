@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Helper class to support the unittests.
@@ -16,6 +17,7 @@ public class UnittestHelper {
     public static final String FOLDER_IBM = "ibm";
     public static final String FOLDER_JROCKIT = "jrockit";
     public static final String FOLDER_OPENJDK = "openjdk";
+    public static final String FOLDER_HTTP = "http";
     
     /**
      * Load resource as stream if it is present somewhere in the classpath.
@@ -40,4 +42,29 @@ public class UnittestHelper {
     public static InputStream getResourceAsStream(String folder, String name) throws IOException {
         return getResourceAsStream(folder + File.separator + name);
     }
+
+    /**
+     * Load resource as stream if it is present somewhere in the classpath.
+     * @param name Name of the resource
+     * @return instance of an input stream or <code>null</code> if the resource couldn't be found
+     * @throws IOException if resource can't be found
+     */
+    public static URL getResource(String name) throws IOException {
+    	URL url = Thread.currentThread().getContextClassLoader().getResource(name);
+        if (url == null) {
+            throw new IOException("could not find " + name + " in classpath");
+        }
+        
+        return url; 
+    }
+    
+    /**
+     * Get URL of a resource from a given <code>folder</code>.
+     * 
+     * @see #getResource(String)
+     */
+    public static URL getResource(String folder, String name) throws IOException {
+        return getResource(folder + File.separator + name);
+    }
+
 }
