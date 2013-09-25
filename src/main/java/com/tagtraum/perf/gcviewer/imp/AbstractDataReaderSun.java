@@ -380,9 +380,9 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
 
 
-    protected GCEvent.Type parseNestedType(String line, ParsePosition pos) throws ParseException {
+    protected AbstractGCEvent.Type parseNestedType(String line, ParsePosition pos) throws ParseException {
         String typeString = parseTypeString(line, pos);
-        GCEvent.Type gcType = AbstractGCEvent.Type.parse(typeString);
+        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.parse(typeString);
         //GCEvent.Type gcType = extractTypeFromParsedString(s);
         if (gcType == null) {
             throw new UnknownGcTypeException(typeString, line, pos);
@@ -390,14 +390,19 @@ public abstract class AbstractDataReaderSun implements DataReader {
         return gcType;
     }
 
-    protected GCEvent.Type parseTopType(String line, ParsePosition pos) throws ParseException {
+    protected AbstractGCEvent.Type parseTopType(String line, ParsePosition pos) throws ParseException {
         String typeString = parseTypeString(line, pos);
-        return extractTypeFromParsedString(typeString);
+        AbstractGCEvent.Type gcType = extractTypeFromParsedString(typeString);
+        if (gcType == null) {
+            throw new UnknownGcTypeException(typeString, line, pos);
+        }
+        
+        return gcType;
     }
 
 
-    protected GCEvent.Type extractTypeFromParsedString(String s) throws UnknownGcTypeException {
-        GCEvent.Type gcType = AbstractGCEvent.Type.parse(s);
+    protected AbstractGCEvent.Type extractTypeFromParsedString(String s) throws UnknownGcTypeException {
+        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.parse(s);
         // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
         if (gcType == null) {
             // try to parse it again with the parens removed

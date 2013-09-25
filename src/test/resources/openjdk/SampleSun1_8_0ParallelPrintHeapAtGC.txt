@@ -1,0 +1,20 @@
+{Heap before GC invocations=1 (full 0):
+ PSYoungGen      total 154112K, used 26428K [0x460c0000, 0x50cc0000, 0x50cc0000)
+  eden space 132096K, 20% used [0x460c0000,0x47a8f098,0x4e1c0000)
+  from space 22016K, 0% used [0x4f740000,0x4f740000,0x50cc0000)
+  to   space 22016K, 0% used [0x4e1c0000,0x4e1c0000,0x4f740000)
+ ParOldGen       total 348160K, used 0K [0x10cc0000, 0x260c0000, 0x460c0000)
+  object space 348160K, 0% used [0x10cc0000,0x10cc0000,0x260c0000)
+ Metaspace total 6598K, used 6492K, reserved 1888K
+  data space     6598K, used 6492K, reserved 1888K
+2.998: [GC (System.gc()) [PSYoungGen: 26428K->4457K(154112K)] 26428K->4461K(502272K), 0.0103603 secs] [Times: user=0.01 sys=0.00, real=0.01 secs] 
+Heap after GC invocations=1 (full 0):
+ PSYoungGen      total 154112K, used 4457K [0x460c0000, 0x50cc0000, 0x50cc0000)
+  eden space 132096K, 0% used [0x460c0000,0x460c0000,0x4e1c0000)
+  from space 22016K, 20% used [0x4e1c0000,0x4e61a6e8,0x4f740000)
+  to   space 22016K, 0% used [0x4f740000,0x4f740000,0x50cc0000)
+ ParOldGen       total 348160K, used 4K [0x10cc0000, 0x260c0000, 0x460c0000)
+  object space 348160K, 0% used [0x10cc0000,0x10cc1000,0x260c0000)
+ Metaspace total 6598K, used 6492K, reserved 1888K
+  data space     6598K, used 6492K, reserved 1888K
+}

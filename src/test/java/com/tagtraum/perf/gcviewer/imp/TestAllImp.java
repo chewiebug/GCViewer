@@ -21,9 +21,10 @@ import org.junit.runners.Suite;
     TestDataReaderSun1_4_0.class,
     TestDataReaderSun1_5_0.class,
     TestDataReaderSun1_6_0.class,
-    TestDataReaderSun1_7_0.class,
     TestDataReaderSun1_6_0G1.class,
+    TestDataReaderSun1_7_0.class,
     TestDataReaderSun1_7_0G1.class,
+    TestDataReaderSun1_8_0.class,
 
     TestDataReaderIBM1_2_2.class,
     TestDataReaderIBM1_3_1.class,

@@ -111,7 +111,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("concurrent mark-sweep generation total"); // CMS old collection
         HEAP_STRINGS.add("concurrent-mark-sweep perm gen"); // CMS perm collection
         
-        HEAP_STRINGS.add("Metaspace");
+        HEAP_STRINGS.add("Metaspace"); // java 8
+        HEAP_STRINGS.add("data space"); // java 8
         HEAP_STRINGS.add("No shared spaces configured.");
         
         HEAP_STRINGS.add("}");

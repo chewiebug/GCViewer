@@ -349,6 +349,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type FULL_GC = new Type("Full GC", Generation.ALL);
         public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
         public static final Type GC = new Type("GC", Generation.YOUNG);
+        public static final Type GC_SYSTEM = new Type("GC (System.gc())", Generation.YOUNG);
         public static final Type GC__ = new Type("GC--", Generation.YOUNG);
         public static final Type DEF_NEW = new Type("DefNew", "DefNew:", Generation.YOUNG, Concurrency.SERIAL); // single threaded
         public static final Type PAR_NEW = new Type("ParNew", "ParNew:", Generation.YOUNG); // parallel
