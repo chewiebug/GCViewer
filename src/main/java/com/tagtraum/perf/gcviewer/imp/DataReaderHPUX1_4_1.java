@@ -7,6 +7,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -115,7 +116,7 @@ public class DataReaderHPUX1_4_1 implements DataReader {
                 final int typeOfGC = Integer.parseInt(st.nextToken());
                 // %2:  see above
                 final float gcDetails = Float.parseFloat(st.nextToken());
-                event.setType(AbstractGCEvent.Type.parse(typeOfGC, gcDetails));
+                event.setType(findType(typeOfGC, gcDetails));
                 // %3:  Program time at the beginning of the collection, in seconds
                 event.setTimestamp(Double.parseDouble(st.nextToken()));
                 // %4:  Garbage collection invocation. Counts of background CMS GCs
@@ -198,7 +199,7 @@ public class DataReaderHPUX1_4_1 implements DataReader {
                 event.setPostUsed(newEvent.getPostUsed() + oldEvent.getPostUsed());
                 event.setTotal(newEvent.getTotal() + oldEvent.getTotal());
                 event.add(newEvent);
-                if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
+                if (event.isFull()) {
                     event.add(oldEvent);
                 }
                 event.add(permEvent);
@@ -213,6 +214,31 @@ public class DataReaderHPUX1_4_1 implements DataReader {
                 }
             if (LOG.isLoggable(Level.INFO)) LOG.info("Reading done.");
         }
+    }
+
+    private Type findType(final int typeOfGC, final float details) {
+        final Type type;
+        switch (typeOfGC) {
+            case 1:
+                if (details == 0) {
+                    type = Type.GC;
+                    break;
+                }
+                type = Type.PAR_NEW;
+                break;
+            case 2:
+                type = Type.FULL_GC;
+                break;
+            case 3:
+                type = Type.CMS;
+                break;
+            case 4:
+                type = Type.CMS;
+                break;
+            default:
+                type = Type.FULL_GC;
+        }
+        return type;
     }
 
 }

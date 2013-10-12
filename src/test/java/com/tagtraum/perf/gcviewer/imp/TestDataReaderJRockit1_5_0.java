@@ -54,7 +54,7 @@ public class TestDataReaderJRockit1_5_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 6.290, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 3128161, event.getPreUsed());
         assertEquals("after", 296406, event.getPostUsed());
         assertEquals("total", 3145728, event.getTotal());
@@ -73,7 +73,7 @@ public class TestDataReaderJRockit1_5_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 4.817, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 1641728, event.getPreUsed());
         assertEquals("after", 148365, event.getPostUsed());
         assertEquals("total", 3145728, event.getTotal());
@@ -90,7 +90,7 @@ public class TestDataReaderJRockit1_5_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 6.038, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 3089328, event.getPreUsed());
         assertEquals("after", 352551, event.getPostUsed());
         assertEquals("total", 3145728, event.getTotal());
@@ -164,7 +164,7 @@ public class TestDataReaderJRockit1_5_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 6.771, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 3145728, event.getPreUsed());
         assertEquals("after", 296406, event.getPostUsed());
         assertEquals("total", 3145728, event.getTotal());

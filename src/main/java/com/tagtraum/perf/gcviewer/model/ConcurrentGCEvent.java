@@ -44,13 +44,13 @@ public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
     }
     
     public boolean hasDuration() {
-        return !getType().getType().endsWith("-start");
+        return !getExtendedType().getName().endsWith("-start");
     }
 
     public void toStringBuffer(StringBuffer sb) {
         sb.append(getTimestamp());
         sb.append(": [");
-        sb.append(getType());
+        sb.append(getExtendedType().getName());
         if (hasDuration()) {
             sb.append(' ');
             sb.append(pause);

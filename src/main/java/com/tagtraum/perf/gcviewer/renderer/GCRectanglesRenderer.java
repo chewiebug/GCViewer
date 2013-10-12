@@ -67,9 +67,9 @@ public class GCRectanglesRenderer extends ChartRenderer {
             if (lastX != x || lastY != y || lastWidth != width || lastHeight != height) {
                 if ((x + width) > leftBoundary && x < rightBoundary) {
                     // make sure only visible rectangles are drawn
-                    if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
+                    if (event.isFull()) {
                         g2d.setPaint(darker);
-                    } else if (event.getType() == AbstractGCEvent.Type.INC_GC) {
+                    } else if (event.getExtendedType().getType() == AbstractGCEvent.Type.INC_GC) {
                         g2d.setPaint(brighter);
                     } else {
                         g2d.setPaint(getLinePaint());

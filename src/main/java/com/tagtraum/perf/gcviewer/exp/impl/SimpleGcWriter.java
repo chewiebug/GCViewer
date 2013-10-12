@@ -83,15 +83,15 @@ public class SimpleGcWriter extends AbstractDataWriter {
      */
     private boolean isYoungOnly(GCEvent event) {
         boolean isYoungOnly = false;
-        if (!event.hasDetails() && event.getType().getGeneration().equals(Generation.YOUNG)) {
+        if (!event.hasDetails() && event.getExtendedType().getGeneration().equals(Generation.YOUNG)) {
             isYoungOnly = true;
         }
-        else if (event.getType().getGeneration().equals(Generation.YOUNG)) {
+        else if (event.getExtendedType().getGeneration().equals(Generation.YOUNG)) {
             isYoungOnly = true;
             Iterator<GCEvent> iterator = event.details();
             while (iterator.hasNext()) {
                 GCEvent currentEvent = iterator.next();
-                if (!currentEvent.getType().getGeneration().equals(Generation.YOUNG)) {
+                if (!currentEvent.getExtendedType().getGeneration().equals(Generation.YOUNG)) {
                     isYoungOnly = false;
                     break;
                 }

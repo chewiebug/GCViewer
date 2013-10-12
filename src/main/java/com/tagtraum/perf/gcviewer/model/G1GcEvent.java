@@ -12,7 +12,7 @@ public class G1GcEvent extends GCEvent {
 
     @Override
     public String getTypeAsString() {
-        return getType().getType();
+        return getExtendedType().getName();
     }
 
     @Override

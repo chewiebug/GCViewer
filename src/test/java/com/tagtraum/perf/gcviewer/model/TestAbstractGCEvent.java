@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 
@@ -85,5 +86,19 @@ public class TestAbstractGCEvent {
         event.add(detailedEvent);
         
         assertEquals("generation", Generation.ALL, event.getGeneration());
+    }
+    
+    @Test
+    public void addExtendedTypePrintGcCause() {
+        // 2013-05-25T17:02:46.238+0200: 0.194: [GC (Allocation Failure) [PSYoungGen: 16430K->2657K(19136K)] 16430K->15759K(62848K), 0.0109373 secs] [Times: user=0.05 sys=0.02, real=0.02 secs]
+        GCEvent event = new GCEvent();
+        event.setExtendedType(new ExtendedType(Type.GC, "GC (Allocation Failure)"));
+        
+        GCEvent detailedEvent = new GCEvent();
+        detailedEvent.setType(Type.PS_YOUNG_GEN);
+        
+        event.add(detailedEvent);
+        
+        assertEquals("typeAsString", "GC (Allocation Failure); PSYoungGen", event.getTypeAsString());
     }
 }

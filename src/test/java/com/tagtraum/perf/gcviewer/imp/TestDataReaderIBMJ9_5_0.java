@@ -35,7 +35,7 @@ public class TestDataReaderIBMJ9_5_0 {
         assertEquals("pause", 0.035912, event.getPause(), 0.0000001);
 
         assertEquals("timestamp", 0, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.FULL_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.FULL_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", (52428800 - 2621440) / 1024, event.getPreUsed());
         assertEquals("after", (52428800 - 40481192) / 1024, event.getPostUsed());
         assertEquals("total", 52428800 / 1024, event.getTotal());
@@ -53,7 +53,7 @@ public class TestDataReaderIBMJ9_5_0 {
         assertEquals("pause", 0.837024, event.getPause(), 0.0000001);
 
         assertEquals("timestamp", 0, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.FULL_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.FULL_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", (12884901888L - 4626919608L) / 1024, event.getPreUsed());
         assertEquals("after", (12884901888L - 10933557088L) / 1024, event.getPostUsed());
         assertEquals("total", 12884901888L / 1024, event.getTotal());

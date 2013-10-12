@@ -47,7 +47,7 @@ public class CSVDataWriter extends AbstractDataWriter {
             out.print(',');
             out.print(event.getPause());
             out.print(',');
-            out.println(event.getType());
+            out.println(event.getExtendedType());
 
             out.print(event.getTimestamp());
             out.print(',');

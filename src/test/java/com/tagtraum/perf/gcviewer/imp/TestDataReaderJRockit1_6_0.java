@@ -46,7 +46,7 @@ public class TestDataReaderJRockit1_6_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 24.930, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_16_OLD_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_16_OLD_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 464309, event.getPreUsed());
         assertEquals("after", 282831, event.getPostUsed());
         assertEquals("total", 524288, event.getTotal());
@@ -73,7 +73,7 @@ public class TestDataReaderJRockit1_6_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 26.242, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_16_OLD_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_16_OLD_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 270909, event.getPreUsed());
         assertEquals("after", 210916, event.getPostUsed());
         assertEquals("total", 524288, event.getTotal());
@@ -111,7 +111,7 @@ public class TestDataReaderJRockit1_6_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 124.644, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_16_YOUNG_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_16_YOUNG_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 453996, event.getPreUsed());
         assertEquals("after", 188846, event.getPostUsed());
         assertEquals("total", 786432, event.getTotal());
@@ -124,7 +124,7 @@ public class TestDataReaderJRockit1_6_0 {
 
         event = (GCEvent) model.get(2);
         assertEquals("timestamp", 148.254, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_16_OLD_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_16_OLD_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 691255, event.getPreUsed());
         assertEquals("after", 279876, event.getPostUsed());
         assertEquals("total", 786432, event.getTotal());
@@ -178,7 +178,7 @@ public class TestDataReaderJRockit1_6_0 {
         
         GCEvent event = (GCEvent) model.get(0);
         assertEquals("timestamp", 9.743, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_16_YOUNG_GC.getType(), event.getType().getType());
+        assertEquals("name", Type.JROCKIT_16_YOUNG_GC.getName(), event.getExtendedType().getName());
         assertEquals("before", 294974, event.getPreUsed());
         assertEquals("after", 122557, event.getPostUsed());
         assertEquals("total", 524288, event.getTotal());

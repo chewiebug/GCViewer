@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
@@ -43,12 +44,12 @@ public abstract class AbstractDataReaderSun implements DataReader {
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
     private final SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
     
+    private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
+
     /** the reader accessing the log file */
     protected BufferedReader in;
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
-
-    private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
     /**
      * Create an instance of this class passing an inputStream an the type of the logfile.
@@ -214,37 +215,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 line));
         if (line.charAt(end + 1) == ')') pos.setIndex(end+2);
         else pos.setIndex(end+1);
-
-        while (isGeneration(line, pos)) {
-            final GCEvent detailEvent = new GCEvent();
-            final AbstractGCEvent.Type type = parseNestedType(line, pos);
-            detailEvent.setType(type);
-            start = pos.getIndex();
-            end = line.indexOf("K", pos.getIndex());
-            detailEvent.setPreUsed(NumberParser.parseInt(line, start, end-start));
-            start = end + 3;
-            end = line.indexOf("K", start);
-            detailEvent.setPostUsed(NumberParser.parseInt(line, start, end-start));
-            if (line.charAt(end+1) == '(') {
-                start = end+2;
-                end = line.indexOf('K', start);
-                detailEvent.setTotal(NumberParser.parseInt(line, start, end-start));
-                // skip ')'
-                end++;
-            }
-            detailEvent.setTimestamp(event.getTimestamp());
-            if (detailEvent.getPreUsed() > detailEvent.getPostUsed()) event.add(detailEvent);
-            pos.setIndex(end+1);
-        }
-    }
-
-    private boolean isGeneration(final String line, final ParsePosition pos) {
-        final String trimmedLine = line.substring(pos.getIndex()).trim();
-        return trimmedLine.startsWith("eden")
-                || trimmedLine.startsWith("survivor")
-                || trimmedLine.startsWith("tenured")
-                || trimmedLine.startsWith("new")
-                || trimmedLine.startsWith("permanent");
     }
 
     protected void parsePause(GCEvent event, String line, ParsePosition pos) {
@@ -372,27 +342,16 @@ public abstract class AbstractDataReaderSun implements DataReader {
             for (; i<lineLength; c = lineChars[++i]) {
                 if (c == '[' || c == ']' || Character.isDigit(c)) break;
             }
-            return sb.toString();
+            return sb.toString().trim();
         }
         finally {
             pos.setIndex(i);
         }
     }
 
-
-    protected AbstractGCEvent.Type parseNestedType(String line, ParsePosition pos) throws ParseException {
+    protected ExtendedType parseType(String line, ParsePosition pos) throws ParseException {
         String typeString = parseTypeString(line, pos);
-        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.parse(typeString);
-        //GCEvent.Type gcType = extractTypeFromParsedString(s);
-        if (gcType == null) {
-            throw new UnknownGcTypeException(typeString, line, pos);
-        }
-        return gcType;
-    }
-
-    protected AbstractGCEvent.Type parseTopType(String line, ParsePosition pos) throws ParseException {
-        String typeString = parseTypeString(line, pos);
-        AbstractGCEvent.Type gcType = extractTypeFromParsedString(typeString);
+        ExtendedType gcType = extractTypeFromParsedString(typeString);
         if (gcType == null) {
             throw new UnknownGcTypeException(typeString, line, pos);
         }
@@ -401,18 +360,26 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
 
 
-    protected AbstractGCEvent.Type extractTypeFromParsedString(String s) throws UnknownGcTypeException {
-        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.parse(s);
+    protected ExtendedType extractTypeFromParsedString(String typeName) throws UnknownGcTypeException {
+        ExtendedType extendedType = null;
+        String lookupTypeName = typeName.endsWith("--") 
+                ? typeName.substring(0, typeName.length()-2) 
+                        : typeName;
+        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
         // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
         if (gcType == null) {
             // try to parse it again with the parens removed
-            Matcher parenMatcher = parenthesesPattern.matcher(s);
+            Matcher parenMatcher = parenthesesPattern.matcher(typeName);
             if (parenMatcher.find()) {
-                gcType = AbstractGCEvent.Type.parse(parenMatcher.replaceFirst(""));
-                // TODO: retain the full string representation of the GC (including the cause)
+                gcType = AbstractGCEvent.Type.lookup(parenMatcher.replaceFirst(""));
             }
         }
-        return gcType;
+        
+        if (gcType != null) {
+            extendedType = new ExtendedType(gcType, typeName);
+        }
+        
+        return extendedType;
     }
 
     /**
@@ -486,13 +453,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
 
     protected abstract AbstractGCEvent<?> parseLine(String line, ParsePosition pos) throws ParseException;
-
-    protected void skipDetails(String line, ParsePosition pos) throws ParseException {
-        int index = line.lastIndexOf(']', line.length()-2) + 1;
-        if (index == 0) throw new ParseException("Failed to skip details.", line);
-        if (line.charAt(index) == ' ') index++;
-        pos.setIndex(index);
-    }
 
     /**
      * Skips a block of lines containing information like they are generated by
@@ -600,4 +560,5 @@ public abstract class AbstractDataReaderSun implements DataReader {
     
         return line.indexOf("-", pos.getIndex()) == pos.getIndex()+4 && line.indexOf("-", pos.getIndex() + 5) == pos.getIndex()+7;
     }
+    
 }

@@ -22,14 +22,12 @@ public class TestDataReaderSun1_7_0 {
                 "111.080: [GC (Allocation Failure)111.080: [ParNew: 140365K->605K(157248K), 0.0034070 secs] 190158K->50399K(506816K), 0.0035370 secs] [Times: user=0.02 sys=0.00, real=0.00 secs]"
                        .getBytes());
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
-                GCModel model = reader.read();
+        GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
         assertEquals("GC pause", 0.0035370, model.getGCPause().getMax(), 0.0000001);
         assertEquals("GC timestamp", 111.080, model.get(0).getTimestamp(), 0.000001);
-        // TODO If types get retained, this will be:
-        // assertEquals("GC (Allocation Failure) ParNew:", model.get(0).getTypeAsString());
-        assertEquals("GC ParNew:", model.get(0).getTypeAsString());
+        assertEquals("GC (Allocation Failure); ParNew", model.get(0).getTypeAsString());
     }
  
     @Test
@@ -47,9 +45,7 @@ public class TestDataReaderSun1_7_0 {
         assertEquals("GC count", 1, model.size());
         assertEquals("GC pause", 0.0109373, model.getGCPause().getMax(), 0.0000001);
         assertEquals("GC timestamp", 0.194, model.get(0).getTimestamp(), 0.000001);
-        // TODO If types get retained, this will be:
-        // assertEquals("GC (Allocation Failure) PSYoungGen:", model.get(0).getTypeAsString());
-        assertEquals("GC PSYoungGen:", model.get(0).getTypeAsString());
+        assertEquals("GC (Allocation Failure); PSYoungGen", model.get(0).getTypeAsString());
     }
     
     @Test
@@ -96,7 +92,7 @@ public class TestDataReaderSun1_7_0 {
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
-        assertEquals("type name", "GC CMS-remark:", model.get(0).getTypeAsString());
+        assertEquals("type name", "GC; CMS-remark", model.get(0).getTypeAsString());
         assertEquals("GC pause", 0.3410220, model.getPause().getMax(), 0.00000001);
     }    
 

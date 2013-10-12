@@ -46,7 +46,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     public void add(GCEvent event) {
         super.add(event);
         
-        generationMap.put(event.getType().getGeneration(), event);
+        generationMap.put(event.getExtendedType().getGeneration(), event);
     }
     
     /**
@@ -138,13 +138,16 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     public void toStringBuffer(StringBuffer sb) {
         sb.append(getTimestamp());
         sb.append(": [");
-        sb.append(getType());
-        sb.append(' ');
+        sb.append(getExtendedType().getName());
         if (details != null) {
+            sb.append(' ');
             for (GCEvent event : details) {
                 event.toStringBuffer(sb);
             }
             sb.append(' ');
+        }
+        else {
+            sb.append(": ");
         }
         sb.append(preUsed);
         sb.append("K->");

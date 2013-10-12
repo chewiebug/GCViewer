@@ -62,7 +62,7 @@ public class TestDataReaderSun1_6_0 {
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
-        assertEquals("gc type", "GC ParNew (promotion failed): CMS: CMS Perm :", model.getFullGCEvents().next().getTypeAsString());
+        assertEquals("gc type", "GC; ParNew (promotion failed); CMS; CMS Perm", model.getFullGCEvents().next().getTypeAsString());
     }
      
 
@@ -509,8 +509,8 @@ public class TestDataReaderSun1_6_0 {
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
-        assertEquals("1st event", "GC ParNew:", model.get(0).getTypeAsString());
-        assertEquals("2nd event", "GC CMS-remark:", model.get(1).getTypeAsString());
+        assertEquals("1st event", "GC; ParNew", model.get(0).getTypeAsString());
+        assertEquals("2nd event", "GC; CMS-remark", model.get(1).getTypeAsString());
         assertEquals("1st event pause", 0.0005481, ((GCEvent)model.get(0)).getPause(), 0.00000001);
         assertEquals("2nd event pause", 0.0013653-0.0005481, ((GCEvent)model.get(1)).getPause(), 0.00000001);
     }
@@ -525,8 +525,8 @@ public class TestDataReaderSun1_6_0 {
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
-        assertEquals("1st event", "GC ParNew:", model.get(0).getTypeAsString());
-        assertEquals("2nd event", "GC CMS-remark:", model.get(1).getTypeAsString());
+        assertEquals("1st event", "GC; ParNew", model.get(0).getTypeAsString());
+        assertEquals("2nd event", "GC; CMS-remark", model.get(1).getTypeAsString());
         assertEquals("1st event pause", 0.0005809, ((GCEvent)model.get(0)).getPause(), 0.00000001);
         assertEquals("2nd event pause", 0.0013506-0.0005809, ((GCEvent)model.get(1)).getPause(), 0.00000001);
     }
@@ -544,9 +544,9 @@ public class TestDataReaderSun1_6_0 {
         GCModel gcModel = reader.read();
 
         assertEquals("GC count", 2, gcModel.size());
-        assertEquals("1st event", "GC ParNew:", gcModel.get(0).getTypeAsString());
+        assertEquals("1st event", "GC; ParNew", gcModel.get(0).getTypeAsString());
         assertEquals("1st event pause", 0.0006030, ((GCEvent)gcModel.get(0)).getPause(), 0.00000001);
-        assertEquals("2nd event", "GC CMS-remark:", gcModel.get(1).getTypeAsString());
+        assertEquals("2nd event", "GC; CMS-remark", gcModel.get(1).getTypeAsString());
         assertEquals("2nd event pause", 0.0013199 - 0.0006030, ((GCEvent)gcModel.get(1)).getPause(), 0.00000001);
     }
      
@@ -845,8 +845,8 @@ public class TestDataReaderSun1_6_0 {
         GCModel model = reader.read();
         
         assertEquals("count", 1, model.size());
-        assertEquals("main type", "GC", model.get(0).getType().getType());
-        assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getType().getType());
+        assertEquals("main type", "GC", model.get(0).getExtendedType().getName());
+        assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getExtendedType().getName());
     }
     
     @Test
@@ -859,7 +859,7 @@ public class TestDataReaderSun1_6_0 {
         GCModel model = reader.read();
         
         assertEquals("count", 1, model.size());
-        assertEquals("main type", "GC--", model.get(0).getType().getType());
-        assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getType().getType());
+        assertEquals("main type", "GC--", model.get(0).getExtendedType().getName());
+        assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getExtendedType().getName());
     }
 }

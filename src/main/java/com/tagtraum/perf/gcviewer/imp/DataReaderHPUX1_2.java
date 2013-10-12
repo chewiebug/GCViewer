@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -64,7 +65,7 @@ public class DataReaderHPUX1_2 implements DataReader {
                         6:  FullGCAlot
                 */
                 final int reason = Integer.parseInt(st.nextToken());
-                event.setType(AbstractGCEvent.Type.parse(reason));
+                event.setType(findType(reason));
                 // %2:  Program time at the beginning of the collection, in seconds
                 event.setTimestamp(Double.parseDouble(st.nextToken()));
                 // %3:  Garbage collection invocation.  Counts of Scavenge and
@@ -145,7 +146,7 @@ public class DataReaderHPUX1_2 implements DataReader {
                 event.setPostUsed(newEvent.getPostUsed() + oldEvent.getPostUsed());
                 event.setTotal(newEvent.getTotal() + oldEvent.getTotal());
                 event.add(newEvent);
-                if (event.getType() == AbstractGCEvent.Type.FULL_GC) {
+                if (event.isFull()) {
                     event.add(oldEvent);
                 }
                 event.add(permEvent);
@@ -160,6 +161,10 @@ public class DataReaderHPUX1_2 implements DataReader {
                 }
             if (LOG.isLoggable(Level.INFO)) LOG.info("Reading done.");
         }
+    }
+
+    private Type findType(final int reason) {
+        return reason == -1 ? Type.GC : Type.FULL_GC;
     }
 
 }

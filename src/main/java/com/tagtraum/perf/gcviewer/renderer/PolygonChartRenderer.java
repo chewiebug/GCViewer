@@ -204,8 +204,8 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
      * @return <code>true</code> if <code>event</code> contains memory information
      */
     protected boolean hasMemoryInformation(GCEvent event) {
-        return event.getType().getPattern().equals(GcPattern.GC_MEMORY)
-                || event.getType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE); 
+        return event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY)
+                || event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE); 
     }
 
     /**

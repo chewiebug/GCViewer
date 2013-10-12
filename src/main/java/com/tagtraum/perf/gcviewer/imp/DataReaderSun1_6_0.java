@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -113,6 +113,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         
         HEAP_STRINGS.add("Metaspace"); // java 8
         HEAP_STRINGS.add("data space"); // java 8
+        HEAP_STRINGS.add("class space"); // java 8
         HEAP_STRINGS.add("No shared spaces configured.");
         
         HEAP_STRINGS.add("}");
@@ -404,7 +405,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             }
             
             double timestamp = getTimeStamp(line, pos, datestamp);
-            final GCEvent.Type type = parseTopType(line, pos);
+            final ExtendedType type = parseType(line, pos);
             // special provision for CMS events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 final ConcurrentGCEvent event = new ConcurrentGCEvent();
@@ -412,7 +413,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 // simple concurrent events (ending with -start) just are of type GcPattern.GC
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
-                event.setType(type);
+                event.setExtendedType(type);
                 if (type.getPattern() == GcPattern.GC_PAUSE_DURATION) {
                     // the -end events contain a pause and duration as well
                     int start = pos.getIndex();
@@ -429,7 +430,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 final GCEvent event = new GCEvent();
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
-                event.setType(type);
+                event.setExtendedType(type);
                 // now add detail gcevents, should they exist
                 parseDetailEventsIfExist(line, pos, event);
                 setMemoryAndPauses(event, line, pos);
@@ -472,7 +473,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     detailEvent.setDateStamp(parseDatestamp(line, pos));
                     detailEvent.setTimestamp(parseTimestamp(line, pos));
                 }
-                detailEvent.setType(parseNestedType(line, pos));
+                detailEvent.setExtendedType(parseType(line, pos));
                 setMemoryAndPauses(detailEvent, line, pos);
                 event.add(detailEvent);
             } 
@@ -487,7 +488,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             // event name -> stick them together here (they are part of the "parent" event)
             if (nextIsPromotionFailed(line, pos)) {
                 pos.setIndex(pos.getIndex() + 2);
-                event.setType(Type.parse(event.getType() + "--"));
+                event.setExtendedType(extractTypeFromParsedString(event.getExtendedType() + "--"));
             }
 
             // in a line with complete garbage the parser must not get stuck; just stop parsing.
@@ -527,7 +528,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         if (nextIsTimestamp(line, pos)) {
             timestamp = parseTimestamp(line, pos);
         }
-        else if (firstDateStamp != null) {
+        else if (datestamp != null && firstDateStamp != null) {
             // if no timestamp was present, calculate difference between last and this date
             timestamp = (datestamp.getTime() - firstDateStamp.getTime()) / (double)1000; 
         }

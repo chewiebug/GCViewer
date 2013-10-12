@@ -134,7 +134,7 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                 final int typeStart = skipSpaces(colon+1, line);
                 int typeEnd = typeStart;
                 while (!Character.isDigit(line.charAt(++typeEnd))) {}
-                final AbstractGCEvent.Type type = AbstractGCEvent.Type.parse("jrockit." + line.substring(typeStart, typeEnd).trim());
+                final AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup("jrockit." + line.substring(typeStart, typeEnd).trim());
                 if (type == null) {
                     if (LOG.isLoggable(Level.INFO)) LOG.info("Failed to determine type: " + line.substring(startTimeIndex));
                     continue;
@@ -165,16 +165,16 @@ public class DataReaderJRockit1_6_0 implements DataReader {
                 model.add(event);
 
                 // add artificial detail events
-                if (nurserySize != -1 && event.getType().getGeneration() == Generation.YOUNG) {
+                if (nurserySize != -1 && event.getExtendedType().getGeneration() == Generation.YOUNG) {
                     GCEvent detailEvent = new GCEvent();
-                    detailEvent.setType(event.getType());
+                    detailEvent.setType(event.getExtendedType().getType());
                     detailEvent.setTimestamp(event.getTimestamp());
                     detailEvent.setTotal(nurserySize);
                     event.add(detailEvent);
                 }
-                if (nurserySize != -1 && event.getType().getGeneration() == Generation.TENURED) {
+                if (nurserySize != -1 && event.getExtendedType().getGeneration() == Generation.TENURED) {
                     GCEvent detailEvent = new GCEvent();
-                    detailEvent.setType(event.getType());
+                    detailEvent.setType(event.getExtendedType().getType());
                     detailEvent.setTimestamp(event.getTimestamp());
                     detailEvent.setTotal(event.getTotal() - nurserySize);
                     event.add(detailEvent);

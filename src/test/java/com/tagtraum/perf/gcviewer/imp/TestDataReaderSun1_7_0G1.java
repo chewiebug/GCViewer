@@ -162,9 +162,7 @@ public class TestDataReaderSun1_7_0G1 {
 
         assertEquals("count", 1, model.size());
         GCEvent event = (GCEvent) model.get(0);
-        // TODO: when full type names are retained, the name should be
-        // "GC pause (G1 Evacuation Pause) (young) (to-space exhausted)"
-        assertEquals("type name", "GC pause (young) (to-space exhausted)", event.getTypeAsString());
+        assertEquals("type name", "GC pause (G1 Evacuation Pause) (young) (to-space exhausted)", event.getTypeAsString());
         assertEquals("gc pause", 0.0398848, model.getPause().getMax(), 0.000000001);
     }
 
@@ -348,9 +346,7 @@ public class TestDataReaderSun1_7_0G1 {
 
         assertEquals("count", 1, model.size());
         GCEvent event = (GCEvent) model.get(0);
-        // TODO: when full type names are retained, the name should be
-        // "GC pause (G1 Evacuation Pause) (young) (to-space exhausted)"
-        assertEquals("type name", "GC pause (young)", event.getTypeAsString());
+        assertEquals("type name", "GC pause (G1 Evacuation Pause) (young)", event.getTypeAsString());
         assertEquals("gc pause", 0.0147015, model.getPause().getMax(), 0.000000001);
         assertEquals("error count", 0, handler.getCount());
     }

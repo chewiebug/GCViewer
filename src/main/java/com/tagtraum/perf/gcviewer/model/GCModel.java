@@ -308,7 +308,7 @@ public class GCModel implements Serializable {
         	final ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
             concurrentGCEvents.add(concEvent);
         
-            DoubleData pauses = getDoubleData(concEvent.getType().getType(), concurrentGcEventPauses);
+            DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
             pauses.add(concEvent.getPause());
 
         } else if (abstractEvent instanceof GCEvent) {

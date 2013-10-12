@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 
 /**
@@ -39,7 +40,7 @@ public class TestGcEvent {
         assertEquals("number of details", 1, gcEvent.details.size());
         
         GCEvent defNewEvent = gcEvent.details().next();
-        assertEquals("type", Type.DEF_NEW, defNewEvent.getType());
+        assertEquals("type", Type.DEF_NEW.getName(), defNewEvent.getExtendedType().getName());
         assertEquals("getYoung", defNewEvent, gcEvent.getYoung());
         
         GCEvent tenured = gcEvent.getTenured();
@@ -52,11 +53,11 @@ public class TestGcEvent {
         assertEquals("number of details", 2, fullGcEvent.details.size());
         
         GCEvent tenured = fullGcEvent.details.get(0);
-        assertEquals("type", Type.TENURED, tenured.getType());
+        assertEquals("type", Type.TENURED.getName(), tenured.getExtendedType().getName());
         assertEquals("getTenured", tenured, fullGcEvent.getTenured());
         
         GCEvent perm = fullGcEvent.details.get(1);
-        assertEquals("type", Type.PERM, perm.getType());
+        assertEquals("type", Type.PERM.getName(), perm.getExtendedType().getName());
         assertEquals("getPerm", perm, fullGcEvent.getPerm());
         
         GCEvent young = fullGcEvent.getYoung();
@@ -66,7 +67,7 @@ public class TestGcEvent {
     @Test
     public void testGetInferredYoungFullGcEvent() {
         GCEvent young = fullGcEvent.getYoung();
-        assertEquals("type", Type.UNDEFINED, young.getType());
+        assertEquals("type", ExtendedType.UNDEFINED, young.getExtendedType());
         assertEquals("preused", 141564 - 38156, young.getPreUsed());
         assertEquals("postused", 54636 - 54636, young.getPostUsed());
         assertEquals("total", 506944 - 349568, young.getTotal());
@@ -76,7 +77,7 @@ public class TestGcEvent {
     @Test
     public void testGetInferredTenuredGcEvent() {
         GCEvent tenured = gcEvent.getTenured();
-        assertEquals("tenured type", Type.UNDEFINED, tenured.getType());
+        assertEquals("tenured type", ExtendedType.UNDEFINED, tenured.getExtendedType());
         assertEquals("preused", 194540 - 139904, tenured.getPreUsed());
         assertEquals("postused", 60292 - 5655, tenured.getPostUsed());
         assertEquals("total tenured", 506944 - 157376, tenured.getTotal());
