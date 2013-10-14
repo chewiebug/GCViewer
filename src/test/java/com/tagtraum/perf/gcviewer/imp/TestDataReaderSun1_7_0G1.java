@@ -1,7 +1,11 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -350,5 +354,50 @@ public class TestDataReaderSun1_7_0G1 {
         assertEquals("gc pause", 0.0147015, model.getPause().getMax(), 0.000000001);
         assertEquals("error count", 0, handler.getCount());
     }
+    
+    @Test
+    public void printAdaptiveSizePolicyPrintReferencePolicy() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
+        final InputStream in = getInputStream("SampleSun1_7_0G1AdaptiveSize_Reference.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(3));
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("type name", event.getTypeAsString(), equalTo("GC pause (G1 Evacuation Pause) (young)"));
+        assertThat("gc pause", event.getPause(), closeTo(0.0107924, 0.00000001));
+        
+        GCEvent event2 = (GCEvent) model.get(1);
+        assertThat("type name 2", event2.getTypeAsString(), equalTo("GC pause (young)"));
+        assertThat("gc pause 2", event2.getPause(), closeTo(0.0130642, 0.00000001));
+        
+        GCEvent event3 = (GCEvent) model.get(2);
+        assertThat("type name 3", event3.getTypeAsString(), equalTo("GC remark; GC ref-proc"));
+        assertThat("gc pause 3", event3.getPause(), closeTo(0.0013608, 0.00000001));
+
+        assertThat("error count", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void printReferencePolicy() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        final InputStream in = getInputStream("SampleSun1_7_0G1PrintReferencePolicy.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(1));
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("type name", event.getTypeAsString(), equalTo("GC pause (young)"));
+        assertThat("gc pause", event.getPause(), closeTo(0.0049738, 0.00000001));
+        assertThat("error count", handler.getCount(), is(0));
+    }
+    
 }

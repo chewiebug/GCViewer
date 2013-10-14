@@ -1,0 +1,6 @@
+2013-10-12T23:05:32.845+0200: 0.186: [GC (Allocation Failure)2013-10-12T23:05:32.860+0200: 0.198: [SoftReference, 0 refs, 0.0001036 secs]2013-10-12T23:05:32.860+0200: 0.198: [WeakReference, 5 refs, 0.0000315 secs]2013-10-12T23:05:32.860+0200: 0.198: [FinalReference, 10 refs, 0.0000389 secs]2013-10-12T23:05:32.860+0200: 0.198: [PhantomReference, 0 refs, 0.0000287 secs]2013-10-12T23:05:32.860+0200: 0.198: [JNI Weak Reference, 0.0000340 secs]AdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2606192  promoted: 13908608  overflow: trueAdaptiveSizeStart: 0.199 collection: 1 
+AdaptiveSizePolicy::compute_generation_free_space limits: desired_eden_size: 34603008 old_eden_size: 17301504 eden_limit: 28311552 cur_eden: 17301504 max_eden_size: 28311552 avg_young_live: 2606192
+PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0.067601 major_cost: 0.000000 mutator_cost: 0.932399 throughput_goal: 0.990000 live_space: 273533632 free_space: 34603008 old_promo_size: 17301504 old_eden_size: 17301504 desired_promo_size: 17301504 desired_eden_size: 28311552
+AdaptiveSizePolicy::survivor space sizes: collection: 1 (2621440, 2621440) -> (2621440, 2621440) 
+AdaptiveSizeStop: collection: 1 
+ [PSYoungGen: 16865K->2545K(19456K)] 16865K->16127K(62976K), 0.0134562 secs] [Times: user=0.02 sys=0.05, real=0.01 secs] 

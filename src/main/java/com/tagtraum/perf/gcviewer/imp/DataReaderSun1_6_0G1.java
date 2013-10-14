@@ -37,12 +37,13 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintGCDetails</li>
  * <li>-XX:+PrintGCTimeStamps</li>
  * <li>-XX:+PrintGCDateStamps</li>
+ * <li>-XX:+PrintGCCause</li>
  * <li>-XX:+PrintHeapAtGC (output ignored)</li>
  * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
  * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
- * <li>-XX:+PrintGCCause (output ignored)</li>
+ * <li>-XX:+PrintReferenceGC (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
@@ -121,7 +122,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x / 1.7.x G1 format...");
 
-        try {
+        try (BufferedReader in = this.in) {
             final GCModel model = new GCModel(true);
             // TODO what is this for?
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
@@ -152,7 +153,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         ergonomicsMatcher.reset(line);
                         if (ergonomicsMatcher.matches()) {
                             String firstMatch = (ergonomicsMatcher.group(1));
-                            if (firstMatch.length() > 0) {
+                            if (firstMatch.length() > 0 && line.indexOf("SoftReference") < 0) {
                                 beginningOfLine = firstMatch;
                             }
                             continue;
@@ -199,6 +200,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (beginningOfLine != null) {
+                        // filter output of -XX:+PrintReferencePolicy away
+                        if (line.indexOf("SoftReference") >= 0) {
+                            line = line.substring(line.lastIndexOf(","));
+                        }
+                        
                         // not detailed log but mixed line
                         line = beginningOfLine + line;
                         beginningOfLine = null;
@@ -253,21 +259,19 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     else {
                         model.add(parseLine(line, parsePosition));
                     }
-                } catch (Exception pe) {
+                } 
+                catch (Exception pe) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.toString());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.toString(), pe);
                 }
                 parsePosition.setIndex(0);
             }
             return model;
-        } finally {
-            if (in != null)
-                try {
-                    in.close();
-                } catch (IOException ioe) {
-                }
-            if (LOG.isLoggable(Level.INFO))
+        } 
+        finally {
+            if (LOG.isLoggable(Level.INFO)) {
                 LOG.info("Done reading.");
+            }
         }
     }
 
@@ -425,7 +429,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 // or when PrintDateTimeStamps is on like:
                 // 2013-09-09T06:45:45.825+0000: 83146.942: [GC remark 2013-09-09T06:45:45.825+0000: 83146.943: [GC ref-proc, 0.0069100 secs], 0.0290090 secs]
                 if (nextIsTimestamp(line, pos) || nextIsDatestamp(line,pos)) {
-                    event.add((GCEvent) parseLine(line, pos));
+                    parseDetailEventsIfExist(line, pos, event);
                 }
                 
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {

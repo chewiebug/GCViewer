@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
@@ -559,6 +560,121 @@ public abstract class AbstractDataReaderSun implements DataReader {
         }
     
         return line.indexOf("-", pos.getIndex()) == pos.getIndex()+4 && line.indexOf("-", pos.getIndex() + 5) == pos.getIndex()+7;
+    }
+
+    /**
+     * Parses detail events if any exist at current <code>pos</code> in <code>line</code>.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @param event enclosing event
+     * @throws ParseException some problem when parsing the detail event
+     */
+    protected void parseDetailEventsIfExist(final String line, final ParsePosition pos,
+            final GCEvent event) throws ParseException {
+                
+                int currentIndex = pos.getIndex();
+                boolean currentIndexHasChanged = true;
+                while (hasNextDetail(line, pos) && currentIndexHasChanged) {
+                    final GCEvent detailEvent = new GCEvent();
+                    try {
+                        if (nextCharIsBracket(line, pos)) {
+                            detailEvent.setDateStamp(event.getDatestamp());
+                            detailEvent.setTimestamp(event.getTimestamp());
+                        } 
+                        else {
+                            detailEvent.setDateStamp(parseDatestamp(line, pos));
+                            detailEvent.setTimestamp(parseTimestamp(line, pos));
+                        }
+                        detailEvent.setExtendedType(parseType(line, pos));
+                        if (nextIsTimestamp(line, pos) || nextIsDatestamp(line, pos)) {
+                            parseDetailEventsIfExist(line, pos, detailEvent);
+                        }
+                        if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
+                            setMemoryAndPauses(detailEvent, line, pos);
+                        }
+                        else {
+                            parsePause(detailEvent, line, pos);
+                        }
+                        event.add(detailEvent);
+                    } 
+                    catch (UnknownGcTypeException e) {
+                        skipUntilEndOfDetail(line, pos, e);
+                    } 
+                    catch (NumberFormatException e) {
+                        skipUntilEndOfDetail(line, pos, e);
+                    }
+                    
+                    // promotion failed indicators "--" are sometimes separated from their primary
+                    // event name -> stick them together here (they are part of the "parent" event)
+                    if (nextIsPromotionFailed(line, pos)) {
+                        pos.setIndex(pos.getIndex() + 2);
+                        event.setExtendedType(extractTypeFromParsedString(event.getExtendedType() + "--"));
+                    }
+            
+                    // in a line with complete garbage the parser must not get stuck; just stop parsing.
+                    currentIndexHasChanged = currentIndex != pos.getIndex();
+                    currentIndex = pos.getIndex();
+                }
+                
+            }
+
+    private boolean nextIsPromotionFailed(String line, ParsePosition pos) {
+        StringBuffer nextString = new StringBuffer();
+        int index = pos.getIndex();
+        while (line.charAt(index) == ' ') {
+            ++index;
+        }
+        
+        if (index < line.length()-3) {
+            nextString.append(line.charAt(index)).append(line.charAt(index + 1));
+        }
+        
+        return nextString.toString().equals("--");
+    }
+
+    /**
+     * Skips until the end of the current detail event.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @param e exception that made skipping necessary
+     */
+    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, Exception e) {
+        skipUntilEndOfDetail(line, pos, 1);
+        
+        if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
+    }
+
+    /**
+     * Skips until end of current detail event. If the detail event contains detail events
+     * itself, those are skipped as well.
+     * 
+     * @param line current line
+     * @param pos current parse position
+     * @param levelOfDetailEvent level of nesting within detail event
+     */
+    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, int levelOfDetailEvent) {
+        // moving position to the end of this detail event -> skip it
+        // if it contains other detail events, skip those as well (recursion)
+        int indexOfNextOpeningBracket = line.indexOf("[", pos.getIndex());
+        int indexOfNextClosingBracket = line.indexOf("]", pos.getIndex());
+        if (indexOfNextOpeningBracket > 0 && indexOfNextOpeningBracket < indexOfNextClosingBracket) {
+            ++levelOfDetailEvent;
+            pos.setIndex(indexOfNextOpeningBracket + 1);
+        }
+        else if (indexOfNextClosingBracket > 0) {
+            --levelOfDetailEvent;
+            pos.setIndex(indexOfNextClosingBracket + 1);
+        }
+        else {
+            // unexpected: no opening and no closing bracket -> skip out
+            --levelOfDetailEvent;
+        }
+        
+        if (levelOfDetailEvent > 0) {
+            skipUntilEndOfDetail(line, pos, levelOfDetailEvent);
+        }
     }
     
 }

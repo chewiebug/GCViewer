@@ -1,11 +1,20 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
@@ -16,6 +25,13 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  */
 public class TestDataReaderSun1_7_0 {
 
+    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
+    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
+
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+    
     @Test
     public void testPrintGCCause() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
@@ -96,4 +112,78 @@ public class TestDataReaderSun1_7_0 {
         assertEquals("GC pause", 0.3410220, model.getPause().getMax(), 0.00000001);
     }    
 
+    /**
+     * Test output of -XX:+PrintAdaptiveSizePolicy -XX:+UseAdaptiveSizePolicy -XX:+PrintReferenceGC
+     */
+    @Test
+    public void parallelPrintUseAdaptiveSizeReference() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        final InputStream in = getInputStream("SampleSun1_7_0ParallelAdaptiveSizeReference.txt");
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(1));
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("type name", event.getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
+        assertThat("gc pause", event.getPause(), closeTo(0.0134562, 0.00000001));
+        assertThat("error count", handler.getCount(), is(0));
+    }
+    
+    /**
+     * Test output of -XX:+PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy -XX:+PrintReferenceGC
+     */
+    @Test
+    public void parallelAdaptiveReference() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2013-10-13T09:54:00.664+0200: 0.180: [GC (Allocation Failure)2013-10-13T09:54:00.680+0200: 0.191: [SoftReference, 0 refs, 0.0001032 secs]2013-10-13T09:54:00.680+0200: 0.192: [WeakReference, 5 refs, 0.0000311 secs]2013-10-13T09:54:00.680+0200: 0.192: [FinalReference, 10 refs, 0.0000389 secs]2013-10-13T09:54:00.680+0200: 0.192: [PhantomReference, 0 refs, 0.0000283 secs]2013-10-13T09:54:00.680+0200: 0.192: [JNI Weak Reference, 0.0000340 secs]AdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2589792  promoted: 13949568  overflow: true [PSYoungGen: 16865K->2529K(19456K)] 16865K->16151K(62976K), 0.0117505 secs] [Times: user=0.00 sys=0.06, real=0.02 secs]"
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(1));
+        assertThat("type name", model.get(0).getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
+        assertThat("GC pause", model.getPause().getMax(), closeTo(0.0117505, 0.00000001));
+    }    
+
+    /**
+     * Test output of -XX:-PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy -XX:+PrintReferenceGC
+     */
+    @Test
+    public void parallelReference() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2013-10-13T10:32:07.669+0200: 0.182: [GC (Allocation Failure)2013-10-13T10:32:07.685+0200: 0.195: [SoftReference, 0 refs, 0.0001086 secs]2013-10-13T10:32:07.685+0200: 0.195: [WeakReference, 5 refs, 0.0000311 secs]2013-10-13T10:32:07.685+0200: 0.195: [FinalReference, 10 refs, 0.0000377 secs]2013-10-13T10:32:07.685+0200: 0.195: [PhantomReference, 0 refs, 0.0000283 secs]2013-10-13T10:32:07.685+0200: 0.195: [JNI Weak Reference, 0.0000328 secs] [PSYoungGen: 16865K->2529K(19456K)] 16865K->16151K(62976K), 0.0137921 secs] [Times: user=0.03 sys=0.02, real=0.02 secs]"
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(1));
+        assertThat("type name", model.get(0).getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
+        assertThat("GC pause", model.getPause().getMax(), closeTo(0.0137921, 0.00000001));
+    }    
+
+    @Test
+    public void serialPrintReferenceGC() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2013-10-13T09:52:30.164+0200: 0.189: [GC (Allocation Failure)2013-10-13T09:52:30.164+0200: 0.189: [DefNew2013-10-13T09:52:30.180+0200: 0.205: [SoftReference, 0 refs, 0.0001004 secs]2013-10-13T09:52:30.180+0200: 0.205: [WeakReference, 0 refs, 0.0000287 secs]2013-10-13T09:52:30.180+0200: 0.205: [FinalReference, 0 refs, 0.0000283 secs]2013-10-13T09:52:30.180+0200: 0.205: [PhantomReference, 0 refs, 0.0000279 secs]2013-10-13T09:52:30.180+0200: 0.205: [JNI Weak Reference, 0.0000332 secs]: 17472K->2176K(19648K), 0.0159181 secs] 17472K->16957K(63360K), 0.0161033 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]"
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(1));
+        assertThat("type name", model.get(0).getTypeAsString(), equalTo("GC (Allocation Failure); DefNew"));
+        assertThat("GC pause", model.getPause().getMax(), closeTo(0.0161033, 0.00000001));
+        assertThat("heap size", model.getHeapAllocatedSizes().getMax(), is(63360));
+        assertThat("young size", model.getYoungAllocatedSizes().getMax(), is(19648));
+    }    
+
+     
+    
+        
 }

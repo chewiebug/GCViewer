@@ -17,6 +17,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -49,6 +50,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * <li>-XX:PrintCMSStatistics=2 (output ignored)</li>
+ * <li>-XX:+PrintReferenceGC (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -143,13 +145,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // AdaptiveSizeStop: collection: 1 
     //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
-    private static final Pattern adaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*\\([a-zA-Z ]*\\))[ ]?Adaptive.*");
+    private static final String ADAPTIVE_SIZE_POLICY_PATTERN_STRING = "(.*GC \\([a-zA-Z ]*\\)|.*GC)(?:[0-9.:]*.*)[ ]?AdaptiveSize.*";
+    private static final Pattern adaptiveSizePolicyPattern = Pattern.compile(ADAPTIVE_SIZE_POLICY_PATTERN_STRING);
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
     
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
     // outputs the following line:
     // 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] 
-    private static final Pattern printAdaptiveSizePolicyPattern = Pattern.compile("(.*GC|.*GC \\([a-zA-Z ]*\\))[ ]?Adaptive.*(?:true|false)([ ]?\\[.*).*");
+    private static final Pattern printAdaptiveSizePolicyPattern = Pattern.compile(ADAPTIVE_SIZE_POLICY_PATTERN_STRING + "(?:true|false)([ ]?\\[.*).*");
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_BEFORE = 1;
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_AFTER = 2;
     
@@ -169,6 +172,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final Pattern printTenuringDistributionPattern = Pattern.compile("(.*GC)[ ]?Desired.*(?:[0-9]\\)|total)( \\[.*|[ ][0-9]*.*)");
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE = 1;
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER = 2;
+    
+    // -XX:+PrintReferenceGC
+    private static final String PRINT_REFERENCE_GC_INDICATOR = "Reference";
+    
+    // -XX:+CMSScavengeBeforeRemark JDK 1.5
+    private static final String SCAVENGE_BEFORE_REMARK = Type.SCAVENGE_BEFORE_REMARK.getName();
     
     
     private Date firstDateStamp = null;
@@ -248,6 +257,9 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         line = printTenuringDistributionMatcher.group(PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE)
                                     + printTenuringDistributionMatcher.group(PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER);
                     }
+                    if (line.indexOf(PRINT_REFERENCE_GC_INDICATOR) > 0) {
+                        line = filterAwayReferenceGc(line);
+                    }
 
                     if (isCmsScavengeBeforeRemark(line)) {
                         // This is the case, when option -XX:+CMSScavengeBeforeRemark is used.
@@ -257,6 +269,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         int startOf2ndEvent = line.indexOf("]", line.indexOf(EVENT_YG_OCCUPANCY)) + 1;
                         beginningOfLine.addFirst(line.substring(0, startOf2ndEvent));
                         if (!isPrintTenuringDistribution(line)) {
+                            if (line.indexOf(SCAVENGE_BEFORE_REMARK) >= 0) {
+                                // jdk1.5 scavenge before remark: just after another separate event occurs
+                                startOf2ndEvent = line.indexOf(SCAVENGE_BEFORE_REMARK) + SCAVENGE_BEFORE_REMARK.length();
+                            }
                             model.add(parseLine(line.substring(startOf2ndEvent), parsePosition));
                             parsePosition.setIndex(0);
                         }
@@ -374,6 +390,32 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
     }
 
+    private String filterAwayReferenceGc(String line) {
+        int lastIndexOfReference = line.lastIndexOf(PRINT_REFERENCE_GC_INDICATOR);
+        int endOfLastReference = line.indexOf("]", lastIndexOfReference) + 1;
+        int index = findEndOfNextEventNameBefore(line, line.indexOf(PRINT_REFERENCE_GC_INDICATOR));
+        
+        return line.substring(0, index + 1) + line.substring(endOfLastReference);
+    }
+    
+    private int findEndOfNextEventNameBefore(String line, int pos) {
+        int index = line.lastIndexOf("[", pos) - 1;
+        char ch = 0;
+        do {
+            ch = line.charAt(index--);
+        }
+        while (index >= 0
+               && (ch == ' ' || Character.isDigit(ch) || ch == 'T' 
+                   || ch == '.' || ch == ':' || ch == '+' || ch == '-'));
+        
+        if (index < 0) {
+            LOG.warning("could not find name of event before " + pos);
+            index = pos-1;
+        }
+        
+        return index + 1;
+    }
+
     private boolean isMixedLine(String line, Matcher mixedLineMatcher) {
         mixedLineMatcher.reset(line);
         return mixedLineMatcher.matches();
@@ -450,69 +492,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     }
 
     /**
-     * Parses detail events if any exist at current <code>pos</code> in <code>line</code>.
-     * 
-     * @param line current line
-     * @param pos current parse position
-     * @param event enclosing event
-     * @throws ParseException some problem when parsing the detail event
-     */
-    private void parseDetailEventsIfExist(final String line, final ParsePosition pos, final GCEvent event)
-            throws ParseException {
-        
-        int currentIndex = pos.getIndex();
-        boolean currentIndexHasChanged = true;
-        while (hasNextDetail(line, pos) && currentIndexHasChanged) {
-            final GCEvent detailEvent = new GCEvent();
-            try {
-                if (nextCharIsBracket(line, pos)) {
-                    detailEvent.setDateStamp(event.getDatestamp());
-                    detailEvent.setTimestamp(event.getTimestamp());
-                } 
-                else {
-                    detailEvent.setDateStamp(parseDatestamp(line, pos));
-                    detailEvent.setTimestamp(parseTimestamp(line, pos));
-                }
-                detailEvent.setExtendedType(parseType(line, pos));
-                setMemoryAndPauses(detailEvent, line, pos);
-                event.add(detailEvent);
-            } 
-            catch (UnknownGcTypeException e) {
-                skipUntilEndOfDetail(line, pos, e);
-            } 
-            catch (NumberFormatException e) {
-                skipUntilEndOfDetail(line, pos, e);
-            }
-            
-            // promotion failed indicators "--" are sometimes separated from their primary
-            // event name -> stick them together here (they are part of the "parent" event)
-            if (nextIsPromotionFailed(line, pos)) {
-                pos.setIndex(pos.getIndex() + 2);
-                event.setExtendedType(extractTypeFromParsedString(event.getExtendedType() + "--"));
-            }
-
-            // in a line with complete garbage the parser must not get stuck; just stop parsing.
-            currentIndexHasChanged = currentIndex != pos.getIndex();
-            currentIndex = pos.getIndex();
-        }
-        
-    }
-
-    private boolean nextIsPromotionFailed(String line, ParsePosition pos) {
-        StringBuffer nextString = new StringBuffer();
-        int index = pos.getIndex();
-        while (line.charAt(index) == ' ') {
-            ++index;
-        }
-        
-        if (index < line.length()-3) {
-            nextString.append(line.charAt(index)).append(line.charAt(index + 1));
-        }
-        
-        return nextString.toString().equals("--");
-    }
-
-    /**
      * If the next thing in <code>line</code> is a timestamp, it is parsed and returned.
      * 
      * @param line current line
@@ -533,50 +512,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             timestamp = (datestamp.getTime() - firstDateStamp.getTime()) / (double)1000; 
         }
         return timestamp;
-    }
-
-    /**
-     * Skips until the end of the current detail event.
-     * 
-     * @param line current line
-     * @param pos current parse position
-     * @param e exception that made skipping necessary
-     */
-    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, Exception e) {
-        skipUntilEndOfDetail(line, pos, 1);
-        
-        if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
-    }
-    
-    /**
-     * Skips until end of current detail event. If the detail event contains detail events
-     * itself, those are skipped as well.
-     * 
-     * @param line current line
-     * @param pos current parse position
-     * @param levelOfDetailEvent level of nesting within detail event
-     */
-    private void skipUntilEndOfDetail(final String line, final ParsePosition pos, int levelOfDetailEvent) {
-        // moving position to the end of this detail event -> skip it
-        // if it contains other detail events, skip those as well (recursion)
-        int indexOfNextOpeningBracket = line.indexOf("[", pos.getIndex());
-        int indexOfNextClosingBracket = line.indexOf("]", pos.getIndex());
-        if (indexOfNextOpeningBracket > 0 && indexOfNextOpeningBracket < indexOfNextClosingBracket) {
-            ++levelOfDetailEvent;
-            pos.setIndex(indexOfNextOpeningBracket + 1);
-        }
-        else if (indexOfNextClosingBracket > 0) {
-            --levelOfDetailEvent;
-            pos.setIndex(indexOfNextClosingBracket + 1);
-        }
-        else {
-            // unexpected: no opening and no closing bracket -> skip out
-            --levelOfDetailEvent;
-        }
-        
-        if (levelOfDetailEvent > 0) {
-            skipUntilEndOfDetail(line, pos, levelOfDetailEvent);
-        }
     }
     
 }
