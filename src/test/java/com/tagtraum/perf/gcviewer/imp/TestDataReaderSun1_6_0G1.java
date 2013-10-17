@@ -1,6 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -288,6 +292,27 @@ public class TestDataReaderSun1_6_0G1 {
     }
 
     @Test
+    public void initialMarkHeapAtGcMixed() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getInputStream("SampleSun1_6_0G1InitialMarkMixed.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(2));
+        assertThat("GC pause", model.getGCPause().getSum(), closeTo(0.03643900, 0.000000001));
+        assertThat("heap size", model.getHeapAllocatedSizes().getMax(), is(10240 * 1024));
+        assertThat("number of errors", handler.getCount(), is(0));
+        
+        assertThat("concurrent type name", 
+                model.getConcurrentGCEvents().next().getTypeAsString(), 
+                equalTo("GC concurrent-mark-start"));
+    }
+
+    @Test
     public void testRemark() throws Exception {
         final InputStream in = new ByteArrayInputStream(
                 ("0.334: [GC remark, 0.0009506 secs]" +
@@ -335,4 +360,20 @@ public class TestDataReaderSun1_6_0G1 {
         assertEquals("number of errors", 0, handler.getCount());
     }
     
+    @Test
+    public void printHeapAtGcPrintTenuringDistributionFullGc() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getInputStream("SampleSun1_6_0G1FullGcTenuringDistribution.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_6G1);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(1));
+        assertThat("GC pause", model.getFullGCPause().getSum(), closeTo(37.0629320, 0.000000001));
+        assertThat("heap size", model.getHeapAllocatedSizes().getMax(), is(10240 * 1024));
+        assertThat("number of errors", handler.getCount(), is(0));
+    }
 }

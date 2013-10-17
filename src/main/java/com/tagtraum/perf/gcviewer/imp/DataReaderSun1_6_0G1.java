@@ -87,7 +87,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final int GC_PAUSE_GROUP_PAUSE = 4;
 
     // "   [ 4096K->3936K(16M)]"
-    private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]{5}[0-9]+[BKMG].*");
+    private static final Pattern PATTERN_MEMORY = Pattern.compile("^[ \\[]*[0-9]+[BKMG].*");
 
     private static final String INITIAL_MARK = "(initial-mark)";
     private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
@@ -288,7 +288,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 || line.endsWith(Type.G1_PARTIAL.getName()) 
                 || line.endsWith(Type.G1_PARTIAL_TO_SPACE_OVERFLOW.getName())
                 || line.endsWith(Type.G1_MIXED.getName())
-                || line.endsWith(Type.G1_MIXED_TO_SPACE_OVERFLOW.getName()); 
+                || line.endsWith(Type.G1_MIXED_TO_SPACE_OVERFLOW.getName())
+                || (line.indexOf(Type.FULL_GC.getName()) >= 0 && line.endsWith(")")); 
     }
 
     /**

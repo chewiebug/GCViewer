@@ -1,0 +1,22 @@
+{Heap before GC invocations=20034 (full 925):
+ garbage-first heap   total 10485760K, used 10437559K [0x0000000570000000, 0x00000007f0000000, 0x00000007f0000000)
+  region size 4096K, 1 young (4096K), 1 survivors (4096K)
+ compacting perm gen  total 176128K, used 174474K [0x00000007f0000000, 0x00000007fac00000, 0x0000000800000000)
+   the space 176128K,  99% used [0x00000007f0000000, 0x00000007faa62b68, 0x00000007faa62c00, 0x00000007fac00000)
+No shared spaces configured.
+189074.607: [Full GC 10192M->7271M(10240M)
+Desired survivor size 150994944 bytes, new threshold 12 (max 12)
+- age   1:    3163600 bytes,    3163600 total
+- age   2:     338440 bytes,    3502040 total
+- age   3:     121056 bytes,    3623096 total
+- age   4:      15520 bytes,    3638616 total
+- age   5:      79392 bytes,    3718008 total
+, 37.0629320 secs]
+ [Times: user=57.32 sys=0.30, real=37.06 secs] 
+Heap after GC invocations=20035 (full 926):
+ garbage-first heap   total 10485760K, used 7446136K [0x0000000570000000, 0x00000007f0000000, 0x00000007f0000000)
+  region size 4096K, 0 young (0K), 0 survivors (0K)
+ compacting perm gen  total 176128K, used 173593K [0x00000007f0000000, 0x00000007fac00000, 0x0000000800000000)
+   the space 176128K,  98% used [0x00000007f0000000, 0x00000007fa986438, 0x00000007fa986600, 0x00000007fac00000)
+No shared spaces configured.
+}
