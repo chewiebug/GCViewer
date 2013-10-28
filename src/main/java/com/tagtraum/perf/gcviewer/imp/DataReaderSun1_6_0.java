@@ -70,6 +70,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final String TIMES_ALONE = " [Times";
     private static final String FINISHED = "Finished"; // -XX:PrintCmsStatistics=2
     private static final String CARDTABLE = " (cardTable: "; // -XX:PrintCmsStatistics=2 
+    private static final String GC_LOCKER = "GC locker: Trying a full collection because scavenge failed";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
@@ -81,6 +82,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
         EXCLUDE_STRINGS.add(FINISHED);
         EXCLUDE_STRINGS.add(CARDTABLE);
+        EXCLUDE_STRINGS.add(GC_LOCKER);
     }
     
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
