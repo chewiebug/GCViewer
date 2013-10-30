@@ -1,6 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -862,4 +864,29 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("main type", "GC--", model.get(0).getExtendedType().getName());
         assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getExtendedType().getName());
     }
+    
+    @Test
+    public void testCmsGcLocker() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2269.664: [CMS-concurrent-sweep-start]"
+                + "\n2270.039: [GC 2270.039: [ParNew: 3686400K->3686400K(3686400K), 0.0000270 secs] 19876932K->19876932K(20070400K), 0.0000980 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]"
+                + "\nGC locker: Trying a full collection because scavenge failed"
+                + "\n2270.039: [Full GC 2270.039: [CMS2281.247: [CMS-concurrent-sweep: 11.558/11.583 secs] [Times: user=13.89 sys=0.08, real=11.58 secs]"
+                + "\n (concurrent mode failure): 16190532K->14091936K(16384000K), 64.4965310 secs] 19876932K->14091936K(20070400K), [CMS Perm : 111815K->111803K(262144K)], 64.4966380 secs] [Times: user=64.41 sys=0.00, real=64.50 secs]"
+                + "\n2334.567: [GC [1 CMS-initial-mark: 14091936K(16384000K)] 14164705K(20070400K), 0.0180200 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]"
+                + "\n2334.587: [CMS-concurrent-mark-start]" 
+                       ).getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(6));
+        assertThat("parse warning count", handler.getCount(), is(0));
+    }
+
 }
