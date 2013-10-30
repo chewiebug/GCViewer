@@ -81,7 +81,7 @@ Events like these
 [Times: user=2.33 sys=0.01, real=2.33 secs] 
  
 are shown as
-Full GC CMS: CMS Perm : <number of events parsed> ...
+Full GC; CMS; CMS Perm <number of events parsed> ...
 
 So for every line the text is extracted (not always every part of it). This allows
 a user which is familiar with the text log files to find out more details about
