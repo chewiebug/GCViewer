@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -123,17 +124,13 @@ public class ChartPanelView {
 			return modelRef.get();
 		}
 
-		public DataReaderFacade getDataReaderFacade() {
-			return dataReaderFacade;
-		}
-
 		public GCDocument getGcDocument() {
 			return gcDocument;
 		}
 
 		@Override
 		public void publishP(Integer... chunks) {			
-			//LOG.info("Received " + Arrays.asList(chunks));
+			LOG.info("Received " + Arrays.asList(chunks));
 		}
 
 		@Override
@@ -144,23 +141,23 @@ public class ChartPanelView {
     
     private GCPreferences preferences;
     
-    private ModelChartImpl modelChart;
-    private ModelPanel modelPanel;
-    private ModelDetailsPanel modelDetailsPanel;
-    private JTabbedPane modelChartAndDetailsPanel;
-    private ViewBar viewBar;
+    private final ModelChartImpl modelChart;
+    private final ModelPanel modelPanel;
+    private final ModelDetailsPanel modelDetailsPanel;
+    private final JTabbedPane modelChartAndDetailsPanel;
+    private final ViewBar viewBar;
+    private final SwingPropertyChangeSupport propertyChangeSupport;
+    private final TextAreaLogHandler textAreaLogHandler;
+    private GCModelLoader modelLoader;
     private boolean viewBarVisible;
     private boolean minimized;
-    private SwingPropertyChangeSupport propertyChangeSupport;
-    private TextAreaLogHandler textAreaLogHandler;
-    private GCModelLoader modelLoader;
     
     public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {    	
         this.modelLoader = new GCModelLoader(gcDocument, url, true);
         this.modelDetailsPanel = new ModelDetailsPanel();
+        this.modelChart = new ModelChartImpl();
         modelLoader.addPropertyChangeListener(modelChart);
         this.preferences = gcDocument.getPreferences();
-        this.modelChart = new ModelChartImpl();
         this.modelPanel = new ModelPanel();
         
         JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
