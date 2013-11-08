@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -59,7 +58,7 @@ public class ChartPanelView {
      * @author Hans Bausewein
      * <p>Date: November 8, 2013</p>
      */
-    public class GCModelLoader extends SwingWorker<GCModel, Object> implements MonitoredBufferedInputStream.ProgressCallback {
+    private class GCModelLoader extends SwingWorker<GCModel, Object> implements MonitoredBufferedInputStream.ProgressCallback {
     	
         private final DataReaderFacade dataReaderFacade;
     	private final GCDocument gcDocument;
@@ -134,7 +133,7 @@ public class ChartPanelView {
 
 		@Override
 		public void publishP(Integer... chunks) {			
-			LOG.info("Received " + Arrays.asList(chunks));
+			//LOG.info("Received " + Arrays.asList(chunks));
 		}
 
 		@Override
@@ -156,13 +155,13 @@ public class ChartPanelView {
     private TextAreaLogHandler textAreaLogHandler;
     private GCModelLoader modelLoader;
     
-    public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {
+    public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {    	
         this.modelLoader = new GCModelLoader(gcDocument, url, true);
+        this.modelDetailsPanel = new ModelDetailsPanel();
+        modelLoader.addPropertyChangeListener(modelChart);
         this.preferences = gcDocument.getPreferences();
         this.modelChart = new ModelChartImpl();
         this.modelPanel = new ModelPanel();
-        this.modelDetailsPanel = new ModelDetailsPanel();
-        modelLoader.addPropertyChangeListener(modelChart);
         
         JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
@@ -198,7 +197,7 @@ public class ChartPanelView {
         	modelLoader = new GCModelLoader(modelLoader, newURL, showParserErrors);
             modelLoader.addPropertyChangeListener(modelChart);
             return true;
-        }
+		}
         return false;
     }
 

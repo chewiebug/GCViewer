@@ -35,7 +35,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -179,7 +178,7 @@ public class GCDocument extends JInternalFrame {
         if (chartPanelViews.size() > 1) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < chartPanelViews.size(); i++) {
-                sb.append(chartPanelViews.get(i).getModel().getURL().getFile());
+            	sb.append(chartPanelViews.get(i).getModel().getURL().getFile());
                 if (i + 1 < chartPanelViews.size()) sb.append(", ");
             }
             setTitle(sb.toString());
