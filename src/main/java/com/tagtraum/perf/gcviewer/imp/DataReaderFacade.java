@@ -174,7 +174,7 @@ public class DataReaderFacade {
         InputStream in;
         if (url.getProtocol().startsWith("http")) {
         	final AtomicLong cl = new AtomicLong();
-    	final URLConnection conn = url.openConnection();    	
+        	final URLConnection conn = url.openConnection();        	
         	in = HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP, cl);
         	contentLength = cl.get();
         } else {
@@ -186,8 +186,9 @@ public class DataReaderFacade {
         		}
         	}
         }
-        
-        in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength, callback); 
+        if (contentLength > 100L) {
+        	in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength, callback);
+        }
         final DataReader reader = factory.getDataReader(in);
         final GCModel model = reader.read();
         return model;

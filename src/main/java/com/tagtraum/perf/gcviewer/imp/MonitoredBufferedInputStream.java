@@ -39,7 +39,7 @@ public class MonitoredBufferedInputStream extends BufferedInputStream {
 		final long newValue = bytesRead.addAndGet(increment);
 		final long nextBound = firstPercentBound.longValue();
 		if ((newValue > nextBound) && (nextBound != 0L)) {
-			final int percentage = (int)Math.floor(100 * newValue/contentLength);
+			final int percentage = Math.min(100, (int)Math.floor(100 * newValue/contentLength));
 			percentRead.set(percentage);
 			// to next percentage value
 			firstPercentBound.set((1 + percentRead.get()) * contentLength/100);
