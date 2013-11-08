@@ -35,6 +35,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -43,7 +44,8 @@ import com.tagtraum.perf.gcviewer.imp.DataReaderException;
  */
 public class GCDocument extends JInternalFrame {
 
-    private List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
+	private final GCViewerGui gcViewer;
+    private final List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
     private ModelChart modelChartListFacade;
     private boolean showModelPanel = true;
     private boolean watched;
@@ -52,6 +54,7 @@ public class GCDocument extends JInternalFrame {
 
     public GCDocument(final GCViewerGui gcViewer, String s) {
         super(s, true, true, true, false);
+        this.gcViewer = gcViewer;
         this.refreshWatchDog = new RefreshWatchDog();
         refreshWatchDog.setGcDocument(this);
         preferences = gcViewer.getPreferences();
@@ -614,4 +617,8 @@ public class GCDocument extends JInternalFrame {
         }
         
     }
+
+	public GCViewerGui getGcViewer() {
+		return gcViewer;
+	}
 }

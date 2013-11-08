@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -100,9 +101,7 @@ public class HttpUrlConnectionHelper {
      *  @param acceptEncoding  Content-encoding (gzip,defate or null)
      *  @return The input stream
      */
-    public static InputStream openInputStream(final HttpURLConnection httpConn, 
-            final String acceptEncoding) 
-                    throws IOException {
+    public static InputStream openInputStream(final HttpURLConnection httpConn, final String acceptEncoding, final AtomicLong cl) throws IOException {
         
         // set request properties
         httpConn.setRequestProperty(ACCEPT_ENCODING, acceptEncoding);
@@ -121,7 +120,12 @@ public class HttpUrlConnectionHelper {
                    "; last modified = " + (lastModified <= 0L ? "-" : new Date(lastModified).toString()));
         
         final int responseCode = httpConn.getResponseCode();
-        if (responseCode/100 != 2) {
+        if (responseCode/100 == 2) {
+        	if (cl != null) {
+        		// abuse of AtomicLong, but I need a pointer to long (or FileInformation)
+        		cl.set(contentLength);
+        	}
+        } else {
             final String responseMessage = httpConn.getResponseMessage();
             final String msg = "Server sent " + responseCode + ": " + responseMessage;
             LOGGER.info(msg);
@@ -140,4 +144,7 @@ public class HttpUrlConnectionHelper {
         return in;
     }
 
+    public static InputStream openInputStream(final HttpURLConnection httpConn, final String acceptEncoding) throws IOException {
+    	return openInputStream(httpConn, acceptEncoding, null);
+    }
 }

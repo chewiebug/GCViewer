@@ -59,6 +59,7 @@ import com.tagtraum.perf.gcviewer.action.Refresh;
 import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
@@ -129,10 +130,13 @@ public class GCViewerGui extends JFrame {
     private RecentURLsMenu recentURLsMenu;
     
     private GCPreferences preferences;
+    private final DataReaderFacade dataReaderFacade;
 
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
 
+        dataReaderFacade = DataReaderFacade.getInstance();
+        GCViewer.addShutdownHandler(dataReaderFacade.getThreadGroup());
         iconImage = loadImage("gcviewericon.gif");
         setIconImage(iconImage);
         
@@ -175,6 +179,10 @@ public class GCViewerGui extends JFrame {
         loadPreferences(preferences);
         setVisible(true);
     }
+
+	public DataReaderFacade getDataReaderFacade() {
+		return dataReaderFacade;
+	}
 
     /**
      * Loads an image if <code>imageName</code> can be found. If not, a warning is logged.
@@ -791,5 +799,4 @@ public class GCViewerGui extends JFrame {
             putValue(Action.NAME, internalFrame.getTitle());
         }
     }
-
 }

@@ -7,8 +7,11 @@ import com.tagtraum.perf.gcviewer.util.TimeFormat;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -22,7 +25,7 @@ import java.util.Date;
  * Time: 7:50:42 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeListener {
+public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeListener, PropertyChangeListener {
 
     private GCModel model;
     private Chart chart;
@@ -49,12 +52,19 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     private boolean antiAlias;
     private TimeOffsetPanel timeOffsetPanel;
     private int lastViewPortWidth = 0;
+    private final JProgressBar progressBar;
 
     public ModelChartImpl() {
         super();
         this.model = new GCModel(true);
         this.chart = new Chart();
         this.chart.setPreferredSize(new Dimension(0, 0));
+
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setVisible(false);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+                
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         
@@ -124,6 +134,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         setRowHeaderView(rowHeaderPanel);
         setCorner(JScrollPane.UPPER_LEFT_CORNER, new JPanel());
         setCorner(JScrollPane.LOWER_LEFT_CORNER, new JPanel());
+        rowHeaderPanel.add(progressBar);  
 
         DateFormat dateFormatter = new TimeFormat();
         this.timestampRuler = new Ruler(false, 0, model.getRunningTime(), "", dateFormatter);
@@ -186,6 +197,27 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             }
         });
 
+    }
+
+    /**
+     * Invoked when task's progress property changes.
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("progress" == evt.getPropertyName()) {
+            final int progress = (Integer) evt.getNewValue();
+            progressBar.setValue(progress);
+            //taskOutput.append(String.format("Completed %d%% of task.\n", task.getProgress()));
+            if (progress >= 100) {
+            	progressBar.setVisible(false);
+            } else {
+            	if (progress >= 0) {
+            		if (!progressBar.isVisible()) {
+            			progressBar.setVisible(true);
+            		}
+            	}
+            }
+        	invalidate();
+        }
     }
 
     public void invalidate() {

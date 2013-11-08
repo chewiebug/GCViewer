@@ -21,7 +21,7 @@ public class DataReaderFactory {
 
     private static Logger LOG = Logger.getLogger(DataReaderFactory.class.getName());
     private static final int ONE_KB = 1024;
-    private static final int FOUR_KB = ONE_KB * 4;
+    static final int FOUR_KB = ONE_KB * 4;
     private static final int MAX_ATTEMPT_COUNT = 100;
     
     /**

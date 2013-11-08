@@ -12,6 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,10 +29,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
+import com.tagtraum.perf.gcviewer.imp.MonitoredBufferedInputStream;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
@@ -42,6 +51,97 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 public class ChartPanelView {
 
     public static final String EVENT_MINIMIZED = "minimized";
+    private static Logger LOG = Logger.getLogger(ChartPanelView.class.getName());
+    
+    /**
+     * Loads the model in a background thread.
+     *
+     * @author Hans Bausewein
+     * <p>Date: November 8, 2013</p>
+     */
+    public class GCModelLoader extends SwingWorker<GCModel, Object> implements MonitoredBufferedInputStream.ProgressCallback {
+    	
+        private final DataReaderFacade dataReaderFacade;
+    	private final GCDocument gcDocument;
+    	private final URL url;		
+		private boolean showParserErrors;
+		private AtomicReference<GCModel> modelRef = new AtomicReference<GCModel>();
+    	
+        public GCModelLoader(final GCDocument gcDocument, 
+        				 	 final URL url, 
+        				 	 final boolean showParserErrors) {
+			super();
+			this.gcDocument = gcDocument;
+			this.dataReaderFacade = gcDocument.getGcViewer().getDataReaderFacade();
+			this.url = url;
+			this.showParserErrors = showParserErrors;
+			GCModel model = new GCModel(true);
+			model.setURL(url);
+			this.modelRef.set(model);
+			start();
+		}
+
+        public GCModelLoader(final GCModelLoader prevModel,
+        					 final URL url, 
+			 	 			 final boolean showParserErrors) {
+			this(prevModel.getGcDocument(), url, showParserErrors);
+        }
+        
+		@Override
+		protected GCModel doInBackground() throws Exception {
+			setProgress(0);
+	        final GCModel model = dataReaderFacade.loadModel(url, showParserErrors, gcDocument, this);
+			return model;
+		}
+
+		protected void done() {
+			GCModel model = null;
+
+			try {
+				model = get();
+			} catch (InterruptedException e) {
+				LOG.log(Level.FINE, "", e);
+			} catch (ExecutionException e) {
+				LOG.log(Level.WARNING, "Failed to create ChartPanelView GCModel for " + url.toExternalForm(), e);			
+			}
+			setProgress(100);
+			
+			if (model != null) {
+				modelRef.set(model);
+				setModel(model);
+				
+				// TODO delete
+				model.printDetailedInformation();				
+			}
+		}
+		
+		public void start() {
+            Executor executor = Executors.newSingleThreadExecutor(dataReaderFacade.getThreadFactory());
+            executor.execute(this);			
+		}
+
+		public GCModel getModel() {
+			return modelRef.get();
+		}
+
+		public DataReaderFacade getDataReaderFacade() {
+			return dataReaderFacade;
+		}
+
+		public GCDocument getGcDocument() {
+			return gcDocument;
+		}
+
+		@Override
+		public void publishP(Integer... chunks) {			
+			LOG.info("Received " + Arrays.asList(chunks));
+		}
+
+		@Override
+		public void updateProgress(int progress) {
+			setProgress(progress);			
+		}    	
+    }
     
     private GCPreferences preferences;
     
@@ -49,21 +149,20 @@ public class ChartPanelView {
     private ModelPanel modelPanel;
     private ModelDetailsPanel modelDetailsPanel;
     private JTabbedPane modelChartAndDetailsPanel;
-    private GCModel model;
     private ViewBar viewBar;
     private boolean viewBarVisible;
     private boolean minimized;
     private SwingPropertyChangeSupport propertyChangeSupport;
-    private GCDocument gcDocument;
     private TextAreaLogHandler textAreaLogHandler;
-    private DataReaderFacade dataReaderFacade;
+    private GCModelLoader modelLoader;
     
     public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {
-        this.gcDocument = gcDocument;
+        this.modelLoader = new GCModelLoader(gcDocument, url, true);
         this.preferences = gcDocument.getPreferences();
         this.modelChart = new ModelChartImpl();
         this.modelPanel = new ModelPanel();
         this.modelDetailsPanel = new ModelDetailsPanel();
+        modelLoader.addPropertyChangeListener(modelChart);
         
         JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
@@ -81,11 +180,6 @@ public class ChartPanelView {
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
         this.textAreaLogHandler = new TextAreaLogHandler();
-        dataReaderFacade = new DataReaderFacade();
-        final GCModel model = dataReaderFacade.loadModel(url, true, gcDocument);
-        setModel(model);
-        // TODO delete
-        model.printDetailedInformation();
     }
 
     /**
@@ -97,9 +191,12 @@ public class ChartPanelView {
      * @throws DataReaderException if something went wrong reading the file
      */
     public boolean reloadModel(boolean showParserErrors) throws DataReaderException {
-        if (model.getURL() == null) return false;
-        if (model.isDifferent(model.getURL())) {
-            setModel(dataReaderFacade.loadModel(this.model.getURL(), showParserErrors, gcDocument));
+    	final GCModel model = getModel();
+    	final URL newURL = (model == null) ? null : model.getURL();
+        
+        if ((newURL != null) && model.isDifferent(newURL)) {
+        	modelLoader = new GCModelLoader(modelLoader, newURL, showParserErrors);
+            modelLoader.addPropertyChangeListener(modelChart);
             return true;
         }
         return false;
@@ -156,19 +253,19 @@ public class ChartPanelView {
     }
 
     public GCModel getModel() {
-        return model;
+        return modelLoader.getModel();
     }
 
     public void setModel(GCModel model) {
-        this.model = model;
         this.modelPanel.setModel(model);
         this.modelChart.setModel(model, preferences);
         this.modelDetailsPanel.setModel(model);
         this.viewBar.setTitle(model.getURL().toString());
+        this.modelLoader.getGcDocument().relayout();
     }
 
     public void close() {
-        gcDocument.removeChartPanelView(this);
+    	modelLoader.getGcDocument().removeChartPanelView(this);
     }
 
     private static class ViewBar extends JPanel {

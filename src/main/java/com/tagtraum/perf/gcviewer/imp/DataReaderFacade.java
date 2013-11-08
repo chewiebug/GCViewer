@@ -11,6 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -20,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import com.tagtraum.perf.gcviewer.imp.MonitoredBufferedInputStream.ProgressCallback;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
@@ -38,6 +42,46 @@ public class DataReaderFacade {
     private static final Logger PARSER_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer");
     private static final Logger LOGGER = Logger.getLogger(DataReaderFacade.class.getName());
 
+    // Copy of Executors.DefaultThreadFactory
+    public static final class NamedThreadFactory implements ThreadFactory {
+    	private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        private NamedThreadFactory(final ThreadGroup threadGroup) {
+            group = threadGroup;
+            namePrefix = threadGroup.getName().concat("-thread-");
+        }
+
+        public Thread newThread(Runnable r) {
+        	final Thread t = new Thread(group, r,
+                                  		namePrefix + threadNumber.getAndIncrement(),
+                                  		0);
+            if (t.isDaemon())
+                t.setDaemon(false);
+            if (t.getPriority() != Thread.NORM_PRIORITY)
+                t.setPriority(Thread.NORM_PRIORITY);
+            return t;
+        }
+    }
+    
+    private static DataReaderFacade dataReaderFacade;
+    
+    final ThreadGroup threadGroup;
+    final ThreadFactory threadFactory;
+
+    private DataReaderFacade() {
+    	threadGroup = new ThreadGroup("DataReader");
+    	threadFactory = new NamedThreadFactory(threadGroup);
+    }
+    
+    public static DataReaderFacade getInstance() {
+    	if (dataReaderFacade == null) {
+    		dataReaderFacade = new DataReaderFacade();
+    	}
+    	return dataReaderFacade;
+    }
+    
     /**
      * Loads a model from a given <code>pathToData</code> logging all exceptions that occur.
      * 
@@ -82,7 +126,7 @@ public class DataReaderFacade {
      * @throws DataReaderException if any exception occurred, it is logged and added as the cause
      * to this exception
      */
-    public GCModel loadModel(URL url, boolean showErrorDialog, Component parent) throws DataReaderException {
+    public GCModel loadModel(URL url, boolean showErrorDialog, Component parent, final ProgressCallback callback) throws DataReaderException {
         // set up special handler
         TextAreaLogHandler textAreaLogHandler = new TextAreaLogHandler();
         PARSER_LOGGER.addHandler(textAreaLogHandler);
@@ -90,7 +134,7 @@ public class DataReaderFacade {
         GCModel model = null;
         try {
             LOGGER.info("GCViewer version " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")");
-            model = readModel(url);
+            model = readModel(url, callback);
             model.setURL(url);
         } 
         catch (RuntimeException | IOException e) {
@@ -114,18 +158,36 @@ public class DataReaderFacade {
         return model;
     }
     
+    public GCModel loadModel(final URL url, final boolean showErrorDialog, final Component parent) throws DataReaderException {
+    	return loadModel(url, showErrorDialog, parent, null);
+    }
+    
     /**
      * Open and parse data designated by <code>url</code>.
      * @param url where to find data to be parsed
      * @return GCModel
      * @throws IOException problem reading the data
      */
-    private GCModel readModel(URL url) throws IOException {
+    private GCModel readModel(final URL url, final ProgressCallback callback) throws IOException {
         DataReaderFactory factory = new DataReaderFactory();
+        long contentLength = 0L;
+        InputStream in;
+        if (url.getProtocol().startsWith("http")) {
+        	final AtomicLong cl = new AtomicLong();
     	final URLConnection conn = url.openConnection();    	
-    	final InputStream in = conn instanceof HttpURLConnection
-    							? HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP)
-    							: conn.getInputStream();
+        	in = HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP, cl);
+        	contentLength = cl.get();
+        } else {
+        	in = url.openStream();
+        	if (url.getProtocol().startsWith("file")) {
+        		final File file = new File(url.getFile());
+        		if (file.exists()) {
+        			contentLength = file.length();
+        		}
+        	}
+        }
+        
+        in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength, callback); 
         final DataReader reader = factory.getDataReader(in);
         final GCModel model = reader.read();
         return model;
@@ -151,5 +213,13 @@ public class DataReaderFacade {
             }
         });
     }
+
+	public ThreadGroup getThreadGroup() {
+		return threadGroup;
+	}
+
+	public ThreadFactory getThreadFactory() {
+		return threadFactory;
+	}
 
 }
