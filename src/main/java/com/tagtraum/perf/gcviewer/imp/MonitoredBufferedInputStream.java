@@ -14,8 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MonitoredBufferedInputStream extends BufferedInputStream {
 
 	public interface ProgressCallback {
-		public void publishP(Integer... chunks);
+		void publishP(Integer... chunks);
 		void updateProgress(int progress);
+		String getLoggerName();
 	}
 	
 	private final ProgressCallback callback;

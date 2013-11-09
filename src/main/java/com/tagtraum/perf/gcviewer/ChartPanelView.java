@@ -1,6 +1,9 @@
 package com.tagtraum.perf.gcviewer;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -20,15 +24,18 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.SwingPropertyChangeSupport;
 
@@ -66,11 +73,13 @@ public class ChartPanelView {
     	private final URL url;		
 		private boolean showParserErrors;
 		private AtomicReference<GCModel> modelRef = new AtomicReference<GCModel>();
+	    private final Logger parserLogger;
     	
         public GCModelLoader(final GCDocument gcDocument, 
         				 	 final URL url, 
         				 	 final boolean showParserErrors) {
 			super();
+
 			this.gcDocument = gcDocument;
 			this.dataReaderFacade = gcDocument.getGcViewer().getDataReaderFacade();
 			this.url = url;
@@ -78,7 +87,20 @@ public class ChartPanelView {
 			GCModel model = new GCModel(true);
 			model.setURL(url);
 			this.modelRef.set(model);
+
+			if (url != null) {
+				// A static logger would not be reliable, when concurrently used
+				// Solution: create a logger per url instance, or better: per GCModel	        	
+				parserLogger = Logger.getLogger(DataReaderFacade.class.getSimpleName() + "_" + url.hashCode());
+		        parserLogger.addHandler(textAreaLogHandler);
 			start();
+			} else {
+				parserLogger = null;
+			}
+		}
+        
+        public String getLoggerName() {
+			return parserLogger == null ? "NONE" : parserLogger.getName();
 		}
 
         public GCModelLoader(final GCModelLoader prevModel,
@@ -90,17 +112,20 @@ public class ChartPanelView {
 		@Override
 		protected GCModel doInBackground() throws Exception {
 			setProgress(0);
-	        final GCModel model = dataReaderFacade.loadModel(url, showParserErrors, gcDocument, this);
+	        final GCModel model = dataReaderFacade.loadModel(url, this);
+	        model.setURL(url);
 			return model;
 		}
 
 		protected void done() {
 			GCModel model = null;
+            // remove special handler after we are done with reading.
+            parserLogger.removeHandler(textAreaLogHandler);
 
 			try {
 				model = get();
 			} catch (InterruptedException e) {
-				LOG.log(Level.FINE, "", e);
+				LOG.log(Level.FINE, "model get() interrupted", e);
 			} catch (ExecutionException e) {
 				LOG.log(Level.WARNING, "Failed to create ChartPanelView GCModel for " + url.toExternalForm(), e);			
 			}
@@ -112,6 +137,15 @@ public class ChartPanelView {
 				
 				// TODO delete
 				model.printDetailedInformation();				
+			} else {
+				final int nChartPanelViews = gcDocument.removeChartPanelView(ChartPanelView.this);
+				
+		        if (textAreaLogHandler.hasErrors() && showParserErrors) {
+		        	final Component parent = nChartPanelViews == 0 ? gcDocument.getGcViewer().getDesktopPane() : gcDocument;
+		        	if (LOG.isLoggable(Level.FINE)) 
+		        		LOG.fine("Show error for " + url);
+		            showErrorDialog(url, textAreaLogHandler, parent);
+		        }
 			}
 		}
 		
@@ -130,7 +164,8 @@ public class ChartPanelView {
 
 		@Override
 		public void publishP(Integer... chunks) {			
-			LOG.info("Received " + Arrays.asList(chunks));
+			if (LOG.isLoggable(Level.FINE))
+				LOG.fine("Received " + Arrays.asList(chunks));
 		}
 
 		@Override
@@ -153,6 +188,7 @@ public class ChartPanelView {
     private boolean minimized;
     
     public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {    	
+        this.textAreaLogHandler = new TextAreaLogHandler();
         this.modelLoader = new GCModelLoader(gcDocument, url, true);
         this.modelDetailsPanel = new ModelDetailsPanel();
         this.modelChart = new ModelChartImpl();
@@ -175,7 +211,27 @@ public class ChartPanelView {
         
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
-        this.textAreaLogHandler = new TextAreaLogHandler();
+    }
+
+    /**
+     * Show error dialog containing all information related to the error.
+     * @param url url where data should have been read from
+     * @param textAreaLogHandler handler where all logging information was gathered
+     * @param parent parent component for the dialog
+     */
+    private void showErrorDialog(final URL url, final TextAreaLogHandler textAreaLogHandler, final Component parent) {
+        final JPanel panel = new JPanel(new BorderLayout());
+        final JLabel messageLabel = new JLabel(new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
+        messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        panel.add(messageLabel, BorderLayout.NORTH);
+        final JScrollPane textAreaScrollPane = new JScrollPane(textAreaLogHandler.getTextArea());
+        textAreaScrollPane.setPreferredSize(new Dimension(700, 500));
+        panel.add(textAreaScrollPane, BorderLayout.CENTER);
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run() {
+                JOptionPane.showMessageDialog(parent, panel, new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_title")).format(new Object[]{url}), JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     /**

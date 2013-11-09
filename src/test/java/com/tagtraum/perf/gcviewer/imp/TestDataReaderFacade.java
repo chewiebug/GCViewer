@@ -34,7 +34,7 @@ public class TestDataReaderFacade {
     }
     
     /**
-     * Tests {@link DataReaderFacade#loadModel(String, boolean, java.awt.Component)}
+     * Tests {@link DataReaderFacade#loadModel(String)}
      * with filename that does exist.
      */
     @Test
@@ -43,20 +43,20 @@ public class TestDataReaderFacade {
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
 
-        dataReaderFacade.loadModel(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0, false, null);
+        dataReaderFacade.loadModel(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
         
         assertEquals("has no errors", 0, handler.getCount());
     }
 
     /**
-     * Tests {@link DataReaderFacade#loadModel(String, boolean, java.awt.Component)}
+     * Tests {@link DataReaderFacade#loadModel(String)}
      * with a malformed url.
      */
     @Test
     public void loadModelStringMalformedUrl() throws Exception {
 
         try {
-            dataReaderFacade.loadModel("httpblabla", false, null);
+            dataReaderFacade.loadModel("httpblabla");
         }
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
@@ -67,14 +67,14 @@ public class TestDataReaderFacade {
     }
 
     /**
-     * Tests {@link DataReaderFacade#loadModel(String, boolean, java.awt.Component)}
+     * Tests {@link DataReaderFacade#loadModel(String)}
      * with a malformed url.
      */
     @Test
     public void loadModelStringIllegalArgument() throws Exception {
 
         try {
-            dataReaderFacade.loadModel("http://", false, null);
+            dataReaderFacade.loadModel("http://");
         }
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
@@ -85,13 +85,13 @@ public class TestDataReaderFacade {
     }
 
     /**
-     * Tests {@link DataReaderFacade#loadModel(java.net.URL, boolean, java.awt.Component)}
+     * Tests {@link DataReaderFacade#loadModel(java.net.URL)}
      * with filename that does not exist.
      */
     @Test
     public void loadModelUrlFileDoesntExists() throws Exception {
         try {
-            dataReaderFacade.loadModel(new File("dummy.txt").toURI().toURL(), false, null);
+            dataReaderFacade.loadModel(new File("dummy.txt").toURI().toURL());
             fail("DataReaderException expected");
         }
         catch (DataReaderException e) {
@@ -103,7 +103,7 @@ public class TestDataReaderFacade {
     }
 
     /**
-     * Tests {@link DataReaderFacade#loadModel(java.net.URL, boolean, java.awt.Component)}
+     * Tests {@link DataReaderFacade#loadModel(java.net.URL)}
      * with filename that does exist.
      */
     @Test
@@ -112,7 +112,7 @@ public class TestDataReaderFacade {
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
 
-        dataReaderFacade.loadModel(new File(PARENT_PATH, SAMPLE_GCLOG_SUN1_6_0).toURI().toURL(), false, null);
+        dataReaderFacade.loadModel(new File(PARENT_PATH, SAMPLE_GCLOG_SUN1_6_0).toURI().toURL());
         
         assertEquals("has no errors", 0, handler.getCount());
     }

@@ -1,8 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,25 +7,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.MessageFormat;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-
 import com.tagtraum.perf.gcviewer.imp.MonitoredBufferedInputStream.ProgressCallback;
-import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
-import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file
@@ -38,9 +26,6 @@ import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
  * <p>created on: 24.11.2012</p>
  */
 public class DataReaderFacade {
-
-    private static final Logger PARSER_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer");
-    private static final Logger LOGGER = Logger.getLogger(DataReaderFacade.class.getName());
 
     // Copy of Executors.DefaultThreadFactory
     public static final class NamedThreadFactory implements ThreadFactory {
@@ -86,15 +71,12 @@ public class DataReaderFacade {
      * Loads a model from a given <code>pathToData</code> logging all exceptions that occur.
      * 
      * @param fileOrUrl path to a file or URL
-     * @param showErrorDialog <code>true</code> if a window with an error description should be shown
-     * if one occurred
-     * @param parent parent for the error dialog
      * @return instance of GCModel containing all information that was parsed
      * @throws DataReaderException if any exception occurred, it is logged and added as the cause
      * to this exception
-     * @see {@link #loadModel(URL, boolean, Component)}
+     * @see {@link #loadModel(URL, ProgressCallback)}
      */
-    public GCModel loadModel(String fileOrUrl, boolean showErrorDialog, Component parent) throws DataReaderException {
+    public GCModel loadModel(final String fileOrUrl) throws DataReaderException {
         if (fileOrUrl == null) {
             throw new NullPointerException("fileOrUrl must never be null");
         }
@@ -107,8 +89,7 @@ public class DataReaderFacade {
             else {
                 url = new File(fileOrUrl).toURI().toURL();
             }
-            
-            return loadModel(url, showErrorDialog, parent);
+            return loadModel(url, null);
         }
         catch (MalformedURLException e) {
             throw new DataReaderException("could not load from '" + fileOrUrl + "'", e);
@@ -119,36 +100,28 @@ public class DataReaderFacade {
      * Loads a model from a given <code>url</code> logging all exceptions that occur.
      * 
      * @param url where to look for the data to be interpreted
-     * @param showErrorDialog <code>true</code> if a window with an error description should be shown
-     * if one occurred
-     * @param parent parent for the error dialog
+     * @param callback Call this to report progress
      * @return instance of GCModel containing all information that was parsed
      * @throws DataReaderException if any exception occurred, it is logged and added as the cause
      * to this exception
      */
-    public GCModel loadModel(URL url, boolean showErrorDialog, Component parent, final ProgressCallback callback) throws DataReaderException {
-        // set up special handler
-        TextAreaLogHandler textAreaLogHandler = new TextAreaLogHandler();
-        PARSER_LOGGER.addHandler(textAreaLogHandler);
+    public GCModel loadModel(final URL url, final ProgressCallback callback) throws DataReaderException {
         DataReaderException dataReaderException = new DataReaderException();
         GCModel model = null;
+        final Logger parserLogger = Logger.getLogger(callback == null ? "DataReaderFacade" : callback.getLoggerName());
+
         try {
-            LOGGER.info("GCViewer version " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")");
+        	final String msg = "GCViewer version " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")"; 
+            parserLogger.info(msg);
             model = readModel(url, callback);
-            model.setURL(url);
         } 
         catch (RuntimeException | IOException e) {
-            LOGGER.severe(LocalisationHelper.getString("fileopen_dialog_read_file_failed")
-                    + "\n" + e.toString() + " " + e.getLocalizedMessage());
+        	final String msg = LocalisationHelper.getString("fileopen_dialog_read_file_failed")
+                    + "\n" + e.toString() + " " + e.getLocalizedMessage();
             dataReaderException.initCause(e);
+            parserLogger.warning(msg);
         } 
         finally {
-            // remove special handler after we are done with reading.
-            PARSER_LOGGER.removeHandler(textAreaLogHandler);
-        }
-
-        if (textAreaLogHandler.hasErrors() && showErrorDialog) {
-            showErrorDialog(url, textAreaLogHandler, parent);
         }
         
         if (dataReaderException.getCause() != null) {
@@ -158,8 +131,8 @@ public class DataReaderFacade {
         return model;
     }
     
-    public GCModel loadModel(final URL url, final boolean showErrorDialog, final Component parent) throws DataReaderException {
-    	return loadModel(url, showErrorDialog, parent, null);
+    protected GCModel loadModel(final URL url) throws DataReaderException {
+    	return loadModel(url, null);
     }
     
     /**
@@ -190,29 +163,7 @@ public class DataReaderFacade {
         	in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength, callback);
         }
         final DataReader reader = factory.getDataReader(in);
-        final GCModel model = reader.read();
-        return model;
-    }
-
-    /**
-     * Show error dialog containing all information related to the error.
-     * @param url url where data should have been read from
-     * @param textAreaLogHandler handler where all logging information was gathered
-     * @param parent parent component for the dialog
-     */
-    private void showErrorDialog(final URL url, TextAreaLogHandler textAreaLogHandler, final Component parent) {
-        final JPanel panel = new JPanel(new BorderLayout());
-        final JLabel messageLabel = new JLabel(new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
-        messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-        panel.add(messageLabel, BorderLayout.NORTH);
-        final JScrollPane textAreaScrollPane = new JScrollPane(textAreaLogHandler.getTextArea());
-        textAreaScrollPane.setPreferredSize(new Dimension(700, 500));
-        panel.add(textAreaScrollPane, BorderLayout.CENTER);
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run() {
-                JOptionPane.showMessageDialog(parent, panel, new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_title")).format(new Object[]{url}), JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        return reader.read();
     }
 
 	public ThreadGroup getThreadGroup() {

@@ -350,6 +350,11 @@ public class GCViewerGui extends JFrame {
         }
     }
 
+    public void close(final GCDocument gcDocument) {
+    	desktopPane.remove(gcDocument);
+    	repaint();
+    }
+
     public void add(final File[] files) {
         try {
             if (files.length >= 0) openFileAction.setSelectedFile(files[0]);

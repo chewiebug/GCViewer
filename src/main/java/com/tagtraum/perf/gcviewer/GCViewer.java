@@ -63,7 +63,7 @@ public class GCViewer {
             throws IOException, DataReaderException {
         final DataReaderFacade dataReaderFacade = DataReaderFacade.getInstance();
     	addShutdownHandler(dataReaderFacade.getThreadGroup());
-        GCModel model = dataReaderFacade.loadModel(gcFilename, false, null);
+        GCModel model = dataReaderFacade.loadModel(gcFilename);
 
         exportSummary(model, summaryFilePath);
         if (chartFilePath != null)

@@ -168,30 +168,44 @@ public class GCDocument extends JInternalFrame {
         relayout();
     }
 
-    public void removeChartPanelView(ChartPanelView chartPanelView) {
+    /**
+     * @return number of chartPanelViews running after remove.
+     */
+    public int removeChartPanelView(ChartPanelView chartPanelView) {
         chartPanelViews.remove(chartPanelView);
+        
+        final int nChartPanelViews = chartPanelViews.size();
+        if (nChartPanelViews > 0) {        
         relayout();
+        } else {
+        	gcViewer.close(this);
+        }
+        return nChartPanelViews;
     }
 
     public void relayout() {
         getContentPane().removeAll();
-        if (chartPanelViews.size() > 1) {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < chartPanelViews.size(); i++) {
+        final int nChartPanelViews = chartPanelViews.size();
+        final String newTitle;
+        if (nChartPanelViews > 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < nChartPanelViews; i++) {
             	sb.append(chartPanelViews.get(i).getModel().getURL().getFile());
-                if (i + 1 < chartPanelViews.size()) sb.append(", ");
+                if (i + 1 < nChartPanelViews) sb.append(", ");
             }
-            setTitle(sb.toString());
+            newTitle = sb.toString();
         } else if (!chartPanelViews.isEmpty())
-            setTitle(chartPanelViews.get(0).getModel().getURL().toString());
+        	newTitle = chartPanelViews.get(0).getModel().getURL().toString();
         else
-            setTitle("");
+        	newTitle = "";
+        setTitle(newTitle);
+        
         int row = 0;
         boolean noMaximizedChartPanelView = true;
         ChartPanelView lastMaximizedChartPanelView = getLastMaximizedChartPanelView();
         MasterViewPortChangeListener masterViewPortChangeListener = new MasterViewPortChangeListener();
 
-        for (int i = 0; i < chartPanelViews.size(); i++) {
+        for (int i = 0; i < nChartPanelViews; i++) {
             final ChartPanelView chartPanelView = chartPanelViews.get(i);
             final ModelChartImpl modelChart = (ModelChartImpl) chartPanelView.getModelChart();
             final ModelPanel modelPanel = chartPanelView.getModelPanel();
@@ -202,7 +216,7 @@ public class GCDocument extends JInternalFrame {
             constraints.anchor = GridBagConstraints.NORTH;
 
             constraints.gridy = row;
-            if (chartPanelViews.size() > 1 || (chartPanelView.isMinimized() && chartPanelViews.size() == 1)) {
+            if (nChartPanelViews > 1 || (chartPanelView.isMinimized() && nChartPanelViews == 1)) {
                 constraints.gridwidth = 2;
                 constraints.weightx = 2;
                 //constraints.weighty = 1;
