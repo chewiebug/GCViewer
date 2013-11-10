@@ -244,6 +244,13 @@ public class ChartPanelView {
      */
     public boolean reloadModel(boolean showParserErrors) throws DataReaderException {
     	final GCModel model = getModel();
+
+    	if (modelLoader.getState() != SwingWorker.StateValue.DONE) {
+    		// do not start another reload, while loading (or should we cancel the current load operation?)
+    		LOG.info("Ignored \"reloadModel\" request, because modelLoader is busy loading \"" + model.getURL() + "\" (at " + modelLoader.getProgress() + " %)");
+    		return false; // re-layout will be done, when loading completed
+    	}
+    	
     	final URL newURL = (model == null) ? null : model.getURL();
         
         if ((newURL != null) && model.isDifferent(newURL)) {
