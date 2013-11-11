@@ -91,6 +91,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static final String INITIAL_MARK = "(initial-mark)";
     private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
+    private static final String TO_SPACE_EXHAUSTED = "(to-space exhausted)";
     
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
     // the pattern is "...)<timestamp>..."
@@ -283,13 +284,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      */
     private boolean isPrintTenuringDistribution(String line) {
         return line.endsWith(Type.G1_YOUNG.getName()) 
-                || line.endsWith(Type.G1_YOUNG_MARK_STACK_FULL.getName()) 
-                || line.endsWith(Type.G1_YOUNG_TO_SPACE_OVERFLOW.getName()) 
-                || line.endsWith(Type.G1_PARTIAL.getName()) 
-                || line.endsWith(Type.G1_PARTIAL_TO_SPACE_OVERFLOW.getName())
                 || line.endsWith(Type.G1_MIXED.getName())
-                || line.endsWith(Type.G1_MIXED_TO_SPACE_OVERFLOW.getName())
-                || (line.indexOf(Type.FULL_GC.getName()) >= 0 && line.endsWith(")")); 
+                || line.endsWith(INITIAL_MARK)
+                || line.endsWith(TO_SPACE_OVERFLOW)
+                || line.endsWith(TO_SPACE_EXHAUSTED)
+                || (line.indexOf(Type.FULL_GC.getName()) >= 0 && line.endsWith(")")
+                || line.endsWith(Type.G1_YOUNG_MARK_STACK_FULL.getName()) 
+                || line.endsWith(Type.G1_PARTIAL.getName()) 
+                ); 
     }
 
     /**

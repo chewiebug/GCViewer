@@ -309,6 +309,23 @@ public class TestDataReaderSun1_7_0G1 {
     }
     
     @Test
+    public void printTenuringDistribution() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        final InputStream in = getInputStream("SampleSun1_7_0G1TenuringDistribution.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+        
+        assertEquals("number of events", 11, model.size());
+        assertEquals("number of concurrent events", 4, model.getConcurrentEventPauses().size());
+        
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    @Test
     public void printApplicationTimePrintTenuringDistribution() throws Exception {
         // test parsing when the following options are set:
         // -XX:+PrintTenuringDistribution (output ignored)
