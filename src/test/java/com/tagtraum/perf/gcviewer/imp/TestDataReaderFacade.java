@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.model.GCModel;
+
 /**
  * Tests the implementation of {@link DataReaderFacade}.
  * 
@@ -43,9 +45,11 @@ public class TestDataReaderFacade {
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
 
-        dataReaderFacade.loadModel(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
+        final GCModel model = dataReaderFacade.loadModel(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
         
-        assertEquals("has no errors", 0, handler.getCount());
+        assertEquals("has no errors", 0, handler.getCount());        
+        assertNotNull("Model returned", model);        
+        assertNotNull("Model returned contains URL", model.getURL());
     }
 
     /**
@@ -112,9 +116,11 @@ public class TestDataReaderFacade {
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
 
-        dataReaderFacade.loadModel(new File(PARENT_PATH, SAMPLE_GCLOG_SUN1_6_0).toURI().toURL());
+        final GCModel model = dataReaderFacade.loadModel(new File(PARENT_PATH, SAMPLE_GCLOG_SUN1_6_0).toURI().toURL());
         
         assertEquals("has no errors", 0, handler.getCount());
+        assertNotNull("Model returned", model);        
+        assertNotNull("Model returned contains URL", model.getURL());
     }
 
 }
