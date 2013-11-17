@@ -135,8 +135,7 @@ public class GCViewerGui extends JFrame {
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
 
-        dataReaderFacade = DataReaderFacade.getInstance();
-        GCViewer.addShutdownHandler(dataReaderFacade.getThreadGroup());
+        dataReaderFacade = new DataReaderFacade();
         iconImage = loadImage("gcviewericon.gif");
         setIconImage(iconImage);
         

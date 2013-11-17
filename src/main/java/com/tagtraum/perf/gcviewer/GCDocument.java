@@ -176,7 +176,7 @@ public class GCDocument extends JInternalFrame {
         
         final int nChartPanelViews = chartPanelViews.size();
         if (nChartPanelViews > 0) {        
-        relayout();
+        	relayout();
         } else {
         	gcViewer.close(this);
         }

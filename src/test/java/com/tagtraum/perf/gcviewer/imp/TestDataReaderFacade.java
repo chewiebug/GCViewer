@@ -30,7 +30,7 @@ public class TestDataReaderFacade {
     
     @Before
     public void setUp() throws Exception {
-        dataReaderFacade = DataReaderFacade.getInstance();
+        dataReaderFacade = new DataReaderFacade();
     }
     
     /**

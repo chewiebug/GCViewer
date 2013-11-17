@@ -150,7 +150,7 @@ public class ChartPanelView {
 		}
 		
 		public void start() {
-            Executor executor = Executors.newSingleThreadExecutor(dataReaderFacade.getThreadFactory());
+            Executor executor = Executors.newSingleThreadExecutor();
             executor.execute(this);			
 		}
 
@@ -324,6 +324,11 @@ public class ChartPanelView {
     }
 
     public void close() {
+    	if (modelLoader.getState() != SwingWorker.StateValue.DONE) {
+    		// do not start another reload, while loading (or should we cancel the current load operation?)
+    		LOG.info("close(): Cancel \"modelLoader\" busy loading \"" + modelLoader.getModel().getURL() + "\" (at " + modelLoader.getProgress() + " %)");
+    		modelLoader.cancel(true);
+    	}    	
     	modelLoader.getGcDocument().removeChartPanelView(this);
     }
 

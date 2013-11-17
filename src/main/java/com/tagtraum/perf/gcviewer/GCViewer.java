@@ -15,26 +15,6 @@ import java.util.logging.Logger;
 public class GCViewer {
     private static final Logger LOGGER = Logger.getLogger(GCViewer.class.getName());
 
-    private static final class ShutdownHandler extends Thread {
-    	
-    	private final ThreadGroup[] threadGroups;
-    	
-    	public ShutdownHandler(ThreadGroup... threadGroups) {
-			this.threadGroups = threadGroups;
-		}
-
-		@Override
-    	public void run() {
-			for(ThreadGroup threadGroup:threadGroups) {
-				threadGroup.interrupt();
-			}
-    	}
-    }
-    
-    public static void addShutdownHandler(final ThreadGroup... threadGroups) {
-        Runtime.getRuntime().addShutdownHook(new ShutdownHandler(threadGroups));    	
-    }
-    
 	public static void main(final String[] args) {
         if (args.length > 3) {
             usage();
@@ -61,9 +41,8 @@ public class GCViewer {
 
     private static void export(String gcFilename, String summaryFilePath, String chartFilePath)
             throws IOException, DataReaderException {
-        final DataReaderFacade dataReaderFacade = DataReaderFacade.getInstance();
-    	addShutdownHandler(dataReaderFacade.getThreadGroup());
-        GCModel model = dataReaderFacade.loadModel(gcFilename);
+        final DataReaderFacade dataReaderFacade = new DataReaderFacade();
+    	GCModel model = dataReaderFacade.loadModel(gcFilename);
 
         exportSummary(model, summaryFilePath);
         if (chartFilePath != null)

@@ -7,8 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
@@ -27,46 +25,6 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
  */
 public class DataReaderFacade {
 
-    // Copy of Executors.DefaultThreadFactory
-    public static final class NamedThreadFactory implements ThreadFactory {
-    	private final ThreadGroup group;
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        private NamedThreadFactory(final ThreadGroup threadGroup) {
-            group = threadGroup;
-            namePrefix = threadGroup.getName().concat("-thread-");
-        }
-
-        public Thread newThread(Runnable r) {
-        	final Thread t = new Thread(group, r,
-                                  		namePrefix + threadNumber.getAndIncrement(),
-                                  		0);
-            if (t.isDaemon())
-                t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
-                t.setPriority(Thread.NORM_PRIORITY);
-            return t;
-        }
-    }
-    
-    private static DataReaderFacade dataReaderFacade;
-    
-    final ThreadGroup threadGroup;
-    final ThreadFactory threadFactory;
-
-    private DataReaderFacade() {
-    	threadGroup = new ThreadGroup("DataReader");
-    	threadFactory = new NamedThreadFactory(threadGroup);
-    }
-    
-    public static DataReaderFacade getInstance() {
-    	if (dataReaderFacade == null) {
-    		dataReaderFacade = new DataReaderFacade();
-    	}
-    	return dataReaderFacade;
-    }
-    
     /**
      * Loads a model from a given <code>pathToData</code> logging all exceptions that occur.
      * 
@@ -165,13 +123,5 @@ public class DataReaderFacade {
         final DataReader reader = factory.getDataReader(in);
         return reader.read();
     }
-
-	public ThreadGroup getThreadGroup() {
-		return threadGroup;
-	}
-
-	public ThreadFactory getThreadFactory() {
-		return threadFactory;
-	}
 
 }
