@@ -18,8 +18,6 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,7 +91,7 @@ public class ChartPanelView {
 				// Solution: create a logger per url instance, or better: per GCModel	        	
 				parserLogger = Logger.getLogger(DataReaderFacade.class.getSimpleName() + "_" + url.hashCode());
 		        parserLogger.addHandler(textAreaLogHandler);
-			start();
+		        execute();
 			} else {
 				parserLogger = null;
 			}
@@ -149,11 +147,6 @@ public class ChartPanelView {
 			}
 		}
 		
-		public void start() {
-            Executor executor = Executors.newSingleThreadExecutor();
-            executor.execute(this);			
-		}
-
 		public GCModel getModel() {
 			return modelRef.get();
 		}
