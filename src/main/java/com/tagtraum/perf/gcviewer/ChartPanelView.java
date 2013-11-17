@@ -110,9 +110,7 @@ public class ChartPanelView {
 		@Override
 		protected GCModel doInBackground() throws Exception {
 			setProgress(0);
-	        final GCModel model = dataReaderFacade.loadModel(url, this);
-	        model.setURL(url);
-			return model;
+			return dataReaderFacade.loadModel(url, this);
 		}
 
 		protected void done() {

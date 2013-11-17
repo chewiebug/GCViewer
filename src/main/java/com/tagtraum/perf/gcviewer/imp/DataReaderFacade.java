@@ -66,7 +66,7 @@ public class DataReaderFacade {
     public GCModel loadModel(final URL url, final ProgressCallback callback) throws DataReaderException {
         DataReaderException dataReaderException = new DataReaderException();
         GCModel model = null;
-        final Logger parserLogger = Logger.getLogger(callback == null ? "DataReaderFacade" : callback.getLoggerName());
+        final Logger parserLogger = Logger.getLogger(callback == null ? "com.tagtraum.perf.gcviewer" : callback.getLoggerName());
 
         try {
         	final String msg = "GCViewer version " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")"; 
@@ -85,7 +85,7 @@ public class DataReaderFacade {
         if (dataReaderException.getCause() != null) {
             throw dataReaderException;
         }
-        
+        model.setURL(url);
         return model;
     }
     
