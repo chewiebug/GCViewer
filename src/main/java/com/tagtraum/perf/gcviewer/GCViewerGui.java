@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,6 +61,7 @@ import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
@@ -321,11 +323,11 @@ public class GCViewerGui extends JFrame {
     }
 
     public void open(final URL[] urls) {
+    	final int nUrls = urls.length; 
         try {
-            if (urls.length >= 1) {
-                final URL url = urls[0];
-                final GCDocument gcDocument = new GCDocument(this, url.toString());
-                gcDocument.add(url);
+            if (nUrls >= 1) {            	
+            	final String title = Arrays.asList(urls).toString();
+                final GCDocument gcDocument = new GCDocument(this, title.substring(1, title.length() - 1));
                 gcDocument.addInternalFrameListener(gcDocumentListener);
                 desktopPane.add(gcDocument);
                 gcDocument.setSelected(true);
@@ -334,15 +336,9 @@ public class GCViewerGui extends JFrame {
                 //addAction.setSelectedFile(url);
                 gcDocument.setVisible(true);
             }
-            if (urls.length>1) {
-                final URL[] addURLs = new URL[urls.length-1];
-                System.arraycopy(urls, 1, addURLs, 0, addURLs.length);
-                add(addURLs);
-            }
+            add(urls);
             recentURLsMenu.getRecentURLsModel().add(urls);
             repaint();
-        } catch (DataReaderException e) {
-            e.printStackTrace();
         } catch (PropertyVetoException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
@@ -369,17 +365,12 @@ public class GCViewerGui extends JFrame {
     }
 
     public void add(final URL[] urls) {
-        try {
-            for (int i=0; i<urls.length; i++) {
-                final URL url = urls[i];
-                getSelectedGCDocument().add(url);
-            }
-            recentURLsMenu.getRecentURLsModel().add(urls);
-            repaint();
+        for (int i=0; i<urls.length; i++) {
+            final URL url = urls[i];
+            getSelectedGCDocument().add(url);
         }
-        catch (DataReaderException e) {
-            e.printStackTrace();
-        }
+        recentURLsMenu.getRecentURLsModel().add(urls);
+        repaint();
     }
 
     private JToolBar initToolBar() {

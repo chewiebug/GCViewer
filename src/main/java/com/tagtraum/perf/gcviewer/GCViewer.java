@@ -42,7 +42,7 @@ public class GCViewer {
     private static void export(String gcFilename, String summaryFilePath, String chartFilePath)
             throws IOException, DataReaderException {
         final DataReaderFacade dataReaderFacade = new DataReaderFacade();
-    	GCModel model = dataReaderFacade.loadModel(gcFilename);
+        GCModel model = dataReaderFacade.loadModel(gcFilename);
 
         exportSummary(model, summaryFilePath);
         if (chartFilePath != null)

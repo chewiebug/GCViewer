@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -22,8 +24,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.BoundedRangeModel;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -35,6 +39,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -43,6 +49,8 @@ import com.tagtraum.perf.gcviewer.imp.DataReaderException;
  */
 public class GCDocument extends JInternalFrame {
 
+	private static final Logger LOG = Logger.getLogger(GCDocument.class.getName());
+	
 	private final GCViewerGui gcViewer;
     private final List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
     private ModelChart modelChartListFacade;
@@ -50,11 +58,17 @@ public class GCDocument extends JInternalFrame {
     private boolean watched;
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
+    private final List<GCModelLoader> modelLoaders;
+	private final JPanel modelLoaderViews;
 
-    public GCDocument(final GCViewerGui gcViewer, String s) {
-        super(s, true, true, true, false);
+    public GCDocument(final GCViewerGui gcViewer, String title) {
+        super(title, true, true, true, false);
+        
+        this.modelLoaders = new ArrayList<GCModelLoader>();
         this.gcViewer = gcViewer;
         this.refreshWatchDog = new RefreshWatchDog();
+        this.modelLoaderViews = new JPanel();//new JScrollPane();
+        modelLoaderViews.setLayout(new BoxLayout(modelLoaderViews, BoxLayout.PAGE_AXIS));
         refreshWatchDog.setGcDocument(this);
         preferences = gcViewer.getPreferences();
         showModelPanel = preferences.isShowDataPanel();
@@ -105,6 +119,21 @@ public class GCDocument extends JInternalFrame {
         }));
 
     }
+    
+    public void gcModelLoaderDone(final GCModelLoader modelLoader, final GCModel model) {
+    	modelLoaders.remove(modelLoader);
+    	if (model != null) {
+        	modelLoaderViews.remove(modelLoader.getModelLoaderView());
+        	
+        	if (countModelsLoading() == 0) {
+        		modelLoaderViews.setVisible(false);
+        	}
+        	
+    		createChartPanelView(model);
+    		gcViewer.repaint();
+    		repaint();
+    	}
+    }
 
     public RefreshWatchDog getRefreshWatchDog() {
         return refreshWatchDog;
@@ -145,8 +174,17 @@ public class GCDocument extends JInternalFrame {
         return preferences;
     }
     
-    public void add(final URL url) throws DataReaderException {
-        ChartPanelView chartPanelView = new ChartPanelView(this, url);
+    public void add(final URL url) {    	
+    	final GCResource gcResource = new GCResource(url);
+    	final GCModelLoader modelLoader = new GCModelLoader(this, gcResource);
+    	modelLoaderViews.add(modelLoader.getModelLoaderView());
+    	modelLoaders.add(modelLoader);
+    	modelLoader.execute();
+        relayout();
+    }
+    
+    protected void createChartPanelView(final GCModel model) {
+        ChartPanelView chartPanelView = new ChartPanelView(this, model);
         chartPanelViews.add(chartPanelView);
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
@@ -183,7 +221,23 @@ public class GCDocument extends JInternalFrame {
         return nChartPanelViews;
     }
 
+	private int countModelsLoading() {
+		int result = 0;
+		if (modelLoaderViews.getComponentCount() > 0) {
+			final Component[] components = modelLoaderViews.getComponents();
+			for (Component component:components) {
+				if (component instanceof GCModelLoaderView) {
+					if (((GCModelLoaderView)component).isActive()) {
+						result++;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
     public void relayout() {
+        final int modelLoadingInProgressCount = countModelsLoading();
         getContentPane().removeAll();
         final int nChartPanelViews = chartPanelViews.size();
         final String newTitle;
@@ -269,6 +323,24 @@ public class GCDocument extends JInternalFrame {
             }
             row++;
         }
+        if (modelLoadingInProgressCount > 0) {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.fill = GridBagConstraints.BOTH;
+            constraints.anchor = GridBagConstraints.NORTH;
+            constraints.gridx = 0;
+            constraints.gridy = row;
+            constraints.gridwidth = 2;
+            constraints.gridheight = modelLoadingInProgressCount;
+            constraints.weightx = 1;
+            constraints.weighty = modelLoadingInProgressCount;
+        	getContentPane().add(modelLoaderViews, constraints);
+        	modelLoaderViews.setBackground(Color.LIGHT_GRAY);
+        	modelLoaderViews.setPreferredSize(new Dimension(800, 600));
+        	//LOG.info("Added modelLoaderViews: " + modelLoaderViews);        	
+        	noMaximizedChartPanelView = false;
+        } 
+        modelLoaderViews.setVisible(modelLoadingInProgressCount > 0);        	        
+        
         if (noMaximizedChartPanelView) {
             // add dummy panel
             GridBagConstraints constraints = new GridBagConstraints();

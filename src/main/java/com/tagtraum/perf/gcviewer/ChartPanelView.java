@@ -1,9 +1,6 @@
 package com.tagtraum.perf.gcviewer;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,33 +11,19 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
-import com.tagtraum.perf.gcviewer.imp.MonitoredBufferedInputStream;
-import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
@@ -56,114 +39,7 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 public class ChartPanelView {
 
     public static final String EVENT_MINIMIZED = "minimized";
-    private static Logger LOG = Logger.getLogger(ChartPanelView.class.getName());
-    
-    /**
-     * Loads the model in a background thread.
-     *
-     * @author Hans Bausewein
-     * <p>Date: November 8, 2013</p>
-     */
-    private class GCModelLoader extends SwingWorker<GCModel, Object> implements MonitoredBufferedInputStream.ProgressCallback {
-    	
-        private final DataReaderFacade dataReaderFacade;
-    	private final GCDocument gcDocument;
-    	private final URL url;		
-		private boolean showParserErrors;
-		private AtomicReference<GCModel> modelRef = new AtomicReference<GCModel>();
-	    private final Logger parserLogger;
-    	
-        public GCModelLoader(final GCDocument gcDocument, 
-        				 	 final URL url, 
-        				 	 final boolean showParserErrors) {
-			super();
-
-			this.gcDocument = gcDocument;
-			this.dataReaderFacade = gcDocument.getGcViewer().getDataReaderFacade();
-			this.url = url;
-			this.showParserErrors = showParserErrors;
-			GCModel model = new GCModel(true);
-			model.setURL(url);
-			this.modelRef.set(model);
-
-			if (url != null) {
-				// A static logger would not be reliable, when concurrently used
-				// Solution: create a logger per url instance, or better: per GCModel	        	
-				parserLogger = Logger.getLogger(DataReaderFacade.class.getSimpleName() + "_" + url.hashCode());
-		        parserLogger.addHandler(textAreaLogHandler);
-		        execute();
-			} else {
-				parserLogger = null;
-			}
-		}
-        
-        public String getLoggerName() {
-			return parserLogger == null ? "NONE" : parserLogger.getName();
-		}
-
-        public GCModelLoader(final GCModelLoader prevModel,
-        					 final URL url, 
-			 	 			 final boolean showParserErrors) {
-			this(prevModel.getGcDocument(), url, showParserErrors);
-        }
-        
-		@Override
-		protected GCModel doInBackground() throws Exception {
-			setProgress(0);
-			return dataReaderFacade.loadModel(url, this);
-		}
-
-		protected void done() {
-			GCModel model = null;
-            // remove special handler after we are done with reading.
-            parserLogger.removeHandler(textAreaLogHandler);
-
-			try {
-				model = get();
-			} catch (InterruptedException e) {
-				LOG.log(Level.FINE, "model get() interrupted", e);
-			} catch (ExecutionException e) {
-				LOG.log(Level.WARNING, "Failed to create ChartPanelView GCModel for " + url.toExternalForm(), e);			
-			}
-			setProgress(100);
-			
-			if (model != null) {
-				modelRef.set(model);
-				setModel(model);
-				
-				// TODO delete
-				model.printDetailedInformation();				
-			} else {
-				final int nChartPanelViews = gcDocument.removeChartPanelView(ChartPanelView.this);
-				
-		        if (textAreaLogHandler.hasErrors() && showParserErrors) {
-		        	final Component parent = nChartPanelViews == 0 ? gcDocument.getGcViewer().getDesktopPane() : gcDocument;
-		        	if (LOG.isLoggable(Level.FINE)) 
-		        		LOG.fine("Show error for " + url);
-		            showErrorDialog(url, textAreaLogHandler, parent);
-		        }
-			}
-		}
-		
-		public GCModel getModel() {
-			return modelRef.get();
-		}
-
-		public GCDocument getGcDocument() {
-			return gcDocument;
-		}
-
-		@Override
-		public void publishP(Integer... chunks) {			
-			if (LOG.isLoggable(Level.FINE))
-				LOG.fine("Received " + Arrays.asList(chunks));
-		}
-
-		@Override
-		public void updateProgress(int progress) {
-			setProgress(progress);			
-		}    	
-    }
+    static Logger LOG = Logger.getLogger(ChartPanelView.class.getName());
     
     private GCPreferences preferences;
     
@@ -173,17 +49,16 @@ public class ChartPanelView {
     private final JTabbedPane modelChartAndDetailsPanel;
     private final ViewBar viewBar;
     private final SwingPropertyChangeSupport propertyChangeSupport;
-    private final TextAreaLogHandler textAreaLogHandler;
-    private GCModelLoader modelLoader;
+    private final GCDocument gcDocument;
+    private final GCModel model;
     private boolean viewBarVisible;
     private boolean minimized;
     
-    public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {    	
-        this.textAreaLogHandler = new TextAreaLogHandler();
-        this.modelLoader = new GCModelLoader(gcDocument, url, true);
+    public ChartPanelView(final GCDocument gcDocument, final GCModel model) {
+    	this.gcDocument = gcDocument;
+    	this.model = model;
         this.modelDetailsPanel = new ModelDetailsPanel();
         this.modelChart = new ModelChartImpl();
-        modelLoader.addPropertyChangeListener(modelChart);
         this.preferences = gcDocument.getPreferences();
         this.modelPanel = new ModelPanel();
         
@@ -202,27 +77,8 @@ public class ChartPanelView {
         
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
-    }
-
-    /**
-     * Show error dialog containing all information related to the error.
-     * @param url url where data should have been read from
-     * @param textAreaLogHandler handler where all logging information was gathered
-     * @param parent parent component for the dialog
-     */
-    private void showErrorDialog(final URL url, final TextAreaLogHandler textAreaLogHandler, final Component parent) {
-        final JPanel panel = new JPanel(new BorderLayout());
-        final JLabel messageLabel = new JLabel(new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
-        messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-        panel.add(messageLabel, BorderLayout.NORTH);
-        final JScrollPane textAreaScrollPane = new JScrollPane(textAreaLogHandler.getTextArea());
-        textAreaScrollPane.setPreferredSize(new Dimension(700, 500));
-        panel.add(textAreaScrollPane, BorderLayout.CENTER);
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run() {
-                JOptionPane.showMessageDialog(parent, panel, new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_title")).format(new Object[]{url}), JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        
+        setModel(model);
     }
 
     /**
@@ -236,7 +92,7 @@ public class ChartPanelView {
     public boolean reloadModel(boolean showParserErrors) throws DataReaderException {
     	final GCModel model = getModel();
 
-    	if (modelLoader.getState() != SwingWorker.StateValue.DONE) {
+/*    	if (modelLoader.getState() != SwingWorker.StateValue.DONE) {
     		// do not start another reload, while loading (or should we cancel the current load operation?)
     		LOG.info("Ignored \"reloadModel\" request, because modelLoader is busy loading \"" + model.getURL() + "\" (at " + modelLoader.getProgress() + " %)");
     		return false; // re-layout will be done, when loading completed
@@ -245,11 +101,11 @@ public class ChartPanelView {
     	final URL newURL = (model == null) ? null : model.getURL();
         
         if ((newURL != null) && model.isDifferent(newURL)) {
-        	modelLoader = new GCModelLoader(modelLoader, newURL, showParserErrors);
+        	modelLoader = new GCModelLoader(modelLoader, newURL);
             modelLoader.addPropertyChangeListener(modelChart);
             return true;
 		}
-        return false;
+*/        return false;
     }
 
     public void invalidate() {
@@ -264,10 +120,6 @@ public class ChartPanelView {
 
     public ViewBar getViewBar() {
         return viewBar;
-    }
-
-    public JTextArea getParseLog() {
-        return textAreaLogHandler.getTextArea();
     }
 
     public boolean isViewBarVisible() {
@@ -303,7 +155,7 @@ public class ChartPanelView {
     }
 
     public GCModel getModel() {
-        return modelLoader.getModel();
+        return model;
     }
 
     public void setModel(GCModel model) {
@@ -311,16 +163,10 @@ public class ChartPanelView {
         this.modelChart.setModel(model, preferences);
         this.modelDetailsPanel.setModel(model);
         this.viewBar.setTitle(model.getURL().toString());
-        this.modelLoader.getGcDocument().relayout();
     }
 
     public void close() {
-    	if (modelLoader.getState() != SwingWorker.StateValue.DONE) {
-    		// do not start another reload, while loading (or should we cancel the current load operation?)
-    		LOG.info("close(): Cancel \"modelLoader\" busy loading \"" + modelLoader.getModel().getURL() + "\" (at " + modelLoader.getProgress() + " %)");
-    		modelLoader.cancel(true);
-    	}    	
-    	modelLoader.getGcDocument().removeChartPanelView(this);
+    	gcDocument.removeChartPanelView(this);
     }
 
     private static class ViewBar extends JPanel {
