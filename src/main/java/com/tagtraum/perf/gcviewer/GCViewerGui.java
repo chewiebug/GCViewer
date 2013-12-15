@@ -42,7 +42,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
@@ -59,7 +58,6 @@ import com.tagtraum.perf.gcviewer.action.ReadmeAction;
 import com.tagtraum.perf.gcviewer.action.Refresh;
 import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
-import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
@@ -130,12 +128,10 @@ public class GCViewerGui extends JFrame {
     private RecentURLsMenu recentURLsMenu;
     
     private GCPreferences preferences;
-    private final DataReaderFacade dataReaderFacade;
 
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
 
-        dataReaderFacade = new DataReaderFacade();
         iconImage = loadImage("gcviewericon.gif");
         setIconImage(iconImage);
         
@@ -178,10 +174,6 @@ public class GCViewerGui extends JFrame {
         loadPreferences(preferences);
         setVisible(true);
     }
-
-	public DataReaderFacade getDataReaderFacade() {
-		return dataReaderFacade;
-	}
 
     /**
      * Loads an image if <code>imageName</code> can be found. If not, a warning is logged.
@@ -738,27 +730,6 @@ public class GCViewerGui extends JFrame {
         preferences.setRecentFiles(recentFileList);
         
         preferences.store();
-    }
-
-    public static void start(final String arg) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                final GCViewerGui viewer = new GCViewerGui();
-                if (arg != null) {
-                    if (arg.startsWith("http")) {
-                        try {
-                            viewer.open(new URL[]{new URL(arg)});
-                        } 
-                        catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    else {
-                        viewer.open(new File[] {new File(arg)});
-                    }
-                }
-            }
-        });
     }
 
     private static class WindowMenuItemAction extends AbstractAction implements PropertyChangeListener {

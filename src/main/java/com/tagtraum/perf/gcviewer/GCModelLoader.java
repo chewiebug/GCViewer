@@ -35,7 +35,7 @@ public class GCModelLoader extends SwingWorker<GCModel, Object> implements Monit
 		this.gcDocument = gcDocument;
 		this.gcResource = gcResource;
 		this.modelLoaderView = mlView == null ? new GCModelLoaderView(this) : mlView;
-		this.dataReaderFacade = gcDocument.getGcViewer().getDataReaderFacade();
+		this.dataReaderFacade = new DataReaderFacade();
 		
 		if (this.modelLoaderView != null) {
 			addPropertyChangeListener(this.modelLoaderView);
@@ -48,14 +48,18 @@ public class GCModelLoader extends SwingWorker<GCModel, Object> implements Monit
     	this(gcDocument, gcResource, null);
     }
     
-    public String getLoggerName() {
-		return gcResource.getLogger().getName();
-	}
-
     public GCModelLoader(final GCModelLoader prevModel, final URL url) {
 		this(prevModel.getGcDocument(), new GCResource(url));
     }
     
+    public GCModelLoader(final String documentTitle, final URL url) {
+        this(null, new GCResource(url), null);
+    }
+    
+    public String getLoggerName() {
+        return gcResource.getLogger().getName();
+    }
+
 	@Override
 	protected GCModel doInBackground() throws Exception {
 		setProgress(0);

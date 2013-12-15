@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer;
 
+import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
@@ -35,7 +36,7 @@ public class GCViewer {
             }
         }
         else {
-        	GCViewerGui.start(args.length == 1 ? args[0] : null);
+            new GCViewerController().startGui(args.length == 1 ? args[0] : null);
         }
     }
 
