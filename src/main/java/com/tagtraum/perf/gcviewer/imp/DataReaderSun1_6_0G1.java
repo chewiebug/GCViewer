@@ -21,7 +21,7 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.util.ParsePosition;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * <p>Parses log output from Sun / Oracle Java 1.6. / 1.7
@@ -80,7 +80,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
     // "[<datestamp>: ]0.295: [GC pause (young), 0.00594747 secs]"
-    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9-T:.+]{29})?[ ]?([0-9.]+)[: \\[]{3}([A-Z0-9a-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
+    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9-T:.+]{29})?[ ]?([0-9.]+)?[: \\[]{2,3}([A-Z0-9a-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
     private static final int GC_PAUSE_GROUP_DATESTAMP = 1;
     private static final int GC_PAUSE_GROUP_TIMESTAMP = 2;
     private static final int GC_PAUSE_GROUP_TYPE = 3;
@@ -128,7 +128,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // TODO what is this for?
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line;
-            final ParsePosition parsePosition = new ParsePosition(0);
+            final ParseInformation parsePosition = new ParseInformation(0);
             Matcher gcPauseMatcher = PATTERN_GC_PAUSE.matcher("");
             Matcher linesMixedMatcher = PATTERN_LINES_MIXED.matcher("");
             Matcher ergonomicsMatcher = PATTERN_G1_ERGONOMICS.matcher("");
@@ -234,8 +234,16 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             // detailed G1 events start with GC_MEMORY pattern, but are of type GC_MEMORY_PAUSE
 
                             gcEvent = new G1GcEvent();
-                            gcEvent.setDateStamp(parseDatestamp(gcPauseMatcher.group(GC_PAUSE_GROUP_DATESTAMP), parsePosition));
-                            gcEvent.setTimestamp(Double.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_TIMESTAMP)));
+                            Date datestamp = parseDatestamp(gcPauseMatcher.group(GC_PAUSE_GROUP_DATESTAMP), parsePosition);
+                            gcEvent.setDateStamp(datestamp);
+                            double timestamp = 0;
+                            if (gcPauseMatcher.group(GC_PAUSE_GROUP_TIMESTAMP) == null) {
+                                timestamp = getTimestamp(line, parsePosition, datestamp);
+                            }
+                            else {
+                                timestamp = Double.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_TIMESTAMP));
+                            }
+                            gcEvent.setTimestamp(timestamp);
                             gcEvent.setExtendedType(type);
                             gcEvent.setPause(Double.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_PAUSE)));
                             
@@ -311,7 +319,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      */
     private int parseDetails(BufferedReader in, 
             GCModel model,
-            ParsePosition pos, 
+            ParseInformation pos, 
             int lineNumber, 
             GCEvent event, 
             String beginningOfLine)
@@ -401,7 +409,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @param line line containing the incomplete concurrent event
      * @throws ParseException 
      */
-    private void parseIncompleteConcurrentEvent(GCModel model, AbstractGCEvent<?> previousEvent, String line, ParsePosition pos) throws ParseException {
+    private void parseIncompleteConcurrentEvent(GCModel model, AbstractGCEvent<?> previousEvent, String line, ParseInformation pos) throws ParseException {
         // some concurrent event is mixed in -> extract it
         pos.setIndex(line.indexOf("GC conc"));
         ExtendedType type = parseType(line, pos);
@@ -409,7 +417,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     }
     
     @Override
-    protected AbstractGCEvent<?> parseLine(final String line, final ParsePosition pos) throws ParseException {
+    protected AbstractGCEvent<?> parseLine(final String line, final ParseInformation pos) throws ParseException {
         AbstractGCEvent<?> ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
@@ -417,12 +425,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // parse collection type    "[TYPE"
             // pre-used->post-used, total, time
             final Date datestamp = parseDatestamp(line, pos);
-            final double timestamp = parseTimestamp(line, pos);
+            final double timestamp = getTimestamp(line, pos, datestamp);
             final ExtendedType type = parseType(line, pos);
             // special provision for concurrent events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 ae = parseConcurrentEvent(line, pos, datestamp, timestamp, type);
-            } else {
+            } 
+            else {
                 final GCEvent event = new GCEvent();
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
@@ -444,7 +453,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 ae = event;
             }
             return ae;
-        } catch (RuntimeException rte) {
+        } 
+        catch (RuntimeException rte) {
             throw new ParseException(rte.toString(), line, pos);
         }
     }
@@ -460,7 +470,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @return complete concurrent event
      */
     private AbstractGCEvent<?> parseConcurrentEvent(final String line,
-            final ParsePosition pos, final Date datestamp,
+            final ParseInformation pos, final Date datestamp,
             final double timestamp, final ExtendedType type) {
         
         final ConcurrentGCEvent event = new ConcurrentGCEvent();

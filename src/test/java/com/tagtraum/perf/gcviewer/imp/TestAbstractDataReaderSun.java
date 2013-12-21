@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.util.ParsePosition;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 public class TestAbstractDataReaderSun {
 
@@ -31,7 +31,7 @@ public class TestAbstractDataReaderSun {
     public void setMemorySimplePreUsed_heap_postUsed_heap() throws ParseException {
         String line = "   [Eden: 1000K(2000K)->0B(3000K) Survivors: 1024B->4000K Heap: 5000K(16M)->6000K(16M)]";
         
-        ParsePosition pos = new ParsePosition(0);
+        ParseInformation pos = new ParseInformation(0);
         pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
         
         GCEvent event = new GCEvent();
@@ -49,7 +49,7 @@ public class TestAbstractDataReaderSun {
     public void setMemorySimplePreUsed_postUsed_heap() throws ParseException {
         String line = "   [ 8192K->8128K(64M)]";
         
-        ParsePosition pos = new ParsePosition(0);
+        ParseInformation pos = new ParseInformation(0);
         pos.setIndex(line.indexOf("[") + 1);
         
         GCEvent event = new GCEvent();
@@ -67,7 +67,7 @@ public class TestAbstractDataReaderSun {
     public void setMemorySimplePreHeap_postHeap() throws ParseException {
         String line = "   [Eden: 1000K(2000K)->0B(3000K) Survivors: 1024B->4000K Heap: 5000K(16M)->6000K(16M)]";
         
-        ParsePosition pos = new ParsePosition(0);
+        ParseInformation pos = new ParseInformation(0);
         pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
         
         GCEvent event = new GCEvent();
@@ -84,7 +84,7 @@ public class TestAbstractDataReaderSun {
     public void setExtendedMemoryFloatingPointPreEden_postEden() throws ParseException {
         String line = "   [Eden: 118.5M(118.0M)->128.4K(112.0M) Survivors: 10.0M->16.0M Heap: 548.6M(640.0M)->440.6M(640.0M)]";
         
-        ParsePosition pos = new ParsePosition(0);
+        ParseInformation pos = new ParseInformation(0);
         pos.setIndex(line.indexOf("Eden:") + "Eden:".length() + 1);
         
         GCEvent event = new GCEvent();
@@ -107,7 +107,7 @@ public class TestAbstractDataReaderSun {
         }
     
         @Override
-        public void setMemoryExtended(GCEvent event, String line, ParsePosition pos) throws ParseException {
+        public void setMemoryExtended(GCEvent event, String line, ParseInformation pos) throws ParseException {
             super.setMemoryExtended(event, line, pos);
         }
         
@@ -117,7 +117,7 @@ public class TestAbstractDataReaderSun {
         }
     
         @Override
-        protected AbstractGCEvent<?> parseLine(String line, ParsePosition pos) throws ParseException {
+        protected AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException {
             return null;
         }
 

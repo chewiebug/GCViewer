@@ -2,7 +2,7 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import java.io.IOException;
 
-import com.tagtraum.perf.gcviewer.util.ParsePosition;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * Is thrown whenever a ParseError occurs.
@@ -13,7 +13,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public class ParseException extends IOException {
     private String line;
-    private ParsePosition parsePosition;
+    private ParseInformation parsePosition;
 
     public ParseException(String s) {
         this(s, null);
@@ -24,7 +24,7 @@ public class ParseException extends IOException {
         this.line = line;
     }
 
-    public ParseException(String s, String line, ParsePosition pos) {
+    public ParseException(String s, String line, ParseInformation pos) {
         super(s);
         this.line = line;
         this.parsePosition = pos;

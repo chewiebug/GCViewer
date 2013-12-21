@@ -417,4 +417,36 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("error count", handler.getCount(), is(0));
     }
     
+    @Test
+    public void printDetailsWithoutTimestamp() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        final InputStream in = getInputStream("SampleSun1_7_0G1_DetailsWoTimestamp.txt");
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(1));
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("type name", event.getTypeAsString(), equalTo("GC pause (young)"));
+        assertThat("gc pause", event.getPause(), closeTo(0.0055310, 0.00000001));
+        assertThat("error count", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void printSimpleToSpaceOverflow() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("2013-12-21T15:48:44.062+0100: 0.441: [GC pause (G1 Evacuation Pause) (young)-- 90M->94M(128M), 0.0245257 secs]")
+                .getBytes());
+
+        final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("gc pause", 0.0245257, model.getGCPause().getMax(), 0.000001);
+
+    }
+    
 }

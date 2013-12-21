@@ -21,7 +21,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.util.ParsePosition;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * <p>Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7
@@ -181,9 +181,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // -XX:+CMSScavengeBeforeRemark JDK 1.5
     private static final String SCAVENGE_BEFORE_REMARK = Type.SCAVENGE_BEFORE_REMARK.getName();
     
-    
-    private Date firstDateStamp = null;
-
     public DataReaderSun1_6_0(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super(in, gcLogType);
     }
@@ -206,7 +203,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             boolean lastLineWasScavengeBeforeRemark = false;
             boolean lineSkippedForScavengeBeforeRemark = false;
             boolean printTenuringDistributionOn = false;
-            final ParsePosition parsePosition = new ParsePosition(0);
+            final ParseInformation parsePosition = new ParseInformation(0);
 
             while ((line = in.readLine()) != null) {
                 ++lineNumber;
@@ -435,7 +432,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 && (line.indexOf(EVENT_PARNEW) >= 0 || line.indexOf(EVENT_DEFNEW) >= 0);
     }
 
-    protected AbstractGCEvent<?> parseLine(final String line, final ParsePosition pos) throws ParseException {
+    protected AbstractGCEvent<?> parseLine(final String line, final ParseInformation pos) throws ParseException {
         AbstractGCEvent<?> ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
@@ -444,11 +441,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             // either GC data or another collection type starting with timestamp
             // pre-used->post-used, total, time
             final Date datestamp = parseDatestamp(line, pos);
-            if (firstDateStamp == null) {
-                firstDateStamp = datestamp;
-            }
-            
-            double timestamp = getTimeStamp(line, pos, datestamp);
+            double timestamp = getTimestamp(line, pos, datestamp);
             final ExtendedType type = parseType(line, pos);
             // special provision for CMS events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
@@ -491,29 +484,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         catch (RuntimeException rte) {
             throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
         }
-    }
-
-    /**
-     * If the next thing in <code>line</code> is a timestamp, it is parsed and returned.
-     * 
-     * @param line current line
-     * @param pos current parse positition
-     * @param datestamp datestamp that may have been parsed
-     * @return timestamp (either parsed or derived from datestamp)
-     * @throws ParseException it seemed to be a timestamp but still couldn't be parsed
-     */
-    private double getTimeStamp(final String line, final ParsePosition pos, final Date datestamp) 
-            throws ParseException {
-        
-        double timestamp = 0;
-        if (nextIsTimestamp(line, pos)) {
-            timestamp = parseTimestamp(line, pos);
-        }
-        else if (datestamp != null && firstDateStamp != null) {
-            // if no timestamp was present, calculate difference between last and this date
-            timestamp = (datestamp.getTime() - firstDateStamp.getTime()) / (double)1000; 
-        }
-        return timestamp;
     }
     
 }

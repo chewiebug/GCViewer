@@ -111,6 +111,20 @@ public class TestDataReaderSun1_7_0 {
         assertEquals("type name", "GC; CMS-remark", model.get(0).getTypeAsString());
         assertEquals("GC pause", 0.3410220, model.getPause().getMax(), 0.00000001);
     }    
+    
+    @Test
+    public void CmsWithoutTimestamps() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2013-12-19T17:52:49.323+0100: [GC2013-12-19T17:52:49.323+0100: [ParNew: 4872K->480K(4928K), 0.0031563 secs] 102791K->102785K(140892K), 0.0032042 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]"
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("type name", "GC; ParNew", model.get(0).getTypeAsString());
+        assertEquals("GC pause", 0.0032042, model.getPause().getMax(), 0.00000001);
+    }
 
     /**
      * Test output of -XX:+PrintAdaptiveSizePolicy -XX:+UseAdaptiveSizePolicy -XX:+PrintReferenceGC
