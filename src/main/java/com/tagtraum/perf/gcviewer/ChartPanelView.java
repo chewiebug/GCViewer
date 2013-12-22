@@ -44,7 +44,7 @@ public class ChartPanelView {
     private GCPreferences preferences;
     
     private final ModelChartImpl modelChart;
-    private final ModelPanel modelPanel;
+    private final ModelMetricsPanel modelMetricsPanel;
     private final ModelDetailsPanel modelDetailsPanel;
     private final JTabbedPane modelChartAndDetailsPanel;
     private final ViewBar viewBar;
@@ -60,7 +60,7 @@ public class ChartPanelView {
         this.modelDetailsPanel = new ModelDetailsPanel();
         this.modelChart = new ModelChartImpl();
         this.preferences = gcDocument.getPreferences();
-        this.modelPanel = new ModelPanel();
+        this.modelMetricsPanel = new ModelMetricsPanel();
         
         JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
@@ -110,7 +110,7 @@ public class ChartPanelView {
 
     public void invalidate() {
         modelChart.invalidate();
-        modelPanel.invalidate();
+        modelMetricsPanel.invalidate();
         modelDetailsPanel.invalidate();
     }
 
@@ -150,8 +150,8 @@ public class ChartPanelView {
         return modelChart;
     }
 
-    public ModelPanel getModelPanel() {
-        return modelPanel;
+    public ModelMetricsPanel getModelMetricsPanel() {
+        return modelMetricsPanel;
     }
 
     public GCModel getModel() {
@@ -159,7 +159,7 @@ public class ChartPanelView {
     }
 
     public void setModel(GCModel model) {
-        this.modelPanel.setModel(model);
+        this.modelMetricsPanel.setModel(model);
         this.modelChart.setModel(model, preferences);
         this.modelDetailsPanel.setModel(model);
         this.viewBar.setTitle(model.getURL().toString());

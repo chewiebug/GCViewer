@@ -362,7 +362,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         setAntiAlias(preferences.getGcLineProperty(GCPreferences.ANTI_ALIAS));
         setShowTenured(preferences.getGcLineProperty(GCPreferences.TENURED_MEMORY));
         setShowYoung(preferences.getGcLineProperty(GCPreferences.YOUNG_MEMORY));
-        setShowGCTimesLine(preferences.getGcLineProperty(GCPreferences.GC_LINES_LINE));
+        setShowGCTimesLine(preferences.getGcLineProperty(GCPreferences.GC_TIMES_LINE));
         setShowGCTimesRectangles(preferences.getGcLineProperty(GCPreferences.GC_TIMES_RECTANGLES));
         setShowFullGCLines(preferences.getGcLineProperty(GCPreferences.FULL_GC_LINES));
         setShowIncGCLines(preferences.getGcLineProperty(GCPreferences.INC_GC_LINES));

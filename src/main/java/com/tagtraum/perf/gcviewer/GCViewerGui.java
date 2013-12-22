@@ -59,9 +59,7 @@ import com.tagtraum.perf.gcviewer.action.ReadmeAction;
 import com.tagtraum.perf.gcviewer.action.Refresh;
 import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
-import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
-import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
@@ -111,7 +109,7 @@ public class GCViewerGui extends JFrame {
     private Arrange arrangeAction = new Arrange(this);
     private Watch watchAction = new Watch(this);
     private OSXFullScreen osxFullScreenAction;
-    private JCheckBoxMenuItem menuItemShowDataPanel;
+    private JCheckBoxMenuItem menuItemShowModelMetricsPanel;
     private JCheckBoxMenuItem menuItemFullGCLines;
     private JCheckBoxMenuItem menuItemIncGCLines;
     private JCheckBoxMenuItem menuItemGcTimesLine;
@@ -265,20 +263,14 @@ public class GCViewerGui extends JFrame {
             watchToggle.setSelected(getSelectedGCDocument().isWatched());
             zoomAction.setEnabled(true);
             arrangeAction.setEnabled(true);
-            menuItemFullGCLines.setState(getSelectedGCDocument().getModelChart().isShowFullGCLines());
-            menuItemIncGCLines.setState(getSelectedGCDocument().getModelChart().isShowIncGCLines());
-            menuItemGcTimesLine.setState(getSelectedGCDocument().getModelChart().isShowGCTimesLine());
-            menuItemGcTimesRectangle.setState(getSelectedGCDocument().getModelChart().isShowGCTimesRectangles());
-            menuItemTotalMemory.setState(getSelectedGCDocument().getModelChart().isShowTotalMemoryLine());
-            menuItemTenuredMemory.setState(getSelectedGCDocument().getModelChart().isShowTenured());
-            menuItemYoungMemory.setState(getSelectedGCDocument().getModelChart().isShowYoung());
-            menuItemUsedMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedMemoryLine());
-            menuItemUsedTenuredMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedTenuredMemoryLine());
-            menuItemUsedYoungMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedYoungMemoryLine());
-            menuItemInitialMarkLevel.setState(getSelectedGCDocument().getModelChart().isShowInitialMarkLevel());
-            menuItemConcurrentGcBeginEnd.setState(getSelectedGCDocument().getModelChart().isShowConcurrentCollectionBeginEnd());
-            menuItemShowDataPanel.setState(getSelectedGCDocument().isShowModelPanel());
-            menuItemAntiAlias.setSelected(getSelectedGCDocument().getModelChart().isAntiAlias());
+            
+            GCPreferences preferences = getSelectedGCDocument().getPreferences();
+            for (Entry<String, JCheckBoxMenuItem> menuEntry : gcLineMenuItems.entrySet()) {
+                JCheckBoxMenuItem item = menuEntry.getValue();
+                item.setState(preferences.getGcLineProperty(menuEntry.getKey()));
+            }
+            menuItemShowModelMetricsPanel.setState(preferences.getBooleanProperty(GCPreferences.SHOW_MODEL_METRICS_PANEL));
+            menuItemAntiAlias.setSelected(preferences.getBooleanProperty(GCPreferences.ANTI_ALIAS));
         }
 
         public void internalFrameDeactivated(final InternalFrameEvent e) {
@@ -465,22 +457,22 @@ public class GCViewerGui extends JFrame {
 
         gcLineMenuItems = new HashMap<String, JCheckBoxMenuItem>();
 
-        menuItemShowDataPanel = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_show_data_panel"), true);
-        menuItemShowDataPanel.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_show_data_panel").charAt(0));
-        menuItemShowDataPanel.setIcon(createEmptyImageIcon(20, 20));
-        menuItemShowDataPanel.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_show_data_panel"));
-        menuItemShowDataPanel.setActionCommand(GCPreferences.SHOW_DATA_PANEL);
-        menuItemShowDataPanel.addActionListener(new ActionListener(){
+        menuItemShowModelMetricsPanel = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_show_data_panel"), true);
+        menuItemShowModelMetricsPanel.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_show_data_panel").charAt(0));
+        menuItemShowModelMetricsPanel.setIcon(createEmptyImageIcon(20, 20));
+        menuItemShowModelMetricsPanel.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_show_data_panel"));
+        menuItemShowModelMetricsPanel.setActionCommand(GCPreferences.SHOW_MODEL_METRICS_PANEL);
+        menuItemShowModelMetricsPanel.addActionListener(new ActionListener(){
             public void actionPerformed(final ActionEvent e) {
                 final GCDocument gcDocument = getSelectedGCDocument();
                 if (gcDocument != null) {
-                    gcDocument.setShowModelPanel(menuItemShowDataPanel.getState());
+                    gcDocument.setShowModelMetricsPanel(menuItemShowModelMetricsPanel.getState());
                 }
             }
         });
-        viewMenu.add(menuItemShowDataPanel);
+        viewMenu.add(menuItemShowModelMetricsPanel);
         viewMenu.addSeparator();
-        gcLineMenuItems.put(GCPreferences.SHOW_DATA_PANEL, menuItemShowDataPanel);
+        gcLineMenuItems.put(GCPreferences.SHOW_MODEL_METRICS_PANEL, menuItemShowModelMetricsPanel);
 
         menuItemAntiAlias = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_antialias"), true);
         menuItemAntiAlias.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_antialias").charAt(0));
@@ -523,10 +515,10 @@ public class GCViewerGui extends JFrame {
         menuItemGcTimesLine.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_line").charAt(0));
         menuItemGcTimesLine.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_line"));
         menuItemGcTimesLine.setIcon(createMonoColoredImageIcon(GCTimesRenderer.DEFAULT_LINEPAINT, 20, 20));
-        menuItemGcTimesLine.setActionCommand(GCPreferences.GC_LINES_LINE);
+        menuItemGcTimesLine.setActionCommand(GCPreferences.GC_TIMES_LINE);
         menuItemGcTimesLine.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemGcTimesLine);
-        gcLineMenuItems.put(GCPreferences.GC_LINES_LINE, menuItemGcTimesLine);
+        gcLineMenuItems.put(GCPreferences.GC_TIMES_LINE, menuItemGcTimesLine);
 
         menuItemGcTimesRectangle = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_gc_times_rectangles"), true);
         menuItemGcTimesRectangle.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_rectangles").charAt(0));
@@ -648,7 +640,7 @@ public class GCViewerGui extends JFrame {
                 getSelectedGCDocument().getModelChart().setShowFullGCLines(((JCheckBoxMenuItem) e.getSource()).getState());
             } else if (e.getActionCommand() == GCPreferences.INC_GC_LINES) {
                 getSelectedGCDocument().getModelChart().setShowIncGCLines(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.GC_LINES_LINE) {
+            } else if (e.getActionCommand() == GCPreferences.GC_TIMES_LINE) {
                 getSelectedGCDocument().getModelChart().setShowGCTimesLine(((JCheckBoxMenuItem) e.getSource()).getState());
             } else if (e.getActionCommand() == GCPreferences.GC_TIMES_RECTANGLES) {
                 getSelectedGCDocument().getModelChart().setShowGCTimesRectangles(((JCheckBoxMenuItem) e.getSource()).getState());

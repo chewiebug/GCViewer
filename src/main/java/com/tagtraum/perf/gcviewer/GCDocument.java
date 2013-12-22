@@ -54,7 +54,7 @@ public class GCDocument extends JInternalFrame {
 	private final GCViewerGui gcViewer;
     private final List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
     private ModelChart modelChartListFacade;
-    private boolean showModelPanel = true;
+    private boolean showModelMetricsPanel = true;
     private boolean watched;
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
@@ -70,8 +70,12 @@ public class GCDocument extends JInternalFrame {
         this.modelLoaderViews = new JPanel();//new JScrollPane();
         modelLoaderViews.setLayout(new BoxLayout(modelLoaderViews, BoxLayout.PAGE_AXIS));
         refreshWatchDog.setGcDocument(this);
-        preferences = gcViewer.getPreferences();
-        showModelPanel = preferences.isShowDataPanel();
+        
+        // keep a copy of the preferences
+        preferences = new GCPreferences();
+        preferences.setTo(gcViewer.getPreferences());
+        
+        showModelMetricsPanel = preferences.isShowModelMetricsPanel();
         modelChartListFacade = new MultiModelChartFacade();
         addComponentListener(new ResizeListener());
         GridBagLayout layout = new GridBagLayout();
@@ -139,13 +143,14 @@ public class GCDocument extends JInternalFrame {
         return refreshWatchDog;
     }
 
-    public boolean isShowModelPanel() {
-        return showModelPanel;
+    public boolean isShowModelMetricsPanel() {
+        return showModelMetricsPanel;
     }
 
-    public void setShowModelPanel(boolean showModelPanel) {
-        boolean mustRelayout = this.showModelPanel != showModelPanel;
-        this.showModelPanel = showModelPanel;
+    public void setShowModelMetricsPanel(boolean showModelMetricsPanel) {
+        preferences.setBooleanProperty(GCPreferences.SHOW_MODEL_METRICS_PANEL, showModelMetricsPanel);
+        boolean mustRelayout = this.showModelMetricsPanel != showModelMetricsPanel;
+        this.showModelMetricsPanel = showModelMetricsPanel;
         if (mustRelayout) {
             relayout();
         }
@@ -262,7 +267,7 @@ public class GCDocument extends JInternalFrame {
         for (int i = 0; i < nChartPanelViews; i++) {
             final ChartPanelView chartPanelView = chartPanelViews.get(i);
             final ModelChartImpl modelChart = (ModelChartImpl) chartPanelView.getModelChart();
-            final ModelPanel modelPanel = chartPanelView.getModelPanel();
+            final ModelMetricsPanel modelMetricsPanel = chartPanelView.getModelMetricsPanel();
             final JTabbedPane modelChartAndDetails = chartPanelView.getModelChartAndDetails();
             modelChart.resetPolygonCache();
             GridBagConstraints constraints = new GridBagConstraints();
@@ -295,8 +300,8 @@ public class GCDocument extends JInternalFrame {
             constraints.weighty = 0;
             constraints.fill = GridBagConstraints.HORIZONTAL;
             constraints.anchor = GridBagConstraints.SOUTH;
-            getContentPane().add(modelPanel, constraints);
-            modelPanel.setVisible(showModelPanel && (!chartPanelView.isMinimized()));
+            getContentPane().add(modelMetricsPanel, constraints);
+            modelMetricsPanel.setVisible(showModelMetricsPanel && (!chartPanelView.isMinimized()));
 
             if (!chartPanelView.isMinimized()) {
                 noMaximizedChartPanelView = false;
@@ -461,6 +466,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setAntiAlias(boolean antiAlias) {
+            preferences.setBooleanProperty(GCPreferences.ANTI_ALIAS, antiAlias);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setAntiAlias(antiAlias);
             }
@@ -520,6 +526,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowGCTimesLine(boolean showGCTimesLine) {
+            preferences.setGcLineProperty(GCPreferences.GC_TIMES_LINE, showGCTimesLine);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowGCTimesLine(showGCTimesLine);
             }
@@ -533,6 +540,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowGCTimesRectangles(boolean showGCTimesRectangles) {
+            preferences.setGcLineProperty(GCPreferences.GC_TIMES_RECTANGLES, showGCTimesRectangles);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowGCTimesRectangles(showGCTimesRectangles);
             }
@@ -546,6 +554,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowFullGCLines(boolean showFullGCLines) {
+            preferences.setGcLineProperty(GCPreferences.FULL_GC_LINES, showFullGCLines);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowFullGCLines(showFullGCLines);
             }
@@ -559,6 +568,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowIncGCLines(boolean showIncGCLines) {
+            preferences.setGcLineProperty(GCPreferences.INC_GC_LINES, showIncGCLines);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowIncGCLines(showIncGCLines);
             }
@@ -572,6 +582,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowTotalMemoryLine(boolean showTotalMemoryLine) {
+            preferences.setGcLineProperty(GCPreferences.TOTAL_MEMORY, showTotalMemoryLine);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowTotalMemoryLine(showTotalMemoryLine);
             }
@@ -579,6 +590,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowTenured(boolean showTenured) {
+            preferences.setGcLineProperty(GCPreferences.TENURED_MEMORY, showTenured);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowTenured(showTenured);
             }
@@ -592,6 +604,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowYoung(boolean showYoung) {
+            preferences.setGcLineProperty(GCPreferences.YOUNG_MEMORY, showYoung);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowYoung(showYoung);
             }
@@ -611,6 +624,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowUsedMemoryLine(boolean showUsedMemoryLine) {
+            preferences.setGcLineProperty(GCPreferences.USED_MEMORY, showUsedMemoryLine);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowUsedMemoryLine(showUsedMemoryLine);
             }
@@ -624,6 +638,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowUsedTenuredMemoryLine(boolean showUsedTenuredMemoryLine) {
+            preferences.setGcLineProperty(GCPreferences.USED_TENURED_MEMORY, showUsedTenuredMemoryLine);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowUsedTenuredMemoryLine(showUsedTenuredMemoryLine);
             }
@@ -637,6 +652,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowUsedYoungMemoryLine(boolean showUsedYoungMemoryLine) {
+            preferences.setGcLineProperty(GCPreferences.USED_YOUNG_MEMORY, showUsedYoungMemoryLine);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowUsedYoungMemoryLine(showUsedYoungMemoryLine);
             }
@@ -644,6 +660,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowInitialMarkLevel(boolean showInitialMarkLevel) {
+            preferences.setGcLineProperty(GCPreferences.INITIAL_MARK_LEVEL, showInitialMarkLevel);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowInitialMarkLevel(showInitialMarkLevel);
             }
@@ -657,6 +674,7 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowConcurrentCollectionBeginEnd(boolean showConcurrentCollectionBeginEnd) {
+            preferences.setGcLineProperty(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END, showConcurrentCollectionBeginEnd);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowConcurrentCollectionBeginEnd(showConcurrentCollectionBeginEnd);
             }

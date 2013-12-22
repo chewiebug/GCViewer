@@ -13,15 +13,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Stores preferences of GCViewer in a file.
+ * Holds preferences of GCViewer and can load / store them from / in a file.
  * 
- * @author <a href="mailto:jwu@gmx.ch">Joerg Wuethrich</a>
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 20.11.2011</p>
  */
 public class GCPreferences {
     public static final String FULL_GC_LINES = "fullgclines";
     public static final String INC_GC_LINES = "incgclines";
-    public static final String GC_LINES_LINE = "gctimesline";
+    public static final String GC_TIMES_LINE = "gctimesline";
     public static final String GC_TIMES_RECTANGLES = "gctimesrectangles";
     public static final String TOTAL_MEMORY = "totalmemory";
     public static final String USED_MEMORY = "usedmemory";
@@ -33,7 +33,7 @@ public class GCPreferences {
     public static final String CONCURRENT_COLLECTION_BEGIN_END = "concurrentcollectionbeginend";
     public static final String ANTI_ALIAS = "antialias";
     
-    public static final String SHOW_DATA_PANEL = "showdatapanel";
+    public static final String SHOW_MODEL_METRICS_PANEL = "showmodelmetricspanel";
     
     private static final String GC_LINE_PREFIX = "view.";
     
@@ -60,6 +60,9 @@ public class GCPreferences {
         load();
     }
         
+    /**
+     * Save properties to a file.
+     */
     public void store() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(getPreferencesFile()))) {
             properties.store(writer, "GCViewer preferences");
@@ -71,6 +74,9 @@ public class GCPreferences {
         }
     }
     
+    /**
+     * Loads properties from a file.
+     */
     public void load() {
         if (getPreferencesFile().exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(getPreferencesFile()))) {
@@ -87,6 +93,15 @@ public class GCPreferences {
     
     public boolean isPropertiesLoaded() {
         return propertiesLoaded;
+    }
+    
+    /**
+     * Replace all currently held preferences with preferences stored in <code>gcPreferences</code>.
+     * @param gcPreferences set of preferences to copy from
+     */
+    public void setTo(GCPreferences gcPreferences) {
+        this.properties.clear();
+        this.properties.putAll(gcPreferences.properties);
     }
     
     public boolean getBooleanProperty(String key) {
@@ -186,12 +201,12 @@ public class GCPreferences {
         return new File(System.getProperty("user.home") + "/gcviewer.properties");
     }
     
-    public void setShowDataPanel(boolean showDataPanel) {
-        setBooleanProperty(GC_LINE_PREFIX + SHOW_DATA_PANEL, showDataPanel);
+    public void setShowModelMetricsPanel(boolean showModelMetricsPanel) {
+        setBooleanProperty(GC_LINE_PREFIX + SHOW_MODEL_METRICS_PANEL, showModelMetricsPanel);
     }
     
-    public boolean isShowDataPanel() {
-        return getBooleanProperty(GC_LINE_PREFIX + SHOW_DATA_PANEL);
+    public boolean isShowModelMetricsPanel() {
+        return getBooleanProperty(GC_LINE_PREFIX + SHOW_MODEL_METRICS_PANEL);
     }
 
 }
