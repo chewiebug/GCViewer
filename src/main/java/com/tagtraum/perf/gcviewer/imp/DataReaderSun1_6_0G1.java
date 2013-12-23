@@ -448,7 +448,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     setMemoryAndPauses(event, line, pos);
                 }
                 else {
-                    parsePause(event, line, pos);
+                    event.setPause(parsePause(line, pos));
                 }
                 ae = event;
             }
@@ -468,10 +468,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @param timestamp timestamp
      * @param type type of event
      * @return complete concurrent event
+     * @throws ParseException 
      */
     private AbstractGCEvent<?> parseConcurrentEvent(final String line,
             final ParseInformation pos, final Date datestamp,
-            final double timestamp, final ExtendedType type) {
+            final double timestamp, final ExtendedType type) throws ParseException {
         
         final ConcurrentGCEvent event = new ConcurrentGCEvent();
         

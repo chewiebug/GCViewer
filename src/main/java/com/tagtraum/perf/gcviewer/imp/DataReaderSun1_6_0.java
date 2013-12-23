@@ -51,6 +51,7 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * <li>-XX:PrintCMSStatistics=2 (output ignored)</li>
  * <li>-XX:+PrintReferenceGC (output ignored)</li>
+ * <li>-XX:+PrintCMSInitiationStatistics (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -63,26 +64,26 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
     
     private static final String UNLOADING_CLASS = "[Unloading class ";
-    private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
-    private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:"; // -XX:+PrintGCApplicationStoppedTime
-    private static final String DESIRED_SURVIVOR = "Desired survivor"; // -XX:+PrintTenuringDistribution
-    private static final String SURVIVOR_AGE = "- age"; // -XX:+PrintTenuringDistribution
-    private static final String TIMES_ALONE = " [Times";
-    private static final String FINISHED = "Finished"; // -XX:PrintCmsStatistics=2
-    private static final String CARDTABLE = " (cardTable: "; // -XX:PrintCmsStatistics=2 
-    private static final String GC_LOCKER = "GC locker: Trying a full collection because scavenge failed";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
         EXCLUDE_STRINGS.add(UNLOADING_CLASS);
-        EXCLUDE_STRINGS.add(DESIRED_SURVIVOR);
-        EXCLUDE_STRINGS.add(APPLICATION_TIME);
-        EXCLUDE_STRINGS.add(TOTAL_TIME_THREADS_STOPPED);
-        EXCLUDE_STRINGS.add(SURVIVOR_AGE);
-        EXCLUDE_STRINGS.add(TIMES_ALONE);
-        EXCLUDE_STRINGS.add(FINISHED);
-        EXCLUDE_STRINGS.add(CARDTABLE);
-        EXCLUDE_STRINGS.add(GC_LOCKER);
+        EXCLUDE_STRINGS.add("Application time:"); // -XX:+PrintGCApplicationConcurrentTime
+        EXCLUDE_STRINGS.add("Total time for which application threads were stopped:");  // -XX:+PrintGCApplicationStoppedTime
+        EXCLUDE_STRINGS.add("Desired survivor"); // -XX:+PrintTenuringDistribution
+        EXCLUDE_STRINGS.add("- age"); // -XX:+PrintTenuringDistribution
+        EXCLUDE_STRINGS.add(" [Times");
+        EXCLUDE_STRINGS.add("Finished"); // -XX:PrintCmsStatistics=2
+        EXCLUDE_STRINGS.add(" (cardTable: "); // -XX:PrintCmsStatistics=2 
+        EXCLUDE_STRINGS.add("GC locker: Trying a full collection because scavenge failed");
+        EXCLUDE_STRINGS.add("CMSCollector"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("time_until_cms_gen_full"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("free"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("contiguous_available"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("promotion_rate"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("cms_allocation_rate"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("occupancy"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("initiating"); // -XX:+PrintCMSInitiationStatistics
     }
     
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -470,13 +471,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 event.setExtendedType(type);
                 // now add detail gcevents, should they exist
                 parseDetailEventsIfExist(line, pos, event);
-                setMemoryAndPauses(event, line, pos);
-                if (event.getPause() == 0) {
-                    // this is usually the case for full collections
-                    // there the "perm" collection is inserted between memory and pause part of main event
+                setMemory(event, line, pos);
+                if (nextCharIsBracket(line, pos)) {
+                    // then more detail events follow
                     parseDetailEventsIfExist(line, pos, event);
-                    parsePause(event, line, pos);
                 }
+                event.setPause(parsePause(line, pos));
                 ae = event;
             }
             return ae;

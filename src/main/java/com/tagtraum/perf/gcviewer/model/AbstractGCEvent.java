@@ -381,21 +381,21 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type DEF_NEW = new Type("DefNew", Generation.YOUNG, Concurrency.SERIAL); // single threaded
         public static final Type PAR_NEW = new Type("ParNew", Generation.YOUNG); // parallel
         public static final Type ASPAR_NEW = new Type("ASParNew", Generation.YOUNG); // parallel (CMS AdaptiveSizePolicy)
-        public static final Type PAR_OLD_GEN = new Type("ParOldGen", Generation.TENURED);
-        public static final Type PS_YOUNG_GEN = new Type("PSYoungGen", Generation.YOUNG);
-        public static final Type PS_OLD_GEN = new Type("PSOldGen", Generation.TENURED);
-        public static final Type PS_PERM_GEN = new Type("PSPermGen", Generation.PERM);
+        public static final Type PAR_OLD_GEN = new Type("ParOldGen", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        public static final Type PS_YOUNG_GEN = new Type("PSYoungGen", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        public static final Type PS_OLD_GEN = new Type("PSOldGen", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        public static final Type PS_PERM_GEN = new Type("PSPermGen", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         public static final Type TENURED = new Type("Tenured", Generation.TENURED);
         public static final Type INC_GC = new Type("Inc GC", Generation.YOUNG);
         public static final Type TRAIN = new Type("Train", Generation.TENURED);
         public static final Type TRAIN_MSC = new Type("Train MSC", Generation.TENURED);
-        public static final Type PERM = new Type("Perm", Generation.PERM);
+        public static final Type PERM = new Type("Perm", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         // java 8: perm gen is moved to metaspace
-        public static final Type Metaspace = new Type("Metaspace", Generation.PERM);
+        public static final Type Metaspace = new Type("Metaspace", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
 
         // CMS types
         public static final Type CMS = new Type("CMS", Generation.TENURED);
-        public static final Type CMS_PERM = new Type("CMS Perm", Generation.PERM);
+        public static final Type CMS_PERM = new Type("CMS Perm", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         
         // Parnew (promotion failed)
         public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
@@ -416,7 +416,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("CMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("CMS-concurrent-abortable-preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
 
-        public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         public static final Type CMS_REMARK = new Type("CMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
         
         // CMS (Concurrent Mark Sweep) AdaptiveSizePolicy Event Types

@@ -115,12 +115,12 @@ public abstract class AbstractDataReaderSun implements DataReader {
      */
     protected void setMemoryAndPauses(GCEvent event, String line, ParseInformation pos) throws ParseException {
         setMemory(event, line, pos);
-        parsePause(event, line, pos);
+        event.setPause(parsePause(line, pos));
     }
 
     /**
-     * Parses a memory information with the following form: 8192K[(16M)]->7895K[(16M)] ("[...]" means
-     * optional.
+     * Parses a memory information with the following form: 8192K[(16M)]->7895K[(16M)] ("[...]"
+     * means optional).
      * 
      * @param event event, where parsed information should be stored
      * @param line line to be parsed
@@ -189,7 +189,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
     
     protected void setMemory(GCEvent event, String line, ParseInformation pos) throws ParseException {
-        int start = pos.getIndex();
+        int start = skipUntilNextDigit(line, pos);
         int end = line.indexOf("->", pos.getIndex()) - 1;
         if (end != -2) for (start = end-1; start >= 0 && Character.isDigit(line.charAt(start)); start--) {}
         int parenthesis = line.indexOf('(', start);
@@ -218,85 +218,38 @@ public abstract class AbstractDataReaderSun implements DataReader {
         else pos.setIndex(end+1);
     }
 
-    protected void parsePause(GCEvent event, String line, ParseInformation pos) {
-    	// TODO refactor
-
-    	// in case there is no time, this ends with a ']'
-        int closingBracket = line.indexOf(']', pos.getIndex());
-        if (closingBracket == pos.getIndex()) {
-            pos.setIndex(closingBracket + 1);
-            if (line.charAt(closingBracket + 1) == ',')
-                pos.setIndex(closingBracket + 3);
-            else
-                pos.setIndex(closingBracket + 1);
-        } 
-        else if (Character.isDigit(line.charAt(pos.getIndex()))) {
-        	// if current position is a digit, this is where the pause starts
-            int end = line.indexOf(' ', pos.getIndex());
-            if (end < 0) {
-            	end = line.indexOf(']', pos.getIndex());
-            }
-    		event.setPause(Double.parseDouble(line.substring(pos.getIndex(), end).replace(',', '.')));
-
-    		// skip "secs]"
-            pos.setIndex(line.indexOf(']', end) + 1);
-    	}
-    	else {
-	        final int openingBracket = line.indexOf('[', pos.getIndex());
-	        if (openingBracket == pos.getIndex()+3 || openingBracket == pos.getIndex()+2 || openingBracket == pos.getIndex()+1) {
-	            pos.setIndex(openingBracket);
-	        }
-	        else if (line.indexOf(',', pos.getIndex()) == pos.getIndex()) {
-	            pos.setIndex(pos.getIndex() + 2);
-	            parsePause(event, line, pos);
-	        }
-	        else if (line.indexOf("icms_dc=", pos.getIndex()) != -1) {
-	            // skip CMS incremental pacing output
-	            // - patch provided by Anders Wallgren to handle -XX:+CMSIncrementalPacing flag
-	            final int comma = line.indexOf(',', pos.getIndex());
-	            pos.setIndex(comma+2);
-	            parsePause(event, line, pos);
-	        }
-	        else {
-	            // in case there is no time, this ends with a ']'
-	            closingBracket = line.indexOf(']', pos.getIndex());
-	            if (closingBracket == pos.getIndex()) {
-	                pos.setIndex(closingBracket + 1);
-	                if (line.charAt(closingBracket + 1) == ',')
-	                    pos.setIndex(closingBracket + 3);
-	                else
-	                    pos.setIndex(closingBracket + 1);
-	            } else {
-	                LOG.severe("Hm... something went wrong here... (line " + pos.getLineNumber() + "='" + line + "'");
-	            }
-	        }
-    	}
-    }
-    
-    protected double parsePause(String line, ParseInformation pos) {
+    protected double parsePause(String line, ParseInformation pos) throws ParseException {
     	// usual pattern expected: "..., 0.002032 secs]"
     	// but may be as well (G1): "..., 0.003032]"
-        int end = line.indexOf(' ', pos.getIndex());
-        if (end < 0) {
-        	end = line.indexOf(']', pos.getIndex());
+        
+        // if the next token is "icms_dc" skip until after the comma
+        // ...] icms_dc=0 , 8.0600619 secs]
+        if (line.indexOf("icms_dc", pos.getIndex()) >= 0) {
+            pos.setIndex(line.indexOf(",", pos.getIndex()));
         }
-        final double pause = Double.parseDouble(line.substring(pos.getIndex(), end).replace(',', '.'));
+        
+        int begin = skipUntilNextDigit(line, pos);
+        
+        int end = line.indexOf(' ', begin);
+        if (end < 0) {
+        	end = line.indexOf(']', begin);
+        }
+        final double pause = Double.parseDouble(line.substring(begin, end).replace(',', '.'));
         
         // skip "secs]"
         pos.setIndex(line.indexOf(']', end) + 1);
         
         return pause;
     }
-    
-    protected boolean hasNextDetail(String line, ParseInformation pos) {
+
+    protected boolean hasNextDetail(String line, ParseInformation pos) throws ParseException {
         return nextIsTimestamp(line, pos) 
                 || nextIsDatestamp(line, pos) 
                 || nextCharIsBracket(line, pos);
     }
 
-    protected boolean nextCharIsBracket(String line, ParseInformation pos) {
-        // skip spaces
-        while (line.charAt(pos.getIndex()) == ' ' && pos.getIndex()+1<line.length()) pos.setIndex(pos.getIndex()+1);
+    protected boolean nextCharIsBracket(String line, ParseInformation pos) throws ParseException {
+        skipBlanksAndCommas(line, pos);
         return line.charAt(pos.getIndex()) == '[';
     }
 
@@ -480,54 +433,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
     protected abstract AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException;
 
     /**
-     * Skips a block of lines containing information like they are generated by
-     * -XX:+PrintHeapAtGC or -XX:+PrintAdaptiveSizePolicy.
-     * 
-     * @param in inputStream of the current log to be read
-     * @param lineNumber current line number
-     * @param lineStartStrings lines starting with these strings should be ignored
-     * @return line number including lines read in this method
-     * @throws IOException problem with reading from the file
-     */
-    protected int skipLines(BufferedReader in, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
-        String line = "";
-        
-        if (!in.markSupported()) {
-            LOG.warning("input stream does not support marking!");
-        } 
-        else {
-            in.mark(200);
-        }
-        
-        boolean startsWithString = true;
-        while (startsWithString && (line = in.readLine()) != null) {
-            ++lineNumber;
-            pos.setLineNumber(lineNumber);
-            // for now just skip those lines
-            startsWithString = startsWith(line, lineStartStrings, true);
-            if (startsWithString) {
-                // don't mark any more if line didn't match -> it is the first line that
-                // is of interest after the skipped block
-                if (in.markSupported()) {
-                    in.mark(200);
-                }
-            }
-        }
-        
-        // push last read line back into stream - it is the next event to be parsed
-        if (in.markSupported()) {
-            try {
-                in.reset();
-            }
-            catch (IOException e) {
-                throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
-            }
-        }
-        
-        return --lineNumber;
-    }
-
-    /**
      * Tests if <code>line</code> starts with one of the strings in <code>lineStartStrings</code>.
      * If <code>trimLine</code> is <code>true</code>, then <code>line</code> is trimmed first. 
      * 
@@ -618,11 +523,18 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 if (nextIsTimestamp(line, pos) || nextIsDatestamp(line, pos)) {
                     parseDetailEventsIfExist(line, pos, detailEvent);
                 }
-                if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
+                if (detailEvent.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
                     setMemoryAndPauses(detailEvent, line, pos);
                 }
+                else if (detailEvent.getExtendedType().getPattern() == GcPattern.GC_MEMORY) {
+                    setMemory(detailEvent, line, pos);
+                    skipBlanksAndCommas(line, pos);
+                    if (line.indexOf("]", pos.getIndex()) == pos.getIndex()) {
+                        pos.setIndex(pos.getIndex() + 1);
+                    }
+                }
                 else {
-                    parsePause(detailEvent, line, pos);
+                    detailEvent.setPause(parsePause(line, pos));
                 }
                 event.add(detailEvent);
             } 
@@ -659,6 +571,54 @@ public abstract class AbstractDataReaderSun implements DataReader {
         }
         
         return nextString.toString().equals("--");
+    }
+
+    /**
+     * Skips a block of lines containing information like they are generated by
+     * -XX:+PrintHeapAtGC or -XX:+PrintAdaptiveSizePolicy.
+     * 
+     * @param in inputStream of the current log to be read
+     * @param lineNumber current line number
+     * @param lineStartStrings lines starting with these strings should be ignored
+     * @return line number including lines read in this method
+     * @throws IOException problem with reading from the file
+     */
+    protected int skipLines(BufferedReader in, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
+        String line = "";
+        
+        if (!in.markSupported()) {
+            LOG.warning("input stream does not support marking!");
+        } 
+        else {
+            in.mark(200);
+        }
+        
+        boolean startsWithString = true;
+        while (startsWithString && (line = in.readLine()) != null) {
+            ++lineNumber;
+            pos.setLineNumber(lineNumber);
+            // for now just skip those lines
+            startsWithString = startsWith(line, lineStartStrings, true);
+            if (startsWithString) {
+                // don't mark any more if line didn't match -> it is the first line that
+                // is of interest after the skipped block
+                if (in.markSupported()) {
+                    in.mark(200);
+                }
+            }
+        }
+        
+        // push last read line back into stream - it is the next event to be parsed
+        if (in.markSupported()) {
+            try {
+                in.reset();
+            }
+            catch (IOException e) {
+                throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
+            }
+        }
+        
+        return --lineNumber;
     }
 
     /**
@@ -705,4 +665,32 @@ public abstract class AbstractDataReaderSun implements DataReader {
         }
     }
 
+    private int skipUntilNextDigit(String line, ParseInformation pos) throws ParseException {
+        int begin = pos.getIndex();
+        while (!Character.isDigit(line.charAt(begin)) && begin < line.length()) {
+            ++begin;
+        }
+        
+        if (begin == line.length()-1) {
+            throw new ParseException("no digit found after position " + pos.getIndex() + "; ", line, pos);
+        }
+        
+        pos.setIndex(begin);
+        
+        return begin;
+    }
+    
+    private void skipBlanksAndCommas(String line, ParseInformation parseInfo) throws ParseException {
+        int begin = parseInfo.getIndex();
+        while ((line.charAt(begin) == ' ' || line.charAt(begin) == ',') && begin+1 < line.length()) {
+            ++begin;
+        }
+        
+        if (begin == line.length()-1) {
+            throw new ParseException("unexpected end of line after position " + parseInfo.getIndex() + "; ", line, parseInfo);
+        }
+        
+        parseInfo.setIndex(begin);
+    }
+    
 }
