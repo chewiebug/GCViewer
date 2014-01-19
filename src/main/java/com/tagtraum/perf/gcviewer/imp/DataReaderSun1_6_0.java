@@ -9,7 +9,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +20,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.util.LoggerHelper;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
@@ -180,17 +179,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // -XX:+CMSScavengeBeforeRemark JDK 1.5
     private static final String SCAVENGE_BEFORE_REMARK = Type.SCAVENGE_BEFORE_REMARK.getName();
     
-    
     private Date firstDateStamp = null;
 
-    public DataReaderSun1_6_0(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-        super(in, gcLogType);
+    public DataReaderSun1_6_0(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(gcResource, in, gcLogType);
     }
 
-    private Logger getLogger() {
-        return LoggerHelper.getThreadSpecificLogger(this);
-    }
-    
     public GCModel read() throws IOException {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x format...");
         

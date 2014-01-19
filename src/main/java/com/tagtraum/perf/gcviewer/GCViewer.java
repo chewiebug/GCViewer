@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,12 +13,13 @@ import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.SimpleChartRenderer;
 
 public class GCViewer {
     private static final Logger LOGGER = Logger.getLogger(GCViewer.class.getName());
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws InvocationTargetException, InterruptedException {
         if (args.length > 3) {
             usage();
         }
@@ -43,8 +45,9 @@ public class GCViewer {
 
     private static void export(String gcFilename, String summaryFilePath, String chartFilePath)
             throws IOException, DataReaderException {
+        
         final DataReaderFacade dataReaderFacade = new DataReaderFacade();
-        GCModel model = dataReaderFacade.loadModel(gcFilename);
+        GCModel model = dataReaderFacade.loadModel(new GCResource(gcFilename));
 
         exportSummary(model, summaryFilePath);
         if (chartFilePath != null)

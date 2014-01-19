@@ -1,11 +1,11 @@
 package com.tagtraum.perf.gcviewer.ctrl.action;
 
-import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-
-import javax.swing.*;
-
 import java.awt.event.ActionEvent;
 import java.net.URL;
+
+import javax.swing.AbstractAction;
+
+import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 
 /**
  * OpenRecent.
@@ -18,16 +18,16 @@ import java.net.URL;
 public class OpenRecent extends AbstractAction {
 
     private URL[] urls;
-    private GCViewerGui gcViewer;
+    private GCViewerController controller;
 
-    public OpenRecent(final GCViewerGui gcViewer, final URL[] urls) {
+    public OpenRecent(GCViewerController controller, final URL[] urls) {
         this.urls = urls;
-        this.gcViewer = gcViewer;
+        this.controller = controller;
         putValue(NAME, toString(urls));
     }
 
     public void actionPerformed(final ActionEvent e) {
-        gcViewer.open(urls);
+        controller.open(urls);
     }
 
     public URL[] getURLs() {

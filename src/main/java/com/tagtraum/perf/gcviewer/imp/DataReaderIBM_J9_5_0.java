@@ -8,18 +8,20 @@
  */
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.GCModel;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Parses -verbose:gc output from IBM J9 JVM 5.0. Uses SAX parser and custom 
@@ -31,22 +33,22 @@ import java.util.logging.Logger;
  * 
  * @author <a href="mailto:justink@au1.ibm.com">Justin Kilimnik (IBM)</a>
  */
-public class DataReaderIBM_J9_5_0 implements DataReader {
+public class DataReaderIBM_J9_5_0 extends AbstractDataReader {
 
-    private static Logger LOG = Logger.getLogger(DataReaderIBM_J9_5_0.class.getName());
-   
-    private InputStream in;
+    private InputStream inputStream;
     
-     public DataReaderIBM_J9_5_0(final InputStream in) {
-    	 this.in = in;
+     public DataReaderIBM_J9_5_0(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
+         super(gcResource, in);
+         
+    	 this.inputStream = in;
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading IBM J9 5.0 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading IBM J9 5.0 format...");
         try {
             final GCModel model = new GCModel(true);
             model.setFormat(GCModel.Format.IBM_VERBOSE_GC);           
-            DefaultHandler handler = new IBMJ9SAXHandler(model);
+            DefaultHandler handler = new IBMJ9SAXHandler(gcResource, model);
 
             // Use the default (non-validating) parser
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -55,16 +57,19 @@ public class DataReaderIBM_J9_5_0 implements DataReader {
             javax.xml.parsers.SAXParser saxParser;
 			try {
 				saxParser = factory.newSAXParser();
-				saxParser.parse( in, handler );
-			} catch (ParserConfigurationException e) {
+				saxParser.parse( inputStream, handler );
+			} 
+			catch (ParserConfigurationException e) {
                 final IOException exception = new IOException(e.toString());
                 exception.initCause(e);
                 throw exception;
-			} catch (SAXException e) {
+			} 
+			catch (SAXException e) {
 				// TODO: if(e.getMessage().startsWith("XML document structures must start and end within the same entity")) {
 				if (e instanceof SAXParseException && ((SAXParseException) e).getColumnNumber() == 1) {
 					// ignore. this just means a xml tag terminated.
-				} else {
+				} 
+				else {
                     final IOException exception = new IOException(e.toString());
                     exception.initCause(e);
                     throw exception;
@@ -73,13 +78,15 @@ public class DataReaderIBM_J9_5_0 implements DataReader {
             
             return model;
   
-        } finally {
-            if (in != null)
+        } 
+        finally {
+            if (inputStream != null)
                 try {
-                    in.close();
-                } catch (IOException ioe) {
+                    inputStream.close();
+                } 
+                catch (IOException ioe) {
                 }
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.tagtraum.perf.gcviewer.model;
 
 import java.beans.PropertyChangeListener;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 
@@ -12,12 +14,13 @@ import javax.swing.event.SwingPropertyChangeSupport;
  * <p>Date: November 8, 2013</p>
  */
 public class GCResource {
-	// TODO SWINGWORKER: hold GCModel here?
     public static final String PROPERTY_MODEL = "model";
-    
+    private static final AtomicInteger COUNT = new AtomicInteger(0); 
+
 	private final String resourceName;
 	private GCModel model;
 	private SwingPropertyChangeSupport propertyChangeSupport;
+	private Logger logger; 
 	
 	public GCResource(String resourceName) {
 		super();
@@ -29,7 +32,9 @@ public class GCResource {
 		this.resourceName = resourceName;
 		this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
 		this.model = new GCModel(false);
-	}
+
+	    logger = Logger.getLogger("GCResource".concat(Integer.toString(COUNT.incrementAndGet())));
+    }
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 	    this.propertyChangeSupport.addPropertyChangeListener(listener);
@@ -46,6 +51,10 @@ public class GCResource {
 	
 	public String getResourceName() {
 		return resourceName;
+	}
+	
+	public Logger getLogger() {
+	    return logger;
 	}
 	
 	@Override

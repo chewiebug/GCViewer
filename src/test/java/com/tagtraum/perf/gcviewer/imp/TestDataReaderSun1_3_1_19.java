@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  *
@@ -21,8 +22,9 @@ public class TestDataReaderSun1_3_1_19 {
     public void testCMSPrintGCDetails() throws Exception {
     	// does not seem to be implemented at all
     	
-    	final InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_3_1_19SunOS.txt");
-        final DataReader reader = new DataReaderSun1_3_1(in, GcLogType.SUN1_3_1);
+        String fileName = "SampleSun1_3_1_19SunOS.txt";
+    	final InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+        final DataReader reader = new DataReaderSun1_3_1(new GCResource(fileName), in, GcLogType.SUN1_3_1);
         GCModel model = reader.read();
         
         assertEquals("throughput", 95.21, model.getThroughput(), 0.01);

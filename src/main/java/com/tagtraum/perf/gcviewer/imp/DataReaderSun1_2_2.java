@@ -1,15 +1,14 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Parses -verbose:gc output from Sun JDK 1.2.2.
@@ -18,18 +17,14 @@ import java.util.logging.Logger;
  * Time: 5:15:44 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class DataReaderSun1_2_2 implements DataReader {
+public class DataReaderSun1_2_2 extends AbstractDataReader {
 
-    private static Logger LOG = Logger.getLogger(DataReaderSun1_2_2.class.getName());
-
-    private BufferedReader in;
-
-    public DataReaderSun1_2_2(InputStream in) {
-        this.in = new BufferedReader(new InputStreamReader(in));
+    public DataReaderSun1_2_2(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
+        super(gcResource, in);
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.2.2 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.2.2 format...");
         try {
             GCModel model = new GCModel(true);
             model.setFormat(GCModel.Format.SUN_1_2_2VERBOSE_GC);
@@ -45,7 +40,8 @@ public class DataReaderSun1_2_2 implements DataReader {
                         event = new GCEvent();
                         event.setTimestamp(lastEvent.getTimestamp() + (time/1000.0d));
                     }
-                } else {
+                } 
+                else {
                     timeline = false;
                     // we have a time, so now we expect a either expansion or freed objects
                     if (line.indexOf("expanded object space by") != -1) {
@@ -62,7 +58,8 @@ public class DataReaderSun1_2_2 implements DataReader {
                         event.setPause(0);
                         model.add(event);
                         lastEvent = event;
-                    } else if (line.indexOf(" freed ") != -1 && line.indexOf(" objects, ") != -1) {
+                    } 
+                    else if (line.indexOf(" freed ") != -1 && line.indexOf(" objects, ") != -1) {
                         // freed objects
                         int startIndex = line.indexOf(',') + 2;
                         int endIndex = line.indexOf(' ', startIndex);
@@ -96,20 +93,23 @@ public class DataReaderSun1_2_2 implements DataReader {
                         model.add(event);
                         lastEvent = event;
                         */
-                    } else {
+                    } 
+                    else {
                         // hm. what now...?
                     }
                 }
             }
 
             return model;
-        } finally {
+        } 
+        finally {
             if (in != null)
                 try {
                     in.close();
-                } catch (IOException ioe) {
+                } 
+                catch (IOException ioe) {
                 }
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
     }
 

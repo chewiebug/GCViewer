@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
 
     TestDataReaderIBM1_2_2.class,
     TestDataReaderIBM1_3_1.class,
+    TestDataReaderIBM1_4_2.class,
     TestDataReaderIBMi5OS1_4_2.class,
     TestDataReaderIBMJ9_5_0.class,
     

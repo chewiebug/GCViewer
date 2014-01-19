@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +20,7 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
@@ -53,8 +53,6 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
 public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static final String INCOMPLETE_CONCURRENT_MARK_INDICATOR = "concurrent-mark";
-
-    private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0G1.class .getName());
 
     private static final String TIMES = "[Times";
     
@@ -114,13 +112,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("}");
     }
     
-    public DataReaderSun1_6_0G1(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-        super(in, gcLogType);
+    public DataReaderSun1_6_0G1(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(gcResource, in, gcLogType);
     }
 
     @Override
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x / 1.7.x G1 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.6.x / 1.7.x G1 format...");
 
         try (BufferedReader in = this.in) {
             final GCModel model = new GCModel(true);
@@ -261,16 +259,16 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     }
                 } 
                 catch (Exception pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.toString());
-                    if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.toString(), pe);
+                    if (getLogger().isLoggable(Level.WARNING)) getLogger().log(Level.WARNING, pe.toString());
+                    if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, pe.toString(), pe);
                 }
                 parsePosition.setIndex(0);
             }
             return model;
         } 
         finally {
-            if (LOG.isLoggable(Level.INFO)) {
-                LOG.info("Done reading.");
+            if (getLogger().isLoggable(Level.INFO)) {
+                getLogger().info("Done reading.");
             }
         }
     }
@@ -383,7 +381,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         
         if (event.getTotal() == 0) {
             // is currently the case for jdk 1.7.0_02 which changed the memory format
-            LOG.warning("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
+            getLogger().warning("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
         }
         model.add(event);
 

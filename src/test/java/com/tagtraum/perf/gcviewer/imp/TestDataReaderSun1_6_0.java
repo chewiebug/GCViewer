@@ -17,10 +17,9 @@ import org.junit.Test;
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 public class TestDataReaderSun1_6_0 {
-    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
     private final SimpleDateFormat dateParser = new SimpleDateFormat(AbstractDataReaderSun.DATE_STAMP_FORMAT);
 
@@ -34,7 +33,7 @@ public class TestDataReaderSun1_6_0 {
 				("2011-10-05T04:23:39.427+0200: 19.845: [GC 19.845: [ParNew: 93184K->5483K(104832K), 0.0384413 secs] 93184K->5483K(1036928K), 0.0388082 secs] [Times: user=0.41 sys=0.06, real=0.04 secs]")
 						.getBytes());
 		 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertTrue("hasDateStamp", model.hasDateStamp());
@@ -50,7 +49,7 @@ public class TestDataReaderSun1_6_0 {
 				("2011-10-05T16:05:55.964+0200: 41985.374: [GC 41985.375: [ParNew (promotion failed): 104960K->100764K(104960K), 0.3379238 secs]41985.713: [CMS: 1239589K->897516K(1398144K), 38.3189415 secs] 1336713K->897516K(1503104K), [CMS Perm : 55043K->53511K(91736K)], 38.6583674 secs] [Times: user=39.22 sys=0.06, real=38.66 secs]")
 						.getBytes());
 
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("gc pause", 38.6583674, model.getFullGCPause().getSum(), 0.000001);
@@ -62,7 +61,7 @@ public class TestDataReaderSun1_6_0 {
                 ("2012-03-26T21:46:32.546+0200: 2.204: [GC 2.204: [ParNew (0: promotion failure size = 4098)  (1: promotion failure size = 4098)  (2: promotion failure size = 4098)  (3: promotion failure size = 4098)  (promotion failed): 39277K->39255K(39296K), 0.0175749 secs]2.221: [CMS: 87276K->43438K(87424K), 0.0276222 secs] 95765K->43438K(126720K), [CMS Perm : 2612K->2612K(21248K)], 0.0453577 secs] [Times: user=0.08 sys=0.00, real=0.05 secs]")
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("gc type", "GC; ParNew (promotion failed); CMS; CMS Perm", model.getFullGCEvents().next().getTypeAsString());
@@ -75,7 +74,7 @@ public class TestDataReaderSun1_6_0 {
 				("2011-10-05T15:53:24.119+0200: 41403.025: [GC 41403.025: [ParNew (promotion failed): 104960K->101572K(104960K), 0.3275017 secs]41403.353: [CMS2011-10-05T15:53:24.629+0200: 41403.534: [CMS-concurrent-abortable-preclean: 1.992/2.650 secs] [Times: user=4.40 sys=0.06, real=2.65 secs]" +
 				"\n (concurrent mode failure): 1295417K->906090K(1398144K), 32.4123146 secs] 1395643K->906090K(1503104K), [CMS Perm : 54986K->53517K(91576K)], 32.7410609 secs] [Times: user=33.10 sys=0.05, real=32.74 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 2, model.size());
@@ -90,7 +89,7 @@ public class TestDataReaderSun1_6_0 {
 				"\n (concurrent mode failure): 1143630K->1154547K(1572864K), 40.1744087 secs] 1590086K->1154547K(2044736K), [CMS Perm : 65802K->63368K(109784K)], 41.0904457 secs] [Times: user=60.57 sys=0.07, real=41.09 secs]")
 						.getBytes());
 				 
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 2, model.size());
@@ -105,7 +104,7 @@ public class TestDataReaderSun1_6_0 {
                 "\n (concurrent mode failure): 1301661K->1299268K(1572864K), 43.3433234 secs] 1757009K->1299268K(2044736K), [CMS Perm : 64534K->63216K(110680K)], 53.8487115 secs] [Times: user=54.83 sys=9.22, real=53.85 secs]")
                         .getBytes());
                  
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -119,7 +118,7 @@ public class TestDataReaderSun1_6_0 {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				"78.579: [Full GC (System) 78.579: [CMS (concurrent mode interrupted): 64171K->1538K(107776K), 0.0088356 secs] 75362K->1538K(126912K), [CMS Perm : 2554K->2554K(21248K)], 0.0089351 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]"
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("count", 1, model.getPause().getN());
@@ -132,7 +131,7 @@ public class TestDataReaderSun1_6_0 {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				" CMS: abort preclean due to time 12467.886: [CMS-concurrent-abortable-preclean: 5.300/5.338 secs] [Times: user=10.70 sys=0.13, real=5.34 secs]"
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 1, model.size());
@@ -145,7 +144,7 @@ public class TestDataReaderSun1_6_0 {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				" CMS: abort preclean due to time 2011-10-07T08:10:25.312+0200: 13454.979: [CMS-concurrent-abortable-preclean: 3.849/5.012 secs] [Times: user=5.58 sys=0.08, real=5.01 secs]"
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 1, model.size());
@@ -159,7 +158,7 @@ public class TestDataReaderSun1_6_0 {
 				("42927.215: [Full GC 42927.215: [CMS42927.255: [CMS-concurrent-sweep: 0.416/6.288 secs] [Times: user=17.38 sys=0.44, real=6.29 secs]"
 						+ "\n (concurrent mode failure): 262166K->215967K(785256K), 7.8308614 secs] 273998K->215967K(800040K), [CMS Perm : 523009K->155678K(524288K)] icms_dc=8 , 7.8320634 secs] [Times: user=4.59 sys=0.04, real=7.83 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 2, model.size());
@@ -172,7 +171,7 @@ public class TestDataReaderSun1_6_0 {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				("44189.823: [Full GC 44189.824: [CMS: 274825K->223922K(892264K), 8.0594203 secs] 327565K->223922K(992616K), [CMS Perm : 524287K->158591K(524288K)] icms_dc=0 , 8.0600619 secs] [Times: user=4.51 sys=0.05, real=8.06 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 1, model.size());
@@ -185,7 +184,7 @@ public class TestDataReaderSun1_6_0 {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2011-10-05T04:23:39.427+0200: 13455.879: [GC[YG occupancy: 325751 K (471872 K)]13455.879: [Rescan (parallel) , 1.0591220 secs]13456.939: [weak refs processing, 0.0794109 secs] [1 CMS-remark: 1023653K(1572864K)] 1349404K(2044736K), 1.1490033 secs] [Times: user=19.09 sys=0.26, real=1.15 secs]")
                         .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -198,7 +197,7 @@ public class TestDataReaderSun1_6_0 {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				("13455.879: [GC[YG occupancy: 325751 K (471872 K)]13455.879: [Rescan (parallel) , 1.0591220 secs]13456.939: [weak refs processing, 0.0794109 secs] [1 CMS-remark: 1023653K(1572864K)] 1349404K(2044736K), 1.1490033 secs] [Times: user=19.09 sys=0.26, real=1.15 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
  		assertEquals("GC count", 1, model.size());
@@ -211,7 +210,7 @@ public class TestDataReaderSun1_6_0 {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("0.778: [GC[YG occupancy: 2179 K (19136 K)]0.778: [Rescan (non-parallel) 0.778: [grey object rescan, 0.0014243 secs]0.780: [root rescan, 0.0000909 secs], 0.0015484 secs]0.780: [weak refs processing, 0.0000066 secs] [1 CMS-remark: 444198K(444416K)] 446377K(463552K), 0.0015882 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -225,7 +224,7 @@ public class TestDataReaderSun1_6_0 {
 				("2011-10-05T04:23:39.427+0200: 42927.215: [Full GC 42927.215: [CMS2011-10-05T04:23:39.427+0200: 42927.255: [CMS-concurrent-sweep: 0.416/6.288 secs] [Times: user=17.38 sys=0.44, real=6.29 secs]"
 						+ "\n (concurrent mode failure): 262166K->215967K(785256K), 7.8308614 secs] 273998K->215967K(800040K), [CMS Perm : 523009K->155678K(524288K)] icms_dc=8 , 7.8320634 secs] [Times: user=4.59 sys=0.04, real=7.83 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 2, model.size());
@@ -238,7 +237,7 @@ public class TestDataReaderSun1_6_0 {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				("2011-10-05T04:23:39.427+0200: 44189.823: [Full GC 44189.824: [CMS: 274825K->223922K(892264K), 8.0594203 secs] 327565K->223922K(992616K), [CMS Perm : 524287K->158591K(524288K)] icms_dc=0 , 8.0600619 secs] [Times: user=4.51 sys=0.05, real=8.06 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 1, model.size());
@@ -253,7 +252,7 @@ public class TestDataReaderSun1_6_0 {
 				("36628.590: [GC 36628.591: [ParNew36628.625: [CMS-concurrent-abortable-preclean: 0.128/0.873 secs] [Times: user=2.52 sys=0.02, real=0.87 secs]"
 						+ "\n: 14780K->1041K(14784K), 0.0417590 secs] 304001K->295707K(721240K) icms_dc=56 , 0.0419761 secs] [Times: user=0.81 sys=0.01, real=0.04 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 2, model.size());
@@ -267,7 +266,7 @@ public class TestDataReaderSun1_6_0 {
 		ByteArrayInputStream in = new ByteArrayInputStream(
 				("164.078: [Full GC (System) 164.078: [Tenured: 107024K->86010K(349568K), 0.7964528 secs] 143983K->86010K(506816K), [Perm : 85883K->85855K(86016K)], 0.7965714 secs] [Times: user=0.84 sys=0.00, real=0.80 secs]")
 						.getBytes());
-		final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+		final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
 		GCModel model = reader.read();
 
 		assertEquals("GC count", 1, model.size());
@@ -281,7 +280,7 @@ public class TestDataReaderSun1_6_0 {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2011-10-24T08:12:24.375+0200: 3388.929: [CMS-concurrent-mark-start]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -295,7 +294,7 @@ public class TestDataReaderSun1_6_0 {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("12460.657: [GC [1 CMS-initial-mark: 789976K(1572864K)] 838178K(2044736K), 0.3114519 secs] [Times: user=0.32 sys=0.00, real=0.31 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -313,7 +312,7 @@ public class TestDataReaderSun1_6_0 {
                 		"\n- age   1:    1058016 bytes,    1058016 total" +
                 		"\n: 13056K->1408K(13056K), 0.0128277 secs] 131480K->122757K(141328K), 0.0131346 secs] [Times: user=0.15 sys=0.00, real=0.01 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -330,7 +329,7 @@ public class TestDataReaderSun1_6_0 {
                         "\n- age   1:    8317928 bytes,    8317928 total" +
                         "\n: 92938K->8649K(104832K), 0.0527364 secs] 410416K->326127K(1036928K), 0.0533874 secs] [Times: user=0.46 sys=0.09, real=0.05 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -349,7 +348,7 @@ public class TestDataReaderSun1_6_0 {
                         "\n- age   2:     342056 bytes,    1045616 total" +
                         "\n : 9321K->9398K(9792K), 0.0563031 secs]31533.928: [CMS: 724470K->317478K(931248K), 13.5375713 secs] 733688K->317478K(941040K), [CMS Perm : 51870K->50724K(86384K)], 13.5959700 secs] [Times: user=14.03 sys=0.03, real=13.60 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -367,7 +366,7 @@ public class TestDataReaderSun1_6_0 {
                         "\n: 9768K->9877K(10240K), 0.0453585 secs]27401.808: [CMS2011-04-18T12:01:20.261+0200: 27407.340: [CMS-concurrent-sweep: 5.738/5.787 secs] [Times: user=6.40 sys=0.02, real=5.79 secs]" +
                         "\n (concurrent mode failure): 858756K->670276K(932096K), 31.5781426 secs] 868036K->670276K(942336K), [CMS Perm : 54962K->51858K(91608K)], 31.6248756 secs] [Times: user=31.85 sys=0.03, real=31.63 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -387,7 +386,7 @@ public class TestDataReaderSun1_6_0 {
                         "\n [Times: user=0.59 sys=0.01, real=0.35 secs]" +
                         "\n: 9405K->84K(10368K), 0.0064674 secs] 151062K->141740K(164296K), 0.0067202 secs] [Times: user=0.11 sys=0.01, real=0.01 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -397,8 +396,9 @@ public class TestDataReaderSun1_6_0 {
 
     @Test
     public void testCmsMemory() throws Exception {
-        final InputStream in = getInputStream("SampleSun1_6_0CMS.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        String fileName = "SampleSun1_6_0CMS.txt";
+        final InputStream in = getInputStream(fileName);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource(fileName), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 41, model.size());
@@ -430,7 +430,7 @@ public class TestDataReaderSun1_6_0 {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("0.521: [GC[YG occupancy: 2234 K (14784 K)]0.522: [Rescan (parallel)  (Survivor:0chunks) Finished young gen rescan work in 1th thread: 0.000 sec")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 0, model.size());
@@ -440,11 +440,11 @@ public class TestDataReaderSun1_6_0 {
     public void testPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_6_0PrintHeapAtGC.txt");
+        gcResource.getLogger().addHandler(handler);
         
-        final InputStream in = getInputStream("SampleSun1_6_0PrintHeapAtGC.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final InputStream in = getInputStream(gcResource.getResourceName());
+        final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -461,8 +461,9 @@ public class TestDataReaderSun1_6_0 {
         // AdaptiveSizeStop: collection: 1 
         //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
         
-        final InputStream in = getInputStream("SampleSun1_6_0AdaptiveSizePolicy.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        String fileName = "SampleSun1_6_0AdaptiveSizePolicy.txt";
+        final InputStream in = getInputStream(fileName);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource(fileName), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 10, model.size());
@@ -478,7 +479,7 @@ public class TestDataReaderSun1_6_0 {
                  "\n[PSYoungGen: 480K->0K(270976K)] [PSOldGen: 89711K->671K(145536K)] 90191K->671K(416512K) [PSPermGen: 2614K->2614K(21248K)], 0.0070749 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]")
                        .getBytes());
          
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -495,7 +496,7 @@ public class TestDataReaderSun1_6_0 {
                 "2012-09-27T17:03:28.712+0200: 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] "
                         .getBytes());
          
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -508,7 +509,7 @@ public class TestDataReaderSun1_6_0 {
                 ("2.036: [GC[YG occupancy: 235954 K (235968 K)]2.036: [GC 2.036: [ParNew: 235954K->30K(235968K), 0.0004961 secs] 317153K->81260K(395712K), 0.0005481 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
                  "\n2.037: [Rescan (parallel) , 0.0002425 secs]2.037: [weak refs processing, 0.0000041 secs]2.037: [class unloading, 0.0000938 secs]2.037: [scrub symbol & string tables, 0.0003138 secs] [1 CMS-remark: 81230K(159744K)] 81260K(395712K), 0.0013653 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -524,7 +525,7 @@ public class TestDataReaderSun1_6_0 {
                 ("2012-03-07T22:19:49.110+0100: 2.479: [GC[YG occupancy: 227872 K (235968 K)]2012-03-07T22:19:49.110+0100: 2.479: [GC 2.479: [ParNew: 227872K->30K(235968K), 0.0005432 secs] 296104K->68322K(395712K), 0.0005809 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
                  "\n2.480: [Rescan (parallel) , 0.0001934 secs]2.480: [weak refs processing, 0.0000061 secs]2.480: [class unloading, 0.0001131 secs]2.480: [scrub symbol & string tables, 0.0003175 secs] [1 CMS-remark: 68292K(159744K)] 68322K(395712K), 0.0013506 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -543,7 +544,7 @@ public class TestDataReaderSun1_6_0 {
                  "\n: 235952K->30K(235968K), 0.0005641 secs] 317151K->81260K(395712K), 0.0006030 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]" +
                  "\n2.105: [Rescan (parallel) , 0.0002003 secs]2.105: [weak refs processing, 0.0000041 secs]2.105: [class unloading, 0.0000946 secs]2.105: [scrub symbol & string tables, 0.0003146 secs] [1 CMS-remark: 81230K(159744K)] 81260K(395712K), 0.0013199 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(input, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), input, GcLogType.SUN1_6);
         GCModel gcModel = reader.read();
 
         assertEquals("GC count", 2, gcModel.size());
@@ -560,7 +561,7 @@ public class TestDataReaderSun1_6_0 {
                  "\n2012-04-03T20:35:40.056+0200: [GC [PSYoungGen: 19084K->2657K(35584K)] 32314K->32279K(79296K), 0.0236295 secs] [Times: user=0.01 sys=0.00, real=0.02 secs]" +
                  "\n2012-04-03T20:35:40.079+0200: [Full GC [PSYoungGen: 2657K->0K(35584K)] [PSOldGen: 29622K->32262K(67392K)] 32279K->32262K(102976K) [PSPermGen: 2603K->2603K(21248K)], 0.0095147 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 3, model.size());
@@ -575,7 +576,7 @@ public class TestDataReaderSun1_6_0 {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2012-04-03T20:36:35.035+0200: [GC [ParNew: 16993K->2105K(19136K), 0.0270541 secs] 16993K->16424K(83008K), 0.0272020 secs] [Times: user=0.02 sys=0.05, real=0.03 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -589,7 +590,7 @@ public class TestDataReaderSun1_6_0 {
                 ("2012-04-03T20:36:35.284+0200: [GC [ParNew: 19081K->19081K(19136K), 0.0000205 secs][CMS2012-04-03T20:36:35.285+0200: [CMS-concurrent-abortable-preclean: 0.005/0.150 secs] [Times: user=0.14 sys=0.14, real=0.15 secs]" 
                  + "\n (concurrent mode failure): 98182K->3832K(98624K), 0.0195864 secs] 117264K->3832K(117760K), [CMS Perm : 2614K->2613K(21248K)], 0.0199322 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -607,7 +608,7 @@ public class TestDataReaderSun1_6_0 {
                  + "\nDesired survivor size 89456640 bytes, new threshold 7 (max 15)"
                  + "\n [PSYoungGen: 524288K->35633K(611648K)] 524288K->35633K(2009792K), 0.0240717 secs] [Times: user=0.01 sys=0.03, real=0.02 secs]")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -619,11 +620,12 @@ public class TestDataReaderSun1_6_0 {
     public void testCMSAdaptiveSizePolicy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_6_0CMSAdaptiveSizePolicy.txt");
+        gcResource.getLogger().addHandler(handler);
         
-        final InputStream in = getInputStream("SampleSun1_6_0CMSAdaptiveSizePolicy.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final InputStream in = getInputStream(gcResource.getResourceName());
+        final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
+        
         GCModel model = reader.read();
 
         assertEquals("event count", 24, model.size());
@@ -637,8 +639,8 @@ public class TestDataReaderSun1_6_0 {
     public void testCMSAdaptiveSizePolicyPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
         
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2012-04-18T14:48:31.855+0200: 29.592: [GC 29.592: [ASParNew: 52825K->6499K(59008K), 0.0268761 secs] 120805K->120749K(517760K), 0.0269605 secs] [Times: user=0.05 sys=0.00, real=0.03 secs]" 
@@ -650,7 +652,7 @@ public class TestDataReaderSun1_6_0 {
                  + "\nconcurrent mark-sweep generation total 458752K, used 259541K [0x00000000dc000000, 0x00000000f8000000, 0x00000000f8000000)"
                  + "\nconcurrent-mark-sweep perm gen total 65536K, used 2621K [0x00000000f8000000, 0x00000000fc000000, 0x0000000100000000)")
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -665,7 +667,7 @@ public class TestDataReaderSun1_6_0 {
                  + "\n [Times: user=0.03 sys=0.00, real=0.01 secs]")
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -679,7 +681,7 @@ public class TestDataReaderSun1_6_0 {
                  + "\n [Times: user=0.00 sys=0.00, real=0.00 secs]")
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -694,7 +696,7 @@ public class TestDataReaderSun1_6_0 {
                  + "\n (concurrent mode failure): 402265K->61915K(436928K), 0.0394420 secs] 480896K->61915K(515584K), [CMS Perm : 2626K->2625K(65536K)], 0.0395686 secs] [Times: user=0.03 sys=0.00, real=0.03 secs]")
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -725,7 +727,7 @@ public class TestDataReaderSun1_6_0 {
                  )
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -759,7 +761,7 @@ public class TestDataReaderSun1_6_0 {
                  )
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -779,7 +781,7 @@ public class TestDataReaderSun1_6_0 {
                  + "\n: 78624K->8686K(78656K), 0.0203494 secs] 424271K->384820K(515584K), 0.0204543 secs] [Times: user=0.13 sys=0.00, real=0.03 secs]")
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -795,7 +797,7 @@ public class TestDataReaderSun1_6_0 {
                  + "\n [Times: user=0.61 sys=0.06, real=0.39 secs]")
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 2, model.size());
@@ -809,7 +811,7 @@ public class TestDataReaderSun1_6_0 {
                 "12,655: [GC [PSYoungGen: 262656K->28075K(306432K)] 262656K->28075K(1006848K), 0,3541657 secs] [Times: user=0,22 sys=0,48, real=0,35 secs]" 
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -828,7 +830,7 @@ public class TestDataReaderSun1_6_0 {
                 "10.675: [GC [PSYoungGen: 21051K->4947K(22656K)] 23342K->7238K(67712K), 0.0191817 secs] [Times: user=0.09 sys=0.01, real=0.02 secs]" 
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -844,7 +846,7 @@ public class TestDataReaderSun1_6_0 {
                 "3.141: [GCDesired survivor size 134217728 bytes, new threshold 7 (max 2) [PSYoungGen: 188744K->13345K(917504K)] 188744K->13345K(4063232K), 0.0285820 secs] [Times: user=0.06 sys=0.01, real=0.03 secs]" 
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
         
         assertEquals("count", 1, model.size());
@@ -858,7 +860,7 @@ public class TestDataReaderSun1_6_0 {
                 "2013-09-02T18:22:23.195+0000: 1837.498: [GC1837.600: [SoftReference, 0 refs, 0.0000060 secs]1837.600: [WeakReference, 374 refs, 0.0000550 secs]1837.600: [FinalReference, 347 refs, 0.0002090 secs]1837.600: [PhantomReference, 0 refs, 0.0000020 secs]1837.600: [JNI Weak Reference, 0.0000050 secs]-- [PSYoungGen: 1330796K->1330796K(1403264K)] 4172533K->4251241K(4323712K), 0.6580190 secs] [Times: user=2.35 sys=0.02, real=0.66 secs]" 
                        .getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
         
         assertEquals("count", 1, model.size());
@@ -870,8 +872,8 @@ public class TestDataReaderSun1_6_0 {
     public void testCmsGcLocker() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
         
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2269.664: [CMS-concurrent-sweep-start]"
@@ -883,7 +885,7 @@ public class TestDataReaderSun1_6_0 {
                 + "\n2334.587: [CMS-concurrent-mark-start]" 
                        ).getBytes());
         
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
         GCModel model = reader.read();
         
         assertThat("count", model.size(), is(6));

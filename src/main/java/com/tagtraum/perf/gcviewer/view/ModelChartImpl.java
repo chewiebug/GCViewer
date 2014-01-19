@@ -370,7 +370,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     public void setModel(GCModel model, GCPreferences preferences) {
         this.model = model;
         
-        // TODO SWINGWORKER: should rather gcDocument.relayout be called here?
         applyPreferences(preferences);
         setScaleFactor(getScaleFactor());
         setRunningTime(model.getRunningTime());

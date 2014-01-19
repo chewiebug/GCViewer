@@ -13,6 +13,7 @@ import org.junit.Test;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 public class TestAbstractDataReaderSun {
@@ -21,7 +22,7 @@ public class TestAbstractDataReaderSun {
     
     @Before
     public void setUp() throws UnsupportedEncodingException {
-        dataReader = new AbstractDataReaderSunSub(new ByteArrayInputStream(new byte[0]), GcLogType.SUN1_6);
+        dataReader = new AbstractDataReaderSunSub(new GCResource("empty"), new ByteArrayInputStream(new byte[0]), GcLogType.SUN1_6);
     }
     
     /**
@@ -102,8 +103,8 @@ public class TestAbstractDataReaderSun {
      */
     private class AbstractDataReaderSunSub extends AbstractDataReaderSun {
         
-        public AbstractDataReaderSunSub(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-            super(in, gcLogType);
+        public AbstractDataReaderSunSub(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+            super(gcResource, in, gcLogType);
         }
     
         @Override

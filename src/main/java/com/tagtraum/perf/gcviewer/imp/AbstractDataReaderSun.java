@@ -3,13 +3,11 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +15,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
@@ -30,7 +29,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
-public abstract class AbstractDataReaderSun implements DataReader {
+public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
     /**
      * Datestamps are parsed without timezone information. I assume that if two people
@@ -42,13 +41,10 @@ public abstract class AbstractDataReaderSun implements DataReader {
     
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
     
-    private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
     private final SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
     
     private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
-    /** the reader accessing the log file */
-    protected BufferedReader in;
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
 
@@ -58,9 +54,8 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @param gcLogType type of the logfile
      * @throws UnsupportedEncodingException if ASCII is not supported
      */
-    public AbstractDataReaderSun(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-        super();
-        this.in = new BufferedReader(new InputStreamReader(in, "ASCII"), 64 * 1024);
+    protected AbstractDataReaderSun(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(gcResource, in);
         this.gcLogType = gcLogType;
     }
     
@@ -86,8 +81,8 @@ public abstract class AbstractDataReaderSun implements DataReader {
             return (int) (memoryValue * 1024*1024);
         }
         else {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.warning("unknown memoryunit '" + memUnit + "' in line " + line);
+            if (getLogger().isLoggable(Level.WARNING)) {
+                getLogger().warning("unknown memoryunit '" + memUnit + "' in line " + line);
             }
             return 1;
         }
@@ -267,7 +262,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 	                else
 	                    pos.setIndex(closingBracket + 1);
 	            } else {
-	                LOG.severe("Hm... something went wrong here... (line " + pos.getLineNumber() + "='" + line + "'");
+	                getLogger().severe("Hm... something went wrong here... (line " + pos.getLineNumber() + "='" + line + "'");
 	            }
 	        }
     	}
@@ -469,7 +464,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
         String line = "";
         
         if (!in.markSupported()) {
-            LOG.warning("input stream does not support marking!");
+            getLogger().warning("input stream does not support marking!");
         } 
         else {
             in.mark(200);
@@ -643,7 +638,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     private void skipUntilEndOfDetail(final String line, final ParsePosition pos, Exception e) {
         skipUntilEndOfDetail(line, pos, 1);
         
-        if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
+        if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Skipping detail event because of " + e);
     }
 
     /**

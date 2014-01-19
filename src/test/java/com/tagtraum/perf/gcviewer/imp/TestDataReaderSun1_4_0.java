@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
@@ -15,6 +14,7 @@ import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Tests some cases for java 1.4 (using DataReaderSun1_6_0).
@@ -24,8 +24,6 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class TestDataReaderSun1_4_0 {
-    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
     }
@@ -35,8 +33,9 @@ public class TestDataReaderSun1_4_0 {
      */
     @Test
     public void testAdaptiveSizePolicy() throws Exception {
-        InputStream in = getInputStream("SampleSun1_4_0AdaptiveSizePolicy.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
+        String fileName = "SampleSun1_4_0AdaptiveSizePolicy.txt";
+        InputStream in = getInputStream(fileName);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource(fileName), in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         
         assertEquals("number of events", 9, model.getPause().getN());
@@ -59,7 +58,7 @@ public class TestDataReaderSun1_4_0 {
         AbstractGCEvent<GCEvent> event5 = new GCEvent(4, 10753, 6046, 10912, 0.3146707d, AbstractGCEvent.Type.INC_GC);
         AbstractGCEvent<GCEvent> event6 = new GCEvent(5, 52471, 22991, 75776, 1.0754938d, AbstractGCEvent.Type.GC);
         ByteArrayInputStream in = new ByteArrayInputStream("0.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n1.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n2.0: [GC 8968K->8230K(10912K), 0.0037192 secs]\r\n3.0: [Full GC 10753K->6046K(10912K), 0.3146707 secs]\r\n4.0: [Inc GC 10753K->6046K(10912K), 0.3146707 secs]\r\n5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]".getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         assertEquals("model size", 6, model.size());
         Iterator<GCEvent> i = model.getGCEvents();
@@ -82,8 +81,9 @@ public class TestDataReaderSun1_4_0 {
 
     @Test
     public void testNoFullGC() throws Exception {
-        InputStream in = getInputStream("SampleSun1_4_2NoFullGC.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
+        String fileName = "SampleSun1_4_2NoFullGC.txt";
+        InputStream in = getInputStream(fileName);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource(fileName), in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         // we just look at the first six...
         /*
@@ -121,8 +121,9 @@ public class TestDataReaderSun1_4_0 {
 
     @Test
     public void testPrintGCDetails() throws Exception {
-        InputStream in = getInputStream("SampleSun1_4_2PrintGCDetails.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
+        String fileName = "SampleSun1_4_2PrintGCDetails.txt";
+        InputStream in = getInputStream(fileName);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource(fileName), in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         /*
         0.000: [GC 0.000: [DefNew: 1534K->128K(1664K), 0.0082759 secs] 1534K->276K(16256K), 0.0084272 secs]
@@ -158,10 +159,11 @@ public class TestDataReaderSun1_4_0 {
     public void testPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_4_0PSPrintHeapAtGC.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_4_0PSPrintHeapAtGC.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_4);
+        InputStream in = getInputStream(gcResource.getResourceName());
+        final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         
         assertEquals("GC count", 2, model.size());

@@ -1,14 +1,20 @@
 package com.tagtraum.perf.gcviewer.ctrl;
 
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener.DropFlavor;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 
 /**
@@ -40,9 +46,23 @@ public class GCViewerController {
     
     private void addModel(String resourceName) {
         GCModelLoader loader = new GCModelLoader(new GCResource(resourceName));
-        gcViewerGui.addModel(loader);
+        GCDocumentController docController = getDocumentController(gcViewerGui.getSelectedGCDocument());
+        docController.addModel(loader);
         
         loader.execute();
+    }
+    
+    private GCDocumentController getDocumentController(GCDocument document) {
+        GCDocumentController controller = null;
+        for (PropertyChangeListener listener : document.getPropertyChangeListeners()) {
+            if (listener instanceof GCDocumentController) {
+                controller = (GCDocumentController) listener;
+            }
+        }
+        
+        assert controller != null : "instance of GCDocumentController should have been found!";
+        
+        return controller;
     }
     
     protected GCViewerGui getGCViewerGui() {
@@ -51,13 +71,47 @@ public class GCViewerController {
     
     private void openModel(String resourceName) {
         GCModelLoader loader = new GCModelLoader(new GCResource(resourceName));
-        gcViewerGui.openModel(loader);
+        GCDocument document = new GCDocument(gcViewerGui.getPreferences(), resourceName);
+        document.setDropTarget(
+                new DropTarget(document, 
+                        DnDConstants.ACTION_COPY, 
+                        new FileDropTargetListener(this, DropFlavor.ADD))
+                );
+        
+        gcViewerGui.addDocument(document);
+        
+        GCDocumentController docController = new GCDocumentController(document);
+        docController.addModel(loader);
         
         loader.execute();
     }
     
+    /**
+     * Open a new log file.
+     * @param file filename
+     */
+    public void open(File file) {
+        open(file.getAbsolutePath());
+    }
+        
+    public void open(File[] files) {
+        List<String> fileNames = new LinkedList<String>();
+        for (File file : files) {
+            fileNames.add(file.getAbsolutePath());
+        }
+        open(fileNames.toArray(new String[fileNames.size()]));
+    }
+    
+    /**
+     * Open a gc log resource from a filename or URL.
+     * 
+     * @param resourceName filename or URL name.
+     */
+    public void open(String resourceName) {
+        open(new String[]{ resourceName });
+    }
+    
     public void open(String[] resourceNames) {
-        // TODO SWINGWORKER: introduce GCResourceGroup to accommodate "add"? -> Where is it held?
         String nameGroup = Arrays.asList(resourceNames).toString();
         nameGroup = nameGroup.substring(1, nameGroup.length() - 1);
         int i = 0; 
@@ -72,31 +126,15 @@ public class GCViewerController {
         }
     }
     
-    public void open(File[] files) {
-        List<String> fileNames = new LinkedList<String>();
-        for (File file : files) {
-            fileNames.add(file.getAbsolutePath());
+    public void open(URL[] urls) {
+        List<String> resourceNameList = new LinkedList<String>();
+        for (URL url : urls) {
+            resourceNameList.add("file".equals(url.getProtocol()) ? url.getPath() : url.toString());
         }
-        open(fileNames.toArray(new String[fileNames.size()]));
-    }
-    
-    /**
-     * Open a gc log resource from a filename or URL.
-     * 
-     * @param fileOrUrl filename or URL name.
-     */
-    public void open(String fileOrUrl) {
-        open(new String[]{ fileOrUrl });
-    }
-    
-    /**
-     * Open a new log file.
-     * @param file filename
-     */
-    public void open(File file) {
-        open(file.getAbsolutePath());
-    }
         
+        open(resourceNameList.toArray(new String[resourceNameList.size()]));
+    }
+    
     /**
      * Set GCViewerGui (for test purposes).
      * @param gui gui to be set
@@ -112,21 +150,30 @@ public class GCViewerController {
      * @throws InvocationTargetException Some problem trying to start the gui
      * @throws InterruptedException Some problem trying to start the gui
      */
-    public void startGui(final String resourceName) {
+    public void startGui(final String resourceName) throws InvocationTargetException, InterruptedException {
         Runnable guiStarter = new Runnable() {
             
             @Override
             public void run() {
-                // TODO SWINGWORKER: Not parameter but register actionListener!!
                 gcViewerGui = new GCViewerGui(GCViewerController.this);
+                Thread.setDefaultUncaughtExceptionHandler(new GCViewerUncaughtExceptionHandler(gcViewerGui));
                 gcViewerGui.setVisible(true);
-                if (resourceName != null) {
-                    open(resourceName);
-                }
             }
         };
         
-        SwingUtilities.invokeLater(guiStarter);
+        SwingUtilities.invokeAndWait(guiStarter);
+        
+        if (resourceName != null) {
+            Runnable resourceLoader = new Runnable() {
+
+                @Override
+                public void run() {
+                    open(resourceName);
+                }
+                
+            };
+            SwingUtilities.invokeLater(resourceLoader);
+        }
     }
 
 }

@@ -4,21 +4,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,10 +24,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.GCPreferences;
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.RefreshWatchDog;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -49,7 +36,6 @@ public class GCDocument extends JInternalFrame {
 
 	private static final Logger LOG = Logger.getLogger(GCDocument.class.getName());
 	
-	private final GCViewerGui gcViewer;
     private final List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
     private ModelChart modelChartListFacade;
     private boolean showModelMetricsPanel = true;
@@ -57,63 +43,20 @@ public class GCDocument extends JInternalFrame {
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
 
-    public GCDocument(final GCViewerGui gcViewer, String title) {
+    public GCDocument(final GCPreferences preferences, String title) {
         super(title, true, true, true, false);
         
-        this.gcViewer = gcViewer;
+        // keep a copy of the preferences
+        this.preferences = new GCPreferences();
+        this.preferences.setTo(preferences);
         this.refreshWatchDog = new RefreshWatchDog();
         refreshWatchDog.setGcDocument(this);
-        
-        // keep a copy of the preferences
-        preferences = new GCPreferences();
-        preferences.setTo(gcViewer.getPreferences());
         
         showModelMetricsPanel = preferences.isShowModelMetricsPanel();
         modelChartListFacade = new MultiModelChartFacade();
         addComponentListener(new ResizeListener());
         GridBagLayout layout = new GridBagLayout();
         getContentPane().setLayout(layout);
-        // TODO refactor; looks very similar to DesktopPane implementation
-        getContentPane().setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY, new DropTargetListener(){
-            public void dragEnter(DropTargetDragEvent e) {
-                if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                    e.acceptDrag(DnDConstants.ACTION_COPY);
-                } else {
-                    e.rejectDrag();
-                }
-            }
-
-            public void dragOver(DropTargetDragEvent dtde) {
-            }
-
-            public void dropActionChanged(DropTargetDragEvent dtde) {
-            }
-
-            public void dragExit(DropTargetEvent dte) {
-            }
-
-            public void drop(DropTargetDropEvent event) {
-                try {
-                    Transferable tr = event.getTransferable();
-                    if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                        event.acceptDrop(DnDConstants.ACTION_COPY);
-                        @SuppressWarnings("unchecked")
-                        List<File> list = (List<File>)tr.getTransferData(DataFlavor.javaFileListFlavor);
-                        gcViewer.add((File[]) list.toArray());
-                        GCDocument.this.getContentPane().invalidate();
-                        event.dropComplete(true);
-                    } 
-                    else {
-                        event.rejectDrop();
-                    }
-                } 
-                catch (IOException | UnsupportedFlavorException e) {
-                    event.rejectDrop();
-                    e.printStackTrace();
-                }
-            }
-        }));
-
     }
     
     public RefreshWatchDog getRefreshWatchDog() {
@@ -157,28 +100,20 @@ public class GCDocument extends JInternalFrame {
         return preferences;
     }
     
-    public void addModel(GCModelLoader loader) {
-        // TODO SWINGWORKER wire views with GCResource -> detect changes in Model
-        // build all tabs
-        // those with empty model -> inactive
-        // progress -> active
-        //   -> progress: listens to loader
-        // document: listens to loader and changes active status of tabs
-        ChartPanelView chartPanelView = createChartPanelView(loader.getGcResource());
-        loader.addPropertyChangeListener(chartPanelView.getModelLoaderView());
-        relayout();
-    }
-    
-    protected ChartPanelView createChartPanelView(final GCResource gcResource) {
-        ChartPanelView chartPanelView = new ChartPanelView(this, gcResource);
-        chartPanelViews.add(chartPanelView);
+    public void addChartPanelView(ChartPanelView chartPanelView) {
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 if (ChartPanelView.EVENT_MINIMIZED.equals(event.getPropertyName())) {
                     relayout();
                 }
+                else if (ChartPanelView.EVENT_CLOSED.equals(event.getPropertyName())) {
+                    removeChartPanelView((ChartPanelView) event.getSource());
+                }
             }
         });
+
+        chartPanelViews.add(chartPanelView);
+        
         // make sure all models in one document have the same display properties
         if (chartPanelViews.size() > 1) {
             modelChartListFacade.setScaleFactor(modelChartListFacade.getScaleFactor());
@@ -189,26 +124,35 @@ public class GCDocument extends JInternalFrame {
             modelChartListFacade.setShowTotalMemoryLine(modelChartListFacade.isShowTotalMemoryLine());
             modelChartListFacade.setShowUsedMemoryLine(modelChartListFacade.isShowUsedMemoryLine());
         }
-        relayout();
         
-        return chartPanelView;
+        relayout();
     }
-
+    
     /**
      * @return number of chartPanelViews running after remove.
      */
-    public int removeChartPanelView(ChartPanelView chartPanelView) {
+    private int removeChartPanelView(ChartPanelView chartPanelView) {
         chartPanelViews.remove(chartPanelView);
         
         final int nChartPanelViews = chartPanelViews.size();
         if (nChartPanelViews > 0) {        
         	relayout();
-        } else {
-        	gcViewer.close(this);
+        	repaint();
+        } 
+        else {
+            // well, actually the ViewBar of ChartPanelView is not shown, when only one
+            // ChartPanelView is left, so this code can never be reached... so, just precaution then?
+            getRefreshWatchDog().stop();
+        	dispose();
         }
         return nChartPanelViews;
     }
 
+    /**
+     * Relayouts all chartPanelViews contained in this document. Should always be called, when
+     * a change with the chartPanelViews happened (add / remove / minimize / maximize 
+     * chartPanelView).
+     */
     public void relayout() {
         getContentPane().removeAll();
         final int nChartPanelViews = chartPanelViews.size();
@@ -220,10 +164,13 @@ public class GCDocument extends JInternalFrame {
                 if (i + 1 < nChartPanelViews) sb.append(", ");
             }
             newTitle = sb.toString();
-        } else if (!chartPanelViews.isEmpty())
+        } 
+        else if (!chartPanelViews.isEmpty()) {
         	newTitle = chartPanelViews.get(0).getGCResource().getResourceName();
-        else
+        }
+        else {
         	newTitle = "";
+        }
         setTitle(newTitle);
         
         int row = 0;
@@ -310,6 +257,7 @@ public class GCDocument extends JInternalFrame {
     }
 
     private void lockChartsToOneScrollbar(final JViewport viewport, final boolean lastMaximizedChartPanelView, final ModelChartImpl modelChart, MasterViewPortChangeListener masterViewPortChangeListener) {
+        // TODO SWINGWORKER: now horizontal scrollbar is shown, when last file has not longest runningtime
         ChangeListener[] changeListeners = viewport.getChangeListeners();
         for (int j = 0; j < changeListeners.length; j++) {
             if (changeListeners[j] instanceof MasterViewPortChangeListener) {
@@ -320,7 +268,8 @@ public class GCDocument extends JInternalFrame {
             modelChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             // add scrollbar listener
             viewport.addChangeListener(masterViewPortChangeListener);
-        } else {
+        } 
+        else {
             modelChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             masterViewPortChangeListener.addSlaveViewport(viewport);
         }
@@ -367,7 +316,9 @@ public class GCDocument extends JInternalFrame {
         ChartPanelView lastMaximizedChartPanelView = null;
         for (int i = 0; i < chartPanelViews.size(); i++) {
             final ChartPanelView chartPanelView = chartPanelViews.get(i);
-            if (!chartPanelView.isMinimized()) lastMaximizedChartPanelView = chartPanelView;
+            if (!chartPanelView.isMinimized()) {
+                lastMaximizedChartPanelView = chartPanelView;
+            }
         }
         return lastMaximizedChartPanelView;
     }
@@ -668,7 +619,4 @@ public class GCDocument extends JInternalFrame {
         
     }
 
-	public GCViewerGui getGcViewer() {
-		return gcViewer;
-	}
 }

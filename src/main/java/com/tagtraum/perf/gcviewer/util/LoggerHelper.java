@@ -13,17 +13,6 @@ import java.util.logging.Logger;
 public class LoggerHelper {
 
     /**
-     * Returns a Logger instance with a thread specific name.
-     * 
-     * @param caller instance of the object the logger is to be returned for
-     * @return Logger instance
-     */
-    public static Logger getThreadSpecificLogger(Object caller) {
-        String callerName = caller == null ? "" : "." + caller.getClass().getSimpleName();
-        return Logger.getLogger(Thread.currentThread().getName() + callerName);
-    }
-    
-    /**
      * Logs a given exception using the given <code>logger</code>.
      * 
      * @param logger logger of the class where the exception occurred

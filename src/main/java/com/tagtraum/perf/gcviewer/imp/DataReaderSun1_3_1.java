@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
@@ -23,16 +23,14 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataReader {
 
-    private static Logger LOG = Logger.getLogger(DataReaderSun1_3_1.class.getName());
-    
     private int count;
 
-    public DataReaderSun1_3_1(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-        super(in, gcLogType);
+    public DataReaderSun1_3_1(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(gcResource, in, gcLogType);
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.3.1 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.3.1 format...");
         try {
             count = 0;
             GCModel model = new GCModel(true);
@@ -45,27 +43,32 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
                 if (c == '[') {
                     if (line != null) lineStack.add(line); // push
                     line = new StringBuilder(64);
-                } else if (c == ']') {
+                } 
+                else if (c == ']') {
                     try {
                         model.add(parseLine(line.toString(), null));
-                    } catch (ParseException e) {
-                        if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, e.getMessage(), e);
-                        System.out.println(e.getMessage());
+                    } 
+                    catch (ParseException e) {
+                        if (getLogger().isLoggable(Level.WARNING)) getLogger().log(Level.WARNING, e.getMessage(), e);
+                        e.printStackTrace();
                     }
                     if (!lineStack.isEmpty()) {
                         line = lineStack.remove(lineStack.size() - 1); // pop
                     }
-                } else {
+                } 
+                else {
                     if (line != null) line.append(c);
                 }
             }
             return model;
-        } finally {
+        } 
+        finally {
             if (in != null) try {
                 in.close();
-            } catch (IOException ioe) {
             }
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
+            catch (IOException ioe) {
+            }
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
     }
 
@@ -78,11 +81,14 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
             String token = st.nextToken();
             if (token.equals("Full") && st.nextToken().equals("GC")) {
                 event.setType(AbstractGCEvent.Type.FULL_GC);
-            } else if (token.equals("Inc") && st.nextToken().equals("GC")) {
+            } 
+            else if (token.equals("Inc") && st.nextToken().equals("GC")) {
                 event.setType(AbstractGCEvent.Type.INC_GC);
-            } else if (token.equals("GC")) {
+            }
+            else if (token.equals("GC")) {
                 event.setType(AbstractGCEvent.Type.GC);
-            } else {
+            }
+            else {
                 throw new ParseException("Error parsing entry: " + line);
             }
             setMemoryAndPauses((GCEvent)event, line);
@@ -90,7 +96,8 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
             //System.out.println("Parsed: " + event);
             //System.out.println("Real  : [" + line + "]");
             return event;
-        } catch (RuntimeException rte) {
+        } 
+        catch (RuntimeException rte) {
             final ParseException parseException = new ParseException("Error parsing entry: " + line + ", " + rte.toString());
             parseException.initCause(rte);
             throw parseException;

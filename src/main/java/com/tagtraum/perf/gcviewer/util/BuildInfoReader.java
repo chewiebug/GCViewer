@@ -13,7 +13,9 @@ import java.util.Properties;
  */
 public class BuildInfoReader {
 
-    private final static String FILE_NAME = "build.info.properties";
+    private final static String FILE_NAME = "META-INF/MANIFEST.MF";
+    private final static String BUILD_VERSION = "Implementation-Version";
+    private final static String BUILD_TIMESTAMP = "Implementation-Date";
     
     /**
      * Reads the value of a property from FILE_NAME (must be in classpath).
@@ -28,6 +30,9 @@ public class BuildInfoReader {
                 Properties props = new Properties();
                 props.load(in);
                 propertyValue = props.getProperty(propertyName);
+                if (propertyValue == null || propertyValue.length() == 0) {
+                    propertyValue = "n/a";
+                }
             }
         } 
         catch (IOException e) {
@@ -43,7 +48,7 @@ public class BuildInfoReader {
      * @return version or "n/a" if not found.
      */
     public static String getVersion() {
-        return readPropertyValue("build.version");
+        return readPropertyValue(BUILD_VERSION);
     }
 
     /**
@@ -52,6 +57,6 @@ public class BuildInfoReader {
      * @return date or "n/a" if not found.
      */
     public static String getBuildDate() {
-        return readPropertyValue("build.date");
+        return readPropertyValue(BUILD_TIMESTAMP);
     }
 }

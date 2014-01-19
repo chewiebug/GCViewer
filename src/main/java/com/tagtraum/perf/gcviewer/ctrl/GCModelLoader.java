@@ -13,12 +13,12 @@ import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.imp.MonitoredBufferedInputStream;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 
 /**
  * Loads the model in a background thread (progress can be tracked by propertyChangeListeners).
  *
  * @author Hans Bausewein
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>Date: November 8, 2013</p>
  */
 public class GCModelLoader extends SwingWorker<GCModel, Object> implements PropertyChangeListener {
@@ -36,14 +36,13 @@ public class GCModelLoader extends SwingWorker<GCModel, Object> implements Prope
 
 	@Override
 	protected GCModel doInBackground() throws Exception {
-	    firePropertyChange("loggername", "", Thread.currentThread().getName());
 		setProgress(0);
 		final GCModel result;
 		try {
-			result = dataReaderFacade.loadModel(gcResource.getResourceName());			
+			result = dataReaderFacade.loadModel(gcResource);			
 		}
 		catch (DataReaderException | RuntimeException e) {
-			final Logger logger = LoggerHelper.getThreadSpecificLogger(this);
+			Logger logger = gcResource.getLogger();
 			if (logger.isLoggable(Level.FINE)) {
 			    logger.log(Level.FINE, "Failed to load GCModel from " + gcResource.getResourceName(), e);
 			}
@@ -53,8 +52,7 @@ public class GCModelLoader extends SwingWorker<GCModel, Object> implements Prope
 	}
 
 	protected void done() {
-        // remove special handler after we are done with reading.
-		final Logger logger = LoggerHelper.getThreadSpecificLogger(this);
+		Logger logger = gcResource.getLogger();
 
 		try {
 			gcResource.setModel(get());

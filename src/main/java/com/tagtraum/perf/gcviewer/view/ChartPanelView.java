@@ -42,6 +42,8 @@ import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 public class ChartPanelView implements PropertyChangeListener {
 
     public static final String EVENT_MINIMIZED = "minimized";
+    public static final String EVENT_CLOSED = "closed";
+    
     static Logger LOG = Logger.getLogger(ChartPanelView.class.getName());
     
     private GCPreferences preferences;
@@ -53,19 +55,17 @@ public class ChartPanelView implements PropertyChangeListener {
     private final JTabbedPane modelChartAndDetailsPanel;
     private final ViewBar viewBar;
     private final SwingPropertyChangeSupport propertyChangeSupport;
-    private final GCDocument gcDocument;
     private GCResource gcResource;
     private boolean viewBarVisible;
     private boolean minimized;
     
-    public ChartPanelView(final GCDocument gcDocument, final GCResource gcResource) {
-    	this.gcDocument = gcDocument;
+    public ChartPanelView(final GCPreferences preferences, final GCResource gcResource) {
     	this.gcResource = gcResource;
         this.modelDetailsPanel = new ModelDetailsPanel();
         this.modelChart = new ModelChartImpl();
-        this.preferences = gcDocument.getPreferences();
+        this.preferences = preferences;
         this.modelMetricsPanel = new ModelMetricsPanel();
-        this.modelLoaderView = new GCModelLoaderView();
+        this.modelLoaderView = new GCModelLoaderView(gcResource);
         
         JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
@@ -85,7 +85,7 @@ public class ChartPanelView implements PropertyChangeListener {
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
         
         setGcResource(gcResource);
-        updateTabSettings(gcResource);
+        updateTabDisplay(gcResource);
     }
 
     /**
@@ -120,6 +120,7 @@ public class ChartPanelView implements PropertyChangeListener {
         modelChart.invalidate();
         modelMetricsPanel.invalidate();
         modelDetailsPanel.invalidate();
+        modelLoaderView.invalidate();
     }
 
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
@@ -182,28 +183,27 @@ public class ChartPanelView implements PropertyChangeListener {
     }
 
     public void close() {
-        // TODO SWINGWORKER refactor
-    	gcDocument.removeChartPanelView(this);
+        propertyChangeSupport.firePropertyChange(EVENT_CLOSED, false, true);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO SWINGWORKER listen to changes in GCResource
+        // TODO if there were parser warnings, change color of parser tab
         if (evt.getSource() instanceof GCResource
                 && GCResource.PROPERTY_MODEL.equals(evt.getPropertyName())) {
             
             GCResource gcResource = (GCResource) evt.getSource();
             updateModel(gcResource);
-            updateTabSettings(gcResource);
+            updateTabDisplay(gcResource);
         }
     }
     
-    private void updateTabSettings(GCResource gcResource) {
+    private void updateTabDisplay(GCResource gcResource) {
         // only enable "parser" panel, as long as model contains no data
         boolean modelHasData = gcResource.getModel() != null && gcResource.getModel().size() > 0;
         for (int i = 0; i < modelChartAndDetailsPanel.getTabCount(); ++i) {
-            modelChartAndDetailsPanel.getComponentAt(i).setEnabled(
-                    !modelHasData
+            modelChartAndDetailsPanel.setEnabledAt(i, 
+                    modelHasData
                     || modelChartAndDetailsPanel.getTitleAt(i).equals(
                             LocalisationHelper.getString("data_panel_tab_parser")));
         }

@@ -2,15 +2,14 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * DataReaderJRockit1_4_2.
@@ -20,19 +19,16 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class DataReaderJRockit1_4_2 implements DataReader {
-    private static Logger LOG = Logger.getLogger(DataReaderJRockit1_4_2.class.getName());
-
-    private LineNumberReader in;
+public class DataReaderJRockit1_4_2 extends AbstractDataReader {
     private static final String MEMORY_MARKER = "[memory ] ";
     private static final String NURSERY_SIZE = "nursery size: ";
 
-    public DataReaderJRockit1_4_2(InputStream in) {
-        this.in = new LineNumberReader(new InputStreamReader(in));
+    public DataReaderJRockit1_4_2(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
+        super(gcResource, in);
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading JRockit 1.4.2 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading JRockit 1.4.2 format...");
         boolean gcSummary = false;
         try {
             GCModel model = new GCModel(true);
@@ -43,7 +39,7 @@ public class DataReaderJRockit1_4_2 implements DataReader {
             while ((line = in.readLine()) != null) {
                 final int memoryIndex = line.indexOf(MEMORY_MARKER);
                 if (memoryIndex == -1) {
-                    if (LOG.isLoggable(Level.FINE)) LOG.fine("Ignoring line " + in.getLineNumber() + ". Missing \"[memory ]\" marker: " + line);
+                    if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Ignoring line " + in.getLineNumber() + ". Missing \"[memory ]\" marker: " + line);
                     continue;
                 }
                 if (line.endsWith(MEMORY_MARKER)) {
@@ -56,19 +52,19 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                     gcSummary = line.endsWith("Memory usage report");
                 }
                 if (gcSummary) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                    if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startTimeIndex));
                     continue;
                 }
                 else if (line.indexOf("Prefetch distance") != -1) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                    if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startTimeIndex));
                     continue;
                 }
                 else if (line.indexOf("GC strategy") != -1) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                    if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startTimeIndex));
                     continue;
                 }
                 else if (line.toLowerCase().indexOf("heap size:") != -1) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info(line.substring(startTimeIndex));
+                    if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startTimeIndex));
                     final int nurserySizeStart = line.indexOf(NURSERY_SIZE);
                     final int nurserySizeEnd = line.indexOf('K', nurserySizeStart + NURSERY_SIZE.length());
                     if (nurserySizeStart != -1) {
@@ -78,13 +74,13 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                 }
                 else if (line.substring(startTimeIndex).startsWith("<")) {
                     // ignore
-                    if (LOG.isLoggable(Level.FINE)) LOG.fine(line.substring(startTimeIndex));
+                    if (getLogger().isLoggable(Level.FINE)) getLogger().fine(line.substring(startTimeIndex));
                     continue;
                 }
 
                 final int colon = line.indexOf(':', startTimeIndex);
                 if (colon == -1) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.warning("Malformed line (" + in.getLineNumber() + "). Missing colon after start time: " + line);
+                    if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("Malformed line (" + in.getLineNumber() + "). Missing colon after start time: " + line);
                     continue;
                 }
                 event = new GCEvent();
@@ -105,7 +101,7 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                 while (!Character.isDigit(line.charAt(++typeEnd))) {}
                 final AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup("jrockit." + line.substring(typeStart, typeEnd).trim());
                 if (type == null) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info("Failed to determine type: " + line.substring(startTimeIndex));
+                    if (getLogger().isLoggable(Level.INFO)) getLogger().info("Failed to determine type: " + line.substring(startTimeIndex));
                     continue;
                 }
                 event.setType(type);
@@ -148,13 +144,15 @@ public class DataReaderJRockit1_4_2 implements DataReader {
                 }
             }
             return model;
-        } finally {
+        } 
+        finally {
             if (in != null)
                 try {
                     in.close();
-                } catch (IOException ioe) {
                 }
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Reading done.");
+                catch (IOException ioe) {
+                }
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading done.");
         }
     }
 

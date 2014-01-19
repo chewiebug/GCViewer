@@ -6,18 +6,17 @@
  */
 package com.tagtraum.perf.gcviewer.imp;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.util.StringTokenizer;
-import java.io.LineNumberReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * DataReader for HP-UX 1.4.1/1.4.2
@@ -25,18 +24,14 @@ import java.io.IOException;
  * @see <a href="http://www.hp.com/products1/unix/java/infolibrary/prog_guide/xverbosegc_1-4-1.html?jumpid=reg_R1002_USEN">http://www.hp.com/products1/unix/java/infolibrary/prog_guide/xverbosegc_1-4-1.html?jumpid=reg_R1002_USEN</a>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class DataReaderHPUX1_4_1 implements DataReader {
+public class DataReaderHPUX1_4_1 extends AbstractDataReader {
 
-    private static Logger LOG = Logger.getLogger(DataReaderHPUX1_4_1.class.getName());
-
-    private LineNumberReader in;
-
-    public DataReaderHPUX1_4_1(final InputStream in) {
-        this.in = new LineNumberReader(new InputStreamReader(in));
+    public DataReaderHPUX1_4_1(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
+        super(gcResource, in);
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading HP-UX 1.4.1-1.4.2 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading HP-UX 1.4.1-1.4.2 format...");
         try {
             final GCModel model = new GCModel(true);
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
@@ -45,13 +40,13 @@ public class DataReaderHPUX1_4_1 implements DataReader {
             while ((line = in.readLine()) != null) {
                 final StringTokenizer st = new StringTokenizer(line, " ");
                 if (st.countTokens() != 22) {
-                    if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.warning("Malformed line (" + in.getLineNumber() + "). Wrong number of tokens ("+st.countTokens()+"): " + line);
+                    if (getLogger().isLoggable(Level.WARNING)) {
+                        getLogger().warning("Malformed line (" + in.getLineNumber() + "). Wrong number of tokens ("+st.countTokens()+"): " + line);
                         continue;
                     }
                 }
                 if (!"<GC:".equals(st.nextToken())) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.warning("Malformed line (" + in.getLineNumber() + "). Expected \"<GC:\" in " + line);
+                    if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("Malformed line (" + in.getLineNumber() + "). Expected \"<GC:\" in " + line);
                     continue;
                 }
                 event = new GCEvent();
@@ -206,13 +201,15 @@ public class DataReaderHPUX1_4_1 implements DataReader {
                 model.add(event);
             }
             return model;
-        } finally {
+        } 
+        finally {
             if (in != null)
                 try {
                     in.close();
-                } catch (IOException ioe) {
+                } 
+                catch (IOException ioe) {
                 }
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Reading done.");
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading done.");
         }
     }
 

@@ -1,7 +1,9 @@
 package com.tagtraum.perf.gcviewer;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -19,14 +21,14 @@ public class TestBuildInfoReader {
     @Test
     public void readVersion() {
         String version = BuildInfoReader.getVersion();
-        assertNotNull("version", version);
-        assertFalse("must not be n/a", version.equals("n/a"));
+        assertThat("version", version, notNullValue());
+        assertThat("must not be empty", version, not(isEmptyOrNullString()));
     }
 
     @Test
     public void readBuildDate() {
         String buildDate = BuildInfoReader.getBuildDate();
-        assertNotNull("buildDate", buildDate);
-        assertFalse("must not be n/a", buildDate.equals("n/a"));
+        assertThat("buildDate", buildDate, notNullValue());
+        assertThat("must not be empty", buildDate, not(isEmptyOrNullString()));
     }
 }

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -17,8 +16,8 @@ import javax.swing.SwingWorker;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 
 /**
  * Display the GCModel loading process for a GCDocument.
@@ -32,9 +31,9 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
     private TextAreaLogHandler textAreaLogHandler = new TextAreaLogHandler();
 
 	/**
-	 * @param modelLoaders
+	 * @param gcResource resource to be tracked
 	 */
-	public GCModelLoaderView() {
+	public GCModelLoaderView(GCResource gcResource) {
 		super(new BorderLayout());
 		
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -46,13 +45,12 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
 
-        JLabel msgLabel = new JLabel();
-        msgLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        msgLabel.setVisible(false);       
-        this.messageLabel = msgLabel;
+        messageLabel = new JLabel();
+        messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        messageLabel.setVisible(false);       
 
-        parserInfo.add(msgLabel);
         parserInfo.add(progressBar);
+        parserInfo.add(messageLabel);
         
         add(parserInfo, BorderLayout.NORTH);
 
@@ -63,8 +61,17 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
         textAreaScrollPane.setPreferredSize(new Dimension(700, 500));
         
         add(textAreaScrollPane, BorderLayout.CENTER);
+        
+        setGCResource(gcResource);
 	}
 
+	private void setGCResource(GCResource gcResource) {
+        textAreaLogHandler.getTextArea().setText("");
+        progressBar.setVisible(true);
+        messageLabel.setVisible(false);
+        gcResource.getLogger().addHandler(textAreaLogHandler);
+	}
+	
     /**
      * Invoked when task's progress property changes.
      */
@@ -72,30 +79,28 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
     public void propertyChange(PropertyChangeEvent evt) {
 		final String eventPropertyName = evt.getPropertyName();
 		
-		if ("loggername".equals(eventPropertyName)) {
-            textAreaLogHandler.getTextArea().setText("");
-            Logger.getLogger((String) evt.getNewValue()).addHandler(textAreaLogHandler);
-		}
         if ("progress".equals(eventPropertyName)) {
             progressBar.setValue((int)evt.getNewValue());
         }
-        else if ("state".equals(eventPropertyName)
-                    && SwingWorker.StateValue.DONE == evt.getNewValue()) {
-    		
-            progressBar.setValue(100);
-    		final int nErrors = textAreaLogHandler.getErrorCount();
-    		
-    		//LoggerHelper.getThreadSpecificLogger(this).info("Loading " + modelLoader.getGcResource().getResourceName() + " produced " + nErrors + " errors");
-    		
-    		if (nErrors > 0) {
-    			//String title = modelLoader.getGcResource().getResourceName();		
-    	        messageLabel.setText(LocalisationHelper.getString("datareader_parseerror_dialog_message", nErrors, "title"));
-    			//modelLoader.getGcDocument().relayout();
-    		}		
-    		
-    		((GCModelLoader)evt.getSource()).removePropertyChangeListener(this);
-            LoggerHelper.getThreadSpecificLogger(null).removeHandler(textAreaLogHandler);
-    	}
+        else if ("state".equals(eventPropertyName)) {
+            if (SwingWorker.StateValue.STARTED == evt.getNewValue()) {
+                // don't clear textArea here, because comes late!
+            }
+            else if (SwingWorker.StateValue.DONE == evt.getNewValue()) {
+                GCModelLoader modelLoader = (GCModelLoader) evt.getSource();
+
+                progressBar.setValue(100);
+                final int nErrors = textAreaLogHandler.getErrorCount();
+                
+                messageLabel.setText(LocalisationHelper.getString("datareader_parseerror_dialog_message", nErrors));
+                messageLabel.setVisible(true);
+                progressBar.setVisible(false);
+
+                // TODO SWINGWORKER: Remove handler here, or leave it for reloading?
+                modelLoader.removePropertyChangeListener(this);
+                modelLoader.getGcResource().getLogger().removeHandler(textAreaLogHandler);
+            }
+        }
     }
 
 	public TextAreaLogHandler getTextAreaLogHandler() {

@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -16,7 +18,6 @@ import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,14 +38,14 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import com.tagtraum.perf.gcviewer.GCPreferences;
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
+import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener;
+import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener.DropFlavor;
 import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 import com.tagtraum.perf.gcviewer.ctrl.action.About;
 import com.tagtraum.perf.gcviewer.ctrl.action.Arrange;
@@ -138,14 +139,18 @@ public class GCViewerGui extends JFrame {
         
         initActions(controller, iconImage);
         
-        desktopPane = new DesktopPane(this);
+        desktopPane = new DesktopPane();
+        desktopPane.setDropTarget(new DropTarget(this, 
+                DnDConstants.ACTION_COPY, 
+                new FileDropTargetListener(controller, DropFlavor.OPEN)));
+        
         addWindowListener(new WindowAdapter() {
             public void windowClosing(final WindowEvent e) {
                 exit();
             }
         });
         viewMenuActionListener = new ViewMenuActionListener();
-        recentURLsMenu = new RecentURLsMenu(this);
+        recentURLsMenu = new RecentURLsMenu(controller);
         openURLAction.setRecentURLsModel(recentURLsMenu.getRecentURLsModel());
 
         setJMenuBar(initMenuBar());
@@ -210,12 +215,17 @@ public class GCViewerGui extends JFrame {
         }
 
         public void internalFrameClosed(final InternalFrameEvent e) {
-            if (desktopPane.getAllFrames().length == 0) arrangeAction.setEnabled(false);
-            ((GCDocument)e.getInternalFrame()).getRefreshWatchDog().stop();
+            JInternalFrame internalFrame = e.getInternalFrame();
+            internalFrame.removeInternalFrameListener(gcDocumentListener);
+            desktopPane.remove(internalFrame);
+
+            if (desktopPane.getAllFrames().length == 0){
+                arrangeAction.setEnabled(false);
+            }
             // remove menuitem from menu and from button group
-            for (int i=2; i<windowMenu.getItemCount(); i++) {
+            for (int i = 2; i < windowMenu.getItemCount(); i++) {
                 final JMenuItem item = windowMenu.getItem(i);
-                if (((WindowMenuItemAction)item.getAction()).getInternalFrame() == e.getInternalFrame()) {
+                if (((WindowMenuItemAction)item.getAction()).getInternalFrame() == internalFrame) {
                     windowMenu.remove(item);
                     windowCheckBoxGroup.remove(item);
                     break;
@@ -271,26 +281,11 @@ public class GCViewerGui extends JFrame {
         return (GCDocument)desktopPane.getSelectedFrame();
     }
 
-    private URL[] convertFilesToURLs(final File[] files) throws MalformedURLException {
-        final URL[] urls = new URL[files.length];
-        for (int i=0; i<files.length; i++) {
-            urls[i] = files[i].getAbsoluteFile().toURI().toURL();
-        }
-        return urls;
-    }
-
     public GCPreferences getPreferences() {
         return preferences;
     }
     
-    public void addModel(GCModelLoader loader) {
-        getSelectedGCDocument().addModel(loader);
-    }
-    
-    public void openModel(GCModelLoader loader) {
-        GCDocument gcDocument = new GCDocument(this, loader.getGcResource().getResourceName());
-        gcDocument.addModel(loader);
-        
+    public void addDocument(GCDocument gcDocument) {
         gcDocument.addInternalFrameListener(gcDocumentListener);
         desktopPane.add(gcDocument);
         gcDocument.setSize(450, 300);
@@ -308,71 +303,6 @@ public class GCViewerGui extends JFrame {
         }
     }
     
-    public void open(final File[] files) {
-        // delegate to open(...)
-        try {
-            final URL[] urls = convertFilesToURLs(files);
-            open(urls);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            //e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    public void open(final URL[] urls) {
-    	final int nUrls = urls.length; 
-        try {
-            if (nUrls >= 1) {            	
-            	final String title = Arrays.asList(urls).toString();
-                final GCDocument gcDocument = new GCDocument(this, title.substring(1, title.length() - 1));
-                gcDocument.addInternalFrameListener(gcDocumentListener);
-                desktopPane.add(gcDocument);
-                gcDocument.setSelected(true);
-                gcDocument.setSize(450, 300);
-                gcDocument.setMaximum(true);
-                //addAction.setSelectedFile(url);
-                gcDocument.setVisible(true);
-            }
-            add(urls);
-            recentURLsMenu.getRecentURLsModel().add(urls);
-            repaint();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    public void close(final GCDocument gcDocument) {
-    	desktopPane.remove(gcDocument);
-    	repaint();
-    }
-
-    public void add(final File[] files) {
-        try {
-            if (files.length >= 0) openFileAction.setSelectedFile(files[0]);
-            final URL[] urls = convertFilesToURLs(files);
-            add(urls);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.toString() + " " + e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            //e.printStackTrace();
-            JOptionPane.showMessageDialog(GCViewerGui.this, e.getLocalizedMessage(), LocalisationHelper.getString("fileopen_dialog_read_file_failed"), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    public void add(final URL[] urls) {
-        for (int i=0; i<urls.length; i++) {
-            //final URL url = urls[i];
-            //getSelectedGCDocument().add(url);
-        }
-        recentURLsMenu.getRecentURLsModel().add(urls);
-        repaint();
-    }
-
     private JToolBar initToolBar() {
         final JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
@@ -646,27 +576,38 @@ public class GCViewerGui extends JFrame {
             if (getSelectedGCDocument() == null) return;
             if (e.getActionCommand() == GCPreferences.FULL_GC_LINES) {
                 getSelectedGCDocument().getModelChart().setShowFullGCLines(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.INC_GC_LINES) {
+            }
+            else if (e.getActionCommand() == GCPreferences.INC_GC_LINES) {
                 getSelectedGCDocument().getModelChart().setShowIncGCLines(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.GC_TIMES_LINE) {
+            }
+            else if (e.getActionCommand() == GCPreferences.GC_TIMES_LINE) {
                 getSelectedGCDocument().getModelChart().setShowGCTimesLine(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.GC_TIMES_RECTANGLES) {
+            }
+            else if (e.getActionCommand() == GCPreferences.GC_TIMES_RECTANGLES) {
                 getSelectedGCDocument().getModelChart().setShowGCTimesRectangles(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.TOTAL_MEMORY) {
+            }
+            else if (e.getActionCommand() == GCPreferences.TOTAL_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowTotalMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.USED_MEMORY) {
+            }
+            else if (e.getActionCommand() == GCPreferences.USED_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowUsedMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.USED_TENURED_MEMORY) {
+            }
+            else if (e.getActionCommand() == GCPreferences.USED_TENURED_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowUsedTenuredMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.USED_YOUNG_MEMORY) {
+            }
+            else if (e.getActionCommand() == GCPreferences.USED_YOUNG_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowUsedYoungMemoryLine(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.TENURED_MEMORY) {
+            }
+            else if (e.getActionCommand() == GCPreferences.TENURED_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowTenured(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.YOUNG_MEMORY) {
+            }
+            else if (e.getActionCommand() == GCPreferences.YOUNG_MEMORY) {
                 getSelectedGCDocument().getModelChart().setShowYoung(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.INITIAL_MARK_LEVEL) {
+            }
+            else if (e.getActionCommand() == GCPreferences.INITIAL_MARK_LEVEL) {
                 getSelectedGCDocument().getModelChart().setShowInitialMarkLevel(((JCheckBoxMenuItem) e.getSource()).getState());
-            } else if (e.getActionCommand() == GCPreferences.CONCURRENT_COLLECTION_BEGIN_END) {
+            }
+            else if (e.getActionCommand() == GCPreferences.CONCURRENT_COLLECTION_BEGIN_END) {
                 getSelectedGCDocument().getModelChart().setShowConcurrentCollectionBeginEnd(((JCheckBoxMenuItem) e.getSource()).getState());
             }
         }
@@ -760,7 +701,8 @@ public class GCViewerGui extends JFrame {
         public void actionPerformed(final ActionEvent ae) {
             try {
                 internalFrame.setSelected(true);
-            } catch (PropertyVetoException e1) {
+            } 
+            catch (PropertyVetoException e1) {
                 e1.printStackTrace();
             }
         }

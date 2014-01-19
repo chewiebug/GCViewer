@@ -21,7 +21,7 @@ public class TextAreaFormatter extends Formatter {
         StringBuffer sb = new StringBuffer();
         sb.append(record.getLevel().getLocalizedName());
         sb.append(" [");
-        final String logger = record.getLoggerName();
+        final String logger = record.getSourceClassName();
         sb.append(logger.substring(logger.lastIndexOf('.') + 1));
         sb.append("]: ");
         sb.append(record.getMessage());
