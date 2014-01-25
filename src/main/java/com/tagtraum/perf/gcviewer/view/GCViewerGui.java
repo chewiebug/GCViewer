@@ -182,11 +182,11 @@ public class GCViewerGui extends JFrame {
         licenseAction = new LicenseAction(this);
         openFileAction = new OpenFile(controller, this);
         openURLAction = new OpenURL(controller, this);
-        refreshAction = new Refresh(this);
+        refreshAction = new Refresh(controller, this);
         exportAction = new Export(this);
         zoomAction = new Zoom(this);
         arrangeAction = new Arrange(this);
-        watchAction = new Watch(this);
+        watchAction = new Watch(controller, this);
 
         if (OSXSupport.isOSX()) {
             OSXSupport.initializeMacOSX(aboutAction, exitAction, null, icon, this);
@@ -252,7 +252,6 @@ public class GCViewerGui extends JFrame {
             refreshAction.setEnabled(true);
             watchAction.setEnabled(true);
             menuItemWatch.setSelected(getSelectedGCDocument().isWatched());
-            getSelectedGCDocument().getRefreshWatchDog().setAction(watchAction);
             watchToggle.setSelected(getSelectedGCDocument().isWatched());
             zoomAction.setEnabled(true);
             arrangeAction.setEnabled(true);
@@ -273,7 +272,6 @@ public class GCViewerGui extends JFrame {
             zoomAction.setEnabled(false);
             watchToggle.setSelected(false);
             menuItemWatch.setSelected(false);
-            ((GCDocument)e.getInternalFrame()).getRefreshWatchDog().setAction(null);
         }
     };
 

@@ -65,9 +65,10 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
         setGCResource(gcResource);
 	}
 
-	private void setGCResource(GCResource gcResource) {
+	public void setGCResource(GCResource gcResource) {
         textAreaLogHandler.getTextArea().setText("");
         progressBar.setVisible(true);
+        progressBar.setValue(0);
         messageLabel.setVisible(false);
         gcResource.getLogger().addHandler(textAreaLogHandler);
 	}
@@ -96,7 +97,6 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
                 messageLabel.setVisible(true);
                 progressBar.setVisible(false);
 
-                // TODO SWINGWORKER: Remove handler here, or leave it for reloading?
                 modelLoader.removePropertyChangeListener(this);
                 modelLoader.getGcResource().getLogger().removeHandler(textAreaLogHandler);
             }

@@ -24,8 +24,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import com.tagtraum.perf.gcviewer.GCPreferences;
-import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
@@ -86,34 +84,6 @@ public class ChartPanelView implements PropertyChangeListener {
         
         setGcResource(gcResource);
         updateTabDisplay(gcResource);
-    }
-
-    /**
-     * Reloads the model displayed in this chart panel if it has changed. Using the parameter
-     * the parser error dialog can be suppressed.
-     * 
-     * @param showParserErrors if <code>true</code> parser errors will be shown
-     * @return <code>true</code>, if the file has been reloaded
-     * @throws DataReaderException if something went wrong reading the file
-     */
-    public boolean reloadModel(boolean showParserErrors) throws DataReaderException {
-        // TODO SWINGWORKER: how to reload a model?
-    	final GCModel model = getGCResource().getModel();
-
-/*    	if (modelLoader.getState() != SwingWorker.StateValue.DONE) {
-    		// do not start another reload, while loading (or should we cancel the current load operation?)
-    		LOG.info("Ignored \"reloadModel\" request, because modelLoader is busy loading \"" + model.getURL() + "\" (at " + modelLoader.getProgress() + " %)");
-    		return false; // re-layout will be done, when loading completed
-    	}
-    	
-    	final URL newURL = (model == null) ? null : model.getURL();
-        
-        if ((newURL != null) && model.isDifferent(newURL)) {
-        	modelLoader = new GCModelLoader(modelLoader, newURL);
-            modelLoader.addPropertyChangeListener(modelChart);
-            return true;
-		}
-*/        return false;
     }
 
     public void invalidate() {

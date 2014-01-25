@@ -135,6 +135,16 @@ public class GCViewerController {
         open(resourceNameList.toArray(new String[resourceNameList.size()]));
     }
     
+    public void reload(GCDocument gcDocument) {
+        for (GCResource gcResource : gcDocument.getGCResources()) {
+            GCModelLoader loader = new GCModelLoader(gcResource);
+            GCDocumentController docController = getDocumentController(gcDocument);
+            docController.reloadModel(loader);
+            
+            loader.execute();
+        }
+    }
+    
     /**
      * Set GCViewerGui (for test purposes).
      * @param gui gui to be set

@@ -39,17 +39,33 @@ public class GCResource {
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 	    this.propertyChangeSupport.addPropertyChangeListener(listener);
 	}
+
 	
 	@Override
-	public boolean equals(Object obj) {
-	    return resourceName.equals(obj);
-	}
-	
-	public GCModel getModel() {
-	    return model;
-	}
-	
-	public String getResourceName() {
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GCResource other = (GCResource) obj;
+        if (resourceName == null) {
+            if (other.resourceName != null) {
+                return false;
+            }
+        } 
+        else if (!resourceName.equals(other.resourceName)) {
+            return false;
+        }
+        return true;
+    }
+
+    public GCModel getModel() {
+        return model;
+    }
+    
+    public String getResourceName() {
 		return resourceName;
 	}
 	
@@ -58,9 +74,13 @@ public class GCResource {
 	}
 	
 	@Override
-	public int hashCode() {		
-		return resourceName.hashCode();
-	}
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((resourceName == null) ? 0 : resourceName.hashCode());
+        return result;
+    }
 
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 	    this.propertyChangeSupport.removePropertyChangeListener(listener);

@@ -7,6 +7,7 @@ import javax.swing.SwingWorker;
 
 import com.tagtraum.perf.gcviewer.view.ChartPanelView;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
+import com.tagtraum.perf.gcviewer.view.GCModelLoaderView;
 
 /**
  * Controller for {@link GCDocument}.
@@ -31,7 +32,7 @@ public class GCDocumentController implements PropertyChangeListener {
         loader.addPropertyChangeListener(this);
         loader.addPropertyChangeListener(chartPanelView.getModelLoaderView());
     }
-
+    
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName()) && SwingWorker.StateValue.DONE == evt.getNewValue()) {
@@ -43,4 +44,12 @@ public class GCDocumentController implements PropertyChangeListener {
 
     }
 
+    public void reloadModel(GCModelLoader loader) {
+        loader.addPropertyChangeListener(this);
+        
+        GCModelLoaderView loaderView = gcDocument.getChartPanelView(loader.getGcResource()).getModelLoaderView();
+        loaderView.setGCResource(loader.getGcResource());
+        loader.addPropertyChangeListener(loaderView);
+    }
+    
 }

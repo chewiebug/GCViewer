@@ -24,8 +24,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.GCPreferences;
-import com.tagtraum.perf.gcviewer.ctrl.action.RefreshWatchDog;
-import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -40,7 +39,6 @@ public class GCDocument extends JInternalFrame {
     private ModelChart modelChartListFacade;
     private boolean showModelMetricsPanel = true;
     private boolean watched;
-    private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
 
     public GCDocument(final GCPreferences preferences, String title) {
@@ -49,8 +47,6 @@ public class GCDocument extends JInternalFrame {
         // keep a copy of the preferences
         this.preferences = new GCPreferences();
         this.preferences.setTo(preferences);
-        this.refreshWatchDog = new RefreshWatchDog();
-        refreshWatchDog.setGcDocument(this);
         
         showModelMetricsPanel = preferences.isShowModelMetricsPanel();
         modelChartListFacade = new MultiModelChartFacade();
@@ -59,10 +55,6 @@ public class GCDocument extends JInternalFrame {
         getContentPane().setLayout(layout);
     }
     
-    public RefreshWatchDog getRefreshWatchDog() {
-        return refreshWatchDog;
-    }
-
     public boolean isShowModelMetricsPanel() {
         return showModelMetricsPanel;
     }
@@ -77,21 +69,19 @@ public class GCDocument extends JInternalFrame {
     }
 
     /**
-     * @return true, if any of the files has been reloaded
-     * @throws DataReaderException if something went wrong reading the data
+     * Returns a list of the GCResources displayed in this document.
+     * 
+     * @return list of GCResources displayed in thsi document
      */
-    public boolean reloadModels(boolean background) throws DataReaderException {
-        // TODO SWINGWORKER: reload model
-        boolean reloaded = false;
-        for (ChartPanelView chartPanelView : chartPanelViews) {
-            reloaded |= chartPanelView.reloadModel(!refreshWatchDog.isRunning());
+    public List<GCResource> getGCResources() {
+        List<GCResource> gcResourceList = new ArrayList<GCResource>();
+        for (ChartPanelView view : chartPanelViews) {
+            gcResourceList.add(view.getGCResource());
         }
-        if (!background) {
-            relayout();
-        }
-        return reloaded;
+        
+        return gcResourceList;
     }
-
+    
     public ModelChart getModelChart() {
         return modelChartListFacade;
     }
@@ -142,7 +132,6 @@ public class GCDocument extends JInternalFrame {
         else {
             // well, actually the ViewBar of ChartPanelView is not shown, when only one
             // ChartPanelView is left, so this code can never be reached... so, just precaution then?
-            getRefreshWatchDog().stop();
         	dispose();
         }
         return nChartPanelViews;
@@ -281,6 +270,23 @@ public class GCDocument extends JInternalFrame {
 
     public ChartPanelView getChartPanelView(int i) {
         return chartPanelViews.get(i);
+    }
+    
+    /**
+     * Returns the ChartPanelView that displays <code>gcResource</code>. If none is found, the
+     * return value is <code>null</code>.
+     * 
+     * @param gcResource the resource the ChartPanelView displaying it is looked for
+     * @return ChartPanelView-instance or <code>null</code> if no instance was found
+     */
+    public ChartPanelView getChartPanelView(GCResource gcResource) {
+        for (ChartPanelView view : chartPanelViews) {
+            if (view.getGCResource().equals(gcResource)) {
+                return view;
+            }
+        }
+        
+        return null;
     }
 
     public void setWatched(boolean watched) {

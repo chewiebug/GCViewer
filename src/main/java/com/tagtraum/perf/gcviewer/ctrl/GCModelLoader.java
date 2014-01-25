@@ -66,12 +66,6 @@ public class GCModelLoader extends SwingWorker<GCModel, Object> implements Prope
 			if (logger.isLoggable(Level.FINE))
 				logger.log(Level.WARNING, "Failed to create GCModel from " + gcResource.getResourceName(), e);			
 		}
-		
-        // TODO SWINGWORKER
-//		if (modelLoaderView != null) {
-//			logger.removeHandler(modelLoaderView.getTextAreaLogHandler());
-//		}
-		//gcDocument.gcModelLoaderDone(this, model);
 	}
 	
 	public GCResource getGcResource() {
