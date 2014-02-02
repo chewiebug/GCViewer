@@ -14,7 +14,7 @@ import java.util.logging.*;
 public class TextAreaLogHandler extends Handler {
 
     private JTextArea textArea;
-    private boolean errors;
+    private boolean hasErrors;
     private int errorCount;
 
     public TextAreaLogHandler() {
@@ -22,18 +22,33 @@ public class TextAreaLogHandler extends Handler {
         setFormatter(new TextAreaFormatter());
     }
 
-    public JTextArea getTextArea() {
-        return textArea;
+    /**
+     * @see java.util.logging.Handler#close()
+     */
+    public void close() throws SecurityException {
     }
 
-    public boolean hasErrors() {
-        return errors;
+    /**
+     * @see java.util.logging.Handler#flush()
+     */
+    public void flush() {
     }
     
     public int getErrorCount() {
     	return errorCount;
     }
 
+    public JTextArea getTextArea() {
+        return textArea;
+    }
+
+    public boolean hasErrors() {
+        return hasErrors;
+    }
+
+    /**
+     * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
+     */
     public void publish(LogRecord record) {
         try {
             if (isLoggable(record)) {
@@ -41,29 +56,29 @@ public class TextAreaLogHandler extends Handler {
                 if (level >=Level.WARNING.intValue() && level < Level.OFF.intValue()) {
                     ++errorCount;
                 }
-                if (!errors) {
-                    errors = level >= Level.WARNING.intValue() && level < Level.OFF.intValue();
-                }
-                String formattedRecord = null;
-                try {
-                    formattedRecord = getFormatter().format(record);
-                } catch (Exception e) {
-                    reportError(e.toString(), e, ErrorManager.FORMAT_FAILURE);
+                if (!hasErrors) {
+                    hasErrors = level >= Level.WARNING.intValue() && level < Level.OFF.intValue();
                 }
                 try {
+                    String formattedRecord = getFormatter().format(record);
                     textArea.append(formattedRecord);
-                } catch (Exception e) {
+                } 
+                catch (RuntimeException e) {
                     reportError(e.toString(), e, ErrorManager.WRITE_FAILURE);
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             reportError(e.toString(), e, ErrorManager.GENERIC_FAILURE);
         }
     }
-
-    public void flush() {
-    }
-
-    public void close() throws SecurityException {
+    
+    /**
+     * Resets all internal state to an initial state and is ready to receive log events.
+     */
+    public void reset() {
+        textArea.setText("");
+        errorCount = 0;
+        hasErrors = false;
     }
 }

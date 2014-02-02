@@ -7,10 +7,10 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 
 /**
- * TextAreaFormatter.
- * <p/>
- * Date: Oct 3, 2005
- * Time: 4:50:41 PM
+ * Formatter for a {@link LogRecord} to be displayed in a text area.
+ * 
+ * <p>Date: Oct 3, 2005<br/>
+ * Time: 4:50:41 PM</p>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
@@ -18,7 +18,7 @@ public class TextAreaFormatter extends Formatter {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public String format(LogRecord record) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(record.getLevel().getLocalizedName());
         sb.append(" [");
         final String logger = record.getSourceClassName();

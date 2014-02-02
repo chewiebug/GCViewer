@@ -40,10 +40,6 @@ public class GCViewerController {
         }
     }
     
-    public void add(String[] resourceNames) {
-        
-    }
-    
     private void addModel(String resourceName) {
         GCModelLoader loader = new GCModelLoader(new GCResource(resourceName));
         GCDocumentController docController = getDocumentController(gcViewerGui.getSelectedGCDocument());
@@ -135,14 +131,26 @@ public class GCViewerController {
         open(resourceNameList.toArray(new String[resourceNameList.size()]));
     }
     
-    public void reload(GCDocument gcDocument) {
+    /**
+     * Reload all models of <code>gcDocument</code> and provide tracker. The tracker will
+     * fire a propertyChangeEvent, as soon as all GCModelLoaders have finished loading.
+     * 
+     * @param gcDocument document of which models should be reloaded
+     * @return tracker to track finish state of all models being loaded
+     */
+    public GCModelLoaderGroupTracker reload(GCDocument gcDocument) {
+        GCModelLoaderGroupTracker tracker = new GCModelLoaderGroupTracker();
         for (GCResource gcResource : gcDocument.getGCResources()) {
             GCModelLoader loader = new GCModelLoader(gcResource);
             GCDocumentController docController = getDocumentController(gcDocument);
             docController.reloadModel(loader);
             
-            loader.execute();
+            tracker.addGcModelLoader(loader);
         }
+        
+        tracker.execute();
+        
+        return tracker;
     }
     
     /**

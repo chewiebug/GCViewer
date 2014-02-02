@@ -1,7 +1,12 @@
 package com.tagtraum.perf.gcviewer.ctrl.action;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.TimerTask;
 
+import javax.swing.SwingWorker;
+
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
 import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 
@@ -36,11 +41,29 @@ public class RefreshWatchDog {
         }
     }
 
-    private class ModelReloader extends TimerTask {
+    private class ModelReloader extends TimerTask implements PropertyChangeListener {
         
-        public void run() {
-            // TODO SWINGWORKER: next reload should not be started, if document takes too long to reload
-            controller.reload(gcDocument);
+        private GCModelLoaderGroupTracker tracker;
+        /** initial value must be true for the first start */
+        private boolean isFinished = true;
+        
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("state".equals(evt.getPropertyName())
+                    && SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+                
+                isFinished = true;
+                tracker.removePropertyChangeListener(this);
+            }
         }
+
+        public void run() {
+            if (isFinished) {
+                isFinished = false;
+                tracker = controller.reload(gcDocument);
+                tracker.addPropertyChangeListener(this);
+            }
+        }
+
     }
 }

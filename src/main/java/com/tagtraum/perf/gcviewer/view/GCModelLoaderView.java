@@ -66,7 +66,7 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
 	}
 
 	public void setGCResource(GCResource gcResource) {
-        textAreaLogHandler.getTextArea().setText("");
+	    textAreaLogHandler.reset();
         progressBar.setVisible(true);
         progressBar.setValue(0);
         messageLabel.setVisible(false);
