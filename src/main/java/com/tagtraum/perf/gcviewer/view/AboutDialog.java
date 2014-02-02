@@ -21,7 +21,7 @@ import javax.swing.text.View;
 
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 import com.tagtraum.perf.gcviewer.view.util.UrlDisplayHelper;
 
 /**
@@ -62,7 +62,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
     public AboutDialog(Frame f) {
         super(f, LocalisationHelper.getString("about_dialog_title"));
         Panel logoPanel = new Panel();
-        ImageIcon logoIcon = ImageLoader.loadImageIcon(LocalisationHelper.getString("about_dialog_image"));
+        ImageIcon logoIcon = ImageHelper.loadImageIcon(LocalisationHelper.getString("about_dialog_image"));
         JLabel la_icon = new JLabel(logoIcon);
         la_icon.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
         logoPanel.add(la_icon);

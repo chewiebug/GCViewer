@@ -9,7 +9,7 @@ import javax.swing.KeyStroke;
 import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
  *
@@ -31,7 +31,7 @@ public class Refresh extends AbstractAction {
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_refresh").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "refresh");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
-        putValue(SMALL_ICON, ImageLoader.loadImageIcon("refresh.png"));
+        putValue(SMALL_ICON, ImageHelper.loadImageIcon("refresh.png"));
         
         setEnabled(false);
     }

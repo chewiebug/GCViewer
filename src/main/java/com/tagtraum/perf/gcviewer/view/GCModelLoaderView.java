@@ -14,7 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
@@ -85,20 +84,15 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener 
         }
         else if ("state".equals(eventPropertyName)) {
             if (SwingWorker.StateValue.STARTED == evt.getNewValue()) {
-                // don't clear textArea here, because comes late!
+                // don't clear textArea here, because event comes late!
             }
             else if (SwingWorker.StateValue.DONE == evt.getNewValue()) {
-                GCModelLoader modelLoader = (GCModelLoader) evt.getSource();
-
                 progressBar.setValue(100);
                 final int nErrors = textAreaLogHandler.getErrorCount();
                 
                 messageLabel.setText(LocalisationHelper.getString("datareader_parseerror_dialog_message", nErrors));
                 messageLabel.setVisible(true);
                 progressBar.setVisible(false);
-
-                modelLoader.removePropertyChangeListener(this);
-                modelLoader.getGcResource().getLogger().removeHandler(textAreaLogHandler);
             }
         }
     }

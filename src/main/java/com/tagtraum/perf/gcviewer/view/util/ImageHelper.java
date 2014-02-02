@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 04.01.2014</p>
  */
-public class ImageLoader {
+public class ImageHelper {
     
     private static final String IMAGE_PATH = "images/";
     

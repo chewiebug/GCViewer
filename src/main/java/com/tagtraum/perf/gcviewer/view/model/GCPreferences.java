@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.view.model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

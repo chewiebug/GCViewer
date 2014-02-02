@@ -2,9 +2,11 @@ package com.tagtraum.perf.gcviewer.ctrl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
 
+import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.view.ChartPanelView;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCModelLoaderView;
@@ -38,10 +40,21 @@ public class GCDocumentController implements PropertyChangeListener {
         if ("state".equals(evt.getPropertyName()) && SwingWorker.StateValue.DONE == evt.getNewValue()) {
             // for every model that has finished loading, the document must be laid out again
             gcDocument.relayout();
-            
-            ((GCModelLoader)evt.getSource()).removePropertyChangeListener(this);
+
+            GCModelLoader modelLoader = (GCModelLoader) evt.getSource();
+            modelLoader.removePropertyChangeListener(this);
+            removeTextAreaLogHandler(modelLoader);
         }
 
+    }
+    
+    private void removeTextAreaLogHandler(GCModelLoader modelLoader) {
+        Logger logger = modelLoader.getGcResource().getLogger();
+        for (int i = logger.getHandlers().length - 1; i >= 0; --i) {
+            if (logger.getHandlers()[i] instanceof TextAreaLogHandler) {
+                logger.removeHandler(logger.getHandlers()[i]);
+            }
+        }
     }
 
     public void reloadModel(GCModelLoader loader) {

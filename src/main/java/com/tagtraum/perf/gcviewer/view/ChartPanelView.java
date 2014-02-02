@@ -23,10 +23,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import com.tagtraum.perf.gcviewer.GCPreferences;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 
 /**
@@ -248,8 +248,8 @@ public class ChartPanelView implements PropertyChangeListener {
 
         private static class ViewBarButton extends JButton {
             public ViewBarButton(String image1, String image2) {
-                final ImageIcon imageIcon1 = ImageLoader.loadImageIcon(image1);
-                final ImageIcon imageIcon2 = ImageLoader.loadImageIcon(image2);
+                final ImageIcon imageIcon1 = ImageHelper.loadImageIcon(image1);
+                final ImageIcon imageIcon2 = ImageHelper.loadImageIcon(image2);
                 setIcons(imageIcon1, imageIcon2);
                 setMargin(new Insets(0,2,0,2));
                 setRolloverEnabled(true);
@@ -265,10 +265,10 @@ public class ChartPanelView implements PropertyChangeListener {
 
         }
         private static class MinMaxButton extends JButton {
-            private final ImageIcon min1 = ImageLoader.loadImageIcon("minimize.png");
-            private final ImageIcon min2 = ImageLoader.loadImageIcon("minimize_selected.png");
-            private final ImageIcon max1 = ImageLoader.loadImageIcon("maximize.png");
-            private final ImageIcon max2 = ImageLoader.loadImageIcon("maximize_selected.png");
+            private final ImageIcon min1 = ImageHelper.loadImageIcon("minimize.png");
+            private final ImageIcon min2 = ImageHelper.loadImageIcon("minimize_selected.png");
+            private final ImageIcon max1 = ImageHelper.loadImageIcon("maximize.png");
+            private final ImageIcon max2 = ImageHelper.loadImageIcon("maximize_selected.png");
             private boolean minimize = true;
             
             public MinMaxButton() {

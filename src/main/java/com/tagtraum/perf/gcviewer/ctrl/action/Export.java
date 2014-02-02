@@ -18,7 +18,7 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.ChartPanelView;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -36,7 +36,7 @@ public class Export extends AbstractAction {
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_export"));
         putValue(ACTION_COMMAND_KEY, "export");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
-        putValue(SMALL_ICON, ImageLoader.loadImageIcon("save.png"));
+        putValue(SMALL_ICON, ImageHelper.loadImageIcon("save.png"));
         setEnabled(false);
 
         saveDialog = new JFileChooser();

@@ -12,7 +12,7 @@ import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.OpenFileView;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -34,7 +34,7 @@ public class OpenFile extends AbstractAction {
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_open_file").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "open");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
-        putValue(SMALL_ICON, ImageLoader.loadImageIcon("open.png"));
+        putValue(SMALL_ICON, ImageHelper.loadImageIcon("open.png"));
         
         openFileView = new OpenFileView();
     }

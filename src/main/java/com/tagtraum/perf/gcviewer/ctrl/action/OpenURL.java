@@ -11,7 +11,7 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.OpenUrlView;
 import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -33,7 +33,7 @@ public class OpenURL extends AbstractAction {
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_open_url").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "open_url");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('U', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
-        putValue(SMALL_ICON, ImageLoader.loadImageIcon("open_url.png"));
+        putValue(SMALL_ICON, ImageHelper.loadImageIcon("open_url.png"));
     }
 
     public void setRecentURLsModel(final RecentURLsModel recentURLsModel) {

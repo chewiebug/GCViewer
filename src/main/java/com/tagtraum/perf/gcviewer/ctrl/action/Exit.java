@@ -8,7 +8,7 @@ import javax.swing.KeyStroke;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
  *
@@ -27,7 +27,7 @@ public class Exit extends AbstractAction {
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_exit").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "exit");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        putValue(SMALL_ICON, ImageLoader.loadImageIcon("exit.png"));
+        putValue(SMALL_ICON, ImageHelper.loadImageIcon("exit.png"));
     }
 
     public void actionPerformed(final ActionEvent e) {

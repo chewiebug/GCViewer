@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
  * DesktopPane is the "background" of the application after opening.
@@ -22,7 +22,7 @@ import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
  */
 public class DesktopPane extends JDesktopPane {
 
-    private ImageIcon logoIcon = ImageLoader.loadImageIcon("gcviewer_background.png");
+    private ImageIcon logoIcon = ImageHelper.loadImageIcon("gcviewer_background.png");
     
     public DesktopPane() {
         super();

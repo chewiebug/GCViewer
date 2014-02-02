@@ -18,7 +18,7 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
  * (De)activate automatic reloading of all {@link GCResource} within one {@link GCDocument}.
@@ -30,8 +30,8 @@ import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 public class Watch extends AbstractAction {
     private Logger logger = Logger.getLogger(Watch.class.getCanonicalName());
     
-    private static final ImageIcon WATCH_ICON = ImageLoader.loadImageIcon("watch.png");
-    private static final ImageIcon CLOCK_ICON = ImageLoader.loadImageIcon("clock.png");
+    private static final ImageIcon WATCH_ICON = ImageHelper.loadImageIcon("watch.png");
+    private static final ImageIcon CLOCK_ICON = ImageHelper.loadImageIcon("clock.png");
 
     private GCViewerController controller;
     private GCViewerGui gcViewer;

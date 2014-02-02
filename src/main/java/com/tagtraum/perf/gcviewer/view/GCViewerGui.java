@@ -43,7 +43,6 @@ import javax.swing.JToolBar;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
-import com.tagtraum.perf.gcviewer.GCPreferences;
 import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener;
 import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener.DropFlavor;
 import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
@@ -61,6 +60,7 @@ import com.tagtraum.perf.gcviewer.ctrl.action.Refresh;
 import com.tagtraum.perf.gcviewer.ctrl.action.Watch;
 import com.tagtraum.perf.gcviewer.ctrl.action.Zoom;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.GCRectanglesRenderer;
@@ -73,7 +73,7 @@ import com.tagtraum.perf.gcviewer.view.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedHeapRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedTenuredRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedYoungRenderer;
-import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 
 /**
@@ -134,7 +134,7 @@ public class GCViewerGui extends JFrame {
     public GCViewerGui(GCViewerController controller) {
         super("tagtraum industries incorporated - GCViewer");
 
-        iconImage = ImageLoader.loadImage("gcviewericon.gif");
+        iconImage = ImageHelper.loadImage("gcviewericon.gif");
         setIconImage(iconImage);
         
         initActions(controller, iconImage);

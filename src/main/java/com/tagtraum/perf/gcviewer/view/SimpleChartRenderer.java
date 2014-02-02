@@ -1,7 +1,7 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import com.tagtraum.perf.gcviewer.GCPreferences;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
