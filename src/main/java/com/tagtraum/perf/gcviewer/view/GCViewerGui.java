@@ -261,8 +261,6 @@ public class GCViewerGui extends JFrame {
                 JCheckBoxMenuItem item = menuEntry.getValue();
                 item.setState(preferences.getGcLineProperty(menuEntry.getKey()));
             }
-            menuItemShowModelMetricsPanel.setState(preferences.getBooleanProperty(GCPreferences.SHOW_MODEL_METRICS_PANEL));
-            menuItemAntiAlias.setSelected(preferences.getBooleanProperty(GCPreferences.ANTI_ALIAS));
         }
 
         public void internalFrameDeactivated(final InternalFrameEvent e) {
