@@ -57,7 +57,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         this.chart.setPreferredSize(new Dimension(0, 0));
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        
+
         // order of the renderers determines what is painted first and last
         // we start with what's painted last
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -103,7 +103,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         horizontalScrollBar = getHorizontalScrollBar();
         horizontalScrollBar.setUnitIncrement(50);
         horizontalScrollBar.setBlockIncrement(getViewport().getWidth());
-        
+
         JPanel rowHeaderPanel = new JPanel();
         GridBagLayout layout = new GridBagLayout();
         rowHeaderPanel.setLayout(layout);
@@ -154,6 +154,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             }
         };
         timeOffsetPanel.setOkAction(setOffsetAction);
+        timeOffsetPanel.setOffsetSet(timestampRuler.getOffset() != 0);
         this.timestampRuler.addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent e) {
                 maybePopup(e);
@@ -198,7 +199,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     public void resetPolygonCache() {
         chart.resetPolygons();
     }
-    
+
     public double getScaleFactor() {
         return scaleFactor;
     }
@@ -215,7 +216,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         memoryRuler.setSize((int)memoryRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         pauseRuler.setSize((int)pauseRuler.getPreferredSize().getWidth(), getViewport().getHeight());
         timestampRuler.setSize((int)(getViewport().getWidth()*getScaleFactor()), (int)timestampRuler.getPreferredSize().getHeight());
-        
+
         repaint();
     }
 
@@ -237,7 +238,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     @Override
     public void setShowTenured(boolean showTenured) {
         totalTenuredRenderer.setVisible(showTenured);
-        
+
         // reset cache because young generation needs to be repainted
         resetPolygonCache();
     }
@@ -341,11 +342,27 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     public boolean isShowInitialMarkLevel() {
         return initialMarkLevelRenderer.isVisible();
     }
-    
+
     @Override
     public void setShowConcurrentCollectionBeginEnd(boolean showConcurrentCollectionBeginEnd) {
         concurrentGcLineRenderer.setVisible(showConcurrentCollectionBeginEnd);
     }
+
+    @Override
+    public void setShowDateStamp(boolean showDateStamp) {
+        if (showDateStamp && model.hasDateStamp()) {
+            timeOffsetPanel.setDate(model.getFirstDateStamp());
+            timestampRuler.setOffset(timeOffsetPanel.getDate().getTime() / 1000);
+            timeOffsetPanel.setOffsetSet(true);
+            timestampRuler.revalidate();
+            timestampRuler.repaint();
+        }
+    }
+    @Override
+    public boolean isShowDateStamp(){
+        return timeOffsetPanel.isOffsetSet();
+    }
+
 
     @Override
     public boolean isShowConcurrentCollectionBeginEnd() {
@@ -354,10 +371,10 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
     public void setModel(GCModel model, GCPreferences preferences) {
         this.model = model;
-        
+
         applyPreferences(preferences);
     }
-    
+
     private void applyPreferences(GCPreferences preferences) {
         setAntiAlias(preferences.getGcLineProperty(GCPreferences.ANTI_ALIAS));
         setShowTenured(preferences.getGcLineProperty(GCPreferences.TENURED_MEMORY));
@@ -372,6 +389,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         setShowUsedYoungMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_YOUNG_MEMORY));
         setShowInitialMarkLevel(preferences.getGcLineProperty(GCPreferences.INITIAL_MARK_LEVEL));
         setShowConcurrentCollectionBeginEnd(preferences.getGcLineProperty(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END));
+        setShowDateStamp(preferences.getGcLineProperty(GCPreferences.SHOW_DATE_STAMP, false));
     }
 
     public GCModel getModel() {
@@ -423,7 +441,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         private int scaleX(double d) {
             return (int) (d * getScaleFactor());
         }
-        
+
         /**
          * Reset the cached polygons of all {@link PolygonChartRenderer}s stored in this chart.
          */
