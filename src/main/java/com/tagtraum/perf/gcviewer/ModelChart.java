@@ -75,4 +75,9 @@ public interface ModelChart {
     void setAntiAlias(boolean antiAlias);
     
     void resetPolygonCache();
+
+    void setShowDateStamp(boolean showDateStamp);
+
+    boolean isShowDateStamp();
+
 }
