@@ -12,6 +12,12 @@ import java.util.Date;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+/**
+ * Testcase to test usage of "datestamp" flag in {@link ModelChartImpl}.
+ * 
+ * @author <a href="maciej.kwiecien@gmail.com">xylu</a>
+ * <p>created on: 21.02.2014</p>
+ */
 @RunWith(Theories.class)
 public class ModelChartImplTest {
 

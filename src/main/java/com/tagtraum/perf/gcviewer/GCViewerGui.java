@@ -109,6 +109,7 @@ public class GCViewerGui extends JFrame {
     private Watch watchAction = new Watch(this);
     private OSXFullScreen osxFullScreenAction;
     private JCheckBoxMenuItem menuItemShowDataPanel;
+    private JCheckBoxMenuItem menuItemShowDateStamp;
     private JCheckBoxMenuItem menuItemFullGCLines;
     private JCheckBoxMenuItem menuItemIncGCLines;
     private JCheckBoxMenuItem menuItemGcTimesLine;
@@ -137,6 +138,7 @@ public class GCViewerGui extends JFrame {
         setIconImage(iconImage);
         
         desktopPane = new DesktopPane(this);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(final WindowEvent e) {
                 exit();
@@ -217,6 +219,12 @@ public class GCViewerGui extends JFrame {
         }
 
         public void internalFrameClosing(final InternalFrameEvent e) {
+            if (getDesktopPane().getComponentCount() == 1) {
+                // only needs to be done, when the last window is closed
+                // otherwise an internalFrameActivated event will follow immediately after the
+                // close for the next active window
+                updateMenuItemState();
+            }
         }
 
         public void internalFrameClosed(final InternalFrameEvent e) {
@@ -231,6 +239,7 @@ public class GCViewerGui extends JFrame {
                     break;
                 }
             }
+            
         }
 
         public void internalFrameIconified(final InternalFrameEvent e) {
@@ -247,15 +256,33 @@ public class GCViewerGui extends JFrame {
                     break;
                 }
             }
-            zoomComboBox.setSelectedItem((int) (getSelectedGCDocument().getModelChart().getScaleFactor() * 1000.0) + "%");
-            exportAction.setEnabled(true);
-            refreshAction.setEnabled(true);
-            watchAction.setEnabled(true);
             menuItemWatch.setSelected(getSelectedGCDocument().isWatched());
             getSelectedGCDocument().getRefreshWatchDog().setAction(watchAction);
             watchToggle.setSelected(getSelectedGCDocument().isWatched());
+            exportAction.setEnabled(true);
+            refreshAction.setEnabled(true);
+            watchAction.setEnabled(true);
             zoomAction.setEnabled(true);
             arrangeAction.setEnabled(true);
+            
+            updateMenuItemState();
+        }
+
+        public void internalFrameDeactivated(final InternalFrameEvent e) {
+            exportAction.setEnabled(false);
+            refreshAction.setEnabled(false);
+            watchAction.setEnabled(false);
+            zoomAction.setEnabled(false);
+            watchToggle.setSelected(false);
+            menuItemWatch.setSelected(false);
+            ((GCDocument)e.getInternalFrame()).getRefreshWatchDog().setAction(null);
+        }
+        
+        private void updateMenuItemState() {
+            zoomComboBox.setSelectedItem((int) (getSelectedGCDocument().getModelChart().getScaleFactor() * 1000.0) + "%");
+            menuItemShowDataPanel.setState(getSelectedGCDocument().isShowModelPanel());
+            menuItemShowDateStamp.setState(getSelectedGCDocument().getModelChart().isShowDateStamp());
+            menuItemAntiAlias.setSelected(getSelectedGCDocument().getModelChart().isAntiAlias());
             menuItemFullGCLines.setState(getSelectedGCDocument().getModelChart().isShowFullGCLines());
             menuItemIncGCLines.setState(getSelectedGCDocument().getModelChart().isShowIncGCLines());
             menuItemGcTimesLine.setState(getSelectedGCDocument().getModelChart().isShowGCTimesLine());
@@ -268,18 +295,6 @@ public class GCViewerGui extends JFrame {
             menuItemUsedYoungMemory.setState(getSelectedGCDocument().getModelChart().isShowUsedYoungMemoryLine());
             menuItemInitialMarkLevel.setState(getSelectedGCDocument().getModelChart().isShowInitialMarkLevel());
             menuItemConcurrentGcBeginEnd.setState(getSelectedGCDocument().getModelChart().isShowConcurrentCollectionBeginEnd());
-            menuItemShowDataPanel.setState(getSelectedGCDocument().isShowModelPanel());
-            menuItemAntiAlias.setSelected(getSelectedGCDocument().getModelChart().isAntiAlias());
-        }
-
-        public void internalFrameDeactivated(final InternalFrameEvent e) {
-            exportAction.setEnabled(false);
-            refreshAction.setEnabled(false);
-            watchAction.setEnabled(false);
-            zoomAction.setEnabled(false);
-            watchToggle.setSelected(false);
-            menuItemWatch.setSelected(false);
-            ((GCDocument)e.getInternalFrame()).getRefreshWatchDog().setAction(null);
         }
     };
 
@@ -479,6 +494,24 @@ public class GCViewerGui extends JFrame {
         viewMenu.addSeparator();
         gcLineMenuItems.put(GCPreferences.SHOW_DATA_PANEL, menuItemShowDataPanel);
 
+        menuItemShowDateStamp = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_show_data_panel"), true);
+        menuItemShowDateStamp.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_show_data_panel").charAt(0));
+        menuItemShowDateStamp.setIcon(createEmptyImageIcon(20, 20));
+        menuItemShowDateStamp.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_show_data_panel"));
+        menuItemShowDateStamp.setActionCommand(GCPreferences.SHOW_DATE_STAMP);
+        menuItemShowDateStamp.addActionListener(new ActionListener(){
+            public void actionPerformed(final ActionEvent e) {
+                final GCDocument gcDocument = getSelectedGCDocument();
+                if (gcDocument != null) {
+                    gcDocument.setShowModelPanel(menuItemShowDateStamp.getState());
+                }
+            }
+        });
+        // TODO fix menu item "showdatestamp"
+        //viewMenu.add(menuItemShowDateStamp);
+        //viewMenu.addSeparator();
+        gcLineMenuItems.put(GCPreferences.SHOW_DATE_STAMP, menuItemShowDateStamp);
+
         menuItemAntiAlias = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_antialias"), true);
         menuItemAntiAlias.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_antialias").charAt(0));
         menuItemAntiAlias.setIcon(createEmptyImageIcon(20, 20));
@@ -670,6 +703,19 @@ public class GCViewerGui extends JFrame {
     }
 
     public void exit() {
+        if (getDesktopPane().getComponentCount() > 0) {
+            // close all GCDocuments, other than the selected
+            GCDocument selected = getSelectedGCDocument();
+            for (int i = getDesktopPane().getComponentCount()-1; i > 0; --i) {
+                if (getDesktopPane().getComponent(i) != selected) {
+                    ((GCDocument)getDesktopPane().getComponent(i)).dispose();
+                }
+            }
+            // close current internal frame, because only then menu item state is updated
+            getSelectedGCDocument().doDefaultCloseAction();
+        }
+        
+        // store current state of menu items
         storePreferences(preferences);
         dispose();
         System.exit(0);
