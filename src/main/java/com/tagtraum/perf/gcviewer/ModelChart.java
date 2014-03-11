@@ -80,4 +80,11 @@ public interface ModelChart {
 
     boolean isShowDateStamp();
 
+	boolean isShowSystemFullGCLines();
+
+	void setShowSystemFullGCLines(boolean showSystemFullGCLines);
+
+
+
+
 }

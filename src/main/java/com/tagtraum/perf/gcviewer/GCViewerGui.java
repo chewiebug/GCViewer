@@ -65,6 +65,7 @@ import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
 import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
+import com.tagtraum.perf.gcviewer.renderer.SystemFullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
 import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
@@ -111,6 +112,7 @@ public class GCViewerGui extends JFrame {
     private JCheckBoxMenuItem menuItemShowDataPanel;
     private JCheckBoxMenuItem menuItemShowDateStamp;
     private JCheckBoxMenuItem menuItemFullGCLines;
+    private JCheckBoxMenuItem menuItemSystemFullGCLines;
     private JCheckBoxMenuItem menuItemIncGCLines;
     private JCheckBoxMenuItem menuItemGcTimesLine;
     private JCheckBoxMenuItem menuItemGcTimesRectangle;
@@ -284,6 +286,7 @@ public class GCViewerGui extends JFrame {
             menuItemShowDateStamp.setState(getSelectedGCDocument().getModelChart().isShowDateStamp());
             menuItemAntiAlias.setSelected(getSelectedGCDocument().getModelChart().isAntiAlias());
             menuItemFullGCLines.setState(getSelectedGCDocument().getModelChart().isShowFullGCLines());
+            menuItemSystemFullGCLines.setState(getSelectedGCDocument().getModelChart().isShowSystemFullGCLines());
             menuItemIncGCLines.setState(getSelectedGCDocument().getModelChart().isShowIncGCLines());
             menuItemGcTimesLine.setState(getSelectedGCDocument().getModelChart().isShowGCTimesLine());
             menuItemGcTimesRectangle.setState(getSelectedGCDocument().getModelChart().isShowGCTimesRectangles());
@@ -540,6 +543,16 @@ public class GCViewerGui extends JFrame {
         viewMenu.add(menuItemFullGCLines);
         gcLineMenuItems.put(GCPreferences.FULL_GC_LINES, menuItemFullGCLines);
 
+        menuItemSystemFullGCLines = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_system_full_gc_lines"), true);
+        menuItemSystemFullGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_system_full_gc_lines").charAt(0));
+        menuItemSystemFullGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_system_full_gc_lines"));
+        menuItemSystemFullGCLines.setIcon(createMonoColoredImageIcon(SystemFullGCLineRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemSystemFullGCLines.setActionCommand(GCPreferences.SYSTEM_FULL_GC_LINES);
+        menuItemSystemFullGCLines.addActionListener(viewMenuActionListener);
+        viewMenu.add(menuItemSystemFullGCLines);
+        gcLineMenuItems.put(GCPreferences.SYSTEM_FULL_GC_LINES, menuItemSystemFullGCLines);
+        
+        
         menuItemIncGCLines = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"), true);
         menuItemIncGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_inc_gc_lines").charAt(0));
         menuItemIncGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_inc_gc_lines"));
@@ -698,6 +711,8 @@ public class GCViewerGui extends JFrame {
                 getSelectedGCDocument().getModelChart().setShowInitialMarkLevel(((JCheckBoxMenuItem) e.getSource()).getState());
             } else if (e.getActionCommand() == GCPreferences.CONCURRENT_COLLECTION_BEGIN_END) {
                 getSelectedGCDocument().getModelChart().setShowConcurrentCollectionBeginEnd(((JCheckBoxMenuItem) e.getSource()).getState());
+            }else if (e.getActionCommand() == GCPreferences.SYSTEM_FULL_GC_LINES) {
+                getSelectedGCDocument().getModelChart().setShowSystemFullGCLines(((JCheckBoxMenuItem) e.getSource()).getState());
             }
         }
     }

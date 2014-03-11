@@ -77,7 +77,7 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
             StringTokenizer st = new StringTokenizer(line, " ,->()K\r\n");
             String token = st.nextToken();
             if (token.equals("Full") && st.nextToken().equals("GC")) {
-                event.setType(AbstractGCEvent.Type.FULL_GC);
+           		event.setType(AbstractGCEvent.Type.FULL_GC);
             } else if (token.equals("Inc") && st.nextToken().equals("GC")) {
                 event.setType(AbstractGCEvent.Type.INC_GC);
             } else if (token.equals("GC")) {

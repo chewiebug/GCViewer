@@ -90,6 +90,7 @@ public class GCModel implements Serializable {
     private List<ConcurrentGCEvent> concurrentGCEvents;
     private List<GCEvent> currentNoFullGCEvents;
     private List<GCEvent> fullGCEvents;
+    private List<GCEvent> systemFullGCEvents;
     private FileInformation fileInformation = new FileInformation();
 
     private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
@@ -139,6 +140,7 @@ public class GCModel implements Serializable {
         this.gcEvents = new ArrayList<GCEvent>();
         this.concurrentGCEvents = new ArrayList<ConcurrentGCEvent>();
         this.fullGCEvents = new ArrayList<GCEvent>();
+        this.systemFullGCEvents = new ArrayList<GCEvent>();
         this.currentNoFullGCEvents = new ArrayList<GCEvent>();
         this.currentPostGCSlope = new RegressionLine();
         this.postFullGCSlope = new RegressionLine();
@@ -286,6 +288,10 @@ public class GCModel implements Serializable {
     
     public Iterator<GCEvent> getFullGCEvents() {
     	return fullGCEvents.iterator();
+    }
+    
+    public Iterator<GCEvent> getSystemFullGCEvents(){
+    	return systemFullGCEvents.iterator();
     }
 
     private DoubleData getDoubleData(String key, Map<String, DoubleData> eventMap) {
@@ -744,4 +750,5 @@ public class GCModel implements Serializable {
         public static final Format IBM_VERBOSE_GC = new Format("IBM -verbose:gc");
         public static final Format SUN_1_2_2VERBOSE_GC = new Format("Sun 1.2.2 -verbose:gc");
     }
+
 }

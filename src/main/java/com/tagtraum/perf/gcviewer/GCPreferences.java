@@ -20,6 +20,7 @@ import java.util.logging.Logger;
  */
 public class GCPreferences {
     public static final String FULL_GC_LINES = "fullgclines";
+    public static final String SYSTEM_FULL_GC_LINES = "systemfullgclines";
     public static final String INC_GC_LINES = "incgclines";
     public static final String GC_LINES_LINE = "gctimesline";
     public static final String GC_TIMES_RECTANGLES = "gctimesrectangles";
