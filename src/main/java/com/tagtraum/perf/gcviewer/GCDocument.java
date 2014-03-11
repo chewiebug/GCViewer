@@ -600,6 +600,18 @@ public class GCDocument extends JInternalFrame {
             return chartPanelViews.get(0).getModelChart().isShowDateStamp();
 
         }
+
+		@Override
+		public boolean isShowSystemFullGCLines() {
+			if (chartPanelViews.isEmpty()) return false;
+            return chartPanelViews.get(0).getModelChart().isShowSystemFullGCLines();
+		}
+
+		@Override
+		public void setShowSystemFullGCLines(boolean showSystemFullGCLines) {
+			for (ChartPanelView chartPanelView : chartPanelViews) 
+				chartPanelView.getModelChart().setShowSystemFullGCLines(showSystemFullGCLines);			
+		}
     }
 
     private class ScrollBarMaximumChangeListener implements ChangeListener {
