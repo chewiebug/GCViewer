@@ -20,7 +20,8 @@ public class GCResource {
 	private final String resourceName;
 	private GCModel model;
 	private SwingPropertyChangeSupport propertyChangeSupport;
-	private Logger logger; 
+	private Logger logger;
+    private boolean isReload; 
 	
 	public GCResource(String resourceName) {
 		super();
@@ -82,8 +83,24 @@ public class GCResource {
         return result;
     }
 
+	/**
+	 * If this resource is being reloaded, this will return <code>true</code>.
+	 * @return <code>true</code> if this resource is being reloaded.
+	 */
+	public boolean isReload() {
+	    return isReload;
+	}
+	
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 	    this.propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+	
+	/**
+	 * if this resource is being reloaded, set this property to <code>true</code>.
+	 * @param isReload <code>true</code>, if this resource is being reloaded
+	 */
+	public void setIsReload(boolean isReload) {
+	    this.isReload = isReload;
 	}
 	
 	public void setModel(GCModel model) {

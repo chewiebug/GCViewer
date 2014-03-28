@@ -155,6 +155,7 @@ public class GCModelLoaderController {
     public GCModelLoaderGroupTracker reload(GCDocument gcDocument) {
         GCModelLoaderGroupTracker tracker = new GCModelLoaderGroupTracker();
         for (GCResource gcResource : gcDocument.getGCResources()) {
+            gcResource.setIsReload(true);
             GCModelLoader loader = new GCModelLoader(gcResource);
             GCDocumentController docController = getDocumentController(gcDocument);
             docController.reloadModel(loader);

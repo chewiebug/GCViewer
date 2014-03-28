@@ -169,7 +169,7 @@ public class ChartPanelView implements PropertyChangeListener {
     }
     
     private void updateTabDisplay(GCResource gcResource) {
-        // only enable "parser" panel, as long as model contains no data
+        // enable only "parser" panel, as long as model contains no data
         boolean modelHasData = gcResource.getModel() != null && gcResource.getModel().size() > 0;
         for (int i = 0; i < modelChartAndDetailsPanel.getTabCount(); ++i) {
             modelChartAndDetailsPanel.setEnabledAt(i, 
@@ -178,11 +178,13 @@ public class ChartPanelView implements PropertyChangeListener {
                             LocalisationHelper.getString("data_panel_tab_parser")));
         }
         
-        if (modelHasData) {
-            modelChartAndDetailsPanel.setSelectedIndex(0);
-        }
-        else {
-            modelChartAndDetailsPanel.setSelectedIndex(modelChartAndDetailsPanel.getTabCount()-1);
+        if (!gcResource.isReload()) {
+            if (modelHasData) {
+                modelChartAndDetailsPanel.setSelectedIndex(0);
+            }
+            else {
+                modelChartAndDetailsPanel.setSelectedIndex(modelChartAndDetailsPanel.getTabCount()-1);
+            }
         }
     }
     
