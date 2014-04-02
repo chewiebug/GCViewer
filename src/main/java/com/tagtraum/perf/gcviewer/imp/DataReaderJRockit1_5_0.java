@@ -8,9 +8,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * DataReaderJRockit1_5_0
@@ -130,10 +131,10 @@ public class DataReaderJRockit1_5_0 implements DataReader {
                 final String timestampString = line.substring(startTimeIndex, colon);
                 final int minus = timestampString.indexOf('-');
                 if (minus == -1) {
-                    event.setTimestamp(Double.parseDouble(timestampString));
+                    event.setTimestamp(NumberParser.parseDouble(timestampString));
                 }
                 else {
-                    event.setTimestamp(Double.parseDouble(timestampString.substring(0, minus)));
+                    event.setTimestamp(NumberParser.parseDouble(timestampString.substring(0, minus)));
                 }
 
                 // set type
@@ -166,7 +167,7 @@ public class DataReaderJRockit1_5_0 implements DataReader {
                 int startPause = line.indexOf(',', endTotal);
                 while (!Character.isDigit(line.charAt(++startPause))) {}
                 final int endPause = line.indexOf(' ', startPause);
-                event.setPause(Double.parseDouble(line.substring(startPause, endPause)) / 1000.0d);
+                event.setPause(NumberParser.parseDouble(line.substring(startPause, endPause)) / 1000.0d);
                 model.add(event);
 
                 // add artificial detail events

@@ -213,6 +213,13 @@ public class NumberParser {
         // This logic is factored out so as to allow future optimisations. For
         // example, we might want to make some simplifying assumptions about the
         // kind of doubles present in GC logs.
-        return Double.parseDouble(s.substring(offset, offset + length));
+        
+        return parseDouble(s.substring(offset, offset + length));
+    }
+    
+    public static double parseDouble (String s) {
+        // replace "," with "." because doubles may only contain "."
+        // some localized gc logs contain "," in pauses
+        return Double.parseDouble(s.replace(",", "."));
     }
 }

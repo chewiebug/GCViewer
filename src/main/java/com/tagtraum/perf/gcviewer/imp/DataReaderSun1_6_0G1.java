@@ -21,6 +21,7 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
@@ -80,7 +81,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
     // "[<datestamp>: ]0.295: [GC pause (young), 0.00594747 secs]"
-    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9-T:.+]{29})?[ ]?([0-9.]+)?[: \\[]{2,3}([A-Z0-9a-z- ().]+)[, ]+([0-9.]+)[ sec\\]]+$");
+    private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9-T:.+]{29})?[ ]?([0-9.]+)?[: \\[]{2,3}([A-Z0-9a-z- ().]+)[, ]+([0-9.,]+)[ sec\\]]+$");
     private static final int GC_PAUSE_GROUP_DATESTAMP = 1;
     private static final int GC_PAUSE_GROUP_TIMESTAMP = 2;
     private static final int GC_PAUSE_GROUP_TYPE = 3;
@@ -241,11 +242,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                                 timestamp = getTimestamp(line, parsePosition, datestamp);
                             }
                             else {
-                                timestamp = Double.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_TIMESTAMP));
+                                timestamp = NumberParser.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_TIMESTAMP));
                             }
                             gcEvent.setTimestamp(timestamp);
                             gcEvent.setExtendedType(type);
-                            gcEvent.setPause(Double.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_PAUSE)));
+                            gcEvent.setPause(NumberParser.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_PAUSE)));
                             
                             // now parse the details of this event
                             lineNumber = parseDetails(in, model, parsePosition, lineNumber, gcEvent, beginningOfLine);

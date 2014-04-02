@@ -6,20 +6,21 @@
  */
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * Simple (only for the -Xgcpolicy:optthruput output) IBMJ9 verbose GC reader.
@@ -89,14 +90,14 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                     // String pauseStr = attrs.getValue("exclusiveaccessms");
                     // double pause = -1D;
                     // if(pauseStr != null){
-                    // pause = Double.parseDouble(pauseStr);
+                    // pause = NumberParser.parseDouble(pauseStr);
                     // currentAF.totalTime = pause/1000;
                     // }
 
                     String totalStr = attrs.getValue("totalms");
                     double total = -1D;
                     if (totalStr != null) {
-                        total = Double.parseDouble(totalStr);
+                        total = NumberParser.parseDouble(totalStr);
                         currentAF.totalTime = total / 1000;
                     }
 
@@ -109,13 +110,13 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                     String markStr = attrs.getValue("mark");
                     double mark = -1D;
                     if (markStr != null) {
-                        mark = Double.parseDouble(markStr);
+                        mark = NumberParser.parseDouble(markStr);
                         currentAF.gcTimeMark = mark;
                     }
                     String sweepStr = attrs.getValue("sweep");
                     double sweep = -1D;
                     if (sweepStr != null) {
-                        mark = Double.parseDouble(sweepStr);
+                        mark = NumberParser.parseDouble(sweepStr);
                         currentAF.gcTimeSweep = sweep;
                     }
                 }

@@ -1,9 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * Parses -verbose:gc output from IBM i5/OS JDK 1.4.2.
@@ -225,6 +226,6 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
     private double parsePause(final String line) {
         final int start = line.indexOf("collect (milliseconds) ") + 23;
         final int end = line.indexOf('.', start);
-        return Double.parseDouble(line.substring(start, end)) / 1000.0d;
+        return NumberParser.parseDouble(line.substring(start, end)) / 1000.0d;
     }
 }
