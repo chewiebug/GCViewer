@@ -53,7 +53,7 @@ public class UsedYoungRenderer extends PolygonChartRenderer {
                 if (youngEvent.getTotal() > 0) {
                     final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
                     polygon.addPoint(timestamp, lastTenuredTotal + youngEvent.getPreUsed());
-                    polygon.addPoint(timestamp, tenuredTotal + youngEvent.getPostUsed());
+                    polygon.addPoint(timestamp + event.getPause(), tenuredTotal + youngEvent.getPostUsed());
                 }
             }
         }

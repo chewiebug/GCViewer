@@ -38,7 +38,7 @@ public class UsedTenuredRenderer extends PolygonChartRenderer {
                 if (tenuredEvent.getTotal() > 0) {
                     final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
                     polygon.addPoint(timestamp, tenuredEvent.getPreUsed());
-                    polygon.addPoint(timestamp, tenuredEvent.getPostUsed());
+                    polygon.addPoint(timestamp + event.getPause(), tenuredEvent.getPostUsed());
                 }
             }
         }
