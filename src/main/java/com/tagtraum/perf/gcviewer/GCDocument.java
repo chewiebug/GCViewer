@@ -49,11 +49,13 @@ public class GCDocument extends JInternalFrame {
     private boolean watched;
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
+    private GCViewerGui gui;
 
     public GCDocument(final GCViewerGui gcViewer, String s) {
         super(s, true, true, true, false);
         this.refreshWatchDog = new RefreshWatchDog();
         refreshWatchDog.setGcDocument(this);
+        this.gui = gcViewer;
         preferences = gcViewer.getPreferences();
         showModelPanel = preferences.isShowDataPanel();
         modelChartListFacade = new MultiModelChartFacade();
@@ -144,7 +146,7 @@ public class GCDocument extends JInternalFrame {
     }
     
     public void add(final URL url) throws DataReaderException {
-        ChartPanelView chartPanelView = new ChartPanelView(this, url);
+        ChartPanelView chartPanelView = new ChartPanelView(gui, this, url);
         chartPanelViews.add(chartPanelView);
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {

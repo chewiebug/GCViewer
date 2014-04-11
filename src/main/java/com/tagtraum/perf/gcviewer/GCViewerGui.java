@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,7 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -85,7 +87,7 @@ import com.tagtraum.perf.gcviewer.util.OSXSupport;
 public class GCViewerGui extends JFrame {
 
     private static final Logger LOGGER = Logger.getLogger(GCViewerGui.class.getName());
-
+    private static final DecimalFormat ZOOM_FORMAT = new DecimalFormat("#");
     private JToolBar toolBar;
     private ActionListener viewMenuActionListener;
     private JMenu fileMenu;
@@ -126,7 +128,7 @@ public class GCViewerGui extends JFrame {
     private JCheckBoxMenuItem menuItemAntiAlias;
     private Map<String, JCheckBoxMenuItem> gcLineMenuItems;
     private JToggleButton watchToggle;
-
+    private DefaultComboBoxModel<String> zoomValues = new DefaultComboBoxModel<>(new String[] {"1%", "5%", "10%", "50%", "100%", "200%", "300%", "500%", "1000%", "5000%"});
     private RecentURLsMenu recentURLsMenu;
     
     private GCPreferences preferences;
@@ -397,11 +399,12 @@ public class GCViewerGui extends JFrame {
         watchToggle.setText("");
         toolBar.add(watchToggle);
         toolBar.addSeparator();
-        zoomComboBox = new JComboBox<String>(new String[] {"1%", "5%", "10%", "50%", "100%", "200%", "300%", "500%", "1000%", "5000%"});
+        zoomComboBox = new JComboBox<>(zoomValues);
         zoomComboBox.setSelectedIndex(2);
         zoomComboBox.setAction(zoomAction);
         zoomComboBox.setEditable(true);
         zoomComboBox.setMaximumSize(zoomComboBox.getPreferredSize());
+        zoomComboBox.setName("zoomComboBox");
         toolBar.add(zoomComboBox);
         toolBar.addSeparator();
         toolBar.add(aboutAction);
@@ -791,6 +794,12 @@ public class GCViewerGui extends JFrame {
         preferences.store();
     }
 
+    public void setZoomValue(final double zoom) {
+        if(!"1%".equals(zoomValues.getElementAt(0)))
+            this.zoomValues.removeElementAt(0);
+        this.zoomValues.insertElementAt(ZOOM_FORMAT.format((zoom * 1000)).concat("%"), 0);
+        this.zoomComboBox.setSelectedIndex(0);
+    }
     public static void start(final String arg) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
