@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
@@ -21,6 +22,7 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
@@ -149,6 +151,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     if (startsWith(line, EXCLUDE_STRINGS, false)) {
                         continue;
                     }
+                    else if (line.indexOf(APPLICATION_TIME) > 0) {
+                        continue;
+                    }
                     
                     // remove G1 ergonomics pieces
                     if (line.indexOf(G1_ERGONOMICS) >= 0) {
@@ -192,14 +197,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         else {
                             throw new ParseException("unexpected mixed line", line, parsePosition);
                         }
-                    }
-                    else if (line.indexOf(TOTAL_TIME_THREADS_STOPPED) > 0) {
-                        beginningOfLine = line.substring(0, line.indexOf(TOTAL_TIME_THREADS_STOPPED));
-                        continue;
-                    }
-                    else if (line.indexOf(APPLICATION_TIME) > 0) {
-                        beginningOfLine = line.substring(0, line.indexOf(APPLICATION_TIME));
-                        continue;
                     }
                     else if (beginningOfLine != null) {
                         // filter output of -XX:+PrintReferencePolicy away
@@ -418,22 +415,32 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     }
     
     @Override
-    protected AbstractGCEvent<?> parseLine(final String line, final ParseInformation pos) throws ParseException {
+    protected AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException {
         AbstractGCEvent<?> ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
             // parse timestamp          "double:"
             // parse collection type    "[TYPE"
             // pre-used->post-used, total, time
-            final Date datestamp = parseDatestamp(line, pos);
-            final double timestamp = getTimestamp(line, pos, datestamp);
-            final ExtendedType type = parseType(line, pos);
+            Date datestamp = parseDatestamp(line, pos);
+            double timestamp = getTimestamp(line, pos, datestamp);
+            ExtendedType type = parseType(line, pos);
             // special provision for concurrent events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 ae = parseConcurrentEvent(line, pos, datestamp, timestamp, type);
             } 
+            else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
+                ae = new VmOperationEvent();
+                VmOperationEvent vmOpEvent = (VmOperationEvent) ae;
+                
+                vmOpEvent.setDateStamp(datestamp);
+                vmOpEvent.setTimestamp(timestamp);
+                vmOpEvent.setExtendedType(type);
+                vmOpEvent.setPause(parsePause(line, pos));
+            }
             else {
-                final GCEvent event = new GCEvent();
+                ae = new GCEvent();
+                GCEvent event = (GCEvent) ae;
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
                 event.setExtendedType(type);
@@ -441,9 +448,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 // 0.197: [GC remark 0.197: [GC ref-proc, 0.0000070 secs], 0.0005297 secs]
                 // or when PrintDateTimeStamps is on like:
                 // 2013-09-09T06:45:45.825+0000: 83146.942: [GC remark 2013-09-09T06:45:45.825+0000: 83146.943: [GC ref-proc, 0.0069100 secs], 0.0290090 secs]
-                if (nextIsTimestamp(line, pos) || nextIsDatestamp(line,pos)) {
-                    parseDetailEventsIfExist(line, pos, event);
-                }
+                parseDetailEventsIfExist(line, pos, event);
                 
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
                     setMemoryAndPauses(event, line, pos);
@@ -451,7 +456,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 else {
                     event.setPause(parsePause(line, pos));
                 }
-                ae = event;
             }
             return ae;
         } 

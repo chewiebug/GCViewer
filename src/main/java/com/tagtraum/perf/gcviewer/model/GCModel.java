@@ -314,7 +314,7 @@ public class GCModel implements Serializable {
         } else if (abstractEvent instanceof GCEvent) {
         	
         	// collect statistics about all stop the world events
-            final GCEvent event = (GCEvent) abstractEvent;
+            GCEvent event = (GCEvent) abstractEvent;
             
             updateHeapSizes(event);
             

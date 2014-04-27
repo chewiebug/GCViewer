@@ -10,8 +10,7 @@ package com.tagtraum.perf.gcviewer.model;
 public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
 
     private double duration;
-    private double pause;
-
+    
     /**
      * Time this step in the concurrent GC mechanism took.<p>
      * <xmp>[CMS-concurrent-sweep: 0.005/<em>0.015</em> secs]</xmp>
@@ -35,14 +34,6 @@ public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
         this.duration = duration;
     }
 
-    public double getPause() {
-        return pause;
-    }
-
-    public void setPause(double pause) {
-        this.pause = pause;
-    }
-    
     public boolean hasDuration() {
         return !getExtendedType().getName().endsWith("-start");
     }
@@ -53,7 +44,7 @@ public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
         sb.append(getExtendedType().getName());
         if (hasDuration()) {
             sb.append(' ');
-            sb.append(pause);
+            sb.append(getPause());
             sb.append('/');
             sb.append(duration);
             sb.append(" secs");

@@ -234,9 +234,12 @@ public class TestDataReaderSun1_7_0G1 {
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
-        assertEquals("gc type", "GC concurrent-root-region-scan-start", model.get(0).getTypeAsString());
-        assertEquals("number of errors", 0, handler.getCount());
+        assertThat("count", model.size(), is(2));
+        assertThat("gc type (0)", model.get(0).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("gc timestamp (0)", model.get(0).getTimestamp(), closeTo(0.0, 0.01));
+        assertThat("gc type (1)", model.get(1).getTypeAsString(), equalTo("GC concurrent-root-region-scan-start"));
+        assertThat("gc timestamp (1)", model.get(1).getTimestamp(), closeTo(3.634, 0.01));
+        assertThat("number of errors", handler.getCount(), is(0));
     }
 
     @Test
@@ -256,8 +259,14 @@ public class TestDataReaderSun1_7_0G1 {
         GCModel model = reader.read();
 
         assertEquals("count", 2, model.size());
-        assertEquals("gc type", "GC concurrent-mark-start", model.get(1).getTypeAsString());
-        assertEquals("number of errors", 0, handler.getCount());
+        
+        assertThat("gc type (0)", "GC concurrent-root-region-scan-end", equalTo(model.get(0).getTypeAsString()));
+        assertThat("gc timestamp (0)", model.get(0).getTimestamp(), closeTo(3.1, 0.01));
+        assertThat("gc type (1)", "GC concurrent-mark-start", equalTo(model.get(1).getTypeAsString()));
+        
+        // should be 7.907, but line starts with ":", so timestamp of previous event is taken
+        assertThat("gc timestamp (1)", model.get(1).getTimestamp(), closeTo(3.1, 0.0001));
+        assertThat("number of errors", handler.getCount(), is(0));
     }
     
     @Test
@@ -465,6 +474,34 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("type name", event.getTypeAsString(), equalTo("GC pause (young)"));
         assertThat("gc pause", event.getPause(), closeTo(0.0665670, 0.00000001));
         assertThat("error count", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void printGCApplicationStoppedTimeTenuringDist() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0_51_G1_PrintApplicationTimeTenuringDistribution.txt");
+        DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(3));
+        
+        // standard event
+        assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC pause (young)"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0007112, 0.00000001));
+        
+        // "application stopped" (as overhead added to previous event)
+        assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0008648 - 0.0007112, 0.00000001));
+        
+        // standalone "application stopped", without immediate GC event before
+        assertThat("type name (2)", model.get(2).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (2)", model.get(2).getPause(), closeTo(0.0000694, 0.00000001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
     }
     
 }

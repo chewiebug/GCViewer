@@ -252,4 +252,70 @@ public class TestDataReaderSun1_7_0 {
         assertThat("number of parse problems", handler.getCount(), is(0));
     }    
     
+    @Test
+    public void parallelPrintGCApplicationStoppedTime() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2014-04-08T22:04:36.018+0200: 0.254: Application time: 0.1310290 seconds"
+                 + "\n2014-04-08T22:04:36.018+0200: 0.254: [GC [PSYoungGen: 16865K->2529K(19456K)] 16865K->16175K(62976K), 0.0114994 secs] [Times: user=0.06 sys=0.00, real=0.01 secs]" 
+                 + "\n2014-04-08T22:04:36.030+0200: 0.266: Total time for which application threads were stopped: 0.0117633 seconds")
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(2));
+        assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; PSYoungGen"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0114994, 0.00000001));
+        assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0117633 - 0.0114994, 0.00000001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void CmsPrintGCApplicationStopped() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0_51_CMS_PrintApplStoppedTime.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(14));
+        assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; CMS-initial-mark"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0002081, 0.00000001));
+        assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0003502 - 0.0002081, 0.00000001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void CmsPrintGCApplicationStoppedTimeTenuringDist() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0_51_CMS_PrintApplStoppedTime_TenuringDist.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(19));
+        assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; ParNew"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0318639, 0.00000001));
+        
+        assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0320233 - 0.0318639, 0.00000001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+    
 }
