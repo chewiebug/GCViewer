@@ -15,6 +15,7 @@ public class VmOperationEvent extends AbstractGCEvent<VmOperationEvent> {
         sb.append(getTimestamp());
         sb.append(": [");
         sb.append(getExtendedType().getName());
+        sb.append(": ");
         sb.append(getPause());
         sb.append(" secs]");
     }

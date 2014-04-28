@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.math.IntData;
 import com.tagtraum.perf.gcviewer.math.RegressionLine;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
 /**
@@ -95,6 +96,7 @@ public class GCModel implements Serializable {
     private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
     private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
     private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
+    private Map<String, DoubleData> vmOperationEventPauses; // pause inforamtion about vm operations ("application stopped")
     
     private IntData heapAllocatedSizes; // allocated heap size of every event
     private IntData tenuredAllocatedSizes; // allocated tenured size of every event that has this information
@@ -113,6 +115,7 @@ public class GCModel implements Serializable {
     private DoubleData totalPause;
     private DoubleData fullGCPause;
     private DoubleData gcPause; // not full gc but stop the world pause
+    private DoubleData vmOperationPause; // "application stopped"
     private double lastGcPauseTimeStamp = 0;
     private DoubleData pauseInterval; // interval between two stop the world pauses
     private DoubleData initiatingOccupancyFraction; // all concurrent collectors; start of concurrent collection
@@ -150,6 +153,7 @@ public class GCModel implements Serializable {
         this.totalPause = new DoubleData();
         this.fullGCPause = new DoubleData();
         this.gcPause = new DoubleData();
+        this.vmOperationPause = new DoubleData();
         this.pauseInterval = new DoubleData();
         this.initiatingOccupancyFraction = new DoubleData();
         this.currentRelativePostGCIncrease = new RegressionLine();
@@ -159,6 +163,7 @@ public class GCModel implements Serializable {
         this.fullGcEventPauses = new TreeMap<String, DoubleData>();
         this.gcEventPauses = new TreeMap<String, DoubleData>();
         this.concurrentGcEventPauses = new TreeMap<String, DoubleData>();
+        this.vmOperationEventPauses = new TreeMap<String, DoubleData>();
         
         this.heapAllocatedSizes = new IntData();
         this.permAllocatedSizes = new IntData();
@@ -212,6 +217,7 @@ public class GCModel implements Serializable {
     	printPauseMap(gcEventPauses);
         printPauseMap(fullGcEventPauses);
     	printPauseMap(concurrentGcEventPauses);
+    	printPauseMap(vmOperationEventPauses);
 
     	printDoubleData("initiatingOccupancyFraction", initiatingOccupancyFraction);
     	
@@ -305,13 +311,13 @@ public class GCModel implements Serializable {
         lastPauseTimeStamp = Math.max(lastPauseTimeStamp, abstractEvent.getTimestamp());
 
         if (abstractEvent instanceof ConcurrentGCEvent) {
-        	final ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
+        	ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
             concurrentGCEvents.add(concEvent);
         
             DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
             pauses.add(concEvent.getPause());
-
-        } else if (abstractEvent instanceof GCEvent) {
+        }
+        else if (abstractEvent instanceof GCEvent) {
         	
         	// collect statistics about all stop the world events
             GCEvent event = (GCEvent) abstractEvent;
@@ -344,14 +350,15 @@ public class GCModel implements Serializable {
                 currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
                 gcPause.add(event.getPause());
 
-            } else {
+            } 
+            else {
             	// ... as opposed to all generations
                 DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
                 pauses.add(event.getPause());
                 
                 fullGCEvents.add(event);
                 postFullGCUsedMemory.add(event.getPostUsed());
-                final int freed = event.getPreUsed() - event.getPostUsed();
+                int freed = event.getPreUsed() - event.getPostUsed();
                 freedMemoryByFullGC.add(freed);
                 fullGCPause.add(event.getPause());
                 postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
@@ -369,9 +376,33 @@ public class GCModel implements Serializable {
                 }
 
             }
+            
+        }
+        else if (abstractEvent instanceof VmOperationEvent) {
+            adjustPause((VmOperationEvent) abstractEvent);
+            vmOperationPause.add(abstractEvent.getPause());
+            DoubleData vmOpPauses = getDoubleData(abstractEvent.getTypeAsString(), vmOperationEventPauses);
+            vmOpPauses.add(abstractEvent.getPause());
         }
     }
 
+    private void adjustPause(VmOperationEvent vmOpEvent) {
+        if (allEvents.size() > 1) {
+            AbstractGCEvent<?> previousEvent = allEvents.get(allEvents.size() - 2);
+            
+            // if the event directly before this event is also a VM_OPERATION event,
+            // it was a VM_OPERATION without gc pause -> whole pause is "overhead"
+            if (previousEvent.isStopTheWorld() 
+                    && !previousEvent.getExtendedType().getCollectionType().equals(CollectionType.VM_OPERATION)) {
+
+                // only count overhead of vmOpEvent, not whole pause,
+                // because it includes the previous stop the world event
+                vmOpEvent.setPause(vmOpEvent.getPause() - previousEvent.getPause());
+                assert vmOpEvent.getPause() > 0 : "vmOpEvent at " + vmOpEvent.getTimestamp() + " should not have negative pause";
+            }
+        }
+    }
+    
     /**
      * Promotion is the amount of memory that is promoted from young to tenured space during
      * a collection of the young space.
@@ -490,6 +521,13 @@ public class GCModel implements Serializable {
     public DoubleData getGCPause() {
         return gcPause;
     }
+    
+    /**
+     * Pauses caused by vm operations other than gc pauses ("application stopped")
+     */
+    public DoubleData getVmOperationPause() {
+        return vmOperationPause;
+    }
 
     /**
      * Interval between all types of stop the world pauses.
@@ -587,6 +625,10 @@ public class GCModel implements Serializable {
         return fullGcEventPauses;
     }
     
+    public Map<String, DoubleData> getVmOperationEventPauses() {
+        return vmOperationEventPauses;
+    }
+    
     public Map<String, DoubleData> getConcurrentEventPauses() {
         return concurrentGcEventPauses;
     }
@@ -595,7 +637,9 @@ public class GCModel implements Serializable {
      * Throughput in percent.
      */
     public double getThroughput() {
-        return 100 * (getRunningTime() - totalPause.getSum()) / getRunningTime();
+        return 100 
+                * (getRunningTime() - totalPause.getSum() - vmOperationPause.getSum()) 
+                / getRunningTime();
     }
 
     /**

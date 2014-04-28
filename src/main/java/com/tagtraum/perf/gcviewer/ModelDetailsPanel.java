@@ -34,6 +34,7 @@ public class ModelDetailsPanel extends JPanel {
     
     private DoubleDataMapModel gcEventModel;
     private DoubleDataMapModel fullGcEventModel;
+    private DoubleDataMapModel vmOperationEventModel;
     private DoubleDataMapModel concurrentGcEventModel;
     
     public ModelDetailsPanel() {
@@ -51,10 +52,12 @@ public class ModelDetailsPanel extends JPanel {
         
         gcEventModel = new DoubleDataMapModel();
         fullGcEventModel = new DoubleDataMapModel();
+        vmOperationEventModel = new DoubleDataMapModel();
         concurrentGcEventModel = new DoubleDataMapModel();
         
         DoubleDataMapTable gcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_gc_pauses"), gcEventModel);
         DoubleDataMapTable fullGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_full_gc_pauses"), fullGcEventModel);
+        DoubleDataMapTable vmOperationTable = new DoubleDataMapTable("vm operation events", vmOperationEventModel);
         DoubleDataMapTable concurrentGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_concurrent_gc_events"), concurrentGcEventModel);
 
         GridBagConstraints constraints = createGridBagConstraints();
@@ -62,6 +65,9 @@ public class ModelDetailsPanel extends JPanel {
         
         constraints.gridy++;
         add(fullGcTable, constraints);
+        
+        constraints.gridy++;
+        add(vmOperationTable, constraints);
         
         constraints.gridy++;
         add(concurrentGcTable, constraints);
@@ -89,9 +95,11 @@ public class ModelDetailsPanel extends JPanel {
      * Sets the model to be displayed.
      */
     public void setModel(GCModel model) {
-        gcEventModel.setModel(model.getGcEventPauses(), model.getPause().getSum(), true);
-        fullGcEventModel.setModel(model.getFullGcEventPauses(), model.getPause().getSum(), true);
-        concurrentGcEventModel.setModel(model.getConcurrentEventPauses(), model.getPause().getSum(), false);
+        double totalPause = model.getPause().getSum() + model.getVmOperationPause().getSum();
+        gcEventModel.setModel(model.getGcEventPauses(), totalPause, true);
+        fullGcEventModel.setModel(model.getFullGcEventPauses(), totalPause, true);
+        vmOperationEventModel.setModel(model.getVmOperationEventPauses(), totalPause, true);
+        concurrentGcEventModel.setModel(model.getConcurrentEventPauses(), totalPause, false);
         
         repaint();
     }

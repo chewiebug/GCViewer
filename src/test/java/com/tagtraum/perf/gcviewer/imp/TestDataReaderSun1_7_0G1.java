@@ -501,6 +501,8 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("type name (2)", model.get(2).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
         assertThat("GC pause (2)", model.get(2).getPause(), closeTo(0.0000694, 0.00000001));
         
+        assertThat("throughput", model.getThroughput(), closeTo(99.8866262, 0.000001));
+        
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
     

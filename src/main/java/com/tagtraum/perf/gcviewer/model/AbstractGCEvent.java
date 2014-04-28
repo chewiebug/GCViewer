@@ -29,7 +29,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     private String typeAsString;
     private Generation generation;
     protected List<T> details;
-    private double pause = -1;
+    private double pause;
 
     public Iterator<T> details() {
         if (details == null) return EMPTY_ITERATOR;
