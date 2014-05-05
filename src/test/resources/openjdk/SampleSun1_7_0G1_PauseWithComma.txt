@@ -1,4 +1,4 @@
-2014-03-01T00:01:27.461+0100: [GC pause (young), 0,0665670 secs]
+2014-03-01T00:01:27.461+0100: 0,0165: [GC pause (young), 0,0665670 secs]
    [Parallel Time: 50,1 ms, GC Workers: 18]
       [GC Worker Start (ms): Min: 367132161,9, Avg: 367132162,2, Max: 367132162,7, Diff: 0,8]
       [Ext Root Scanning (ms): Min: 3,1, Avg: 7,5, Max: 12,6, Diff: 9,5, Sum: 135,9]
