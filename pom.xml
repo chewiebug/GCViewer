@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
     <groupId>com.github.chewiebug</groupId>
     <artifactId>gcviewer</artifactId>
@@ -300,7 +300,7 @@
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>${gpg.plugin.version}</version>
                     <configuration>
-                        <!-- using gpg2 this should be set to "true", because 
+                        <!-- using gpg2 this should be set to "true", because
                             the option \-\-no-use-agent was dropped -->
                         <useAgent>true</useAgent>
                     </configuration>
@@ -318,9 +318,9 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.6.3.201306030806</version>
+                    <version>0.7.0.201403182114</version>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -486,7 +486,7 @@
 
     <profiles>
         <profile>
-            <!-- Override plugin versions of Sonatype profile. This needs 
+            <!-- Override plugin versions of Sonatype profile. This needs
                 to be done here because profiles are not inherited. -->
             <id>sonatype-oss-release</id>
             <build>
