@@ -16,7 +16,7 @@ import java.util.Iterator;
  */
 public class FullGCLineRenderer extends ChartRenderer {
     public static final Paint DEFAULT_LINEPAINT = Color.BLACK;
-
+    
     public FullGCLineRenderer(ModelChartImpl modelChart) {
         super(modelChart);
         setLinePaint(DEFAULT_LINEPAINT);
@@ -34,10 +34,12 @@ public class FullGCLineRenderer extends ChartRenderer {
         int lastScaledTimestamp = Integer.MIN_VALUE;
         for (Iterator<GCEvent> i = getModelChart().getModel().getFullGCEvents(); i.hasNext();) {
             GCEvent event = i.next();
+            
             final int scaledTimestamp = (int)(scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
             if (scaledTimestamp != lastScaledTimestamp && scaledTimestamp >= minX && scaledTimestamp <= maxX) {
-                g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
+            	g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
                 lastScaledTimestamp = scaledTimestamp;
+                
             }
         }
     }

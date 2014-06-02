@@ -40,6 +40,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     private IncLineRenderer incLineRenderer;
     private GCRectanglesRenderer gcRectanglesRenderer;
     private FullGCLineRenderer fullGCLineRenderer;
+    private SystemFullGCLineRenderer systemFullGCLineRenderer;
     private GCTimesRenderer gcTimesRenderer;
     private UsedHeapRenderer usedHeapRenderer;
     private UsedTenuredRenderer usedTenuredRenderer;
@@ -77,6 +78,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         chart.add(gcTimesRenderer, gridBagConstraints);
         fullGCLineRenderer = new FullGCLineRenderer(this);
         chart.add(fullGCLineRenderer, gridBagConstraints);
+        systemFullGCLineRenderer = new SystemFullGCLineRenderer(this);
+        chart.add(systemFullGCLineRenderer, gridBagConstraints);
         gcRectanglesRenderer = new GCRectanglesRenderer(this);
         chart.add(gcRectanglesRenderer, gridBagConstraints);
         incLineRenderer = new IncLineRenderer(this);
@@ -282,7 +285,17 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     public void setShowFullGCLines(boolean showFullGCLines) {
         fullGCLineRenderer.setVisible(showFullGCLines);
     }
-
+   
+    @Override
+    public boolean isShowSystemFullGCLines(){
+    	return this.systemFullGCLineRenderer.isVisible();
+    }
+    
+    @Override
+    public void setShowSystemFullGCLines(boolean showSystemFullGCLines){
+    	this.systemFullGCLineRenderer.setVisible(showSystemFullGCLines);
+    }
+    
     @Override
     public boolean isShowIncGCLines() {
         return incLineRenderer.isVisible();
@@ -382,6 +395,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         setShowGCTimesLine(preferences.getGcLineProperty(GCPreferences.GC_LINES_LINE));
         setShowGCTimesRectangles(preferences.getGcLineProperty(GCPreferences.GC_TIMES_RECTANGLES));
         setShowFullGCLines(preferences.getGcLineProperty(GCPreferences.FULL_GC_LINES));
+        setShowFullGCLines(preferences.getGcLineProperty(GCPreferences.SYSTEM_FULL_GC_LINES));
         setShowIncGCLines(preferences.getGcLineProperty(GCPreferences.INC_GC_LINES));
         setShowTotalMemoryLine(preferences.getGcLineProperty(GCPreferences.TOTAL_MEMORY));
         setShowUsedMemoryLine(preferences.getGcLineProperty(GCPreferences.USED_MEMORY));

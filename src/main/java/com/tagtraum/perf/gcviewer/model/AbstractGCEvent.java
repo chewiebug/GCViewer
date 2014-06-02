@@ -202,6 +202,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
             return false;
         }
     }
+    
+    public boolean isSystemFullGC(){
+    	return this.toString().contains("[Full GC (System)");
+    }
 
     public boolean isInc() {
         return getExtendedType().getType() == GCEvent.Type.INC_GC;
