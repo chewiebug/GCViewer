@@ -467,7 +467,7 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("error count", handler.getCount(), is(0));
     }
 
-    /*
+    /**
      * Order of events has changed since JDK 1.6: 
      * [GC pause (young) (initial-mark) (to-space exhausted), 0.1156890 secs]
      * vs 
