@@ -36,8 +36,11 @@ public class CSVTSDataWriter extends AbstractDataWriter {
             // Since this data writer is only concerned with one line per gc entry, don't write two like the others.
 
             // If the true timestamp is present, output the unix timestamp
-            if (model.hasCorrectTimestamp()) {
+            if (model.hasDateStamp()) {
                 out.print(event.getDatestamp().getTime());
+            } else if (model.hasCorrectTimestamp()) {
+                // we have the timestamps therefore we can correct it with the pause time
+                out.print((event.getTimestamp() - event.getPause()));
             } else {
                 out.print(event.getTimestamp());
             }
