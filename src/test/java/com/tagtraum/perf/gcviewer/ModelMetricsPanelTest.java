@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.view.ModelMetricsPanel;
 
 /**
  * Test {@link ModelMetricsPanel}. The tests all just check that no Exception occurs. 

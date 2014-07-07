@@ -6,7 +6,7 @@ import java.net.URL;
 
 import javax.swing.SwingUtilities;
 
-import com.tagtraum.perf.gcviewer.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 
 /**
  * Main controller class of GCViewer. Is responsible for control flow. 

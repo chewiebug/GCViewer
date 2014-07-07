@@ -7,6 +7,7 @@ import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.view.SimpleChartRenderer;
 
 import java.io.File;
 import java.io.IOException;
