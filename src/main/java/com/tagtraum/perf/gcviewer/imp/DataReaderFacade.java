@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
@@ -15,6 +18,7 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file
@@ -25,6 +29,12 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
  */
 public class DataReaderFacade {
 
+    private List<PropertyChangeListener> propertyChangeListeners = new ArrayList<PropertyChangeListener>();
+    
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeListeners.add(listener);
+    }
+    
     /**
      * Loads a model from a given <code>pathToData</code> logging all exceptions that occur.
      * 
@@ -66,12 +76,13 @@ public class DataReaderFacade {
     public GCModel loadModel(final URL url, final ProgressCallback callback) throws DataReaderException {
         DataReaderException dataReaderException = new DataReaderException();
         GCModel model = null;
-        final Logger parserLogger = Logger.getLogger(callback == null ? "com.tagtraum.perf.gcviewer" : callback.getLoggerName());
+        // TODO SWINGWORKER fix Logging -> info to user
+        final Logger parserLogger = LoggerHelper.getThreadSpecificLogger(this);
 
         try {
         	final String msg = "GCViewer version " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")"; 
             parserLogger.info(msg);
-            model = readModel(url, callback);
+            model = readModel(url);
         } 
         catch (RuntimeException | IOException e) {
         	final String msg = LocalisationHelper.getString("fileopen_dialog_read_file_failed")
@@ -99,7 +110,7 @@ public class DataReaderFacade {
      * @return GCModel
      * @throws IOException problem reading the data
      */
-    private GCModel readModel(final URL url, final ProgressCallback callback) throws IOException {
+    private GCModel readModel(final URL url) throws IOException {
         DataReaderFactory factory = new DataReaderFactory();
         long contentLength = 0L;
         InputStream in;
@@ -108,7 +119,8 @@ public class DataReaderFacade {
         	final URLConnection conn = url.openConnection();        	
         	in = HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP, cl);
         	contentLength = cl.get();
-        } else {
+        } 
+        else {
         	in = url.openStream();
         	if (url.getProtocol().startsWith("file")) {
         		final File file = new File(url.getFile());
@@ -118,7 +130,10 @@ public class DataReaderFacade {
         	}
         }
         if (contentLength > 100L) {
-        	in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength, callback);
+        	in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength);
+        	for (PropertyChangeListener listener : propertyChangeListeners) {
+                ((MonitoredBufferedInputStream)in).addPropertyChangeListener(listener);
+        	}
         }
         final DataReader reader = factory.getDataReader(in);
         return reader.read();

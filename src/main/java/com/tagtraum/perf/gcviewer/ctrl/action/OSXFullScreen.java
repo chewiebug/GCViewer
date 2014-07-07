@@ -63,7 +63,8 @@ public class OSXFullScreen extends AbstractAction {
             Class fullScreenUtilities = Class.forName("com.apple.eawt.FullScreenUtilities");
             Method addFullScreenListenerMethod = fullScreenUtilities.getMethod("addFullScreenListenerTo", Window.class, listenerClass);
             addFullScreenListenerMethod.invoke(fullScreenUtilities, gcViewer, proxy);
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -73,7 +74,8 @@ public class OSXFullScreen extends AbstractAction {
             Object application = OSXSupport.getOSXApplication();
             Method requestToggleFullScreenMethod = application.getClass().getMethod("requestToggleFullScreen", Window.class);
             requestToggleFullScreenMethod.invoke(application, gcViewer);
-        } catch (Exception ex) {
+        } 
+        catch (Exception ex) {
             ex.printStackTrace();
         }
     }

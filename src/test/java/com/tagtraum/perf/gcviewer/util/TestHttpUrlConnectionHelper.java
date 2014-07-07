@@ -26,7 +26,7 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.Test;
 
-import com.tagtraum.perf.gcviewer.imp.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 
 public class TestHttpUrlConnectionHelper {
 

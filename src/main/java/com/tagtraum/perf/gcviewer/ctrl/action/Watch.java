@@ -11,17 +11,16 @@ import javax.swing.KeyStroke;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 
 /**
- *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * Date: May 20, 2005
  * Time: 1:59:59 PM
- *
  */
 public class Watch extends AbstractAction {
     private GCViewerGui gcViewer;
-    private static final ImageIcon WATCH_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewerGui.class.getResource("images/watch.png")));
+    private static final ImageIcon WATCH_ICON = ImageLoader.loadImageIcon("watch.png");
 
     public Watch(final GCViewerGui gcViewer) {
         this.gcViewer = gcViewer;

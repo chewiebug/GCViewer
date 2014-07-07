@@ -14,7 +14,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -26,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -46,6 +44,8 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import com.tagtraum.perf.gcviewer.GCPreferences;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
+import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 import com.tagtraum.perf.gcviewer.ctrl.action.About;
 import com.tagtraum.perf.gcviewer.ctrl.action.Arrange;
 import com.tagtraum.perf.gcviewer.ctrl.action.Exit;
@@ -60,7 +60,6 @@ import com.tagtraum.perf.gcviewer.ctrl.action.Refresh;
 import com.tagtraum.perf.gcviewer.ctrl.action.Watch;
 import com.tagtraum.perf.gcviewer.ctrl.action.Zoom;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.GCRectanglesRenderer;
@@ -73,6 +72,7 @@ import com.tagtraum.perf.gcviewer.view.renderer.TotalYoungRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedHeapRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedTenuredRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedYoungRenderer;
+import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 
 /**
@@ -96,17 +96,17 @@ public class GCViewerGui extends JFrame {
     private JComboBox<String> zoomComboBox;
     private Image iconImage;
     // actions
-    private Exit exitAction = new Exit(this);
-    private About aboutAction = new About(this);
-    private ReadmeAction readmeAction = new ReadmeAction(this);
-    private LicenseAction licenseAction = new LicenseAction(this);
-    private OpenFile openFileAction = new OpenFile(this);
-    private OpenURL openURLAction = new OpenURL(this);
-    private Refresh refreshAction = new Refresh(this);
-    private Export exportAction = new Export(this);
-    private Zoom zoomAction = new Zoom(this);
-    private Arrange arrangeAction = new Arrange(this);
-    private Watch watchAction = new Watch(this);
+    private Exit exitAction;
+    private About aboutAction;
+    private ReadmeAction readmeAction;
+    private LicenseAction licenseAction;
+    private OpenFile openFileAction;
+    private OpenURL openURLAction;
+    private Refresh refreshAction;
+    private Export exportAction;
+    private Zoom zoomAction;
+    private Arrange arrangeAction;
+    private Watch watchAction;
     private OSXFullScreen osxFullScreenAction;
     private JCheckBoxMenuItem menuItemShowModelMetricsPanel;
     private JCheckBoxMenuItem menuItemFullGCLines;
@@ -130,11 +130,13 @@ public class GCViewerGui extends JFrame {
     
     private GCPreferences preferences;
 
-    public GCViewerGui() {
+    public GCViewerGui(GCViewerController controller) {
         super("tagtraum industries incorporated - GCViewer");
 
-        iconImage = loadImage("gcviewericon.gif");
+        iconImage = ImageLoader.loadImage("gcviewericon.gif");
         setIconImage(iconImage);
+        
+        initActions(controller, iconImage);
         
         desktopPane = new DesktopPane(this);
         addWindowListener(new WindowAdapter() {
@@ -145,13 +147,6 @@ public class GCViewerGui extends JFrame {
         viewMenuActionListener = new ViewMenuActionListener();
         recentURLsMenu = new RecentURLsMenu(this);
         openURLAction.setRecentURLsModel(recentURLsMenu.getRecentURLsModel());
-
-        if (OSXSupport.isOSX()) {
-            OSXSupport.initializeMacOSX(aboutAction, exitAction, null, iconImage, this);
-            if (OSXSupport.hasOSXFullScreenSupport()) {
-                osxFullScreenAction = new OSXFullScreen(this);
-            }
-        }
 
         setJMenuBar(initMenuBar());
         toolBar = initToolBar();
@@ -173,32 +168,27 @@ public class GCViewerGui extends JFrame {
 
         preferences = new GCPreferences();
         loadPreferences(preferences);
-        setVisible(true);
     }
 
-    /**
-     * Loads an image if <code>imageName</code> can be found. If not, a warning is logged.
-     * 
-     * @param imageName name of the image to be found in this classes classpath.
-     * @return loaded image or <code>null</code> if it could not be loaded.
-     */
-    private Image loadImage(String imageName) {
-        URL imageUrl = null;
-        Image image = null;
-        try {
-            imageUrl = getClass().getResource(imageName);
-            image = ImageIO.read(imageUrl);
-        } 
-        catch (IOException e) {
-            LoggerHelper.logException(LOGGER, Level.WARNING, "could not load icon (imageName='" 
-                    + imageName + "'; url='" + imageUrl + "')", e);
-        } 
-        catch (IllegalArgumentException e) {
-            LoggerHelper.logException(LOGGER, Level.WARNING, "could not load icon (imageName='" 
-                    + imageName + "'; url='" + imageUrl + "')", e);
+    private void initActions(GCViewerController controller, Image icon) {
+        exitAction = new Exit(this);
+        aboutAction = new About(this);
+        readmeAction = new ReadmeAction(this);
+        licenseAction = new LicenseAction(this);
+        openFileAction = new OpenFile(controller, this);
+        openURLAction = new OpenURL(controller, this);
+        refreshAction = new Refresh(this);
+        exportAction = new Export(this);
+        zoomAction = new Zoom(this);
+        arrangeAction = new Arrange(this);
+        watchAction = new Watch(this);
+
+        if (OSXSupport.isOSX()) {
+            OSXSupport.initializeMacOSX(aboutAction, exitAction, null, icon, this);
+            if (OSXSupport.hasOSXFullScreenSupport()) {
+                osxFullScreenAction = new OSXFullScreen(this);
+            }
         }
-        
-        return image;
     }
 
     public RecentURLsMenu getRecentFilesMenu() {
@@ -293,6 +283,31 @@ public class GCViewerGui extends JFrame {
         return preferences;
     }
     
+    public void addModel(GCModelLoader loader) {
+        getSelectedGCDocument().addModel(loader);
+    }
+    
+    public void openModel(GCModelLoader loader) {
+        GCDocument gcDocument = new GCDocument(this, loader.getGcResource().getResourceName());
+        gcDocument.addModel(loader);
+        
+        gcDocument.addInternalFrameListener(gcDocumentListener);
+        desktopPane.add(gcDocument);
+        gcDocument.setSize(450, 300);
+        gcDocument.setVisible(true);
+        // TODO SWINGWORKER: handle recentUrls
+        //recentURLsMenu.getRecentURLsModel().add(new URL[]{model.getURL()});
+        repaint();
+
+        try {
+            gcDocument.setSelected(true);
+            gcDocument.setMaximum(true);
+        } 
+        catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void open(final File[] files) {
         // delegate to open(...)
         try {
@@ -351,8 +366,8 @@ public class GCViewerGui extends JFrame {
 
     public void add(final URL[] urls) {
         for (int i=0; i<urls.length; i++) {
-            final URL url = urls[i];
-            getSelectedGCDocument().add(url);
+            //final URL url = urls[i];
+            //getSelectedGCDocument().add(url);
         }
         recentURLsMenu.getRecentURLsModel().add(urls);
         repaint();

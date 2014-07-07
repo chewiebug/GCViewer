@@ -17,7 +17,6 @@ import com.tagtraum.perf.gcviewer.view.GCViewerGui;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * Date: May 20, 2005
  * Time: 2:07:18 PM
- *
  */
 public class Arrange extends AbstractAction {
     private GCViewerGui gcViewer;
@@ -40,7 +39,8 @@ public class Arrange extends AbstractAction {
             desktopManager.deiconifyFrame(frame);
             try {
                 frame.setMaximum(false);
-            } catch (PropertyVetoException e1) {
+            } 
+            catch (PropertyVetoException e1) {
                 e1.printStackTrace();
             }
             final int height = gcViewer.getDesktopPane().getHeight()/frames.length;

@@ -1,7 +1,5 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -21,13 +19,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.BoundedRangeModel;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -42,7 +38,6 @@ import com.tagtraum.perf.gcviewer.GCPreferences;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.RefreshWatchDog;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
@@ -61,17 +56,12 @@ public class GCDocument extends JInternalFrame {
     private boolean watched;
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
-    private final List<GCModelLoader> modelLoaders;
-	private final JPanel modelLoaderViews;
 
     public GCDocument(final GCViewerGui gcViewer, String title) {
         super(title, true, true, true, false);
         
-        this.modelLoaders = new ArrayList<GCModelLoader>();
         this.gcViewer = gcViewer;
         this.refreshWatchDog = new RefreshWatchDog();
-        this.modelLoaderViews = new JPanel();//new JScrollPane();
-        modelLoaderViews.setLayout(new BoxLayout(modelLoaderViews, BoxLayout.PAGE_AXIS));
         refreshWatchDog.setGcDocument(this);
         
         // keep a copy of the preferences
@@ -102,46 +92,30 @@ public class GCDocument extends JInternalFrame {
             public void dragExit(DropTargetEvent dte) {
             }
 
-            public void drop(DropTargetDropEvent e) {
+            public void drop(DropTargetDropEvent event) {
                 try {
-                    Transferable tr = e.getTransferable();
-                    if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                        e.acceptDrop(DnDConstants.ACTION_COPY);
-                        List<Object> list = (List<Object>)tr.getTransferData(DataFlavor.javaFileListFlavor);
-                        File[] files = list.toArray(new File[list.size()]);
-                        gcViewer.add(files);
+                    Transferable tr = event.getTransferable();
+                    if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        event.acceptDrop(DnDConstants.ACTION_COPY);
+                        @SuppressWarnings("unchecked")
+                        List<File> list = (List<File>)tr.getTransferData(DataFlavor.javaFileListFlavor);
+                        gcViewer.add((File[]) list.toArray());
                         GCDocument.this.getContentPane().invalidate();
-                        e.dropComplete(true);
-                    } else {
-                        e.rejectDrop();
+                        event.dropComplete(true);
+                    } 
+                    else {
+                        event.rejectDrop();
                     }
-                } catch (IOException ioe) {
-                    e.rejectDrop();
-                    ioe.printStackTrace();
-                } catch (UnsupportedFlavorException ufe) {
-                    e.rejectDrop();
-                    ufe.printStackTrace();
+                } 
+                catch (IOException | UnsupportedFlavorException e) {
+                    event.rejectDrop();
+                    e.printStackTrace();
                 }
             }
         }));
 
     }
     
-    public void gcModelLoaderDone(final GCModelLoader modelLoader, final GCModel model) {
-    	modelLoaders.remove(modelLoader);
-    	if (model != null) {
-        	modelLoaderViews.remove(modelLoader.getModelLoaderView());
-        	
-        	if (countModelsLoading() == 0) {
-        		modelLoaderViews.setVisible(false);
-        	}
-        	
-    		createChartPanelView(model);
-    		gcViewer.repaint();
-    		repaint();
-    	}
-    }
-
     public RefreshWatchDog getRefreshWatchDog() {
         return refreshWatchDog;
     }
@@ -164,6 +138,7 @@ public class GCDocument extends JInternalFrame {
      * @throws DataReaderException if something went wrong reading the data
      */
     public boolean reloadModels(boolean background) throws DataReaderException {
+        // TODO SWINGWORKER: reload model
         boolean reloaded = false;
         for (ChartPanelView chartPanelView : chartPanelViews) {
             reloaded |= chartPanelView.reloadModel(!refreshWatchDog.isRunning());
@@ -182,17 +157,20 @@ public class GCDocument extends JInternalFrame {
         return preferences;
     }
     
-    public void add(final URL url) {    	
-    	final GCResource gcResource = new GCResource(url);
-    	final GCModelLoader modelLoader = new GCModelLoader(this, gcResource);
-    	modelLoaderViews.add(modelLoader.getModelLoaderView());
-    	modelLoaders.add(modelLoader);
-    	modelLoader.execute();
+    public void addModel(GCModelLoader loader) {
+        // TODO SWINGWORKER wire views with GCResource -> detect changes in Model
+        // build all tabs
+        // those with empty model -> inactive
+        // progress -> active
+        //   -> progress: listens to loader
+        // document: listens to loader and changes active status of tabs
+        ChartPanelView chartPanelView = createChartPanelView(loader.getGcResource());
+        loader.addPropertyChangeListener(chartPanelView.getModelLoaderView());
         relayout();
     }
     
-    protected void createChartPanelView(final GCModel model) {
-        ChartPanelView chartPanelView = new ChartPanelView(this, model);
+    protected ChartPanelView createChartPanelView(final GCResource gcResource) {
+        ChartPanelView chartPanelView = new ChartPanelView(this, gcResource);
         chartPanelViews.add(chartPanelView);
         chartPanelView.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
@@ -212,6 +190,8 @@ public class GCDocument extends JInternalFrame {
             modelChartListFacade.setShowUsedMemoryLine(modelChartListFacade.isShowUsedMemoryLine());
         }
         relayout();
+        
+        return chartPanelView;
     }
 
     /**
@@ -229,35 +209,19 @@ public class GCDocument extends JInternalFrame {
         return nChartPanelViews;
     }
 
-	private int countModelsLoading() {
-		int result = 0;
-		if (modelLoaderViews.getComponentCount() > 0) {
-			final Component[] components = modelLoaderViews.getComponents();
-			for (Component component:components) {
-				if (component instanceof GCModelLoaderView) {
-					if (((GCModelLoaderView)component).isActive()) {
-						result++;
-					}
-				}
-			}
-		}
-		return result;
-	}
-
     public void relayout() {
-        final int modelLoadingInProgressCount = countModelsLoading();
         getContentPane().removeAll();
         final int nChartPanelViews = chartPanelViews.size();
         final String newTitle;
         if (nChartPanelViews > 1) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < nChartPanelViews; i++) {
-            	sb.append(chartPanelViews.get(i).getModel().getURL().getFile());
+            	sb.append(chartPanelViews.get(i).getGCResource().getResourceName());
                 if (i + 1 < nChartPanelViews) sb.append(", ");
             }
             newTitle = sb.toString();
         } else if (!chartPanelViews.isEmpty())
-        	newTitle = chartPanelViews.get(0).getModel().getURL().toString();
+        	newTitle = chartPanelViews.get(0).getGCResource().getResourceName();
         else
         	newTitle = "";
         setTitle(newTitle);
@@ -331,23 +295,6 @@ public class GCDocument extends JInternalFrame {
             }
             row++;
         }
-        if (modelLoadingInProgressCount > 0) {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.anchor = GridBagConstraints.NORTH;
-            constraints.gridx = 0;
-            constraints.gridy = row;
-            constraints.gridwidth = 2;
-            constraints.gridheight = modelLoadingInProgressCount;
-            constraints.weightx = 1;
-            constraints.weighty = modelLoadingInProgressCount;
-        	getContentPane().add(modelLoaderViews, constraints);
-        	modelLoaderViews.setBackground(Color.LIGHT_GRAY);
-        	modelLoaderViews.setPreferredSize(new Dimension(800, 600));
-        	//LOG.info("Added modelLoaderViews: " + modelLoaderViews);        	
-        	noMaximizedChartPanelView = false;
-        } 
-        modelLoaderViews.setVisible(modelLoadingInProgressCount > 0);        	        
         
         if (noMaximizedChartPanelView) {
             // add dummy panel
@@ -426,8 +373,7 @@ public class GCDocument extends JInternalFrame {
     }
 
     private void scaleModelChart() {
-        for (int i = 0; i < chartPanelViews.size(); i++) {
-            final ChartPanelView aChartPanelView = (chartPanelViews.get(i));
+        for (ChartPanelView aChartPanelView : chartPanelViews) {
             aChartPanelView.getModelChart().setFootprint(getMaxFootprint());
             aChartPanelView.getModelChart().setMaxPause(getMaxMaxPause());
             aChartPanelView.getModelChart().setRunningTime(getMaxRunningTime());
@@ -437,7 +383,7 @@ public class GCDocument extends JInternalFrame {
     private double getMaxRunningTime() {
         double max = 0;
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            max = Math.max(max, chartPanelViews.get(i).getModel().getRunningTime());
+            max = Math.max(max, chartPanelViews.get(i).getGCResource().getModel().getRunningTime());
         }
         return max;
     }
@@ -445,7 +391,7 @@ public class GCDocument extends JInternalFrame {
     private long getMaxFootprint() {
         long max = 0;
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            max = Math.max(max, chartPanelViews.get(i).getModel().getFootprint());
+            max = Math.max(max, chartPanelViews.get(i).getGCResource().getModel().getFootprint());
         }
         return max;
     }
@@ -453,7 +399,7 @@ public class GCDocument extends JInternalFrame {
     private double getMaxMaxPause() {
         double max = 0;
         for (int i = 0; i < chartPanelViews.size(); i++) {
-            max = Math.max(max, chartPanelViews.get(i).getModel().getPause().getMax());
+            max = Math.max(max, chartPanelViews.get(i).getGCResource().getModel().getPause().getMax());
         }
         return max;
     }
@@ -710,8 +656,6 @@ public class GCDocument extends JInternalFrame {
     }
     
     /**
-     * 
-     * 
      * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
      * <p>created on: 22.07.2012</p>
      */

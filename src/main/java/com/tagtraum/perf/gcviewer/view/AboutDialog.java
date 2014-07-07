@@ -21,6 +21,7 @@ import javax.swing.text.View;
 
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 import com.tagtraum.perf.gcviewer.view.util.UrlDisplayHelper;
 
 /**
@@ -61,7 +62,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
     public AboutDialog(Frame f) {
         super(f, LocalisationHelper.getString("about_dialog_title"));
         Panel logoPanel = new Panel();
-        ImageIcon logoIcon = new ImageIcon(getClass().getResource(LocalisationHelper.getString("about_dialog_image")));
+        ImageIcon logoIcon = ImageLoader.loadImageIcon(LocalisationHelper.getString("about_dialog_image"));
         JLabel la_icon = new JLabel(logoIcon);
         la_icon.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
         logoPanel.add(la_icon);
@@ -70,7 +71,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         versionPanel.setLayout(new GridBagLayout());
         
-        JLabel copyright = new JLabel("\u00A9" + " 2011-2013: Joerg Wuethrich", JLabel.CENTER);
+        JLabel copyright = new JLabel("\u00A9" + " 2011-2014: Joerg Wuethrich and contributors", JLabel.CENTER);
         
         JLabel contributorsLabel = new JLabel("contributors (alphabetically ordered):", JLabel.CENTER);
         contributorsLabel.setForeground(Color.GRAY);

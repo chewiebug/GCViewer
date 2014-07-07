@@ -21,10 +21,11 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 import com.tagtraum.perf.gcviewer.util.ParsePosition;
 
 /**
- * <p>Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7
+ * <p>Parses getLogger() output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7
  * <br>Supports the following gc algorithms:
  * <ul>
  * <li>-XX:+UseSerialGC</li>
@@ -60,8 +61,6 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
-    private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
-    
     private static final String UNLOADING_CLASS = "[Unloading class ";
     private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
     private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:"; // -XX:+PrintGCApplicationStoppedTime
@@ -188,8 +187,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         super(in, gcLogType);
     }
 
+    private Logger getLogger() {
+        return LoggerHelper.getThreadSpecificLogger(this);
+    }
+    
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x format...");
         
         try (BufferedReader in = this.in) {
             final GCModel model = new GCModel(false);
@@ -232,7 +235,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         // -XX:PrintCmsStatistics -> filter text that the parser doesn't know
                         printCmsStatisticsIterationsMatcher.reset(line);
                         if (!printCmsStatisticsIterationsMatcher.matches()) {
-                            LOG.severe("printCmsStatisticsIterationsMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            getLogger().severe("printCmsStatisticsIterationsMatcher did not match for line " + lineNumber + ": '" + line + "'");
                             continue;
                         }
                         
@@ -252,7 +255,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     if (line.indexOf(PRINT_TENURING_DISTRIBUTION) > 0) {
                         printTenuringDistributionMatcher.reset(line);
                         if (!printTenuringDistributionMatcher.matches()) {
-                            LOG.severe("printDistributionMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            getLogger().severe("printDistributionMatcher did not match for line " + lineNumber + ": '" + line + "'");
                             continue;
                         }
                         
@@ -314,7 +317,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy
                             printAdaptiveSizePolicyMatcher.reset(line);
                             if (!printAdaptiveSizePolicyMatcher.matches()) {
-                                LOG.severe("printAdaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                getLogger().severe("printAdaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
                                 continue;
                             }
                             
@@ -328,7 +331,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy
                             adaptiveSizePolicyMatcher.reset(line);
                             if (!adaptiveSizePolicyMatcher.matches()) {
-                                LOG.severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                getLogger().severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
                                 continue;
                             }
                             beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
@@ -378,8 +381,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                      model.add(gcEvent);
                 } 
                 catch (Exception pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
-                    if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
+                    if (getLogger().isLoggable(Level.WARNING)) getLogger().warning(pe.toString());
+                    if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, pe.getMessage(), pe);
                     beginningOfLine.clear();
                 }
                 // reset ParsePosition
@@ -388,7 +391,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             return model;
         } 
         finally {
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
     }
 
@@ -411,7 +414,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                    || ch == '.' || ch == ':' || ch == '+' || ch == '-'));
         
         if (index < 0) {
-            LOG.warning("could not find name of event before " + pos);
+            getLogger().warning("could not find name of event before " + pos);
             index = pos-1;
         }
         

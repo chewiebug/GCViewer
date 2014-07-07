@@ -1,88 +1,66 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.event.SwingPropertyChangeSupport;
 
 /**
  * Identifies a GC resource: a file or URL resource containing GC info.
  *
  * @author Hans Bausewein
+ * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>Date: November 8, 2013</p>
  */
 public class GCResource {
+	// TODO SWINGWORKER: hold GCModel here?
+    public static final String PROPERTY_MODEL = "model";
+    
+	private final String resourceName;
+	private GCModel model;
+	private SwingPropertyChangeSupport propertyChangeSupport;
 	
-	private static final AtomicInteger COUNT = new AtomicInteger(0); 
-	
-	private final Logger logger;
-	private final URL url;
-	private long lastModified;
-	private long length;
-	private long bytesProcessed;	
-	
-	public GCResource(URL url) {
+	public GCResource(String resourceName) {
 		super();
 		
-		if (url == null) {
-			throw new IllegalArgumentException("URL cannot be null");
+		if (resourceName == null) {
+			throw new IllegalArgumentException("resourceName cannot be null");
 		}
 		
-		this.url = url;
-		
-		final String loggerName = "GCResource".concat(Integer.toString(COUNT.incrementAndGet()));
-		this.logger = Logger.getLogger(loggerName);
+		this.resourceName = resourceName;
+		this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
+		this.model = new GCModel(false);
 	}
 	
-	public long getLastModified() {
-		return lastModified;
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+	    this.propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 	
-	public void setLastModified(long lastModified) {
-		this.lastModified = lastModified;
-	}
-	
-	public long getLength() {
-		return length;
-	}
-	
-	public void setLength(long length) {
-		this.length = length;
-	}
-	
-	public long getBytesProcessed() {
-		return bytesProcessed;
-	}
-	
-	public void setBytesProcessed(long bytesProcessed) {
-		this.bytesProcessed = bytesProcessed;
-	}
-	
-	public Logger getLogger() {
-		return logger;
-	}
-	
-	public URL getUrl() {
-		return url;
-	}
-	
-	public String getName() {
-		return url.toString();
-	}
-
-	@Override
-	public int hashCode() {		
-		return url.hashCode();
-	}
-
 	@Override
 	public boolean equals(Object obj) {
-		boolean equal = obj instanceof GCResource;
-			
-		if (equal) {
-			GCResource other = (GCResource)obj;
-			equal = url.equals(other.getUrl());
-		}
-		return equal;
+	    return resourceName.equals(obj);
+	}
+	
+	public GCModel getModel() {
+	    return model;
+	}
+	
+	public String getResourceName() {
+		return resourceName;
+	}
+	
+	@Override
+	public int hashCode() {		
+		return resourceName.hashCode();
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+	    this.propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+	
+	public void setModel(GCModel model) {
+	    GCModel oldModel = this.model;
+	    this.model = model;
+	    propertyChangeSupport.firePropertyChange(PROPERTY_MODEL, oldModel, model);
 	}
     
 }

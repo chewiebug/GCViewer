@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -23,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
+import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 
 /**
  * DesktopPane is the "background" of the application after opening.
@@ -34,13 +34,16 @@ import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
  */
 public class DesktopPane extends JDesktopPane {
 
+    private ImageIcon logoIcon = ImageLoader.loadImageIcon("gcviewer_background.png");
+    
     public DesktopPane(final GCViewerGui gcViewer) {
         // TODO refactor; looks very similar to GCDocument implementation
         gcViewer.setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY, new DropTargetListener(){
             public void dragEnter(DropTargetDragEvent e) {
                 if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                     e.acceptDrag(DnDConstants.ACTION_COPY);
-                } else {
+                }
+                else {
                     e.rejectDrag();
                 }
             }
@@ -54,33 +57,32 @@ public class DesktopPane extends JDesktopPane {
             public void dragExit(DropTargetEvent dte) {
             }
 
-            public void drop(DropTargetDropEvent e) {
+            public void drop(DropTargetDropEvent event) {
                 try {
-                    Transferable tr = e.getTransferable();
-                    if (e.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                        e.acceptDrop(DnDConstants.ACTION_COPY);
-                        List list = (List)tr.getTransferData(DataFlavor.javaFileListFlavor);
-                        File[] files = (File[])list.toArray(new File[list.size()]);
-                        gcViewer.open(files);
-                        e.dropComplete(true);
-                    } else {
-                        e.rejectDrop();
+                    Transferable tr = event.getTransferable();
+                    if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        event.acceptDrop(DnDConstants.ACTION_COPY);
+                        @SuppressWarnings("unchecked")
+                        List<File> list = (List<File>)tr.getTransferData(DataFlavor.javaFileListFlavor);
+                        gcViewer.open((File[]) list.toArray());
+                        event.dropComplete(true);
+                    } 
+                    else {
+                        event.rejectDrop();
                     }
-                } catch (IOException ioe) {
-                    e.rejectDrop();
-                    ioe.printStackTrace();
-                } catch (UnsupportedFlavorException ufe) {
-                    e.rejectDrop();
-                    ufe.printStackTrace();
+                } 
+                catch (IOException | UnsupportedFlavorException e) {
+                    event.rejectDrop();
+                    e.printStackTrace();
                 }
             }
         }));
     }
 
-    private ImageIcon logoIcon = new ImageIcon(GCViewerGui.class.getResource("gcviewer_background.png"));
-    
-    public void paint(Graphics g) {
-        fillBackground(g);
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        setBackground(Color.WHITE);
         
         // draw logo
         g.drawImage(logoIcon.getImage(), 
@@ -91,8 +93,6 @@ public class DesktopPane extends JDesktopPane {
                 logoIcon.getImageObserver());
         
         drawVersionString(g, logoIcon);
-
-        super.paint(g);
     }
 
     /**
@@ -117,18 +117,7 @@ public class DesktopPane extends JDesktopPane {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAHint);
     }
 
-    private void fillBackground(Graphics g) {
-        Rectangle r = g.getClipBounds();
-        g.setColor(Color.WHITE);
-        if (r != null) {
-            g.fillRect(r.x, r.y, r.width, r.height);
-        }
-        else {
-            g.fillRect(0, 0, getWidth(), getHeight());
-        }
-    }
-
     public boolean isOpaque() {
-        return false;
+        return true;
     }
 }

@@ -1,5 +1,10 @@
 package com.tagtraum.perf.gcviewer;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
@@ -8,11 +13,6 @@ import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.view.SimpleChartRenderer;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GCViewer {
     private static final Logger LOGGER = Logger.getLogger(GCViewer.class.getName());
@@ -37,7 +37,7 @@ public class GCViewer {
             }
         }
         else {
-            new GCViewerController().startGui(args.length == 1 ? args[0] : null);
+            new GCViewerControllerSub().startGui(args.length == 1 ? args[0] : null);
         }
     }
 
@@ -69,5 +69,11 @@ public class GCViewer {
         System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>] [<chart.png>] " +
                 "-> cmdline: writes report to <export.csv> and renders gc chart to <chart.png>");
     }
+	
+	private static class GCViewerControllerSub extends GCViewerController {
+	    public GCViewerControllerSub() {
+	        super();
+	    }
+	}
 
 }

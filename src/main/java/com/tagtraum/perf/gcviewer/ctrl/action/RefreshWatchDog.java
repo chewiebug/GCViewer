@@ -1,6 +1,5 @@
 package com.tagtraum.perf.gcviewer.ctrl.action;
 
-import java.awt.Toolkit;
 import java.util.TimerTask;
 
 import javax.swing.Action;
@@ -8,7 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import com.tagtraum.perf.gcviewer.view.GCDocument;
-import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 
 /**
  * Timer to trigger refresh of changed log files.
@@ -22,8 +21,8 @@ public class RefreshWatchDog {
     private java.util.Timer reloadTimer;
     private Action action;
     private boolean isRunning;
-    public static final ImageIcon WATCH_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewerGui.class.getResource("images/watch.png")));
-    private static final ImageIcon CLOCK_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(GCViewerGui.class.getResource("images/clock.png")));
+    public static final ImageIcon WATCH_ICON = ImageLoader.loadImageIcon("watch.png");
+    private static final ImageIcon CLOCK_ICON = ImageLoader.loadImageIcon("clock.png");
     private static final int RELOAD_DELAY = 1000;
 
     /**
@@ -103,7 +102,8 @@ public class RefreshWatchDog {
                         }
                     });
                 }
-            } catch (Exception e1) {
+            } 
+            catch (Exception e1) {
                 e1.printStackTrace();
             }
         }

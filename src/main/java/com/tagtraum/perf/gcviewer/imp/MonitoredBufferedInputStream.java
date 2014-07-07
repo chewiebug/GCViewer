@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,27 +15,32 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class MonitoredBufferedInputStream extends BufferedInputStream {
 
+    public static final String PROGRESS = "progress";
+    private PropertyChangeSupport propertyChangeSupport;
+    
 	public interface ProgressCallback {
-		void publishP(Integer... chunks);
-		void updateProgress(int progress);
 		String getLoggerName();
 	}
 	
-	private final ProgressCallback callback;
 	private final AtomicInteger percentRead = new AtomicInteger(0);
 	private final AtomicLong firstPercentBound;
 	private final long contentLength;
 	private final AtomicLong bytesRead = new AtomicLong(0L);
 	
-	public MonitoredBufferedInputStream(InputStream in, long contentLength, ProgressCallback callback) {
-		this(in, 8192, contentLength, callback);
+	public MonitoredBufferedInputStream(InputStream in, long contentLength) {
+		this(in, 8192, contentLength);
 	}
 
-	public MonitoredBufferedInputStream(InputStream in, int size, long contentLength, ProgressCallback callback) {
+	public MonitoredBufferedInputStream(InputStream in, int size, long contentLength) {
 		super(in, size);
-		this.callback = callback;
 		this.contentLength = contentLength;
 		this.firstPercentBound = new AtomicLong(contentLength/100L);
+		
+		this.propertyChangeSupport = new PropertyChangeSupport(this);
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+	    this.propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 	
 	private void updateCounters(final long increment) {
@@ -45,10 +52,7 @@ public class MonitoredBufferedInputStream extends BufferedInputStream {
 			// to next percentage value
 			firstPercentBound.set((1 + percentRead.get()) * contentLength/100);
 			
-			if (callback != null) {
-				callback.updateProgress(percentage);
-				callback.publishP(percentage);
-			}
+			propertyChangeSupport.firePropertyChange(PROGRESS, -1, percentage);
 		}
 	}
 

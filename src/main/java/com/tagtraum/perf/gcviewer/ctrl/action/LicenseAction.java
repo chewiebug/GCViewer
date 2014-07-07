@@ -19,7 +19,7 @@ public class LicenseAction extends AbstractAction {
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_license").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "about");
         // TODO icon?
-        //putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(parent.getClass().getResource("images/license.png"))));
+        //putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(parent.getClass().getResource("license.png"))));
     }
 
     @Override

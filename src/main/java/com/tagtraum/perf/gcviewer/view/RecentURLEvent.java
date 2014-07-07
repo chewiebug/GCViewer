@@ -3,7 +3,6 @@ package com.tagtraum.perf.gcviewer.view;
 import java.util.EventObject;
 
 import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
-import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel.URLSet;
 
 /**
  * RecentURLEvent.

@@ -42,7 +42,7 @@ public class LocalisationHelper {
     
     private static ResourceBundle getBundle() {
         if (resourceBundle == null) {
-            resourceBundle = ResourceBundle.getBundle("com.tagtraum.perf.gcviewer.localStrings");
+            resourceBundle = ResourceBundle.getBundle("localStrings");
         }
         
         return resourceBundle;

@@ -7,9 +7,9 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
@@ -26,7 +26,9 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import com.tagtraum.perf.gcviewer.GCPreferences;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 
 
 /**
@@ -37,7 +39,7 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
  * <p>Date: May 5, 2005<br/>
  * Time: 2:14:36 PM</p>
  */
-public class ChartPanelView {
+public class ChartPanelView implements PropertyChangeListener {
 
     public static final String EVENT_MINIMIZED = "minimized";
     static Logger LOG = Logger.getLogger(ChartPanelView.class.getName());
@@ -47,21 +49,23 @@ public class ChartPanelView {
     private final ModelChartImpl modelChart;
     private final ModelMetricsPanel modelMetricsPanel;
     private final ModelDetailsPanel modelDetailsPanel;
+    private GCModelLoaderView modelLoaderView;
     private final JTabbedPane modelChartAndDetailsPanel;
     private final ViewBar viewBar;
     private final SwingPropertyChangeSupport propertyChangeSupport;
     private final GCDocument gcDocument;
-    private final GCModel model;
+    private GCResource gcResource;
     private boolean viewBarVisible;
     private boolean minimized;
     
-    public ChartPanelView(final GCDocument gcDocument, final GCModel model) {
+    public ChartPanelView(final GCDocument gcDocument, final GCResource gcResource) {
     	this.gcDocument = gcDocument;
-    	this.model = model;
+    	this.gcResource = gcResource;
         this.modelDetailsPanel = new ModelDetailsPanel();
         this.modelChart = new ModelChartImpl();
         this.preferences = gcDocument.getPreferences();
         this.modelMetricsPanel = new ModelMetricsPanel();
+        this.modelLoaderView = new GCModelLoaderView();
         
         JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
@@ -75,11 +79,13 @@ public class ChartPanelView {
         this.modelChartAndDetailsPanel = new JTabbedPane();
         this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_chart"), modelChart);
         this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_details"), modelDetailsScrollPane);
+        this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_parser"), modelLoaderView);
         
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
         
-        setModel(model);
+        setGcResource(gcResource);
+        updateTabSettings(gcResource);
     }
 
     /**
@@ -91,7 +97,8 @@ public class ChartPanelView {
      * @throws DataReaderException if something went wrong reading the file
      */
     public boolean reloadModel(boolean showParserErrors) throws DataReaderException {
-    	final GCModel model = getModel();
+        // TODO SWINGWORKER: how to reload a model?
+    	final GCModel model = getGCResource().getModel();
 
 /*    	if (modelLoader.getState() != SwingWorker.StateValue.DONE) {
     		// do not start another reload, while loading (or should we cancel the current load operation?)
@@ -155,24 +162,70 @@ public class ChartPanelView {
         return modelMetricsPanel;
     }
 
-    public GCModel getModel() {
-        return model;
+    public GCModelLoaderView getModelLoaderView() {
+        return modelLoaderView;
+    }
+    
+    public GCResource getGCResource() {
+        return gcResource;
     }
 
-    public void setModel(GCModel model) {
-        this.modelMetricsPanel.setModel(model);
-        this.modelChart.setModel(model, preferences);
-        this.modelDetailsPanel.setModel(model);
-        this.viewBar.setTitle(model.getURL().toString());
+    public void setGcResource(GCResource gcResource) {
+        if (this.gcResource != null) {
+            this.gcResource.removePropertyChangeListener(this);
+        }
+        
+        this.gcResource = gcResource;
+        this.gcResource.addPropertyChangeListener(this);
+
+        updateModel(gcResource);
     }
 
     public void close() {
+        // TODO SWINGWORKER refactor
     	gcDocument.removeChartPanelView(this);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // TODO SWINGWORKER listen to changes in GCResource
+        if (evt.getSource() instanceof GCResource
+                && GCResource.PROPERTY_MODEL.equals(evt.getPropertyName())) {
+            
+            GCResource gcResource = (GCResource) evt.getSource();
+            updateModel(gcResource);
+            updateTabSettings(gcResource);
+        }
+    }
+    
+    private void updateTabSettings(GCResource gcResource) {
+        // only enable "parser" panel, as long as model contains no data
+        boolean modelHasData = gcResource.getModel() != null && gcResource.getModel().size() > 0;
+        for (int i = 0; i < modelChartAndDetailsPanel.getTabCount(); ++i) {
+            modelChartAndDetailsPanel.getComponentAt(i).setEnabled(
+                    !modelHasData
+                    || modelChartAndDetailsPanel.getTitleAt(i).equals(
+                            LocalisationHelper.getString("data_panel_tab_parser")));
+        }
+        
+        if (modelHasData) {
+            modelChartAndDetailsPanel.setSelectedIndex(0);
+        }
+        else {
+            modelChartAndDetailsPanel.setSelectedIndex(modelChartAndDetailsPanel.getTabCount()-1);
+        }
+    }
+    
+    private void updateModel(GCResource gcResource) {
+        this.modelMetricsPanel.setModel(gcResource.getModel());
+        this.modelChart.setModel(gcResource.getModel(), preferences);
+        this.modelDetailsPanel.setModel(gcResource.getModel());
+        this.viewBar.setTitle(gcResource.getResourceName());
     }
 
     private static class ViewBar extends JPanel {
         private JLabel title = new JLabel();
-        private ViewBarButton closeButton = new ViewBarButton("images/close.png", "images/close_selected.png");
+        private ViewBarButton closeButton = new ViewBarButton("close.png", "close_selected.png");
         private MinMaxButton minimizeButton = new MinMaxButton();
         private ChartPanelView chartPanelView;
 
@@ -225,8 +278,8 @@ public class ChartPanelView {
 
         private static class ViewBarButton extends JButton {
             public ViewBarButton(String image1, String image2) {
-                final ImageIcon imageIcon1 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(image1)));
-                final ImageIcon imageIcon2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(image2)));
+                final ImageIcon imageIcon1 = ImageLoader.loadImageIcon(image1);
+                final ImageIcon imageIcon2 = ImageLoader.loadImageIcon(image2);
                 setIcons(imageIcon1, imageIcon2);
                 setMargin(new Insets(0,2,0,2));
                 setRolloverEnabled(true);
@@ -242,18 +295,20 @@ public class ChartPanelView {
 
         }
         private static class MinMaxButton extends JButton {
-            private final ImageIcon min1 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/minimize.png")));
-            private final ImageIcon min2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/minimize_selected.png")));
-            private final ImageIcon max1 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/maximize.png")));
-            private final ImageIcon max2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/maximize_selected.png")));
+            private final ImageIcon min1 = ImageLoader.loadImageIcon("minimize.png");
+            private final ImageIcon min2 = ImageLoader.loadImageIcon("minimize_selected.png");
+            private final ImageIcon max1 = ImageLoader.loadImageIcon("maximize.png");
+            private final ImageIcon max2 = ImageLoader.loadImageIcon("maximize_selected.png");
             private boolean minimize = true;
+            
             public MinMaxButton() {
                 setIcons(min1, min2);
                 setMargin(new Insets(0,2,0,2));
                 setRolloverEnabled(true);
                 setBorderPainted(false);
                 setOpaque(false);
-                addActionListener(new ActionListener(){
+                
+                addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
                         if (minimize) {
                             setIcons(max1, max2);

@@ -68,7 +68,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         super();
         this.model = new GCModel(true);
         this.chart = new Chart();
-        this.chart.setPreferredSize(new Dimension(0, 0));
+        this.chart.setPreferredSize(new Dimension(100, 100));
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         
@@ -204,6 +204,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
     public void invalidate() {
         super.invalidate();
+        chart.invalidate();
     }
 
     /**
@@ -369,7 +370,12 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     public void setModel(GCModel model, GCPreferences preferences) {
         this.model = model;
         
+        // TODO SWINGWORKER: should rather gcDocument.relayout be called here?
         applyPreferences(preferences);
+        setScaleFactor(getScaleFactor());
+        setRunningTime(model.getRunningTime());
+        setFootprint(model.getFootprint());
+        setMaxPause(model.getPause().getMax());
     }
     
     private void applyPreferences(GCPreferences preferences) {
@@ -425,13 +431,13 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     private class Chart extends JPanel implements ComponentListener {
 
         public Chart() {
-            setBackground(Color.white);
+            setBackground(Color.WHITE);
             setLayout(new GridBagLayout());
             addComponentListener(this);
         }
 
         public Dimension getPreferredSize() {
-            return new Dimension(scaleX(runningTime), getViewport().getHeight());
+            return new Dimension(Math.max(scaleX(runningTime), 100), getViewport().getHeight());
         }
 
         private int scaleX(double d) {
@@ -503,17 +509,16 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
         public Dimension getPreferredSize() {
             FontMetrics fm = getToolkit().getFontMetrics(font);
-            //System.out.println("longest: " + longestString);
             configureFormatter();
             int minWidth = fm.stringWidth(longestString) + 5;
             Dimension bestSize = null;
             if (isVertical()) {
                 bestSize = new Dimension(minWidth, getHeight());
-            } else {
+            } 
+            else {
                 bestSize = new Dimension((int) (runningTime * getScaleFactor()), fm.getHeight());
                 minHalfDistance = minWidth;
             }
-            //System.out.println("pref: " + bestSize);
             return bestSize;
         }
 
@@ -549,7 +554,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                         g.drawString(newNumber, 2, (int) line - 2);
                     number = newNumber;
                 }
-            } else {
+            }
+            else {
                 double halfLineDistance = lineDistance / 2.0d;
                 for (double line = (minUnit % lineDistance); line < getWidth(); line += lineDistance) {
                     g.drawLine((int) line, 0, (int) line, getHeight());
@@ -611,7 +617,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                     double oneHourDistance = lineDistance;
                     while (lineDistance < 20) lineDistance += oneHourDistance;
                 }
-            } else {
+            } 
+            else {
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 10.0d; // 10sec
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 3.0d; // 30sec
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 2.0d; // 1min
@@ -632,7 +639,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             double lineDistance = getPixelsPerUnit() * Math.pow(10, Math.ceil(-log10PixelPerUnit) + 1);
             if (isVertical()) {
                 while (lineDistance < 20) lineDistance *= 10.0d;
-            } else {
+            } 
+            else {
                 while (lineDistance < minHalfDistance * 2) lineDistance *= 10.0d;
             }
             return lineDistance;
@@ -659,7 +667,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                 if (digits < 1) {
                     ((NumberFormat)formatter).setMaximumFractionDigits((int) Math.abs(digits) + 2);
                     ((NumberFormat)formatter).setMinimumFractionDigits((int) Math.abs(digits) + 2);
-                } else {
+                } 
+                else {
                     ((NumberFormat)formatter).setMaximumFractionDigits(0);
                     ((NumberFormat)formatter).setMinimumFractionDigits(0);
                 }

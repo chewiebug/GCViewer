@@ -28,12 +28,8 @@ public class ScreenCenteredDialog extends JDialog implements ActionListener {
 
     protected static final String ACTION_OK = "ok";
     
-    private Frame frame;
-
     public ScreenCenteredDialog(Frame f, String title) {
         super(f, title, true);
-        
-        frame = f;
     }
 
     protected JRootPane createRootPane() {
@@ -51,7 +47,7 @@ public class ScreenCenteredDialog extends JDialog implements ActionListener {
         Dimension size = super.getPreferredSize();
         
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
+        Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getOwner().getGraphicsConfiguration());
         int taskBarSize = scnMax.bottom;
         
         int usableScreenHeight = screenSize.height - taskBarSize - 50;
@@ -76,8 +72,8 @@ public class ScreenCenteredDialog extends JDialog implements ActionListener {
     
     public void setVisible(boolean visible) {
         if (visible) {
-            setLocation((int) frame.getLocation().getX() + (frame.getWidth() / 2) - (getWidth() / 2), 
-                    (int) frame.getLocation().getY() + (frame.getHeight() / 2) - (getHeight() / 2));
+            setLocation((int) getOwner().getLocation().getX() + (getOwner().getWidth() / 2) - (getWidth() / 2), 
+                    (int) getOwner().getLocation().getY() + (getOwner().getHeight() / 2) - (getHeight() / 2));
         }
         
         super.setVisible(visible);

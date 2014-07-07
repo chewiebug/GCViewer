@@ -19,7 +19,7 @@ public class ReadmeAction extends AbstractAction {
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_readme").charAt(0)));
         putValue(ACTION_COMMAND_KEY, "readme");
         // TODO icon?
-        // putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(parent.getClass().getResource("images/readme.png"))));
+        // putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(parent.getClass().getResource("readme.png"))));
     }
 
     @Override

@@ -3,11 +3,9 @@ package com.tagtraum.perf.gcviewer.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.MessageFormat;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -16,61 +14,55 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 
 /**
  * Display the GCModel loading process for a GCDocument.
  */
-public class GCModelLoaderView extends JPanel implements ActionListener,
-														 ChangeListener,
-														 PropertyChangeListener {
+public class GCModelLoaderView extends JPanel implements PropertyChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final GCModelLoader modelLoader;
-	private final JLabel messageLabel;
-    private final JProgressBar progressBar;
-    private final TextAreaLogHandler textAreaLogHandler = new TextAreaLogHandler();
-    private boolean active;
+	private JLabel messageLabel;
+    private JProgressBar progressBar;
+    private TextAreaLogHandler textAreaLogHandler = new TextAreaLogHandler();
 
 	/**
 	 * @param modelLoaders
 	 */
-	public GCModelLoaderView(GCModelLoader modelLoader) {
+	public GCModelLoaderView() {
 		super(new BorderLayout());
-		this.modelLoader = modelLoader;
 		
-		final String title = modelLoader.getGcResource().getName();
-        setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(title),
-                BorderFactory.createEmptyBorder(5,5,5,5)));
-        final JTextArea textArea = textAreaLogHandler.getTextArea();
-        textArea.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        final JScrollPane textAreaScrollPane = new JScrollPane(textArea);
-        textAreaScrollPane.setPreferredSize(new Dimension(700, 500));
-        add(textAreaScrollPane, BorderLayout.CENTER);
-
-        final JPanel topInfo = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        JPanel parserInfo = new JPanel(new FlowLayout(FlowLayout.LEFT));
         progressBar = new JProgressBar(0, 100);
+        progressBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         progressBar.setVisible(true);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
 
-        final JLabel msgLabel = new JLabel();
+        JLabel msgLabel = new JLabel();
         msgLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         msgLabel.setVisible(false);       
         this.messageLabel = msgLabel;
 
-        topInfo.add(msgLabel);
-        topInfo.add(progressBar);
+        parserInfo.add(msgLabel);
+        parserInfo.add(progressBar);
         
-        add(topInfo, BorderLayout.NORTH);
-        setVisible(false);   
+        add(parserInfo, BorderLayout.NORTH);
+
+        JTextArea textArea = textAreaLogHandler.getTextArea();
+        textArea.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        
+        JScrollPane textAreaScrollPane = new JScrollPane(textArea);
+        textAreaScrollPane.setPreferredSize(new Dimension(700, 500));
+        
+        add(textAreaScrollPane, BorderLayout.CENTER);
 	}
 
     /**
@@ -80,62 +72,34 @@ public class GCModelLoaderView extends JPanel implements ActionListener,
     public void propertyChange(PropertyChangeEvent evt) {
 		final String eventPropertyName = evt.getPropertyName();
 		
+		if ("loggername".equals(eventPropertyName)) {
+            textAreaLogHandler.getTextArea().setText("");
+            Logger.getLogger((String) evt.getNewValue()).addHandler(textAreaLogHandler);
+		}
         if ("progress".equals(eventPropertyName)) {
-            final int progress = (Integer) evt.getNewValue();
-            progressBar.setValue(progress);
-           
-            if (progress >= 100) {
-            	progressBar.setVisible(false);
-            } else {
-            	if (progress >= 0) {
-            		// make GCModelLoaderView visible when first progress update is received
-            		// i.e. when loading is not very fast
-            		if (!active) {
-            			active = true;
-            			setVisible(true);
-            			modelLoader.getGcDocument().relayout();
-            		}
-            	}
-            }
-        	invalidate();
-        } else {
-        	if ("state".equals(eventPropertyName)
-                    && SwingWorker.StateValue.DONE == evt.getNewValue()) {
-        		
-        		final int nErrors = textAreaLogHandler.getErrorCount();
-        		
-        		modelLoader.getGcResource().getLogger().info("Loading " + modelLoader.getGcResource().getName() + " produced " + nErrors + " errors");
-        		
-        		if (nErrors > 0) {
-        			final String title = modelLoader.getGcResource().getName();		
-        	        final MessageFormat mf = new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_message"));        
-        	        messageLabel.setText(mf.format(new Object[]{nErrors, title}));
-        	        progressBar.setVisible(false);
-        	        messageLabel.setVisible(true);
-        			active = true;// signals that there's something to show
-        			setVisible(true);
-        			modelLoader.getGcDocument().relayout();
-        		}		
-        	}
+            progressBar.setValue((int)evt.getNewValue());
         }
+        else if ("state".equals(eventPropertyName)
+                    && SwingWorker.StateValue.DONE == evt.getNewValue()) {
+    		
+            progressBar.setValue(100);
+    		final int nErrors = textAreaLogHandler.getErrorCount();
+    		
+    		//LoggerHelper.getThreadSpecificLogger(this).info("Loading " + modelLoader.getGcResource().getResourceName() + " produced " + nErrors + " errors");
+    		
+    		if (nErrors > 0) {
+    			//String title = modelLoader.getGcResource().getResourceName();		
+    	        messageLabel.setText(LocalisationHelper.getString("datareader_parseerror_dialog_message", nErrors, "title"));
+    			//modelLoader.getGcDocument().relayout();
+    		}		
+    		
+    		((GCModelLoader)evt.getSource()).removePropertyChangeListener(this);
+            LoggerHelper.getThreadSpecificLogger(null).removeHandler(textAreaLogHandler);
+    	}
     }
-
-	@Override
-	public void stateChanged(ChangeEvent e) {
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public TextAreaLogHandler getTextAreaLogHandler() {
 		return textAreaLogHandler;
-	}
-
-	public boolean isActive() {
-		return active;
 	}
 
 }

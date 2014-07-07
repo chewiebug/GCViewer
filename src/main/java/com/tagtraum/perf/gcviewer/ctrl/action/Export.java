@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -19,13 +18,12 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.ChartPanelView;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.util.ImageLoader;
 
 /**
- *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * Date: May 20, 2005
  * Time: 2:01:07 PM
- *
  */
 public class Export extends AbstractAction {
     private GCViewerGui gcViewer;
@@ -38,7 +36,7 @@ public class Export extends AbstractAction {
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_export"));
         putValue(ACTION_COMMAND_KEY, "export");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
-        putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/save.png"))));
+        putValue(SMALL_ICON, ImageLoader.loadImageIcon("save.png"));
         setEnabled(false);
 
         saveDialog = new JFileChooser();
@@ -53,7 +51,7 @@ public class Export extends AbstractAction {
         final GCDocument gcDocument = gcViewer.getSelectedGCDocument();
         for (int i=0; i<gcDocument.getChartPanelViewCount(); i++) {
             final ChartPanelView chartPanelView = gcDocument.getChartPanelView(i);
-            final File file = new File(chartPanelView.getModel().getURL().getFile());
+            final File file = new File(chartPanelView.getGCResource().getResourceName());
             saveDialog.setCurrentDirectory(file.getParentFile());
             saveDialog.setSelectedFile(file);
             final int val = saveDialog.showSaveDialog(gcViewer);
@@ -63,8 +61,10 @@ public class Export extends AbstractAction {
                 if (fileFilter==null) {
                     fileFilter = (ExtensionFileFilter) saveDialog.getChoosableFileFilters()[0];
                 }
-                exportFile(chartPanelView.getModel(), saveDialog.getSelectedFile(), fileFilter.getExtension(),
-                    fileFilter.getDataWriterType());
+                exportFile(chartPanelView.getGCResource().getModel(),
+                        saveDialog.getSelectedFile(), 
+                        fileFilter.getExtension(),
+                        fileFilter.getDataWriterType());
             }
             else if (val == JFileChooser.ERROR_OPTION) {
                 JOptionPane.showMessageDialog(gcViewer, LocalisationHelper.getString("fileexport_dialog_error_occured"), LocalisationHelper.getString("fileexport_dialog_write_file_failed"), JOptionPane.ERROR_MESSAGE);
