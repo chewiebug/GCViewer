@@ -10,6 +10,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.KeyStroke;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 
 /**
@@ -26,7 +27,7 @@ public class Arrange extends AbstractAction {
         putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_arrange"));
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_arrange"));
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_arrange").charAt(0)));
-        putValue(ACTION_COMMAND_KEY, "arrange");
+        putValue(ACTION_COMMAND_KEY, ActionCommands.ARRANGE.toString());
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('G', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         setEnabled(false);
     }

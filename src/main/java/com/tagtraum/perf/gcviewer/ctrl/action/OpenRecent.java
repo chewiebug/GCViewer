@@ -5,10 +5,11 @@ import java.net.URL;
 
 import javax.swing.AbstractAction;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
+import com.tagtraum.perf.gcviewer.view.ActionCommands;
 
 /**
- * OpenRecent.
+ * Action to open an entry of the recent urls menu.
  * <p/>
  * Date: Sep 25, 2005
  * Time: 11:16:49 PM
@@ -18,11 +19,13 @@ import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
 public class OpenRecent extends AbstractAction {
 
     private URL[] urls;
-    private GCViewerController controller;
+    private GCModelLoaderController controller;
 
-    public OpenRecent(GCViewerController controller, final URL[] urls) {
+    public OpenRecent(GCModelLoaderController controller, final URL[] urls) {
         this.urls = urls;
         this.controller = controller;
+        
+        putValue(ACTION_COMMAND_KEY, ActionCommands.OPEN_RECENT.toString());
         putValue(NAME, toString(urls));
     }
 
@@ -34,7 +37,7 @@ public class OpenRecent extends AbstractAction {
         return urls;
     }
 
-    private static String toString(final URL[] urls) {
+    private String toString(final URL[] urls) {
         if (urls.length == 1) return urls[0].toString();
         final StringBuffer sb = new StringBuffer();
         for (int i=0; i<urls.length; i++) {

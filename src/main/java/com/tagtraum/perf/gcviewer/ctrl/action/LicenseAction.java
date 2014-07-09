@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.TextFileViewer;
 
 public class LicenseAction extends AbstractAction {
@@ -17,7 +18,7 @@ public class LicenseAction extends AbstractAction {
         putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_license"));
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_license"));
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_license").charAt(0)));
-        putValue(ACTION_COMMAND_KEY, "about");
+        putValue(ACTION_COMMAND_KEY, ActionCommands.SHOW_LICENSE.toString());
         // TODO icon?
         //putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(parent.getClass().getResource("license.png"))));
     }

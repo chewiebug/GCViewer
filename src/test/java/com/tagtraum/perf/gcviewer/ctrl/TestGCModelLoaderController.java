@@ -17,22 +17,25 @@ import org.mockito.Mockito;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 /**
- * Unittest for main controller class of GCViewerGui ({@link GCViewerController}).
+ * Unittest for main controller class of GCViewerGui ({@link GCModelLoaderController}).
  * This is rather an integration test than a unittest, so if one of these tests fail, first
  * check other failures before checking here.
  * 
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 05.01.2014</p>
  */
-public class TestGCViewerController {
-    private GCViewerController controller;
+public class TestGCModelLoaderController {
+    private GCModelLoaderController controller;
     
     @Before
     public void setUp() throws Exception {
-        controller = new GCViewerController();
-        controller.setGCViewerGui(new GCViewerGui(controller));
+        GCViewerGui gcViewerGui = new GCViewerGui();
+        controller = new GCModelLoaderController(gcViewerGui);
+        new GCViewerGuiBuilder().initGCViewerGui(gcViewerGui, controller);
+        new GCViewerGuiController().applyPreferences(gcViewerGui, new GCPreferences());
     }
     
     @Test

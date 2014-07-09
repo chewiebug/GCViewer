@@ -4,13 +4,10 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.SwingUtilities;
 
 import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener.DropFlavor;
 import com.tagtraum.perf.gcviewer.model.GCResource;
@@ -23,11 +20,17 @@ import com.tagtraum.perf.gcviewer.view.GCViewerGui;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 15.12.2013</p>
  */
-public class GCViewerController {
+public class GCModelLoaderController {
     private GCViewerGui gcViewerGui;
     
-    protected GCViewerController() {
+    /**
+     * Constructor is package protected, because this controller should only be instantiated in 
+     * this package.
+     */
+    GCModelLoaderController(GCViewerGui gcViewerGui) {
         super();
+        
+        this.gcViewerGui = gcViewerGui;
     }
     
     public void add(String resourceName) {
@@ -73,6 +76,7 @@ public class GCViewerController {
                         DnDConstants.ACTION_COPY, 
                         new FileDropTargetListener(this, DropFlavor.ADD))
                 );
+        document.addInternalFrameListener(new GCViewerGuiInternalFrameController());
         
         gcViewerGui.addDocument(document);
         
@@ -161,37 +165,4 @@ public class GCViewerController {
         this.gcViewerGui = gui;
     }
     
-    /**
-     * Start graphical user interface and load a log file (resourceName - if not <code>null</code>).
-     * 
-     * @param resourceName log file to be loaded at startup or <code>null</code>
-     * @throws InvocationTargetException Some problem trying to start the gui
-     * @throws InterruptedException Some problem trying to start the gui
-     */
-    public void startGui(final String resourceName) throws InvocationTargetException, InterruptedException {
-        Runnable guiStarter = new Runnable() {
-            
-            @Override
-            public void run() {
-                gcViewerGui = new GCViewerGui(GCViewerController.this);
-                Thread.setDefaultUncaughtExceptionHandler(new GCViewerUncaughtExceptionHandler(gcViewerGui));
-                gcViewerGui.setVisible(true);
-            }
-        };
-        
-        SwingUtilities.invokeAndWait(guiStarter);
-        
-        if (resourceName != null) {
-            Runnable resourceLoader = new Runnable() {
-
-                @Override
-                public void run() {
-                    open(resourceName);
-                }
-                
-            };
-            SwingUtilities.invokeLater(resourceLoader);
-        }
-    }
-
 }

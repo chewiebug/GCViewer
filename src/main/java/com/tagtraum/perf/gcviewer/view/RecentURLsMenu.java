@@ -3,7 +3,7 @@ package com.tagtraum.perf.gcviewer.view;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenRecent;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
@@ -19,7 +19,7 @@ import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
 public class RecentURLsMenu extends JMenu {
     private RecentURLsModel model;
 
-    public RecentURLsMenu(final GCViewerController controller) {
+    public RecentURLsMenu(final GCModelLoaderController controller) {
         super(LocalisationHelper.getString("main_frame_menuitem_recent_files"));
         this.model = new RecentURLsModel();
         this.model.addRecentURLsListener(new RecentURLsListener(){

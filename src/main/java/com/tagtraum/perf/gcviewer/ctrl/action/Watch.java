@@ -13,9 +13,10 @@ import javax.swing.KeyStroke;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
@@ -33,12 +34,12 @@ public class Watch extends AbstractAction {
     private static final ImageIcon WATCH_ICON = ImageHelper.loadImageIcon("watch.png");
     private static final ImageIcon CLOCK_ICON = ImageHelper.loadImageIcon("clock.png");
 
-    private GCViewerController controller;
+    private GCModelLoaderController controller;
     private GCViewerGui gcViewer;
     
     private Map<GCDocument, TimerInfo> timerMap;
 
-    public Watch(GCViewerController controller, GCViewerGui gcViewer) {
+    public Watch(GCModelLoaderController controller, GCViewerGui gcViewer) {
         this.controller = controller;
         this.gcViewer = gcViewer;
         this.timerMap = new HashMap<GCDocument, TimerInfo>();
@@ -46,7 +47,7 @@ public class Watch extends AbstractAction {
         putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_watch"));
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_watch"));
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_watch").charAt(0)));
-        putValue(ACTION_COMMAND_KEY, "watch");
+        putValue(ACTION_COMMAND_KEY, ActionCommands.WATCH.toString());
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('W', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, WATCH_ICON);
         

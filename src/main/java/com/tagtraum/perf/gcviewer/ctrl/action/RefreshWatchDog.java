@@ -7,7 +7,7 @@ import java.util.TimerTask;
 import javax.swing.SwingWorker;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
-import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 
 /**
@@ -20,12 +20,12 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 public class RefreshWatchDog {
     private static final int RELOAD_DELAY = 1000;
 
-    private GCViewerController controller;
+    private GCModelLoaderController controller;
     private GCDocument gcDocument;
 
     private java.util.Timer reloadTimer;
 
-    public RefreshWatchDog(GCViewerController controller, GCDocument gcDocument) {
+    public RefreshWatchDog(GCModelLoaderController controller, GCDocument gcDocument) {
         this.controller = controller;
         this.gcDocument = gcDocument;
     }

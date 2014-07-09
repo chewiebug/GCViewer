@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 TestGCModelLoader.class,
-TestGCViewerController.class,
+TestGCModelLoaderController.class,
 })
 public class TestAllCtrl {
 }

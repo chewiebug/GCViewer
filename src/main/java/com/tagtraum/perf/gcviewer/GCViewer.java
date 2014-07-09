@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
+import com.tagtraum.perf.gcviewer.ctrl.GCViewerGuiController;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
@@ -39,7 +39,7 @@ public class GCViewer {
             }
         }
         else {
-            new GCViewerControllerSub().startGui(args.length == 1 ? args[0] : null);
+            new GCViewerGuiController().startGui(args.length == 1 ? args[0] : null);
         }
     }
 
@@ -73,10 +73,4 @@ public class GCViewer {
                 "-> cmdline: writes report to <export.csv> and renders gc chart to <chart.png>");
     }
 	
-	private static class GCViewerControllerSub extends GCViewerController {
-	    public GCViewerControllerSub() {
-	        super();
-	    }
-	}
-
 }

@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class FileDropTargetListener extends DropTargetAdapter {
 
-    private GCViewerController controller;
+    private GCModelLoaderController controller;
     private DropFlavor flavor;
 
     /**
@@ -42,7 +42,7 @@ public class FileDropTargetListener extends DropTargetAdapter {
      * @param controller target for add / open files
      * @param flavor add or open
      */
-    public FileDropTargetListener(GCViewerController controller, DropFlavor flavor) {
+    public FileDropTargetListener(GCModelLoaderController controller, DropFlavor flavor) {
         super();
         
         this.controller = controller;

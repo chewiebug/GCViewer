@@ -6,8 +6,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCViewerController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.OpenUrlView;
 import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
@@ -19,11 +20,11 @@ import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
  * Time: 1:48:26 PM
  */
 public class OpenURL extends AbstractAction {
-    private GCViewerController controller;
+    private GCModelLoaderController controller;
     private GCViewerGui gcViewer;
     private OpenUrlView view;
 
-    public OpenURL(GCViewerController controller, final GCViewerGui gcViewer) {
+    public OpenURL(GCModelLoaderController controller, final GCViewerGui gcViewer) {
         this.controller = controller;
         this.gcViewer = gcViewer;
         this.view = new OpenUrlView(gcViewer);
@@ -31,7 +32,7 @@ public class OpenURL extends AbstractAction {
         putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_open_url"));
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_open_url"));
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_open_url").charAt(0)));
-        putValue(ACTION_COMMAND_KEY, "open_url");
+        putValue(ACTION_COMMAND_KEY, ActionCommands.OPEN_URL.toString());
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('U', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, ImageHelper.loadImageIcon("open_url.png"));
     }

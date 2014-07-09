@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 
@@ -30,7 +31,7 @@ public class OSXFullScreen extends AbstractAction {
         this.gcViewer = gcViewer;
         putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_enter_fullscreen"));
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_enter_fullscreen"));
-        putValue(ACTION_COMMAND_KEY, "fullscreen");
+        putValue(ACTION_COMMAND_KEY, ActionCommands.OSX_FULLSCREEN.toString());
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('F', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | Event.SHIFT_MASK));
 
         try {
