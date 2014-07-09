@@ -6,6 +6,7 @@ import javax.swing.JMenuItem;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenRecent;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesListener;
 import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 
 /**

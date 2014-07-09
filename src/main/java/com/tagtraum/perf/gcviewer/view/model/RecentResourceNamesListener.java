@@ -1,4 +1,6 @@
-package com.tagtraum.perf.gcviewer.view;
+package com.tagtraum.perf.gcviewer.view.model;
+
+import com.tagtraum.perf.gcviewer.view.RecentResourceNamesEvent;
 
 /**
  * RecentURLsListener.

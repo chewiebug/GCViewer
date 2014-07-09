@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.*;
 
 import com.tagtraum.perf.gcviewer.view.RecentResourceNamesEvent;
-import com.tagtraum.perf.gcviewer.view.RecentResourceNamesListener;
 
 /**
  * RecentFilesMenu.
