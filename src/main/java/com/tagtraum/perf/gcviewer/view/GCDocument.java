@@ -10,7 +10,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -25,6 +24,7 @@ import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -33,8 +33,6 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
  */
 public class GCDocument extends JInternalFrame {
 
-	private static final Logger LOG = Logger.getLogger(GCDocument.class.getName());
-	
     private final List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
     private ModelChart modelChartListFacade;
     private boolean showModelMetricsPanel = true;
@@ -144,21 +142,10 @@ public class GCDocument extends JInternalFrame {
      */
     public void relayout() {
         getContentPane().removeAll();
-        final int nChartPanelViews = chartPanelViews.size();
-        final String newTitle;
-        if (nChartPanelViews > 1) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < nChartPanelViews; i++) {
-            	sb.append(chartPanelViews.get(i).getGCResource().getResourceName());
-                if (i + 1 < nChartPanelViews) sb.append(", ");
-            }
-            newTitle = sb.toString();
-        } 
-        else if (!chartPanelViews.isEmpty()) {
-        	newTitle = chartPanelViews.get(0).getGCResource().getResourceName();
-        }
-        else {
-        	newTitle = "";
+        String newTitle = "";
+        if (chartPanelViews.size() > 0) {
+            GCResourceGroup group = new GCResourceGroup(getGCResources());
+            newTitle = group.getGroupStringShort();
         }
         setTitle(newTitle);
         
@@ -167,7 +154,7 @@ public class GCDocument extends JInternalFrame {
         ChartPanelView lastMaximizedChartPanelView = getLastMaximizedChartPanelView();
         MasterViewPortChangeListener masterViewPortChangeListener = new MasterViewPortChangeListener();
 
-        for (int i = 0; i < nChartPanelViews; i++) {
+        for (int i = 0; i < chartPanelViews.size(); i++) {
             final ChartPanelView chartPanelView = chartPanelViews.get(i);
             final ModelChartImpl modelChart = (ModelChartImpl) chartPanelView.getModelChart();
             final ModelMetricsPanel modelMetricsPanel = chartPanelView.getModelMetricsPanel();
@@ -178,7 +165,7 @@ public class GCDocument extends JInternalFrame {
             constraints.anchor = GridBagConstraints.NORTH;
 
             constraints.gridy = row;
-            if (nChartPanelViews > 1 || (chartPanelView.isMinimized() && nChartPanelViews == 1)) {
+            if (chartPanelViews.size() > 1 || (chartPanelView.isMinimized() && chartPanelViews.size() == 1)) {
                 constraints.gridwidth = 2;
                 constraints.weightx = 2;
                 //constraints.weighty = 1;

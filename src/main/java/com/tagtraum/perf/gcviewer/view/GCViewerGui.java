@@ -24,7 +24,7 @@ public class GCViewerGui extends JFrame {
     private GCViewerGuiToolBar toolBar;
     private GCPreferences preferences;
 
-    private RecentResourceNamesMenu recentResourceNamesMenu;
+    private RecentGCResourcesMenu recentResourceNamesMenu;
 
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
@@ -59,7 +59,7 @@ public class GCViewerGui extends JFrame {
         return preferences;
     }
 
-    public RecentResourceNamesMenu getRecentFilesMenu() {
+    public RecentGCResourcesMenu getRecentGCResourcesMenu() {
         return recentResourceNamesMenu;
     }
 

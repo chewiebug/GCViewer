@@ -1,6 +1,9 @@
 package com.tagtraum.perf.gcviewer.model;
 
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -62,6 +65,10 @@ public class GCResource {
         return true;
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+    
     public GCModel getModel() {
         return model;
     }
@@ -70,10 +77,18 @@ public class GCResource {
 		return resourceName;
 	}
 	
-	public Logger getLogger() {
-	    return logger;
-	}
-	
+    public URL getResourceNameAsUrl() throws MalformedURLException {
+        URL url = null;
+        if (getResourceName().startsWith("http") || getResourceName().startsWith("file")) {
+            url = new URL(getResourceName());
+        }
+        else {
+            url = new File(getResourceName()).toURI().toURL();
+        }
+        
+        return url;
+    }
+    
 	@Override
     public int hashCode() {
         final int prime = 31;
@@ -108,5 +123,11 @@ public class GCResource {
 	    this.model = model;
 	    propertyChangeSupport.firePropertyChange(PROPERTY_MODEL, oldModel, model);
 	}
-    
+
+    @Override
+    public String toString() {
+        return "GCResource [resourceName=" + resourceName + ", isReload=" + isReload
+                + ", logger=" + logger + ", model=" + model + "]";
+    }
+
 }

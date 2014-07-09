@@ -3,8 +3,7 @@ package com.tagtraum.perf.gcviewer.view;
 import javax.swing.JMenu;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesListener;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
 
 /**
  * Special menu item dealing with recent URLs.
@@ -14,18 +13,18 @@ import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class RecentResourceNamesMenu extends JMenu {
-    private RecentResourceNamesModel model;
+public class RecentGCResourcesMenu extends JMenu {
+    private RecentGCResourcesModel model;
 
-    public RecentResourceNamesMenu() {
+    public RecentGCResourcesMenu() {
         super(LocalisationHelper.getString("main_frame_menuitem_recent_files"));
         
-        this.model = new RecentResourceNamesModel();
+        this.model = new RecentGCResourcesModel();
         setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_recent_files").charAt(0));
         setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_recent_files"));
     }
 
-    public RecentResourceNamesModel getRecentResourceNamesModel() {
+    public RecentGCResourcesModel getRecentResourceNamesModel() {
         return model;
     }
 

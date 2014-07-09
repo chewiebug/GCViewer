@@ -1,40 +1,41 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.tagtraum.perf.gcviewer.model.GCResource;
+
 /**
- * Model managing a list of resource names (or groups of resource names).
+ * Model managing a list of resource names (or groups of {@link GCResource}s).
  * 
  * <p>Date: Sep 25, 2005</p>
  * <p>Time: 10:54:45 PM</p>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class RecentResourceNamesModel {
+public class RecentGCResourcesModel {
 
     private final static int MAX_ELEMENTS = 10;
     private List<GCResourceGroup> resourceNameGroupList;
-    private List<RecentResourceNamesListener> listeners;
-    private Set<String> allResources;
+    private List<RecentGCResourcesListener> listeners;
+    private Set<GCResource> allResources;
 
-    public RecentResourceNamesModel() {
+    public RecentGCResourcesModel() {
         this.resourceNameGroupList = new ArrayList<>();
         this.listeners = new ArrayList<>();
         this.allResources = new HashSet<>();
     }
 
     /**
-     * Add the resourceNames as a group.
+     * Add a list of {@link GCResource} to the model.
      * 
-     * @param resourceNames group of resource names.
+     * @param gcResourceList group of GCResources.
      */
-    public void add(String[] resourceNames) {
-        add(new GCResourceGroup(resourceNames));
+    public void add(List<GCResource> gcResourceList) {
+        add(new GCResourceGroup(gcResourceList));
     }
     
     /**
@@ -47,7 +48,7 @@ public class RecentResourceNamesModel {
     }
     
     private void add(GCResourceGroup resourceNameGroup) {
-        allResources.addAll(Arrays.asList(resourceNameGroup.getResourceNames()));
+        allResources.addAll(resourceNameGroup.getGCResourceList());
         int index = resourceNameGroupList.indexOf(resourceNameGroup);
         if (index < 0) {
             resourceNameGroupList.add(0, resourceNameGroup);
@@ -66,20 +67,20 @@ public class RecentResourceNamesModel {
         }
     }
 
-    public void addRecentResourceNamesListener(RecentResourceNamesListener recentResourceNamesListener) {
+    public void addRecentResourceNamesListener(RecentGCResourcesListener recentResourceNamesListener) {
         listeners.add(recentResourceNamesListener);
     }
 
     protected void fireAddEvent(int position, GCResourceGroup urlSet) {
-        RecentResourceNamesEvent event = new RecentResourceNamesEvent(this, position, urlSet); 
-        for (RecentResourceNamesListener listener : listeners) {
+        RecentGCResourcesEvent event = new RecentGCResourcesEvent(this, position, urlSet); 
+        for (RecentGCResourcesListener listener : listeners) {
             listener.add(event);
         }
     }
 
     protected void fireRemoveEvent(int position) {
-        RecentResourceNamesEvent event = new RecentResourceNamesEvent(this, position);
-        for (RecentResourceNamesListener listener : listeners) {
+        RecentGCResourcesEvent event = new RecentGCResourcesEvent(this, position);
+        for (RecentGCResourcesListener listener : listeners) {
             listener.remove(event);
         }
     }
@@ -90,10 +91,9 @@ public class RecentResourceNamesModel {
     
     public List<String> getResourceNamesStartingWith(String start) {
         List<String> result = new ArrayList<>();
-        for (String url : allResources) {
-            String urlString = url.toString();
-            if (urlString.startsWith(start)) {
-                result.add(urlString);
+        for (GCResource gcResource : allResources) {
+            if (gcResource.getResourceName().startsWith(start)) {
+                result.add(gcResource.getResourceName());
             }
         }
         Collections.sort(result);

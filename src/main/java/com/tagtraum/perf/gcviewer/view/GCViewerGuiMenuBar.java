@@ -13,7 +13,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
 import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 
 /**
@@ -25,7 +25,7 @@ import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 public class GCViewerGuiMenuBar extends JMenuBar {
     private Map<String, JCheckBoxMenuItem> viewMenuItemMap;
     private JMenu fileMenu;
-    private RecentResourceNamesModel recentResourceNamesModel;
+    private RecentGCResourcesModel recentResourceNamesModel;
     private JMenu viewMenu;
     private JMenu windowMenu;
     /** control that only one checkbox menuitem inside the window menu can be active at a time */
@@ -69,7 +69,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
         fileMenu.add(menuItem);
     }
     
-    public void addToFileMenu(RecentResourceNamesMenu recentResourceNamesMenu) {
+    public void addToFileMenu(RecentGCResourcesMenu recentResourceNamesMenu) {
         addToFileMenu((JMenuItem) recentResourceNamesMenu);
         this.recentResourceNamesModel = recentResourceNamesMenu.getRecentResourceNamesModel();
     }
@@ -121,7 +121,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
         return fileMenu;
     }
     
-    public RecentResourceNamesModel getRecentResourceNamesModel() {
+    public RecentGCResourcesModel getRecentGCResourcesModel() {
         assert recentResourceNamesModel != null : "recentResourceNamesModel is not initialized";
         return recentResourceNamesModel;
     }

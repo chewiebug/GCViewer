@@ -28,7 +28,7 @@ public class GCDocumentController implements PropertyChangeListener {
         gcDocument.addPropertyChangeListener(this);
     }
     
-    public void addModel(GCModelLoader loader) {
+    public void addGCResource(GCModelLoader loader) {
         ChartPanelView chartPanelView = new ChartPanelView(gcDocument.getPreferences(), loader.getGcResource());
         gcDocument.addChartPanelView(chartPanelView);
         loader.addPropertyChangeListener(this);
@@ -57,7 +57,7 @@ public class GCDocumentController implements PropertyChangeListener {
         }
     }
 
-    public void reloadModel(GCModelLoader loader) {
+    public void reloadGCResource(GCModelLoader loader) {
         loader.addPropertyChangeListener(this);
         
         GCModelLoaderView loaderView = gcDocument.getChartPanelView(loader.getGcResource()).getModelLoaderView();

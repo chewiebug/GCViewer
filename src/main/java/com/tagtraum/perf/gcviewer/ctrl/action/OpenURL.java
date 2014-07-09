@@ -8,10 +8,11 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.OpenUrlView;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
 import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
@@ -35,17 +36,17 @@ public class OpenURL extends AbstractAction {
         putValue(SMALL_ICON, ImageHelper.loadImageIcon("open_url.png"));
     }
 
-    public void setRecentResourceNamesModel(final RecentResourceNamesModel recentResourceNamesModel) {
+    public void setRecentResourceNamesModel(RecentGCResourcesModel recentResourceNamesModel) {
         this.view.setRecentResourceNamesModel(recentResourceNamesModel);
     }
 
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         if (view.showDialog()) {
             if (view.isAddCheckBoxSelected()) {
-                controller.add(view.getSelectedItem());
+                controller.add(new GCResource(view.getSelectedItem()));
             }
             else {
-                controller.open(view.getSelectedItem());
+                controller.open(new GCResource(view.getSelectedItem()));
             }
         }
     }

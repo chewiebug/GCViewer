@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -37,18 +36,6 @@ public class DataReaderFacade {
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeListeners.add(listener);
-    }
-    
-    private URL getUrl(GCResource gcResource) throws MalformedURLException {
-        URL url = null;
-        if (gcResource.getResourceName().startsWith("http")) {
-            url = new URL(gcResource.getResourceName());
-        }
-        else {
-            url = new File(gcResource.getResourceName()).toURI().toURL();
-        }
-        
-        return url;
     }
     
     /**
@@ -94,7 +81,7 @@ public class DataReaderFacade {
      * @throws IOException problem reading the data
      */
     private GCModel readModel(GCResource gcResource) throws IOException {
-        URL url = getUrl(gcResource);
+        URL url = gcResource.getResourceNameAsUrl();
         DataReaderFactory factory = new DataReaderFactory();
         long contentLength = 0L;
         InputStream in;

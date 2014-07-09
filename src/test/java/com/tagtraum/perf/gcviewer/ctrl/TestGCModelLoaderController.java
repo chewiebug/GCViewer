@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
@@ -40,14 +41,14 @@ public class TestGCModelLoaderController {
     
     @Test
     public void openStringFail() throws Exception {
-        controller.open("does_not_exist");
+        controller.open(new GCResource("does_not_exist"));
         assertThat("number of gcdocuments", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(1));
     }
     
     @Test
     public void openString() throws Exception {
         assertThat("number of gcdocuments before", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(0));
-        controller.open(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+        controller.open(new GCResource(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt")));
         assertThat("number of gcdocuments after", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(1));
         
     }

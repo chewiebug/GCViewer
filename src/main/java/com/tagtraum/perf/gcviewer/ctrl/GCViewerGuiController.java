@@ -13,6 +13,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenFile;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
@@ -52,7 +53,7 @@ public class GCViewerGuiController extends WindowAdapter {
             for (int i = recentFiles.size()-1; i >= 0; --i) {
                 String filename = recentFiles.get(i);
                 if (filename.length() > 0) {
-                    ((GCViewerGuiMenuBar)gui.getJMenuBar()).getRecentResourceNamesModel().add(filename);
+                    ((GCViewerGuiMenuBar)gui.getJMenuBar()).getRecentGCResourcesModel().add(filename);
                 }
             }
         }
@@ -74,7 +75,13 @@ public class GCViewerGuiController extends WindowAdapter {
         }
     }
     
-    private GCPreferences retrievePreferences(GCViewerGui gui) {
+    /**
+     * Copies values that are stored in menu items into <code>GCPreferences</code> instance.
+     * 
+     * @param gui source to copy values from
+     * @return <code>GCPreferences</code> with current values
+     */
+    private GCPreferences copyPreferencesFromGui(GCViewerGui gui) {
         GCPreferences preferences = gui.getPreferences();
         for (Entry<String, JCheckBoxMenuItem> menuEntry : ((GCViewerGuiMenuBar)gui.getJMenuBar()).getViewMenuItems().entrySet()) {
             JCheckBoxMenuItem item = menuEntry.getValue();
@@ -91,8 +98,8 @@ public class GCViewerGuiController extends WindowAdapter {
         
         // recent files
         List<String> recentFileList = new LinkedList<String>();
-        for (GCResourceGroup urlSet : ((GCViewerGuiMenuBar) gui.getJMenuBar()).getRecentResourceNamesModel().getResourceNameGroups()) {    
-            recentFileList.add(urlSet.getGroupString());
+        for (GCResourceGroup urlSet : ((GCViewerGuiMenuBar) gui.getJMenuBar()).getRecentGCResourcesModel().getResourceNameGroups()) {    
+            recentFileList.add(urlSet.getUrlGroupString());
         }
         preferences.setRecentFiles(recentFileList);
         
@@ -129,7 +136,7 @@ public class GCViewerGuiController extends WindowAdapter {
 
                 @Override
                 public void run() {
-                    modelLoaderController.open(resourceName);
+                    modelLoaderController.open(new GCResource(resourceName));
                 }
                 
             };
@@ -145,7 +152,7 @@ public class GCViewerGuiController extends WindowAdapter {
         // TODO SWINGWORKER fix closing of main window with correct storing of preferences
         closeAllButSelectedDocument(((GCViewerGui)e.getWindow()));
         
-        GCPreferences preferences = retrievePreferences(((GCViewerGui)e.getWindow()));
+        GCPreferences preferences = copyPreferencesFromGui(((GCViewerGui)e.getWindow()));
         preferences.store();
         e.getWindow().dispose();
     }

@@ -31,7 +31,7 @@ import com.tagtraum.perf.gcviewer.view.DesktopPane;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiToolBar;
-import com.tagtraum.perf.gcviewer.view.RecentResourceNamesMenu;
+import com.tagtraum.perf.gcviewer.view.RecentGCResourcesMenu;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
@@ -128,7 +128,7 @@ public class GCViewerGuiBuilder {
         // file menu
         menuBar.addToFileMenu(actions.get(ActionCommands.OPEN_FILE.toString()));
         menuBar.addToFileMenu(actions.get(ActionCommands.OPEN_URL.toString()));
-        RecentResourceNamesMenu recentResourceNamesMenu = new RecentResourceNamesMenu();
+        RecentGCResourcesMenu recentResourceNamesMenu = new RecentGCResourcesMenu();
         recentResourceNamesMenu.setIcon(ImageHelper.createEmptyImageIcon(20, 20));
         menuBar.addToFileMenu(recentResourceNamesMenu);
         menuBar.addToFileMenu(actions.get(ActionCommands.EXPORT.toString()));

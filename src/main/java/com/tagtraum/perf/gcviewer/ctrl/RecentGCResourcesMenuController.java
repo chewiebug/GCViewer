@@ -4,18 +4,18 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenRecent;
-import com.tagtraum.perf.gcviewer.view.RecentResourceNamesMenu;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesEvent;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesListener;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
+import com.tagtraum.perf.gcviewer.view.RecentGCResourcesMenu;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesEvent;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesListener;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
 
 /**
- * Controller for the {@link RecentResourceNamesMenu} keeping it in sync with the {@link RecentResourceNamesModel}. 
+ * Controller for the {@link RecentGCResourcesMenu} keeping it in sync with the {@link RecentGCResourcesModel}. 
  * 
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 20.02.2014</p>
  */
-public class RecentGCResourcesMenuController implements RecentResourceNamesListener {
+public class RecentGCResourcesMenuController implements RecentGCResourcesListener {
 
     private GCModelLoaderController controller;
     private JMenu menu;
@@ -28,18 +28,18 @@ public class RecentGCResourcesMenuController implements RecentResourceNamesListe
     }
     
     /**
-     * @see com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesListener#remove(com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesEvent)
+     * @see com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesListener#remove(com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesEvent)
      */
     @Override
-    public void remove(RecentResourceNamesEvent e) {
+    public void remove(RecentGCResourcesEvent e) {
         menu.remove(e.getPosition());
     }
 
     /**
-     * @see com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesListener#add(com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesEvent)
+     * @see com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesListener#add(com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesEvent)
      */
     @Override
-    public void add(RecentResourceNamesEvent e) {
+    public void add(RecentGCResourcesEvent e) {
         menu.add(new JMenuItem(new OpenRecent(controller, 
                 e.getResourceNameGroup())), 
                 e.getPosition());

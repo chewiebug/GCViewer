@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
 
 /**
  * View class to display "open Url" dialog.
@@ -76,7 +76,7 @@ public class OpenUrlView {
         }
     }
     
-    public void setRecentResourceNamesModel(RecentResourceNamesModel model) {
+    public void setRecentResourceNamesModel(RecentGCResourcesModel model) {
         autoCompletionComboBox.setRecentResourceNamesModel(model);
     }
     

@@ -18,19 +18,19 @@ import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
  */
 public class OpenRecent extends AbstractAction {
 
-    private GCResourceGroup resourceNames;
+    private GCResourceGroup gcResourceGroup;
     private GCModelLoaderController controller;
 
-    public OpenRecent(GCModelLoaderController controller, GCResourceGroup resourceNames) {
-        this.resourceNames = resourceNames;
+    public OpenRecent(GCModelLoaderController controller, GCResourceGroup gcResourceGroup) {
+        this.gcResourceGroup = gcResourceGroup;
         this.controller = controller;
         
         putValue(ACTION_COMMAND_KEY, ActionCommands.OPEN_RECENT.toString());
-        putValue(NAME, resourceNames.getGroupString());
+        putValue(NAME, gcResourceGroup.getGroupStringShort());
     }
 
     public void actionPerformed(ActionEvent e) {
-        controller.open(resourceNames.getResourceNames());
+        controller.open(gcResourceGroup.getGCResourceList());
     }
 
 }
