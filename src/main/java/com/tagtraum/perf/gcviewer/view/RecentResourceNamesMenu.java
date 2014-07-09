@@ -16,19 +16,19 @@ import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class RecentURLsMenu extends JMenu {
+public class RecentResourceNamesMenu extends JMenu {
     private RecentURLsModel model;
 
-    public RecentURLsMenu(final GCModelLoaderController controller) {
+    public RecentResourceNamesMenu(final GCModelLoaderController controller) {
         super(LocalisationHelper.getString("main_frame_menuitem_recent_files"));
         this.model = new RecentURLsModel();
         this.model.addRecentURLsListener(new RecentURLsListener(){
             public void remove(RecentURLEvent e) {
-                RecentURLsMenu.this.remove(e.getPosition());
+                RecentResourceNamesMenu.this.remove(e.getPosition());
             }
 
             public void add(RecentURLEvent e) {
-                RecentURLsMenu.this.add(new JMenuItem(new OpenRecent(controller, e.getURLSet().getUrls())), e.getPosition());
+                RecentResourceNamesMenu.this.add(new JMenuItem(new OpenRecent(controller, e.getURLSet().getUrls())), e.getPosition());
             }
         });
         setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_recent_files").charAt(0));

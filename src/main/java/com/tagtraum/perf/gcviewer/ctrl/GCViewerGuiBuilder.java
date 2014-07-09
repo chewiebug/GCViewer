@@ -32,7 +32,7 @@ import com.tagtraum.perf.gcviewer.view.DesktopPane;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiToolBar;
-import com.tagtraum.perf.gcviewer.view.RecentURLsMenu;
+import com.tagtraum.perf.gcviewer.view.RecentResourceNamesMenu;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
@@ -65,7 +65,7 @@ public class GCViewerGuiBuilder {
         gui.setIconImage(iconImage);
         Map<String, Action> actionMap = initActionMap(controller, gui, iconImage);
 
-        RecentURLsMenu recentUrlsMenu = new RecentURLsMenu(controller);
+        RecentResourceNamesMenu recentUrlsMenu = new RecentResourceNamesMenu(controller);
         GCViewerGuiMenuBar menuBar = initMenuBar(actionMap, recentUrlsMenu, new ViewMenuController(gui));
         GCViewerGuiToolBar toolBar = initToolBar(actionMap);
         JDesktopPane desktopPane = initDesktopPane(gui, controller);
