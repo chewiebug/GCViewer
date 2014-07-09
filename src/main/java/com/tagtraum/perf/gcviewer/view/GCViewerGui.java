@@ -24,24 +24,18 @@ public class GCViewerGui extends JFrame {
     private GCViewerGuiToolBar toolBar;
     private GCPreferences preferences;
 
-    private RecentResourceNamesMenu recentURLsMenu;
+    private RecentResourceNamesMenu recentResourceNamesMenu;
 
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        
-        // TODO SWINGWORKER deal with recentURLsMenu
-        //recentURLsMenu = new RecentURLsMenu(controller);
-        //openURLAction.setRecentURLsModel(recentURLsMenu.getRecentURLsModel());
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
     
     public void addDocument(GCDocument gcDocument) {
         desktopPane.add(gcDocument);
         gcDocument.setSize(450, 300);
         gcDocument.setVisible(true);
-        // TODO SWINGWORKER: handle recentUrls
-        //recentURLsMenu.getRecentURLsModel().add(new URL[]{model.getURL()});
         repaint();
 
         try {
@@ -66,7 +60,7 @@ public class GCViewerGui extends JFrame {
     }
 
     public RecentResourceNamesMenu getRecentFilesMenu() {
-        return recentURLsMenu;
+        return recentResourceNamesMenu;
     }
 
     public GCDocument getSelectedGCDocument() {

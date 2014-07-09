@@ -4,12 +4,12 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.ActionCommands;
-import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.OpenUrlView;
 import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
@@ -21,13 +21,11 @@ import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
  */
 public class OpenURL extends AbstractAction {
     private GCModelLoaderController controller;
-    private GCViewerGui gcViewer;
     private OpenUrlView view;
 
-    public OpenURL(GCModelLoaderController controller, final GCViewerGui gcViewer) {
+    public OpenURL(GCModelLoaderController controller, final JFrame parent) {
         this.controller = controller;
-        this.gcViewer = gcViewer;
-        this.view = new OpenUrlView(gcViewer);
+        this.view = new OpenUrlView(parent);
         
         putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_open_url"));
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_open_url"));
@@ -37,8 +35,8 @@ public class OpenURL extends AbstractAction {
         putValue(SMALL_ICON, ImageHelper.loadImageIcon("open_url.png"));
     }
 
-    public void setRecentURLsModel(final RecentResourceNamesModel recentURLsModel) {
-        this.view.setRecentUrlsModel(recentURLsModel);
+    public void setRecentResourceNamesModel(final RecentResourceNamesModel recentResourceNamesModel) {
+        this.view.setRecentResourceNamesModel(recentResourceNamesModel);
     }
 
     public void actionPerformed(final ActionEvent e) {

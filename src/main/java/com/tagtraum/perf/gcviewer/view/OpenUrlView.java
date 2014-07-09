@@ -76,8 +76,8 @@ public class OpenUrlView {
         }
     }
     
-    public void setRecentUrlsModel(RecentResourceNamesModel model) {
-        autoCompletionComboBox.setRecentURLsModel(model);
+    public void setRecentResourceNamesModel(RecentResourceNamesModel model) {
+        autoCompletionComboBox.setRecentResourceNamesModel(model);
     }
     
     /**

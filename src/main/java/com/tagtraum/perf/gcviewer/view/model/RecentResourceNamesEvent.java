@@ -1,22 +1,20 @@
-package com.tagtraum.perf.gcviewer.view;
+package com.tagtraum.perf.gcviewer.view.model;
 
 import java.util.EventObject;
 
-import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
-
 /**
- * RecentURLEvent.
- * <p/>
- * Date: Oct 6, 2005
- * Time: 10:18:15 AM
+ * Event, that is fired on changes in {@link RecentResourceNamesModel}.
+ * 
+ * <p>Date: Oct 6, 2005</p>
+ * <p>Time: 10:18:15 AM</p>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class RecentResourceNamesEvent extends EventObject {
     private int position;
-    private RecentResourceNamesModel.URLSet urlSet;
+    private ResourceNameGroup urlSet;
 
-    public RecentResourceNamesEvent(Object source, int position, RecentResourceNamesModel.URLSet urlSet) {
+    public RecentResourceNamesEvent(Object source, int position, ResourceNameGroup urlSet) {
         super(source);
         this.position = position;
         this.urlSet = urlSet;
@@ -30,7 +28,7 @@ public class RecentResourceNamesEvent extends EventObject {
         return position;
     }
 
-    public RecentResourceNamesModel.URLSet getURLSet() {
+    public ResourceNameGroup getResourceNameGroup() {
         return urlSet;
     }
 }

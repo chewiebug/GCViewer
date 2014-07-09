@@ -35,12 +35,12 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
     }
 
     @Override
-    public void internalFrameClosed(InternalFrameEvent e) {
+    public void internalFrameClosing(InternalFrameEvent e) {
         JInternalFrame internalFrame = e.getInternalFrame();
         internalFrame.removeInternalFrameListener(this);
-        internalFrame.getDesktopPane().remove(internalFrame);
+        internalFrame.getRootPane().remove(internalFrame);
 
-        if (internalFrame.getDesktopPane().getAllFrames().length == 0) {
+        if (internalFrame.getRootPane().getComponentCount() == 0) {
             getActionMap(e).get(ActionCommands.ARRANGE.toString()).setEnabled(false);
         }
         
@@ -52,6 +52,12 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
                 getMenuBar(e).removeFromWindowMenuGroup(item);
                 break;
             }
+        }
+
+        // if this internalFrame is the last to be open, update the menu state
+        // -> otherwise any settings done by the user are lost
+        if (getGCViewerGui(e).getDesktopPane().getComponentCount() == 1) {
+            updateMenuItemState(e);
         }
     }
 
@@ -65,8 +71,6 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
             }
         }
         
-        getToolBar(e).getZoomComboBox().setSelectedItem(
-                (int) (getSelectedGCDocument(e).getModelChart().getScaleFactor() * 1000.0) + "%");
         getActionMap(e).get(ActionCommands.EXPORT.toString()).setEnabled(true);
         getActionMap(e).get(ActionCommands.REFRESH.toString()).setEnabled(true);
         getActionMap(e).get(ActionCommands.WATCH.toString()).setEnabled(true);
@@ -77,11 +81,7 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
         getMenuBar(e).getWatchMenuItem().setSelected(getSelectedGCDocument(e).isWatched());
         getToolBar(e).getWatchToggleButton().setSelected(getSelectedGCDocument(e).isWatched());
         
-        GCPreferences preferences = getSelectedGCDocument(e).getPreferences();
-        for (Entry<String, JCheckBoxMenuItem> menuEntry : getMenuBar(e).getViewMenuItems().entrySet()) {
-            JCheckBoxMenuItem item = menuEntry.getValue();
-            item.setState(preferences.getGcLineProperty(menuEntry.getKey()));
-        }
+        updateMenuItemState(e);
     }
 
     @Override
@@ -114,6 +114,16 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
     
     private GCViewerGuiToolBar getToolBar(InternalFrameEvent e) {
         return (GCViewerGuiToolBar) getGCViewerGui(e).getToolBar();
+    }
+    
+    private void updateMenuItemState(InternalFrameEvent e) {
+        getToolBar(e).getZoomComboBox().setSelectedItem(
+                (int) (getSelectedGCDocument(e).getModelChart().getScaleFactor() * 1000.0) + "%");
+        GCPreferences preferences = getSelectedGCDocument(e).getPreferences();
+        for (Entry<String, JCheckBoxMenuItem> menuEntry : getMenuBar(e).getViewMenuItems().entrySet()) {
+            JCheckBoxMenuItem item = menuEntry.getValue();
+            item.setState(preferences.getGcLineProperty(menuEntry.getKey()));
+        }
     }
 
 }

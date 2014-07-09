@@ -1,36 +1,76 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
-import java.net.URL;
-import java.util.*;
-
-import com.tagtraum.perf.gcviewer.view.RecentResourceNamesEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
- * RecentFilesMenu.
- * <p/>
- * Date: Sep 25, 2005
- * Time: 10:54:45 PM
+ * Model managing a list of resource names (or groups of resource names).
+ * 
+ * <p>Date: Sep 25, 2005</p>
+ * <p>Time: 10:54:45 PM</p>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class RecentResourceNamesModel {
 
     private final static int MAX_ELEMENTS = 10;
-    private List<URLSet> urlSetList;
+    private List<ResourceNameGroup> resourceNameGroupList;
     private List<RecentResourceNamesListener> listeners;
-    private Set<URL> allURLs;
+    private Set<String> allResources;
 
     public RecentResourceNamesModel() {
-        this.urlSetList = new ArrayList<>();
+        this.resourceNameGroupList = new ArrayList<>();
         this.listeners = new ArrayList<>();
-        this.allURLs = new HashSet<>();
+        this.allResources = new HashSet<>();
     }
 
-    public void addRecentURLsListener(RecentResourceNamesListener recentURLsListener) {
-        listeners.add(recentURLsListener);
+    /**
+     * Add the resourceNames as a group.
+     * 
+     * @param resourceNames group of resource names.
+     */
+    public void add(String[] resourceNames) {
+        add(new ResourceNameGroup(resourceNames));
+    }
+    
+    /**
+     * Add a single resourceName or a list of names separated by ";".
+     * 
+     * @param resourceName name or group to be added
+     */
+    public void add(String resourceName) {
+        add(new ResourceNameGroup(resourceName));
+    }
+    
+    private void add(ResourceNameGroup resourceNameGroup) {
+        allResources.addAll(Arrays.asList(resourceNameGroup.getResourceNames()));
+        int index = resourceNameGroupList.indexOf(resourceNameGroup);
+        if (index < 0) {
+            resourceNameGroupList.add(0, resourceNameGroup);
+            fireAddEvent(0, resourceNameGroup);
+            if (resourceNameGroupList.size() > MAX_ELEMENTS) {
+                // if list size is too big remove last element
+                resourceNameGroupList.remove(MAX_ELEMENTS - 1);
+                fireRemoveEvent(MAX_ELEMENTS - 1);
+            }
+        }
+        else {
+            resourceNameGroupList.remove(index);
+            fireRemoveEvent(index);
+            resourceNameGroupList.add(0, resourceNameGroup);
+            fireAddEvent(0, resourceNameGroup);
+        }
     }
 
-    protected void fireAddEvent(int position, URLSet urlSet) {
+    public void addRecentResourceNamesListener(RecentResourceNamesListener recentResourceNamesListener) {
+        listeners.add(recentResourceNamesListener);
+    }
+
+    protected void fireAddEvent(int position, ResourceNameGroup urlSet) {
         RecentResourceNamesEvent event = new RecentResourceNamesEvent(this, position, urlSet); 
         for (RecentResourceNamesListener listener : listeners) {
             listener.add(event);
@@ -44,9 +84,13 @@ public class RecentResourceNamesModel {
         }
     }
 
-    public List<String> getURLsStartingWith(String start) {
+    public List<ResourceNameGroup> getResourceNameGroups() {
+        return resourceNameGroupList;
+    }
+    
+    public List<String> getResourceNamesStartingWith(String start) {
         List<String> result = new ArrayList<>();
-        for (URL url : allURLs) {
+        for (String url : allResources) {
             String urlString = url.toString();
             if (urlString.startsWith(start)) {
                 result.add(urlString);
@@ -54,84 +98,6 @@ public class RecentResourceNamesModel {
         }
         Collections.sort(result);
         return result;
-    }
-
-    public void add(URL[] urls) {
-        if (urls.length > 0) {
-            allURLs.addAll(Arrays.asList(urls));
-            final URLSet urlSet = new URLSet(urls);
-            if (!urlSetList.contains(urlSet)) {
-                urlSetList.add(0, urlSet);
-                fireAddEvent(0, urlSet);
-                if (urlSetList.size() > MAX_ELEMENTS) {
-                    // if list size is too big remove last element
-                    urlSetList.remove(MAX_ELEMENTS - 1);
-                    fireRemoveEvent(MAX_ELEMENTS - 1);
-                }
-            }
-            else {
-                for (int i = 0; i < urlSetList.size(); i++) {
-                    URLSet existingURLSet = urlSetList.get(i);
-                    if (urlSet.equals(existingURLSet)) {
-                        urlSetList.remove(i);
-                        fireRemoveEvent(i);
-                        urlSetList.add(0, urlSet);
-                        fireAddEvent(0, urlSet);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    public class URLSet {
-        private String[] urlStrings;
-        private URL[] urls;
-
-        public URLSet(URL[] urls) {
-            this.urls = urls;
-            this.urlStrings = createSortedFileStrings(urls);
-        }
-
-        private String[] createSortedFileStrings(URL[] urls) {
-            String[] fileStrings = new String[urls.length];
-            for (int i = 0; i < urls.length; i++) {
-                if (urls[i] != null) {
-                    fileStrings[i] = urls[i].toString();
-                }
-            }
-            Arrays.sort(fileStrings);
-            
-            return fileStrings;
-        }
-
-        public URL[] getUrls() {
-            return urls;
-        }
-
-        public int hashCode() {
-            return urlStrings[0].hashCode();
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof URLSet) || obj == null) {
-                return false;
-            }
-            
-            URLSet that = (URLSet)obj;
-            if (that.urlStrings.length != this.urlStrings.length) {
-                return false;
-            }
-            
-            for (int i=0; i<that.urlStrings.length; i++) {
-                if (!that.urlStrings[i].equals(this.urlStrings[i])) {
-                    return false;
-                }
-            }
-            
-            return true;
-        }
-
     }
 
 }

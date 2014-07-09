@@ -13,6 +13,8 @@ import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener.DropFlavor;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
+import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 
 /**
  * Main controller class of GCViewer. Is responsible for control flow. 
@@ -34,13 +36,15 @@ public class GCModelLoaderController {
     }
     
     public void add(String resourceName) {
-        addModel(resourceName);
+        add(new File[]{ new File(resourceName) });
     }
     
     public void add(File[] files) {
         for (File file : files) {
-            add(file.getAbsolutePath());
+            addModel(file.getAbsolutePath());
         }
+
+        getRecentResourceNamesModel().add(toStringList(files));
     }
     
     private void addModel(String resourceName) {
@@ -66,6 +70,10 @@ public class GCModelLoaderController {
     
     protected GCViewerGui getGCViewerGui() {
         return this.gcViewerGui;
+    }
+    
+    private RecentResourceNamesModel getRecentResourceNamesModel() {
+        return ((GCViewerGuiMenuBar) this.gcViewerGui.getJMenuBar()).getRecentResourceNamesModel();
     }
     
     private void openModel(String resourceName) {
@@ -124,6 +132,8 @@ public class GCModelLoaderController {
             }
             ++i;
         }
+        
+        getRecentResourceNamesModel().add(resourceNames);
     }
     
     public void open(URL[] urls) {
@@ -163,6 +173,15 @@ public class GCModelLoaderController {
      */
     protected void setGCViewerGui(GCViewerGui gui) {
         this.gcViewerGui = gui;
+    }
+    
+    private String[] toStringList(File[] resourceNames) {
+        List<String> resourceNameList = new LinkedList<String>();
+        for (File file : resourceNames) {
+            resourceNameList.add(file.getAbsolutePath());
+        }
+        
+        return resourceNameList.toArray(new String[resourceNameList.size()]);
     }
     
 }

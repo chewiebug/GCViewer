@@ -4,22 +4,21 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenFile;
 import com.tagtraum.perf.gcviewer.view.ActionCommands;
+import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.model.ResourceNameGroup;
 
 /**
  * Main controller class of GCViewer. 
@@ -28,7 +27,6 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
  * <p>created on: 11.02.2014</p>
  */
 public class GCViewerGuiController extends WindowAdapter {
-    private static final Logger LOGGER = Logger.getLogger(GCViewerGuiController.class.getName());
     
     void applyPreferences(GCViewerGui gui, GCPreferences preferences) {
         // default visibility to be able to access it from unittests
@@ -45,28 +43,16 @@ public class GCViewerGuiController extends WindowAdapter {
                     preferences.getWindowY(),
                     preferences.getWindowWidth(),
                     preferences.getWindowHeight());
-            final String lastfile = preferences.getLastFile();
+            String lastfile = preferences.getLastFile();
             if (lastfile != null) {
                 ((OpenFile)gui.getActionMap().get(ActionCommands.OPEN_FILE.toString())).setSelectedFile(new File(lastfile));
             }
-            // recent files
+            // recent files (add in reverse order, so that the order in recentMenu is correct
             List<String> recentFiles = preferences.getRecentFiles();
-            for (String filename : recentFiles) {
-                final String[] tokens = filename.split(";");
-                final List<URL> urls = new LinkedList<>();
-                for (String token : tokens) {
-                    try {
-                        urls.add(new URL(token));
-                    } 
-                    catch (MalformedURLException e) {
-                        if (LOGGER.isLoggable(Level.FINE)) {
-                            LOGGER.fine("problem tokenizing recent file list: " + e.toString());
-                        }
-                    }
-                }
-                if (urls.size() > 0) {
-                    // TODO SWINGWORKER set recentURLsMenu from properties
-                    //recentURLsMenu.getRecentURLsModel().add(urls.toArray(new URL[0]));
+            for (int i = recentFiles.size()-1; i >= 0; --i) {
+                String filename = recentFiles.get(i);
+                if (filename.length() > 0) {
+                    ((GCViewerGuiMenuBar)gui.getJMenuBar()).getRecentResourceNamesModel().add(filename);
                 }
             }
         }
@@ -75,6 +61,19 @@ public class GCViewerGuiController extends WindowAdapter {
         }
     }
 
+    private void closeAllButSelectedDocument(GCViewerGui gui) {
+        if (gui.getSelectedGCDocument() != null) {
+            GCDocument selected = gui.getSelectedGCDocument();
+            for (int i = gui.getDesktopPane().getComponentCount()-1; i > 0; --i) {
+                if (gui.getDesktopPane().getComponent(i) != selected) {
+                    ((JInternalFrame)gui.getDesktopPane().getComponent(i)).dispose();
+                }
+            }
+
+            gui.getSelectedGCDocument().doDefaultCloseAction();
+        }
+    }
+    
     private GCPreferences retrievePreferences(GCViewerGui gui) {
         GCPreferences preferences = gui.getPreferences();
         for (Entry<String, JCheckBoxMenuItem> menuEntry : ((GCViewerGuiMenuBar)gui.getJMenuBar()).getViewMenuItems().entrySet()) {
@@ -91,18 +90,10 @@ public class GCViewerGuiController extends WindowAdapter {
         }
         
         // recent files
-        // TODO SWINGWORKER deal with recentURLsMenu to store in properties
         List<String> recentFileList = new LinkedList<String>();
-//        for (Component recentMenuItem : recentURLsMenu.getMenuComponents()) {
-//            final OpenRecent openRecent = (OpenRecent)((JMenuItem)recentMenuItem).getAction();
-//            final URL[] urls = openRecent.getURLs();
-//            final StringBuffer sb = new StringBuffer();
-//            for (int j=0; j<urls.length; j++) {
-//                sb.append(urls[j]);
-//                sb.append(';');
-//            }
-//            recentFileList.add(sb.toString());
-//        }
+        for (ResourceNameGroup urlSet : ((GCViewerGuiMenuBar) gui.getJMenuBar()).getRecentResourceNamesModel().getResourceNameGroups()) {    
+            recentFileList.add(urlSet.getGroupString());
+        }
         preferences.setRecentFiles(recentFileList);
         
         return preferences;
@@ -125,6 +116,7 @@ public class GCViewerGuiController extends WindowAdapter {
             public void run() {
                 new GCViewerGuiBuilder().initGCViewerGui(gcViewerGui, modelLoaderController);
                 applyPreferences(gcViewerGui, new GCPreferences());
+                gcViewerGui.addWindowListener(GCViewerGuiController.this);
                 Thread.setDefaultUncaughtExceptionHandler(new GCViewerUncaughtExceptionHandler(gcViewerGui));
                 gcViewerGui.setVisible(true);
             }
@@ -150,8 +142,12 @@ public class GCViewerGuiController extends WindowAdapter {
      */
     @Override
     public void windowClosing(WindowEvent e) {
-        GCPreferences preferences = retrievePreferences(((GCViewerGui)e.getSource()));
+        // TODO SWINGWORKER fix closing of main window with correct storing of preferences
+        closeAllButSelectedDocument(((GCViewerGui)e.getWindow()));
+        
+        GCPreferences preferences = retrievePreferences(((GCViewerGui)e.getWindow()));
         preferences.store();
+        e.getWindow().dispose();
     }
 
 

@@ -33,7 +33,7 @@ public class AutoCompletionComboBox extends JComboBox {
         });
     }
 
-    public void setRecentURLsModel(RecentResourceNamesModel recentURLsModel) {
-        autoCompletionTextField.setRecentURLsModel(recentURLsModel);
+    public void setRecentResourceNamesModel(RecentResourceNamesModel recentResourceNamesModel) {
+        autoCompletionTextField.setRecentResourceNamesModel(recentResourceNamesModel);
     }
 }

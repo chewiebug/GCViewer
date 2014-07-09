@@ -25,7 +25,7 @@ import java.awt.*;
  */
 public class AutoCompletionTextField extends JTextField implements ComboBoxEditor {
 
-    private RecentResourceNamesModel recentURLsModel;
+    private RecentResourceNamesModel recentResourceNamesModel;
     private AutoCompletionComboBoxModel comboBoxModel;
     private List suggestions;
 
@@ -34,7 +34,7 @@ public class AutoCompletionTextField extends JTextField implements ComboBoxEdito
         this.suggestions = new ArrayList();
         this.comboBoxModel = new AutoCompletionComboBoxModel();
         setDocument(createDefaultModel());
-        this.recentURLsModel = new RecentResourceNamesModel();
+        this.recentResourceNamesModel = new RecentResourceNamesModel();
     }
 
     public ComboBoxModel getComboBoxModel() {
@@ -52,8 +52,8 @@ public class AutoCompletionTextField extends JTextField implements ComboBoxEdito
         return getText();
     }
 
-    public void setRecentURLsModel(RecentResourceNamesModel recentURLsModel) {
-        this.recentURLsModel = recentURLsModel;
+    public void setRecentResourceNamesModel(RecentResourceNamesModel recentResourceNamesModel) {
+        this.recentResourceNamesModel = recentResourceNamesModel;
     }
 
     protected Document createDefaultModel() {
@@ -61,7 +61,7 @@ public class AutoCompletionTextField extends JTextField implements ComboBoxEdito
             public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
                 final String text = this.getText(0, offs) + str;
                 List oldSuggestions = suggestions;
-                suggestions = recentURLsModel.getURLsStartingWith(text);
+                suggestions = recentResourceNamesModel.getResourceNamesStartingWith(text);
                 String appendString = "";
                 if (!suggestions.isEmpty()) {
                     final String suggestion = (String)suggestions.get(0);
@@ -79,7 +79,7 @@ public class AutoCompletionTextField extends JTextField implements ComboBoxEdito
             public void remove(int offs, int len) throws BadLocationException {
                 super.remove(offs, len);
                 final List oldSuggestions = suggestions;
-                suggestions = recentURLsModel.getURLsStartingWith(AutoCompletionTextField.this.getText());
+                suggestions = recentResourceNamesModel.getResourceNamesStartingWith(AutoCompletionTextField.this.getText());
                 if (!oldSuggestions.equals(suggestions)) {
                     comboBoxModel.fireContentsChanged();
                 }
