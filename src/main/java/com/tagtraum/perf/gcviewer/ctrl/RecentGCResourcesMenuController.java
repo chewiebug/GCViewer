@@ -15,12 +15,12 @@ import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 20.02.2014</p>
  */
-public class RecentResourceNamesMenuController implements RecentResourceNamesListener {
+public class RecentGCResourcesMenuController implements RecentResourceNamesListener {
 
     private GCModelLoaderController controller;
     private JMenu menu;
     
-    public RecentResourceNamesMenuController(GCModelLoaderController controller, JMenu menu) {
+    public RecentGCResourcesMenuController(GCModelLoaderController controller, JMenu menu) {
         super();
         
         this.controller = controller;

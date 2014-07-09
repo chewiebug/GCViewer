@@ -18,7 +18,7 @@ import java.util.Set;
 public class RecentResourceNamesModel {
 
     private final static int MAX_ELEMENTS = 10;
-    private List<ResourceNameGroup> resourceNameGroupList;
+    private List<GCResourceGroup> resourceNameGroupList;
     private List<RecentResourceNamesListener> listeners;
     private Set<String> allResources;
 
@@ -34,7 +34,7 @@ public class RecentResourceNamesModel {
      * @param resourceNames group of resource names.
      */
     public void add(String[] resourceNames) {
-        add(new ResourceNameGroup(resourceNames));
+        add(new GCResourceGroup(resourceNames));
     }
     
     /**
@@ -43,10 +43,10 @@ public class RecentResourceNamesModel {
      * @param resourceName name or group to be added
      */
     public void add(String resourceName) {
-        add(new ResourceNameGroup(resourceName));
+        add(new GCResourceGroup(resourceName));
     }
     
-    private void add(ResourceNameGroup resourceNameGroup) {
+    private void add(GCResourceGroup resourceNameGroup) {
         allResources.addAll(Arrays.asList(resourceNameGroup.getResourceNames()));
         int index = resourceNameGroupList.indexOf(resourceNameGroup);
         if (index < 0) {
@@ -70,7 +70,7 @@ public class RecentResourceNamesModel {
         listeners.add(recentResourceNamesListener);
     }
 
-    protected void fireAddEvent(int position, ResourceNameGroup urlSet) {
+    protected void fireAddEvent(int position, GCResourceGroup urlSet) {
         RecentResourceNamesEvent event = new RecentResourceNamesEvent(this, position, urlSet); 
         for (RecentResourceNamesListener listener : listeners) {
             listener.add(event);
@@ -84,7 +84,7 @@ public class RecentResourceNamesModel {
         }
     }
 
-    public List<ResourceNameGroup> getResourceNameGroups() {
+    public List<GCResourceGroup> getResourceNameGroups() {
         return resourceNameGroupList;
     }
     

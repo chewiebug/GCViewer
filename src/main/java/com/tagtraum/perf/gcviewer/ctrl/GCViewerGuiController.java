@@ -18,7 +18,7 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
-import com.tagtraum.perf.gcviewer.view.model.ResourceNameGroup;
+import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
 
 /**
  * Main controller class of GCViewer. 
@@ -91,7 +91,7 @@ public class GCViewerGuiController extends WindowAdapter {
         
         // recent files
         List<String> recentFileList = new LinkedList<String>();
-        for (ResourceNameGroup urlSet : ((GCViewerGuiMenuBar) gui.getJMenuBar()).getRecentResourceNamesModel().getResourceNameGroups()) {    
+        for (GCResourceGroup urlSet : ((GCViewerGuiMenuBar) gui.getJMenuBar()).getRecentResourceNamesModel().getResourceNameGroups()) {    
             recentFileList.add(urlSet.getGroupString());
         }
         preferences.setRecentFiles(recentFileList);

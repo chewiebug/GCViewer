@@ -9,16 +9,16 @@ import java.util.Arrays;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 05.03.2014</p>
  */
-public class ResourceNameGroup {
+public class GCResourceGroup {
 
     private String[] resourceNames;
 
-    public ResourceNameGroup(String[] resourceNames) {
+    public GCResourceGroup(String[] resourceNames) {
         this.resourceNames = resourceNames;
         Arrays.sort(this.resourceNames);
     }
     
-    public ResourceNameGroup(String resourceNameGroup) {
+    public GCResourceGroup(String resourceNameGroup) {
         if (resourceNameGroup.indexOf(";") >= 0) {
             this.resourceNames = resourceNameGroup.split(";");
         }
@@ -38,7 +38,7 @@ public class ResourceNameGroup {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ResourceNameGroup other = (ResourceNameGroup) obj;
+        GCResourceGroup other = (GCResourceGroup) obj;
         if (!Arrays.equals(resourceNames, other.resourceNames)) {
             return false;
         }

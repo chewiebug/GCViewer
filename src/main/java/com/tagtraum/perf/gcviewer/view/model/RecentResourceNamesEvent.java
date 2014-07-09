@@ -12,9 +12,9 @@ import java.util.EventObject;
  */
 public class RecentResourceNamesEvent extends EventObject {
     private int position;
-    private ResourceNameGroup urlSet;
+    private GCResourceGroup urlSet;
 
-    public RecentResourceNamesEvent(Object source, int position, ResourceNameGroup urlSet) {
+    public RecentResourceNamesEvent(Object source, int position, GCResourceGroup urlSet) {
         super(source);
         this.position = position;
         this.urlSet = urlSet;
@@ -28,7 +28,7 @@ public class RecentResourceNamesEvent extends EventObject {
         return position;
     }
 
-    public ResourceNameGroup getResourceNameGroup() {
+    public GCResourceGroup getResourceNameGroup() {
         return urlSet;
     }
 }

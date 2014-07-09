@@ -138,8 +138,8 @@ public class GCViewerGuiBuilder {
             menuBar.addToFileMenu(actions.get(ActionCommands.EXIT.toString()));
         }
 
-        RecentResourceNamesMenuController recentResourceNamesMenuController 
-            = new RecentResourceNamesMenuController(controller, recentResourceNamesMenu);
+        RecentGCResourcesMenuController recentResourceNamesMenuController 
+            = new RecentGCResourcesMenuController(controller, recentResourceNamesMenu);
         recentResourceNamesMenu.getRecentResourceNamesModel().addRecentResourceNamesListener(recentResourceNamesMenuController);
 
         // view menu
