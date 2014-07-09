@@ -3,7 +3,7 @@ package com.tagtraum.perf.gcviewer.view;
 
 import javax.swing.*;
 
-import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -33,7 +33,7 @@ public class AutoCompletionComboBox extends JComboBox {
         });
     }
 
-    public void setRecentURLsModel(RecentURLsModel recentURLsModel) {
+    public void setRecentURLsModel(RecentResourceNamesModel recentURLsModel) {
         autoCompletionTextField.setRecentURLsModel(recentURLsModel);
     }
 }

@@ -6,7 +6,7 @@ import javax.swing.JMenuItem;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenRecent;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 
 /**
  * RecentFilesMenu.
@@ -17,17 +17,17 @@ import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class RecentResourceNamesMenu extends JMenu {
-    private RecentURLsModel model;
+    private RecentResourceNamesModel model;
 
     public RecentResourceNamesMenu(final GCModelLoaderController controller) {
         super(LocalisationHelper.getString("main_frame_menuitem_recent_files"));
-        this.model = new RecentURLsModel();
-        this.model.addRecentURLsListener(new RecentURLsListener(){
-            public void remove(RecentURLEvent e) {
+        this.model = new RecentResourceNamesModel();
+        this.model.addRecentURLsListener(new RecentResourceNamesListener(){
+            public void remove(RecentResourceNamesEvent e) {
                 RecentResourceNamesMenu.this.remove(e.getPosition());
             }
 
-            public void add(RecentURLEvent e) {
+            public void add(RecentResourceNamesEvent e) {
                 RecentResourceNamesMenu.this.add(new JMenuItem(new OpenRecent(controller, e.getURLSet().getUrls())), e.getPosition());
             }
         });
@@ -35,7 +35,7 @@ public class RecentResourceNamesMenu extends JMenu {
         setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_recent_files"));
     }
 
-    public RecentURLsModel getRecentURLsModel() {
+    public RecentResourceNamesModel getRecentURLsModel() {
         return model;
     }
 

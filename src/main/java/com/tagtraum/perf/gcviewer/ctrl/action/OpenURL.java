@@ -11,7 +11,7 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.OpenUrlView;
-import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
@@ -37,7 +37,7 @@ public class OpenURL extends AbstractAction {
         putValue(SMALL_ICON, ImageHelper.loadImageIcon("open_url.png"));
     }
 
-    public void setRecentURLsModel(final RecentURLsModel recentURLsModel) {
+    public void setRecentURLsModel(final RecentResourceNamesModel recentURLsModel) {
         this.view.setRecentUrlsModel(recentURLsModel);
     }
 

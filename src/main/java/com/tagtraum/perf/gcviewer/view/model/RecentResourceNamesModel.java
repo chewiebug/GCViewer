@@ -3,8 +3,8 @@ package com.tagtraum.perf.gcviewer.view.model;
 import java.net.URL;
 import java.util.*;
 
-import com.tagtraum.perf.gcviewer.view.RecentURLEvent;
-import com.tagtraum.perf.gcviewer.view.RecentURLsListener;
+import com.tagtraum.perf.gcviewer.view.RecentResourceNamesEvent;
+import com.tagtraum.perf.gcviewer.view.RecentResourceNamesListener;
 
 /**
  * RecentFilesMenu.
@@ -14,33 +14,33 @@ import com.tagtraum.perf.gcviewer.view.RecentURLsListener;
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class RecentURLsModel {
+public class RecentResourceNamesModel {
 
     private final static int MAX_ELEMENTS = 10;
     private List<URLSet> urlSetList;
-    private List<RecentURLsListener> listeners;
+    private List<RecentResourceNamesListener> listeners;
     private Set<URL> allURLs;
 
-    public RecentURLsModel() {
+    public RecentResourceNamesModel() {
         this.urlSetList = new ArrayList<>();
         this.listeners = new ArrayList<>();
         this.allURLs = new HashSet<>();
     }
 
-    public void addRecentURLsListener(RecentURLsListener recentURLsListener) {
+    public void addRecentURLsListener(RecentResourceNamesListener recentURLsListener) {
         listeners.add(recentURLsListener);
     }
 
     protected void fireAddEvent(int position, URLSet urlSet) {
-        RecentURLEvent event = new RecentURLEvent(this, position, urlSet); 
-        for (RecentURLsListener listener : listeners) {
+        RecentResourceNamesEvent event = new RecentResourceNamesEvent(this, position, urlSet); 
+        for (RecentResourceNamesListener listener : listeners) {
             listener.add(event);
         }
     }
 
     protected void fireRemoveEvent(int position) {
-        RecentURLEvent event = new RecentURLEvent(this, position);
-        for (RecentURLsListener listener : listeners) {
+        RecentResourceNamesEvent event = new RecentResourceNamesEvent(this, position);
+        for (RecentResourceNamesListener listener : listeners) {
             listener.remove(event);
         }
     }

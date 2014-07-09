@@ -9,7 +9,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
-import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.awt.*;
  */
 public class AutoCompletionTextField extends JTextField implements ComboBoxEditor {
 
-    private RecentURLsModel recentURLsModel;
+    private RecentResourceNamesModel recentURLsModel;
     private AutoCompletionComboBoxModel comboBoxModel;
     private List suggestions;
 
@@ -34,7 +34,7 @@ public class AutoCompletionTextField extends JTextField implements ComboBoxEdito
         this.suggestions = new ArrayList();
         this.comboBoxModel = new AutoCompletionComboBoxModel();
         setDocument(createDefaultModel());
-        this.recentURLsModel = new RecentURLsModel();
+        this.recentURLsModel = new RecentResourceNamesModel();
     }
 
     public ComboBoxModel getComboBoxModel() {
@@ -52,7 +52,7 @@ public class AutoCompletionTextField extends JTextField implements ComboBoxEdito
         return getText();
     }
 
-    public void setRecentURLsModel(RecentURLsModel recentURLsModel) {
+    public void setRecentURLsModel(RecentResourceNamesModel recentURLsModel) {
         this.recentURLsModel = recentURLsModel;
     }
 

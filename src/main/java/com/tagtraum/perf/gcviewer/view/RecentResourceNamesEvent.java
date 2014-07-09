@@ -2,7 +2,7 @@ package com.tagtraum.perf.gcviewer.view;
 
 import java.util.EventObject;
 
-import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
+import com.tagtraum.perf.gcviewer.view.model.RecentResourceNamesModel;
 
 /**
  * RecentURLEvent.
@@ -12,17 +12,17 @@ import com.tagtraum.perf.gcviewer.view.model.RecentURLsModel;
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class RecentURLEvent extends EventObject {
+public class RecentResourceNamesEvent extends EventObject {
     private int position;
-    private RecentURLsModel.URLSet urlSet;
+    private RecentResourceNamesModel.URLSet urlSet;
 
-    public RecentURLEvent(Object source, int position, RecentURLsModel.URLSet urlSet) {
+    public RecentResourceNamesEvent(Object source, int position, RecentResourceNamesModel.URLSet urlSet) {
         super(source);
         this.position = position;
         this.urlSet = urlSet;
     }
 
-    public RecentURLEvent(Object source, int position) {
+    public RecentResourceNamesEvent(Object source, int position) {
         this(source, position, null);
     }
 
@@ -30,7 +30,7 @@ public class RecentURLEvent extends EventObject {
         return position;
     }
 
-    public RecentURLsModel.URLSet getURLSet() {
+    public RecentResourceNamesModel.URLSet getURLSet() {
         return urlSet;
     }
 }
