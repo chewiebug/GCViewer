@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
@@ -308,6 +307,22 @@ public class TestDataReaderSun1_7_0G1 {
     }
     
     @Test
+    public void printTenuringDistribution() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0G1TenuringDistribution.txt");
+        gcResource.getLogger().addHandler(handler);
+        
+        final DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+        
+        assertEquals("number of events", 11, model.size());
+        assertEquals("number of concurrent events", 4, model.getConcurrentEventPauses().size());
+        
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    @Test
     public void printApplicationTimePrintTenuringDistribution() throws Exception {
         // test parsing when the following options are set:
         // -XX:+PrintTenuringDistribution (output ignored)
@@ -385,7 +400,7 @@ public class TestDataReaderSun1_7_0G1 {
         GCResource gcResource = new GCResource("SampleSun1_7_0G1PrintReferencePolicy.txt");
         gcResource.getLogger().addHandler(handler);
         
-        final DataReader reader = getDataReader(gcResource);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
         
         assertThat("count", model.size(), is(1));
@@ -393,6 +408,37 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("type name", event.getTypeAsString(), equalTo("GC pause (young)"));
         assertThat("gc pause", event.getPause(), closeTo(0.0049738, 0.00000001));
         assertThat("error count", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void printDetailsWithoutTimestamp() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0G1_DetailsWoTimestamp.txt");
+        gcResource.getLogger().addHandler(handler);
+        
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(1));
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("type name", event.getTypeAsString(), equalTo("GC pause (young)"));
+        assertThat("gc pause", event.getPause(), closeTo(0.0055310, 0.00000001));
+        assertThat("error count", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void printSimpleToSpaceOverflow() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("2013-12-21T15:48:44.062+0100: 0.441: [GC pause (G1 Evacuation Pause) (young)-- 90M->94M(128M), 0.0245257 secs]")
+                .getBytes());
+
+        final DataReader reader = new DataReaderSun1_6_0G1(new GCResource("bytearray"), in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertEquals("count", 1, model.size());
+        assertEquals("gc pause", 0.0245257, model.getGCPause().getMax(), 0.000001);
+
     }
     
 }

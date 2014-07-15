@@ -9,6 +9,7 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 import org.junit.Test;
@@ -109,6 +110,20 @@ public class TestDataReaderSun1_7_0 {
         assertEquals("type name", "GC; CMS-remark", model.get(0).getTypeAsString());
         assertEquals("GC pause", 0.3410220, model.getPause().getMax(), 0.00000001);
     }    
+    
+    @Test
+    public void CmsWithoutTimestamps() throws Exception {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                "2013-12-19T17:52:49.323+0100: [GC2013-12-19T17:52:49.323+0100: [ParNew: 4872K->480K(4928K), 0.0031563 secs] 102791K->102785K(140892K), 0.0032042 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]"
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+
+        assertEquals("GC count", 1, model.size());
+        assertEquals("type name", "GC; ParNew", model.get(0).getTypeAsString());
+        assertEquals("GC pause", 0.0032042, model.getPause().getMax(), 0.00000001);
+    }
 
     /**
      * Test output of -XX:+PrintAdaptiveSizePolicy -XX:+UseAdaptiveSizePolicy -XX:+PrintReferenceGC
@@ -182,7 +197,58 @@ public class TestDataReaderSun1_7_0 {
         assertThat("young size", model.getYoungAllocatedSizes().getMax(), is(19648));
     }    
 
-     
-    
+    @Test
+    public void printCMSInitiationStatistics() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2013-11-17T15:09:50.633+0100: 0.687: [GC2013-11-17T15:09:50.633+0100: 0.687: [ParNew: 21468K->2347K(21504K), 0.0037203 secs] 72759K->58184K(140992K), 0.0038018 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]"
+                        + "\nCMSCollector shouldConcurrentCollect: 0.691"
+                        + "\ntime_until_cms_gen_full 0.0483719"
+                        + "\nfree=65178472"
+                        + "\ncontiguous_available=27934992"
+                        + "\npromotion_rate=8.02999e+008"
+                        + "\ncms_allocation_rate=0"
+                        + "\noccupancy=0.4673034"
+                        + "\ninitiatingOccupancy=0.9200000"
+                        + "\ninitiatingPermOccupancy=0.9200000"
+                        + "\n2013-11-17T15:09:50.633+0100: 0.691: [GC [1 CMS-initial-mark: 55837K(119488K)] 58378K(140992K), 0.0001819 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(2));
+        Iterator<GCEvent> eventIterator = model.getGCEvents();
+        GCEvent event1 = eventIterator.next();
+        GCEvent event2 = eventIterator.next();
+        assertThat("type name [1]", event1.getTypeAsString(), equalTo("GC; ParNew"));
+        assertThat("GC pause [1]", event1.getPause(), closeTo(0.0038018, 0.00000001));
+        assertThat("type name [2]", event2.getTypeAsString(), equalTo("GC; CMS-initial-mark"));
+        assertThat("GC pause [2]", event2.getPause(), closeTo(0.0001819, 0.00000001));
         
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }    
+
+    @Test
+    public void printTenuringDistributionCMSInitiationStatistics() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0CMSTenuringDistributionInitiationStatistics.txt");
+        gcResource.getLogger().addHandler(handler);
+        
+        InputStream in = getInputStream(gcResource.getResourceName());
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(1));
+        assertThat("type name", model.get(0).getTypeAsString(), equalTo("GC; ParNew (promotion failed); CMS; CMS Perm"));
+        assertThat("GC pause", model.getPause().getMax(), closeTo(21.5649460, 0.00000001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }    
+    
 }

@@ -1,6 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.util.ParsePosition;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * GC Types are the text introducing specific information for (part of) a GC (e.g. "Full GC") 
@@ -10,7 +10,7 @@ import com.tagtraum.perf.gcviewer.util.ParsePosition;
  */
 public class UnknownGcTypeException extends ParseException {
 
-    public UnknownGcTypeException(String gcType, String line, ParsePosition pos) {
+    public UnknownGcTypeException(String gcType, String line, ParseInformation pos) {
         super("Unknown gc type: '" + gcType + "'", line, pos);
     }
 

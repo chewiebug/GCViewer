@@ -1,0 +1,27 @@
+2118019.970: [GC 2118019.971: [ParNew (promotion failed)
+Desired survivor size 67108864 bytes, new threshold 6 (max 6)
+- age   1:   15621728 bytes,   15621728 total
+- age   2:    4867208 bytes,   20488936 total
+- age   3:    4719192 bytes,   25208128 total
+- age   4:    5253320 bytes,   30461448 total
+- age   5:    4282648 bytes,   34744096 total
+- age   6:    4176920 bytes,   38921016 total
+: 1098428K->1102189K(1179648K), 0.5939440 secs]2118020.565: [CMS: 1682222K->728816K(2359296K), 20.9698110 secs] 2776803K->728816K(3538944K), [CMS Perm : 164489K->162299K(273716K)]CMSCollector shouldConcurrentCollect: , 21.5649460 secs]2118041.535
+time_until_cms_gen_full 14033.8169561
+free=1669611320
+contiguous_available=1669480248
+promotion_rate=106773
+cms_allocation_rate=0
+occupancy=0.3089126
+initiatingOccupancy=0.7500000
+initiatingPermOccupancy=0.9200000
+ [Times: user=6.11 sys=0.31, real=21.56 secs]
+CMSCollector shouldConcurrentCollect: 2118041.536
+time_until_cms_gen_full 14033.8169561
+free=1669611320
+contiguous_available=1669480248
+promotion_rate=106773
+cms_allocation_rate=0
+occupancy=0.3089126
+initiatingOccupancy=0.7500000
+initiatingPermOccupancy=0.9200000

@@ -12,7 +12,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.ParsePosition;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * Parses -verbose:gc output from Sun JDK 1.3.1.
@@ -72,7 +72,7 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
         }
     }
 
-    protected AbstractGCEvent<GCEvent> parseLine(String line, ParsePosition pos) throws ParseException {
+    protected AbstractGCEvent<GCEvent> parseLine(String line, ParseInformation pos) throws ParseException {
         AbstractGCEvent<GCEvent> event = new GCEvent();
         try {
             event.setTimestamp(count);
