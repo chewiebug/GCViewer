@@ -21,6 +21,7 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
@@ -454,10 +455,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     // the -end events contain a pause and duration as well
                     int start = pos.getIndex();
                     int end = line.indexOf('/', pos.getIndex());
-                    event.setPause(Double.parseDouble(line.substring(start, end)));
+                    event.setPause(NumberParser.parseDouble(line.substring(start, end)));
                     start = end + 1;
                     end = line.indexOf(' ', start);
-                    event.setDuration(Double.parseDouble(line.substring(start, end)));
+                    event.setDuration(NumberParser.parseDouble(line.substring(start, end)));
                 }
                 ae = event;
                 // nothing more to parse...

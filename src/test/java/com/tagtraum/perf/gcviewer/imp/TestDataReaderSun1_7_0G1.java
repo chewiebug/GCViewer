@@ -441,4 +441,21 @@ public class TestDataReaderSun1_7_0G1 {
 
     }
     
+    @Test
+    public void pauseWithComma() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0G1_PauseWithComma.txt");
+        gcResource.getLogger().addHandler(handler);
+        
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(1));
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("type name", event.getTypeAsString(), equalTo("GC pause (young)"));
+        assertThat("gc pause", event.getPause(), closeTo(0.0665670, 0.00000001));
+        assertThat("error count", handler.getCount(), is(0));
+    }
+    
 }

@@ -33,6 +33,8 @@ public class GCPreferences {
     public static final String CONCURRENT_COLLECTION_BEGIN_END = "concurrentcollectionbeginend";
     public static final String ANTI_ALIAS = "antialias";
     
+    public static final String SHOW_DATA_PANEL = "showdatapanel";
+    public static final String SHOW_DATE_STAMP = "showdatestamp";
     public static final String SHOW_MODEL_METRICS_PANEL = "showmodelmetricspanel";
     
     private static final String GC_LINE_PREFIX = "view.";
@@ -177,6 +179,10 @@ public class GCPreferences {
         return getBooleanValue(GC_LINE_PREFIX + key, true);
     }
     
+    public boolean getGcLineProperty(String key, boolean defaultValue) {
+        return getBooleanValue(GC_LINE_PREFIX + key, defaultValue);
+    }
+
     public void setGcLineProperty(String key, boolean value) {
         properties.setProperty(GC_LINE_PREFIX + key, Boolean.toString(value));
     }
@@ -201,6 +207,22 @@ public class GCPreferences {
         return new File(System.getProperty("user.home") + "/gcviewer.properties");
     }
     
+    public void setShowDataPanel(boolean showDataPanel) {
+        setBooleanProperty(GC_LINE_PREFIX + SHOW_DATA_PANEL, showDataPanel);
+    }
+
+    public boolean isShowDataPanel() {
+        return getBooleanProperty(GC_LINE_PREFIX + SHOW_DATA_PANEL);
+    }
+
+    public boolean isShowDateStamp() {
+        return getBooleanProperty(GC_LINE_PREFIX + SHOW_DATE_STAMP);
+    }
+
+    public void setShowDateStamp(boolean showDateStamp) {
+        setBooleanProperty(GC_LINE_PREFIX + SHOW_DATE_STAMP, showDateStamp);
+    }
+
     public void setShowModelMetricsPanel(boolean showModelMetricsPanel) {
         setBooleanProperty(GC_LINE_PREFIX + SHOW_MODEL_METRICS_PANEL, showModelMetricsPanel);
     }

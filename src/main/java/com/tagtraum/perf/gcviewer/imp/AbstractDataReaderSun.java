@@ -159,7 +159,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
             endOfNextNumber = currentPos;
             // goto end of next number
             
-            while (Character.isDigit(line.charAt(endOfNextNumber))|| line.charAt(endOfNextNumber) == '.') {
+            while (isNumberCharacter(line.charAt(endOfNextNumber))) {
                 ++endOfNextNumber;
             }
             
@@ -181,6 +181,12 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
         
         pos.setIndex(currentPos);
+    }
+    
+    private boolean isNumberCharacter(char character) {
+        return Character.isDigit(character)
+               || character == '.'
+               || character == ','; // some localised log files contain "," instead of "." in numbers
     }
     
     protected void setMemory(GCEvent event, String line, ParseInformation pos) throws ParseException {
@@ -230,7 +236,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         if (end < 0) {
         	end = line.indexOf(']', begin);
         }
-        final double pause = Double.parseDouble(line.substring(begin, end).replace(',', '.'));
+        final double pause = NumberParser.parseDouble(line.substring(begin, end));
         
         // skip "secs]"
         pos.setIndex(line.indexOf(']', end) + 1);
@@ -395,9 +401,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         // look for end of timestamp, which is a colon ':'
         int endOfTimestamp = line.indexOf(':', pos.getIndex());
         if (endOfTimestamp == -1) throw new ParseException("Error parsing entry.", line, pos);
-        // we have to replace , with . for Europe
-        final String timestampString = line.substring(pos.getIndex(), endOfTimestamp).replace(',', '.');
-        final double timestamp = Double.parseDouble(timestampString);
+        final double timestamp = NumberParser.parseDouble(line.substring(pos.getIndex(), endOfTimestamp));
         pos.setIndex(endOfTimestamp+1);
         return timestamp;
     }

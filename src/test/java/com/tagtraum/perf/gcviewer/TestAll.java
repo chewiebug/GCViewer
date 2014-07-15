@@ -19,6 +19,7 @@ import com.tagtraum.perf.gcviewer.util.TestAllUtil;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ModelMetricsPanelTest.class,
+    ModelChartImplTest.class,
     TestBuildInfoReader.class,
     TestAllExp.class,
     TestAllImp.class,

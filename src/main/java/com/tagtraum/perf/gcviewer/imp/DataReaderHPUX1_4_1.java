@@ -17,6 +17,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * DataReader for HP-UX 1.4.1/1.4.2
@@ -113,7 +114,7 @@ public class DataReaderHPUX1_4_1 extends AbstractDataReader {
                 final float gcDetails = Float.parseFloat(st.nextToken());
                 event.setType(findType(typeOfGC, gcDetails));
                 // %3:  Program time at the beginning of the collection, in seconds
-                event.setTimestamp(Double.parseDouble(st.nextToken()));
+                event.setTimestamp(NumberParser.parseDouble(st.nextToken()));
                 // %4:  Garbage collection invocation. Counts of background CMS GCs
                 // and other GCs are maintained separately
                 st.nextToken();
@@ -186,7 +187,7 @@ public class DataReaderHPUX1_4_1 extends AbstractDataReader {
                 permEvent.setTotal((int)(permCapacity / 1024));
 
                 // %19:  The total stop-the-world duration, in seconds.
-                final double pause = Double.parseDouble(st.nextToken());
+                final double pause = NumberParser.parseDouble(st.nextToken());
                 event.setPause(pause);
                 // %20:  The total time used in collection, in seconds.
                 // ignore for now

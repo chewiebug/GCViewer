@@ -19,6 +19,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * Parses -verbose:gc output from IBM JDK 1.4.2.
@@ -142,7 +143,7 @@ public class DataReaderIBM1_4_2 extends AbstractDataReader {
     private double parseTimeSinceLastAF(final String line) {
         final int start = line.indexOf(',') + 2;
         final int end = line.indexOf(' ', start);
-        return Double.parseDouble(line.substring(start, end)) / 1000.0d;
+        return NumberParser.parseDouble(line.substring(start, end)) / 1000.0d;
     }
 
     private int parsePreUsed(final String line) {
@@ -190,6 +191,6 @@ public class DataReaderIBM1_4_2 extends AbstractDataReader {
     private double parsePause(final String line) {
         final int start = line.indexOf("in ") + 3;
         final int end = line.indexOf(' ', start);
-        return Double.parseDouble(line.substring(start, end)) / 1000.0d;
+        return NumberParser.parseDouble(line.substring(start, end)) / 1000.0d;
     }
 }

@@ -35,7 +35,7 @@ public class UsedHeapRenderer extends PolygonChartRenderer {
             if (event.getTotal() > 0) {
                 final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
                 polygon.addPoint(timestamp, event.getPreUsed());
-                polygon.addPoint(timestamp, event.getPostUsed());
+                polygon.addPoint(timestamp + event.getPause(), event.getPostUsed());
             }
         }
         // dummy point to make the polygon complete

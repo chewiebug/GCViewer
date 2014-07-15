@@ -586,6 +586,19 @@ public class GCDocument extends JInternalFrame {
             }
         }
 
+        @Override
+        public void setShowDateStamp(boolean showDateStamp) {
+            for (ChartPanelView chartPanelView : chartPanelViews) {
+                chartPanelView.getModelChart().setShowDateStamp(showDateStamp);
+            }
+        }
+
+        @Override
+        public boolean isShowDateStamp() {
+            if (chartPanelViews.isEmpty()) return false;
+            return chartPanelViews.get(0).getModelChart().isShowDateStamp();
+
+        }
     }
 
     private class ScrollBarMaximumChangeListener implements ChangeListener {
