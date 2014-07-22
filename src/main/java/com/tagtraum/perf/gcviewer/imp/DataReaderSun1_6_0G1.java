@@ -94,6 +94,21 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
     private static final String TO_SPACE_EXHAUSTED = "(to-space exhausted)";
     
+    // JDK 8 leading log entries
+    private static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
+    private static final String LOG_INFORMATION_HOTSPOT = "Java HotSpot";
+    private static final String LOG_INFORMATION_MEMORY = "Memory:";
+    private static final String LOG_INFORMATION_COMMANDLINE_FLAGS = "CommandLine flags:";
+    
+    private static final List<String> LOG_INFORMATION_STRINGS = new LinkedList<String>();
+
+    static {
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_OPENJDK);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_HOTSPOT);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_MEMORY);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
+    }
+    
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
     // the pattern is "...)<timestamp>..."
     // or "...Full GC<timestamp>..."
@@ -147,6 +162,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 try {
                     // filter out lines that don't need to be parsed
                     if (startsWith(line, EXCLUDE_STRINGS, false)) {
+                        continue;
+                    }
+                    else if (startsWith(line, LOG_INFORMATION_STRINGS, false)) {
+                        LOG.info(line);
                         continue;
                     }
                     
@@ -292,15 +311,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @return <code>true</code>, if <code>-XX:+PrintTenuringDistribution</code> was used
      */
     private boolean isPrintTenuringDistribution(String line) {
-        return line.endsWith(Type.G1_YOUNG.getName()) 
-                || line.endsWith(Type.G1_MIXED.getName())
-                || line.endsWith(INITIAL_MARK)
-                || line.endsWith(TO_SPACE_OVERFLOW)
-                || line.endsWith(TO_SPACE_EXHAUSTED)
-                || (line.indexOf(Type.FULL_GC.getName()) >= 0 && line.endsWith(")")
-                || line.endsWith(Type.G1_YOUNG_MARK_STACK_FULL.getName()) 
-                || line.endsWith(Type.G1_PARTIAL.getName()) 
-                ); 
+        return     (line.indexOf("GC pause") >= 0 && line.endsWith(")")) 
+                || (line.indexOf(Type.FULL_GC.getName()) >= 0 && line.endsWith(")"))
+                ; 
     }
 
     /**

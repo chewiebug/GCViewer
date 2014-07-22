@@ -1,0 +1,28 @@
+OpenJDK 64-Bit Server VM (25.5-b02) for linux-amd64 JRE (1.8.0_05-b13), built on May 16 2014 13:04:33 by "mockbuild" with gcc 4.8.2 20131212 (Red Hat 4.8.2-7)
+Memory: 4k page, physical 98979696k(96364364k free), swap 8191996k(8008108k free)
+CommandLine flags: -XX:InitialHeapSize=85899345920 -XX:MaxGCPauseMillis=200 -XX:MaxHeapSize=85899345920 -XX:NewRatio=3 -XX:+ParallelRefProcEnabled -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:-ResizePLAB -XX:+UseG1GC
+26.214: [GC pause (G1 Evacuation Pause) (young)
+Desired survivor size 1342177280 bytes, new threshold 15 (max 15)
+, 16.7578613 secs]
+   [Parallel Time: 16638.4 ms, GC Workers: 18]
+      [GC Worker Start (ms): Min: 26214.3, Avg: 26215.9, Max: 26218.8, Diff: 4.4]
+      [Ext Root Scanning (ms): Min: 0.0, Avg: 3.2, Max: 13.9, Diff: 13.9, Sum: 57.9]
+      [Update RS (ms): Min: 0.0, Avg: 3.1, Max: 5.7, Diff: 5.7, Sum: 55.5]
+         [Processed Buffers: Min: 0, Avg: 1.8, Max: 3, Diff: 3, Sum: 32]
+      [Scan RS (ms): Min: 3771.9, Avg: 3778.9, Max: 3782.0, Diff: 10.1, Sum: 68020.3]
+      [Code Root Scanning (ms): Min: 0.0, Avg: 0.1, Max: 1.9, Diff: 1.9, Sum: 2.3]
+      [Object Copy (ms): Min: 12702.1, Avg: 12725.7, Max: 12845.4, Diff: 143.3, Sum: 229062.0]
+      [Termination (ms): Min: 4.8, Avg: 124.4, Max: 147.6, Diff: 142.8, Sum: 2239.1]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.4, Max: 1.1, Diff: 1.1, Sum: 7.0]
+      [GC Worker Total (ms): Min: 16632.5, Avg: 16635.8, Max: 16638.0, Diff: 5.4, Sum: 299444.1]
+      [GC Worker End (ms): Min: 42851.3, Avg: 42851.7, Max: 42852.4, Diff: 1.1]
+   [Code Root Fixup: 0.9 ms]
+   [Code Root Migration: 1.8 ms]
+   [Clear CT: 4.1 ms]
+   [Other: 112.7 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 22.4 ms]
+      [Ref Enq: 0.9 ms]
+      [Free CSet: 4.4 ms]
+   [Eden: 20.0G(20.0G)->0.0B(17.5G) Survivors: 0.0B->2560.0M Heap: 21.5G(80.0G)->14.5G(80.0G)]
+ [Times: user=152.96 sys=93.94, real=16.76 secs]
