@@ -10,6 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -33,6 +34,8 @@ import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
  */
 public class GCDocument extends JInternalFrame {
 
+    private static final Logger LOGGER = Logger.getLogger(GCDocument.class.getName()); 
+    
     private final List<ChartPanelView> chartPanelViews = new ArrayList<ChartPanelView>();
     private ModelChart modelChartListFacade;
     private boolean showModelMetricsPanel = true;
@@ -111,6 +114,7 @@ public class GCDocument extends JInternalFrame {
             modelChartListFacade.setShowIncGCLines(modelChartListFacade.isShowIncGCLines());
             modelChartListFacade.setShowTotalMemoryLine(modelChartListFacade.isShowTotalMemoryLine());
             modelChartListFacade.setShowUsedMemoryLine(modelChartListFacade.isShowUsedMemoryLine());
+            modelChartListFacade.setShowDateStamp(modelChartListFacade.isShowDateStamp());
         }
         
         relayout();
@@ -588,6 +592,8 @@ public class GCDocument extends JInternalFrame {
 
         @Override
         public void setShowDateStamp(boolean showDateStamp) {
+            LOGGER.fine("" + showDateStamp);
+            preferences.setGcLineProperty(GCPreferences.SHOW_DATE_STAMP, showDateStamp);
             for (ChartPanelView chartPanelView : chartPanelViews) {
                 chartPanelView.getModelChart().setShowDateStamp(showDateStamp);
             }

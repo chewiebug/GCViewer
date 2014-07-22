@@ -92,6 +92,17 @@ public class GCViewerGuiMenuBar extends JMenuBar {
     }
     
     /**
+     * Adds <code>menuItem</code> to the internal list of view menu items, but doesn't display
+     * this item.
+     * 
+     * @param key unique key for storage of this <code>menuItem</code> in the internal map
+     * @param menuItem item to be stored in the map
+     */
+    public void addToViewMenuInvisible(String key, JCheckBoxMenuItem menuItem) {
+        viewMenuItemMap.put(key, menuItem);
+    }
+    
+    /**
      * Add action to "window" menu.
      * @param action action to be added
      */

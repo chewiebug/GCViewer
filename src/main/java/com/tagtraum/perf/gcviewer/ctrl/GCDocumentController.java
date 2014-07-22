@@ -10,6 +10,7 @@ import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.view.ChartPanelView;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCModelLoaderView;
+import com.tagtraum.perf.gcviewer.view.ModelChartImpl;
 
 /**
  * Controller for {@link GCDocument}.
@@ -28,8 +29,10 @@ public class GCDocumentController implements PropertyChangeListener {
         gcDocument.addPropertyChangeListener(this);
     }
     
-    public void addGCResource(GCModelLoader loader) {
+    public void addGCResource(GCModelLoader loader, ViewMenuController viewMenuController) {
         ChartPanelView chartPanelView = new ChartPanelView(gcDocument.getPreferences(), loader.getGcResource());
+        ((ModelChartImpl)chartPanelView.getModelChart()).addPropertyChangeListener(viewMenuController);
+        ((ModelChartImpl)chartPanelView.getModelChart()).addTimeOffsetChangeListener(new TimeOffsetPanelController(gcDocument));
         gcDocument.addChartPanelView(chartPanelView);
         loader.addPropertyChangeListener(this);
         loader.addPropertyChangeListener(chartPanelView.getModelLoaderView());

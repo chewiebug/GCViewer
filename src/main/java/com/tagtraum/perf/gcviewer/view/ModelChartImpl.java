@@ -1,8 +1,39 @@
 package com.tagtraum.perf.gcviewer.view;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.logging.Logger;
+
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.SwingPropertyChangeSupport;
+
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.TimeFormat;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.model.PropertyChangeEventConsts;
 import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.GCRectanglesRenderer;
@@ -17,17 +48,6 @@ import com.tagtraum.perf.gcviewer.view.renderer.UsedHeapRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedTenuredRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.UsedYoungRenderer;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.text.DateFormat;
-import java.text.Format;
-import java.text.NumberFormat;
-import java.util.Date;
-
 /**
  * Graphical chart of the gc file. It contains the chart and all rulers surrounding it but not
  * the model details on the right side.
@@ -36,8 +56,10 @@ import java.util.Date;
  * Time: 7:50:42 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeListener {
+public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeListener, PropertyChangeListener {
 
+    private static final Logger LOGGER = Logger.getLogger(ModelChartImpl.class.getName());
+    
     private GCModel model;
     private Chart chart;
     private JScrollBar horizontalScrollBar;
@@ -141,6 +163,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
         DateFormat dateFormatter = new TimeFormat();
         this.timestampRuler = new Ruler(false, 0, model.getRunningTime(), "", dateFormatter);
+        this.timestampRuler.addPropertyChangeListener(this);
         setColumnHeaderView(timestampRuler);
 
         getViewport().addComponentListener(new ComponentListener() {
@@ -155,20 +178,11 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             public void componentHidden(ComponentEvent e) {}
         });
         // timestamp menu
-        final JPopupMenu popupMenu = new JPopupMenu();
-        timeOffsetPanel = new TimeOffsetPanel(popupMenu);
-        popupMenu.add(timeOffsetPanel);
-        final JPopupMenu timestampRulerPopup = popupMenu;
-        Action setOffsetAction = new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                if (timeOffsetPanel.isOffsetSet()) timestampRuler.setOffset(timeOffsetPanel.getDate().getTime()/1000);
-                else timestampRuler.setOffset(0);
-                timestampRuler.revalidate();
-                timestampRuler.repaint();
-            }
-        };
-        timeOffsetPanel.setOkAction(setOffsetAction);
-        timeOffsetPanel.setOffsetSet(timestampRuler.getOffset() != 0);
+        final JPopupMenu timestampRulerPopup = new JPopupMenu();
+        timeOffsetPanel = new TimeOffsetPanel(timestampRulerPopup);
+        timestampRulerPopup.add(timeOffsetPanel);
+        timeOffsetPanel.setCheckboxSelected(timestampRuler.getOffset() != 0);
+        
         this.timestampRuler.addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent e) {
                 maybePopup(e);
@@ -178,22 +192,15 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                 maybePopup(e);
             }
 
-            public void maybePopup(MouseEvent e) {
+            private void maybePopup(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     if (timestampRuler.getOffset() != 0) {
                         timeOffsetPanel.setDate(new Date((long)timestampRuler.getOffset()*1000));
-                        timeOffsetPanel.setOffsetSet(true);
+                        timeOffsetPanel.setCheckboxSelected(true);
                     }
                     else {
-                        long suggestedStartDate = model.getLastModified();
-                        if (model.hasDateStamp()) {
-                        	suggestedStartDate = model.getFirstDateStamp().getTime();
-                        }
-                        else if (model.hasCorrectTimestamp()) {
-                            suggestedStartDate -= (long)(model.getRunningTime() * 1000.0d);
-                        }
-                        timeOffsetPanel.setDate(new Date(suggestedStartDate));
-                        timeOffsetPanel.setOffsetSet(false);
+                        timeOffsetPanel.setDate(model.getFirstDateStamp());
+                        timeOffsetPanel.setCheckboxSelected(false);
                     }
                     timestampRulerPopup.show(e.getComponent(), e.getX(),  e.getY());
                     timeOffsetPanel.requestFocus();
@@ -203,6 +210,18 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
     }
 
+    public void addTimeOffsetChangeListener(PropertyChangeListener listener) {
+        this.timeOffsetPanel.addPropertyChangeListener(
+                PropertyChangeEventConsts.TIMEOFFSETPANEL_STATE_CHANGED, 
+                listener);
+    }
+    
+    public void removeTimeOffsetChangeListener(PropertyChangeListener  listener) {
+        this.timeOffsetPanel.removePropertyChangeListener(
+                PropertyChangeEventConsts.TIMEOFFSETPANEL_STATE_CHANGED, 
+                listener);
+    }
+    
     public void invalidate() {
         super.invalidate();
         chart.invalidate();
@@ -365,17 +384,24 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
     @Override
     public void setShowDateStamp(boolean showDateStamp) {
-        if (showDateStamp && model.hasDateStamp()) {
-            timeOffsetPanel.setDate(model.getFirstDateStamp());
+        LOGGER.fine("" + showDateStamp + "; model.hasDateStamp()=" + model.hasDateStamp());
+        // TODO DateStamp: should have same logic as TimeOffsetPanel to get initial datestamp of none is present in log file
+        if (showDateStamp) {
+            LOGGER.fine("change showDateStamp=" + showDateStamp);
+//            timeOffsetPanel.setDate(model.getFirstDateStamp());
             timestampRuler.setOffset(timeOffsetPanel.getDate().getTime() / 1000);
-            timeOffsetPanel.setOffsetSet(true);
-            timestampRuler.revalidate();
-            timestampRuler.repaint();
+//            timeOffsetPanel.setCheckboxSelected(showDateStamp);
         }
+        else {
+            timestampRuler.setOffset(0);
+        }
+        timestampRuler.revalidate();
+        timestampRuler.repaint();
     }
+    
     @Override
     public boolean isShowDateStamp(){
-        return timeOffsetPanel.isOffsetSet();
+        return timestampRuler.getOffset() > 0;
     }
 
 
@@ -387,6 +413,9 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     public void setModel(GCModel model, GCPreferences preferences) {
         this.model = model;
 
+        if (model.getFirstDateStamp() != null) {
+            this.timeOffsetPanel.setDate(model.getFirstDateStamp());
+        }
         applyPreferences(preferences);
         setScaleFactor(getScaleFactor());
         setRunningTime(model.getRunningTime());
@@ -505,6 +534,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         private String unitName;
         private int minHalfDistance;
         private double offset;
+        
+        private SwingPropertyChangeSupport propertyChangeSupport;
 
         public Ruler(boolean vertical, double minUnit, double maxUnit, String unitName) {
             this(vertical,  minUnit, maxUnit, unitName, NumberFormat.getInstance());
@@ -517,8 +548,18 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             setMinUnit(minUnit);
             setMaxUnit(maxUnit);
             font = new Font("sans-serif", Font.PLAIN, 10);
+            
+            propertyChangeSupport = new SwingPropertyChangeSupport(this, true);
         }
 
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
+            this.propertyChangeSupport.addPropertyChangeListener(listener);
+        }
+        
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
+            this.propertyChangeSupport.removePropertyChangeListener(listener);
+        }
+        
         public void setSize(int width, int height) {
             super.setSize(width, height);
             configureFormatter();
@@ -598,7 +639,13 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         }
 
         public void setOffset(double offset) {
-            this.offset = offset;
+            if (Math.signum(this.offset - offset) != 0) {
+                double offsetBefore = this.offset;
+                this.offset = offset;
+                propertyChangeSupport.firePropertyChange(PropertyChangeEventConsts.RULER_OFFSET_CHANGED,
+                        offsetBefore,
+                        offset);
+            }
         }
 
         private String format(final double val) {
@@ -637,10 +684,12 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             } 
             else {
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 10.0d; // 10sec
-                if (lineDistance < minHalfDistance * 2) lineDistance *= 3.0d; // 30sec
+                if (lineDistance < minHalfDistance * 2) lineDistance *= 2.0d; // 20sec
+                if (lineDistance < minHalfDistance * 2) lineDistance *= 1.5d; // 30sec
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 2.0d; // 1min
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 2.0d; // 2min
-                if (lineDistance < minHalfDistance * 2) lineDistance *= 5.0d; // 10min
+                if (lineDistance < minHalfDistance * 2) lineDistance *= 2.5d; // 5min
+                if (lineDistance < minHalfDistance * 2) lineDistance *= 2.0d; // 10min
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 2.0d; // 20min
                 if (lineDistance < minHalfDistance * 2) lineDistance *= 3.0d; // 1h
                 if (lineDistance < minHalfDistance * 2) {
@@ -664,8 +713,9 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         }
 
         private double getPixelsPerUnit() {
-            double pixelPerUnit = (isVertical()?getHeight()/(maxUnit - minUnit):(runningTime * getScaleFactor() / (maxUnit - minUnit)));
-            return pixelPerUnit;
+            return isVertical() 
+                       ? getHeight() / (maxUnit - minUnit)
+                       : (runningTime * getScaleFactor() / (maxUnit - minUnit));
         }
 
         public void setMinUnit(double minUnit) {
@@ -718,6 +768,23 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         if (lastViewPortWidth != viewPort.getWidth()) {
             lastViewPortWidth = viewPort.getWidth();
             horizontalScrollBar.setBlockIncrement(lastViewPortWidth);
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // Here ModelChartImpl listens for changes in the "offset" property of its timeStampRuler
+        // and propagates the change outside firing its own event.
+        // Like this it is possible for the menu and the other ModelChartImpls inside one
+        // GCDocument to stay in sync.
+        
+        if (PropertyChangeEventConsts.RULER_OFFSET_CHANGED.equals(evt.getPropertyName())) {
+            // dateStampShown is true, if some offset is present (0 offset = only time shown)
+            boolean dateStampShown = ((Double)evt.getNewValue()).doubleValue() > 0.0001;
+            firePropertyChange(
+                    PropertyChangeEventConsts.MODELCHART_TIMESTAMP_RULER_FORMAT_CHANGED,
+                    !dateStampShown,
+                    dateStampShown); 
         }
     }
 

@@ -2,11 +2,15 @@ package com.tagtraum.perf.gcviewer.ctrl;
 
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.JCheckBoxMenuItem;
 
 import com.tagtraum.perf.gcviewer.ctrl.FileDropTargetListener.DropFlavor;
 import com.tagtraum.perf.gcviewer.model.GCResource;
@@ -61,7 +65,7 @@ public class GCModelLoaderController {
     private void addGCResource(GCResource gcResource) {
         GCModelLoader loader = new GCModelLoader(gcResource);
         GCDocumentController docController = getDocumentController(gcViewerGui.getSelectedGCDocument());
-        docController.addGCResource(loader);
+        docController.addGCResource(loader, getViewMenuController());
         
         loader.execute();
     }
@@ -87,6 +91,22 @@ public class GCModelLoaderController {
         return ((GCViewerGuiMenuBar) this.gcViewerGui.getJMenuBar()).getRecentGCResourcesModel();
     }
     
+    private ViewMenuController getViewMenuController() {
+        Map<String, JCheckBoxMenuItem> viewMenuItems 
+            = ((GCViewerGuiMenuBar) this.gcViewerGui.getJMenuBar()).getViewMenuItems();
+
+        assert viewMenuItems.size() > 0 : "viewMenuItems is not initialised!!";
+        
+        JCheckBoxMenuItem menuItem = viewMenuItems.values().iterator().next();
+        for (ActionListener actionListener : menuItem.getActionListeners()) {
+            if (actionListener instanceof ViewMenuController) {
+                return (ViewMenuController) actionListener;
+            }
+        }
+        
+        throw new IllegalStateException("no ActionListener of type 'ViewMenuController' found");
+    }
+    
     private void openGCResource(GCResource gcResource) {
         GCModelLoader loader = new GCModelLoader(gcResource);
         GCDocument document = new GCDocument(gcViewerGui.getPreferences(), gcResource.getResourceName());
@@ -100,7 +120,7 @@ public class GCModelLoaderController {
         gcViewerGui.addDocument(document);
         
         GCDocumentController docController = new GCDocumentController(document);
-        docController.addGCResource(loader);
+        docController.addGCResource(loader, getViewMenuController());
         
         loader.execute();
     }

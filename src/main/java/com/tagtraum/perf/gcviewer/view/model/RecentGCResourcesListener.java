@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
+import java.util.EventListener;
+
 
 /**
  * Listener interface for add / remove events from the {@link RecentGCResourcesModel}.
@@ -9,7 +11,7 @@ package com.tagtraum.perf.gcviewer.view.model;
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public interface RecentGCResourcesListener {
+public interface RecentGCResourcesListener extends EventListener {
     
     /**
      * Invoked, when an item is removed from the model.

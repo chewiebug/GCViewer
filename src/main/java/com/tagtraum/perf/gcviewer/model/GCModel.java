@@ -718,7 +718,9 @@ public class GCModel implements Serializable {
     
     public Date getFirstDateStamp() {
     	return allEvents.size() > 0 
-    			? get(0).getDatestamp() 
+    			? hasDateStamp()
+    			        ? get(0).getDatestamp()
+    			        : new Date(getLastModified() - (long)(getRunningTime() * 1000.0d))
     			: null;
     }
 

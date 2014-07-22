@@ -122,7 +122,7 @@ public class GCViewerGuiBuilder {
             GCViewerGui gui,
             GCModelLoaderController controller) {
         
-        ViewMenuController viewMenucontroller = new ViewMenuController(gui);
+        ViewMenuController viewMenuController = new ViewMenuController(gui);
         GCViewerGuiMenuBar menuBar = new GCViewerGuiMenuBar();
 
         // file menu
@@ -148,8 +148,17 @@ public class GCViewerGuiBuilder {
         menuItemShowModelMetricsPanel.setIcon(ImageHelper.createEmptyImageIcon(20, 20));
         menuItemShowModelMetricsPanel.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_show_data_panel"));
         menuItemShowModelMetricsPanel.setActionCommand(GCPreferences.SHOW_MODEL_METRICS_PANEL);
-        menuItemShowModelMetricsPanel.addActionListener(viewMenucontroller);
+        menuItemShowModelMetricsPanel.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.SHOW_MODEL_METRICS_PANEL, menuItemShowModelMetricsPanel);
+        menuBar.addSeparatorToViewMenu();
+
+        JCheckBoxMenuItem menuItemShowDateStamp = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_show_date_stamp"), true);
+        menuItemShowDateStamp.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_show_date_stamp").charAt(0));
+        menuItemShowDateStamp.setIcon(ImageHelper.createEmptyImageIcon(20, 20));
+        menuItemShowDateStamp.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_show_date_stamp"));
+        menuItemShowDateStamp.setActionCommand(GCPreferences.SHOW_DATE_STAMP);
+        menuItemShowDateStamp.addActionListener(viewMenuController);
+        menuBar.addToViewMenu(GCPreferences.SHOW_DATE_STAMP, menuItemShowDateStamp);
         menuBar.addSeparatorToViewMenu();
 
         JCheckBoxMenuItem menuItemAntiAlias = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_antialias"), true);
@@ -157,7 +166,7 @@ public class GCViewerGuiBuilder {
         menuItemAntiAlias.setIcon(ImageHelper.createEmptyImageIcon(20, 20));
         menuItemAntiAlias.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_antialias"));
         menuItemAntiAlias.setActionCommand(GCPreferences.ANTI_ALIAS);
-        menuItemAntiAlias.addActionListener(viewMenucontroller);
+        menuItemAntiAlias.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.ANTI_ALIAS, menuItemAntiAlias);
         menuBar.addSeparatorToViewMenu();
 
@@ -166,7 +175,7 @@ public class GCViewerGuiBuilder {
         menuItemFullGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_full_gc_lines"));
         menuItemFullGCLines.setIcon(ImageHelper.createMonoColoredImageIcon(FullGCLineRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemFullGCLines.setActionCommand(GCPreferences.FULL_GC_LINES);
-        menuItemFullGCLines.addActionListener(viewMenucontroller);
+        menuItemFullGCLines.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.FULL_GC_LINES, menuItemFullGCLines);
 
         JCheckBoxMenuItem menuItemIncGCLines = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"), true);
@@ -174,7 +183,7 @@ public class GCViewerGuiBuilder {
         menuItemIncGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_inc_gc_lines"));
         menuItemIncGCLines.setIcon(ImageHelper.createMonoColoredImageIcon(IncLineRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemIncGCLines.setActionCommand(GCPreferences.INC_GC_LINES);
-        menuItemIncGCLines.addActionListener(viewMenucontroller);
+        menuItemIncGCLines.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.INC_GC_LINES, menuItemIncGCLines);
 
         JCheckBoxMenuItem menuItemGcTimesLine = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_gc_times_line"), true);
@@ -182,7 +191,7 @@ public class GCViewerGuiBuilder {
         menuItemGcTimesLine.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_line"));
         menuItemGcTimesLine.setIcon(ImageHelper.createMonoColoredImageIcon(GCTimesRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemGcTimesLine.setActionCommand(GCPreferences.GC_TIMES_LINE);
-        menuItemGcTimesLine.addActionListener(viewMenucontroller);
+        menuItemGcTimesLine.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.GC_TIMES_LINE, menuItemGcTimesLine);
 
         JCheckBoxMenuItem menuItemGcTimesRectangle = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_gc_times_rectangles"), true);
@@ -190,7 +199,7 @@ public class GCViewerGuiBuilder {
         menuItemGcTimesRectangle.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_rectangles"));
         menuItemGcTimesRectangle.setIcon(ImageHelper.createMonoColoredImageIcon(GCRectanglesRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemGcTimesRectangle.setActionCommand(GCPreferences.GC_TIMES_RECTANGLES);
-        menuItemGcTimesRectangle.addActionListener(viewMenucontroller);
+        menuItemGcTimesRectangle.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.GC_TIMES_RECTANGLES, menuItemGcTimesRectangle);
 
         JCheckBoxMenuItem menuItemTotalMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_total_memory"), true);
@@ -198,7 +207,7 @@ public class GCViewerGuiBuilder {
         menuItemTotalMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_total_memory"));
         menuItemTotalMemory.setIcon(ImageHelper.createMonoColoredImageIcon(TotalHeapRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemTotalMemory.setActionCommand(GCPreferences.TOTAL_MEMORY);
-        menuItemTotalMemory.addActionListener(viewMenucontroller);
+        menuItemTotalMemory.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.TOTAL_MEMORY, menuItemTotalMemory);
 
         JCheckBoxMenuItem menuItemTenuredMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_tenured_memory"), true);
@@ -206,7 +215,7 @@ public class GCViewerGuiBuilder {
         menuItemTenuredMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_tenured_memory"));
         menuItemTenuredMemory.setIcon(ImageHelper.createMonoColoredImageIcon(TotalTenuredRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemTenuredMemory.setActionCommand(GCPreferences.TENURED_MEMORY);
-        menuItemTenuredMemory.addActionListener(viewMenucontroller);
+        menuItemTenuredMemory.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.TENURED_MEMORY, menuItemTenuredMemory);
 
         JCheckBoxMenuItem menuItemYoungMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_young_memory"), true);
@@ -214,7 +223,7 @@ public class GCViewerGuiBuilder {
         menuItemYoungMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_young_memory"));
         menuItemYoungMemory.setIcon(ImageHelper.createMonoColoredImageIcon(TotalYoungRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemYoungMemory.setActionCommand(GCPreferences.YOUNG_MEMORY);
-        menuItemYoungMemory.addActionListener(viewMenucontroller);
+        menuItemYoungMemory.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.YOUNG_MEMORY, menuItemYoungMemory);
 
         JCheckBoxMenuItem menuItemUsedMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_memory"), true);
@@ -222,7 +231,7 @@ public class GCViewerGuiBuilder {
         menuItemUsedMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_memory"));
         menuItemUsedMemory.setIcon(ImageHelper.createMonoColoredImageIcon(UsedHeapRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemUsedMemory.setActionCommand(GCPreferences.USED_MEMORY);
-        menuItemUsedMemory.addActionListener(viewMenucontroller);
+        menuItemUsedMemory.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.USED_MEMORY, menuItemUsedMemory);
 
         JCheckBoxMenuItem menuItemUsedTenuredMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_tenured_memory"), true);
@@ -230,7 +239,7 @@ public class GCViewerGuiBuilder {
         menuItemUsedTenuredMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_tenured_memory"));
         menuItemUsedTenuredMemory.setIcon(ImageHelper.createMonoColoredImageIcon(UsedTenuredRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemUsedTenuredMemory.setActionCommand(GCPreferences.USED_TENURED_MEMORY);
-        menuItemUsedTenuredMemory.addActionListener(viewMenucontroller);
+        menuItemUsedTenuredMemory.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.USED_TENURED_MEMORY, menuItemUsedTenuredMemory);
 
         JCheckBoxMenuItem menuItemUsedYoungMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_young_memory"), true);
@@ -238,7 +247,7 @@ public class GCViewerGuiBuilder {
         menuItemUsedYoungMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_young_memory"));
         menuItemUsedYoungMemory.setIcon(ImageHelper.createMonoColoredImageIcon(UsedYoungRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemUsedYoungMemory.setActionCommand(GCPreferences.USED_YOUNG_MEMORY);
-        menuItemUsedYoungMemory.addActionListener(viewMenucontroller);
+        menuItemUsedYoungMemory.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.USED_YOUNG_MEMORY, menuItemUsedYoungMemory);
 
         JCheckBoxMenuItem menuItemInitialMarkLevel = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_initial_mark_level"), true);
@@ -246,7 +255,7 @@ public class GCViewerGuiBuilder {
         menuItemInitialMarkLevel.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_initial_mark_level"));
         menuItemInitialMarkLevel.setIcon(ImageHelper.createMonoColoredImageIcon(InitialMarkLevelRenderer.DEFAULT_LINEPAINT, 20, 20));
         menuItemInitialMarkLevel.setActionCommand(GCPreferences.INITIAL_MARK_LEVEL);
-        menuItemInitialMarkLevel.addActionListener(viewMenucontroller);
+        menuItemInitialMarkLevel.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.INITIAL_MARK_LEVEL, menuItemInitialMarkLevel);
 
         JCheckBoxMenuItem menuItemConcurrentGcBeginEnd = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_concurrent_collection_begin_end"), true);
@@ -254,7 +263,7 @@ public class GCViewerGuiBuilder {
         menuItemConcurrentGcBeginEnd.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_concurrent_collection_begin_end"));
         menuItemConcurrentGcBeginEnd.setIcon(ImageHelper.createMonoColoredImageIcon(ConcurrentGcBegionEndRenderer.CONCURRENT_COLLECTION_BEGIN, 20, 20));
         menuItemConcurrentGcBeginEnd.setActionCommand(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END);
-        menuItemConcurrentGcBeginEnd.addActionListener(viewMenucontroller);
+        menuItemConcurrentGcBeginEnd.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END, menuItemConcurrentGcBeginEnd);
 
         if (OSXSupport.hasOSXFullScreenSupport()) {

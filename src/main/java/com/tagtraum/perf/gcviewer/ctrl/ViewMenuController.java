@@ -2,11 +2,16 @@ package com.tagtraum.perf.gcviewer.ctrl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.logging.Logger;
 
 import javax.swing.JCheckBoxMenuItem;
 
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.model.PropertyChangeEventConsts;
 
 /**
  * Deals with all actions for the "view".
@@ -15,7 +20,8 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
  * Time: 4:59:49 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class ViewMenuController implements ActionListener {
+public class ViewMenuController implements ActionListener, PropertyChangeListener {
+    private static final Logger LOGGER = Logger.getLogger(ViewMenuController.class.getName());
     private GCViewerGui gui;
 
     /**
@@ -28,7 +34,7 @@ public class ViewMenuController implements ActionListener {
     /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         if (gui.getSelectedGCDocument() == null) {
             // TODO SWINGWORKER: nothing to do here?
             return;
@@ -37,6 +43,10 @@ public class ViewMenuController implements ActionListener {
         boolean state = ((JCheckBoxMenuItem)e.getSource()).getState();
         if (GCPreferences.SHOW_MODEL_METRICS_PANEL.equals(e.getActionCommand())) {
             gui.getSelectedGCDocument().setShowModelMetricsPanel(state);
+        }
+        else if (GCPreferences.SHOW_DATE_STAMP.equals(e.getActionCommand())) {
+            LOGGER.fine("setShowDateStamp(" + state + ")");
+            gui.getSelectedGCDocument().getModelChart().setShowDateStamp(state);
         }
         else if (GCPreferences.FULL_GC_LINES.equals(e.getActionCommand())) {
             gui.getSelectedGCDocument().getModelChart().setShowFullGCLines(state);
@@ -73,6 +83,15 @@ public class ViewMenuController implements ActionListener {
         }
         else if (GCPreferences.CONCURRENT_COLLECTION_BEGIN_END.equals(e.getActionCommand())) {
             gui.getSelectedGCDocument().getModelChart().setShowConcurrentCollectionBeginEnd(state);
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (PropertyChangeEventConsts.MODELCHART_TIMESTAMP_RULER_FORMAT_CHANGED.equals(evt.getPropertyName())) {
+            gui.getSelectedGCDocument().getModelChart().setShowDateStamp((Boolean)evt.getNewValue());
+            ((GCViewerGuiMenuBar) gui.getJMenuBar()).getViewMenuItems()
+                .get(GCPreferences.SHOW_DATE_STAMP).setSelected((Boolean)evt.getNewValue());
         }
     }
 }

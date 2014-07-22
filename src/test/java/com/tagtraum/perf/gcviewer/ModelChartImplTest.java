@@ -26,13 +26,20 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 public class ModelChartImplTest {
 
     @DataPoint
-    public static TestCase HAS_DATE_STAMP_DATE_STAMP_TURNED_ON_IN_PREF = new TestCase().withDateStamp(true).withShowDateStamp(true).withExpectedShowDateStamp(true);
+    public static TestCase HAS_DATE_STAMP_DATE_STAMP_TURNED_ON_IN_PREF 
+        = new TestCase().withDateStamp(true).withShowDateStamp(true).withExpectedShowDateStamp(true);
+    
     @DataPoint
-    public static TestCase HAS_DATE_STAMP_DATE_STAMP_TURNED_OFF_IN_PREF = new TestCase().withDateStamp(true).withShowDateStamp(false).withExpectedShowDateStamp(false);
+    public static TestCase HAS_DATE_STAMP_DATE_STAMP_TURNED_OFF_IN_PREF 
+        = new TestCase().withDateStamp(true).withShowDateStamp(false).withExpectedShowDateStamp(false);
+    
     @DataPoint
-    public static TestCase NO_DATE_STAMP_DATE_STAMP_TURNED_ON_IN_PREF = new TestCase().withDateStamp(false).withShowDateStamp(true).withExpectedShowDateStamp(false);
+    public static TestCase NO_DATE_STAMP_DATE_STAMP_TURNED_ON_IN_PREF 
+        = new TestCase().withDateStamp(false).withShowDateStamp(true).withExpectedShowDateStamp(true);
+    
     @DataPoint
-    public static TestCase NO_DATE_STAMP_DATE_STAMP_TURNED_OFF_IN_PREF = new TestCase().withDateStamp(false).withShowDateStamp(false).withExpectedShowDateStamp(false);
+    public static TestCase NO_DATE_STAMP_DATE_STAMP_TURNED_OFF_IN_PREF 
+        = new TestCase().withDateStamp(false).withShowDateStamp(false).withExpectedShowDateStamp(false);
 
 
     @Theory
