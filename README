@@ -1,4 +1,4 @@
-GCViewer 1.33
+GCViewer 1.34
 =============
 
 GCViewer is a little tool that visualizes verbose GC output
@@ -9,7 +9,8 @@ You can start GCViewer (gui) by simply double-clicking on gcviewer-1.3x.jar
 or running java -jar gcviewer-1.3x.jar (it needs a java 1.7 vm to run).
 
 For a cmdline based report summary just type:
-java -jar gcviewer-1.3x.jar gc.log summary.csv [chart.png]
+java -jar gcviewer-1.3x.jar gc.log summary.csv [chart.png] [-t PLAIN|CSV|CSV_TS|SIMPLE|SUMMARY]
+
 to generate a report (including optional chart image file). 
 
 
@@ -278,22 +279,27 @@ BEA JRockit 1.4.2/1.5/1.6
 Concurrently collected garbage may not be reflected correctly in the
 data panel.
 
-
 Export formats
 --------------
--> Comma Separated Values
+-> CSV: Comma Separated Values
 The CSV format is quite useful for importing the data to a
 spreadsheet application. However, it does not export all
 data.
 
--> Plain Data
+-> CSV_TS: Comma Separated Values
+CSV format using unix timestamp and one line per gc event.
+
+-> PLAIN: Plain Data
 Plain text representation of the gc log. If written from Sun / Oracle gc log
 it is usually compatible with HPjmeter.
 
--> Simple GC Log
+-> SIMPLE: Simple GC Log
 Very simple representation of a gc log in the format
 <name of event> <secondes since start of log> <pause time>.
 This format is compatible with gchisto (http://java.net/projects/gchisto)
+
+-> SUMMARY:
+Detailed summary exporting all details about a gc log file (same as shown in data panel). 
 
 Internationalization
 --------------------

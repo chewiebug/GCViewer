@@ -44,9 +44,11 @@ public class Export extends AbstractAction {
         saveDialog.setDialogTitle(LocalisationHelper.getString("fileexport_dialog_title"));
         saveDialog.removeChoosableFileFilter(saveDialog.getAcceptAllFileFilter());
         saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV));
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv_ts"), DataWriterType.CSV_TS));
         saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN));
         saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE));
-    }
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_summarylog"), DataWriterType.SUMMARY));
+        }
 
     public void actionPerformed(final ActionEvent e) {
         final GCDocument gcDocument = gcViewer.getSelectedGCDocument();

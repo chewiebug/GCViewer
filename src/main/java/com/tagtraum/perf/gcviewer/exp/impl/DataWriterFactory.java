@@ -46,13 +46,15 @@ public class DataWriterFactory {
      * @throws IOException unknown DataWriter or problem creating file
      */
     public static DataWriter getDataWriter(File file, DataWriterType type, Map<String, Object> configuration) throws IOException {
-        FileOutputStream outputStream = new FileOutputStream(file);
-        switch (type) {
-            case PLAIN   : return new PlainDataWriter(outputStream); 
-            case CSV     : return new CSVDataWriter(outputStream);
-            case SIMPLE  : return new SimpleGcWriter(outputStream);
-            case SUMMARY : return new SummaryDataWriter(outputStream, configuration); 
-            default : throw new IOException(LocalisationHelper.getString("datawriterfactory_instantiation_failed") + " " + file);
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            switch (type) {
+                case PLAIN   : return new PlainDataWriter(outputStream); 
+                case CSV     : return new CSVDataWriter(outputStream);
+                case CSV_TS  : return new CSVTSDataWriter(outputStream);
+                case SIMPLE  : return new SimpleGcWriter(outputStream);
+                case SUMMARY : return new SummaryDataWriter(outputStream, configuration); 
+                default : throw new IOException(LocalisationHelper.getString("datawriterfactory_instantiation_failed") + " " + file);
+            }
         }
     }
 

@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
     <groupId>com.github.chewiebug</groupId>
     <artifactId>gcviewer</artifactId>
@@ -62,6 +62,10 @@
         <developer>
             <name>Maciej Kwiecien</name>
             <url>https://github.com/xylu</url>
+        </developer>
+        <developer>
+            <name>Samuel Mendenhall</name>
+            <url>http://engineersamuel.github.io/dbits/</url>
         </developer>
         <developer>
             <name>Carl Meyer</name>
@@ -308,7 +312,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.6.4.201312101107</version>
+                    <version>0.7.0.201403182114</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse 
                     m2e settings only. It has no influence on the Maven build itself. -->

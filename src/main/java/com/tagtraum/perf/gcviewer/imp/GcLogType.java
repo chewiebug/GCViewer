@@ -23,5 +23,7 @@ public enum GcLogType {
     SUN1_6,
     SUN1_6G1,
     SUN1_7,
-    SUN1_7G1
+    SUN1_7G1,
+    SUN1_8,
+    SUN1_8G1,
 }

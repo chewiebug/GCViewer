@@ -9,6 +9,7 @@ package com.tagtraum.perf.gcviewer.exp;
 public enum DataWriterType {
     PLAIN,
     CSV,
+    CSV_TS,
     SIMPLE,
     SUMMARY;
 }

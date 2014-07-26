@@ -27,6 +27,7 @@ import com.tagtraum.perf.gcviewer.util.TestAllUtil;
     TestAllModel.class,
     TestAllUtil.class,
     TestAllCtrl.class,
+    TestGCViewerArgsParser.class
 })
 public class TestAll {
 }
