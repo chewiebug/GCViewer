@@ -39,6 +39,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
     private static final String[] CONTRIBUTORS = {
         "Hans Bausewein",
         "Peter Bilstein",
+        "Steve Boardwell",
         "Cka3o4Huk",
         "Frank Dietrich",
         "Bernd Eckenfels",

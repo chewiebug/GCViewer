@@ -429,11 +429,11 @@ public class TestDataReaderSun1_7_0G1 {
     
     @Test
     public void printSimpleToSpaceOverflow() throws Exception {
-        final InputStream in = new ByteArrayInputStream(
+        InputStream in = new ByteArrayInputStream(
                 ("2013-12-21T15:48:44.062+0100: 0.441: [GC pause (G1 Evacuation Pause) (young)-- 90M->94M(128M), 0.0245257 secs]")
                 .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0G1(new GCResource("bytearray"), in, GcLogType.SUN1_7G1);
+        DataReader reader = new DataReaderSun1_6_0G1(new GCResource("bytearray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -457,5 +457,42 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("gc pause", event.getPause(), closeTo(0.0665670, 0.00000001));
         assertThat("error count", handler.getCount(), is(0));
     }
+
+    /**
+     * Order of events has changed since JDK 1.6: 
+     * [GC pause (young) (initial-mark) (to-space exhausted), 0.1156890 secs]
+     * vs 
+     * [GC pause (young) (to-space exhausted) (initial-mark), 0.1156890 secs]
+     */
+    private void verifyYoungToSpaceOverflowInitialMarkMixedOrder(String fileName, Type type) throws IOException {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource(fileName);
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+        
+        assertThat("count", model.size(), is(1));
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("type name", event.getTypeAsString(), equalTo(type.toString()));
+        assertThat("gc pause", event.getPause(), equalTo(0.1156890));
+        assertThat("error count", handler.getCount(), is(0));
+    }
     
+    @Test
+    public void testYoungToSpaceOverflowInitialMarkOriginalOrder() throws Exception {
+    	verifyYoungToSpaceOverflowInitialMarkMixedOrder(
+    	        "SampleSun1_7_0_G1_young_initial_mark_to_space_exhausted_original_order.txt", 
+    	        Type.G1_YOUNG_TO_SPACE_EXHAUSTED_INITIAL_MARK);
+    }
+
+    @Test
+    public void testYoungToSpaceOverflowInitialMarkReverseOrder() throws Exception {
+    	verifyYoungToSpaceOverflowInitialMarkMixedOrder(
+    	        "SampleSun1_7_0_G1_young_initial_mark_to_space_exhausted_reverse_order.txt", 
+    	        Type.G1_YOUNG_INITIAL_MARK_TO_SPACE_EXHAUSTED);
+    }
+
+
 }
