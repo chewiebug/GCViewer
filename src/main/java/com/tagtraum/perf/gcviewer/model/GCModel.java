@@ -381,6 +381,7 @@ public class GCModel implements Serializable {
         else if (abstractEvent instanceof VmOperationEvent) {
             adjustPause((VmOperationEvent) abstractEvent);
             vmOperationPause.add(abstractEvent.getPause());
+            totalPause.add(abstractEvent.getPause());
             DoubleData vmOpPauses = getDoubleData(abstractEvent.getTypeAsString(), vmOperationEventPauses);
             vmOpPauses.add(abstractEvent.getPause());
         }
@@ -638,7 +639,7 @@ public class GCModel implements Serializable {
      */
     public double getThroughput() {
         return 100 
-                * (getRunningTime() - totalPause.getSum() - vmOperationPause.getSum()) 
+                * (getRunningTime() - totalPause.getSum()) 
                 / getRunningTime();
     }
 

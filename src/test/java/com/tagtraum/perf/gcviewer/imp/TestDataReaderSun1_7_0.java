@@ -274,7 +274,8 @@ public class TestDataReaderSun1_7_0 {
         assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
         assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0117633 - 0.0114994, 0.00000001));
         
-        assertThat("throughput", model.getThroughput(), closeTo(1.9725, 0.00001));
+        assertThat("total pause", model.getPause().getSum(), closeTo(0.0117633, 0.00000001));
+        assertThat("throughput", model.getThroughput(), closeTo(100 * (0.012 - 0.0117633) / 0.012, 0.00001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
@@ -291,12 +292,15 @@ public class TestDataReaderSun1_7_0 {
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(14));
+        assertThat("application stopped count", model.getVmOperationPause().getN(), is(2));
+        
         assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; CMS-initial-mark"));
         assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0002081, 0.00000001));
         assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
         assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0003502 - 0.0002081, 0.00000001));
         
-        assertThat("throughput", model.getThroughput(), closeTo(89.625333, 0.00001));
+        assertThat("total pause", model.getPause().getSum(), closeTo(0.0015562, 0.0000001));
+        assertThat("throughput", model.getThroughput(), closeTo(89.6253333333, 0.00001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
@@ -313,13 +317,16 @@ public class TestDataReaderSun1_7_0 {
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(19));
+        assertThat("application stopped count", model.getVmOperationPause().getN(), is(4));
+        
         assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; ParNew"));
         assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0318639, 0.00000001));
         
         assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
         assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0320233 - 0.0318639, 0.00000001));
         
-        assertThat("throughput", model.getThroughput(), closeTo(29.203333, 0.00001));
+        assertThat("total pause", model.getPause().getSum(), closeTo(0.0488497, 0.00000001));
+        assertThat("throughput", model.getThroughput(), closeTo(29.2033333333, 0.00001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
