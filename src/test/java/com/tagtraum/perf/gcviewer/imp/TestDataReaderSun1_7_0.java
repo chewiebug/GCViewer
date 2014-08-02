@@ -9,12 +9,14 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -100,7 +102,7 @@ public class TestDataReaderSun1_7_0 {
     }
     
     @Test
-    public void CmsRemarkWithTimestamps() throws Exception {
+    public void cmsRemarkWithTimestamps() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-09-11T23:03:44.987+0200: 1518.733: [GC[YG occupancy: 3247177 K (4718592 K)]2013-09-11T23:03:45.231+0200: 1518.977: [Rescan (parallel) , 0.0941360 secs]2013-09-11T23:03:45.325+0200: 1519.071: [weak refs processing, 0.0006010 secs]2013-09-11T23:03:45.325+0200: 1519.071: [scrub string table, 0.0028480 secs] [1 CMS-remark: 4246484K(8388608K)] 4557930K(13107200K), 0.3410220 secs] [Times: user=2.48 sys=0.01, real=0.34 secs]"
                         .getBytes());
@@ -114,7 +116,7 @@ public class TestDataReaderSun1_7_0 {
     }    
     
     @Test
-    public void CmsWithoutTimestamps() throws Exception {
+    public void cmsWithoutTimestamps() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-12-19T17:52:49.323+0100: [GC2013-12-19T17:52:49.323+0100: [ParNew: 4872K->480K(4928K), 0.0031563 secs] 102791K->102785K(140892K), 0.0032042 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]"
                         .getBytes());
@@ -273,15 +275,16 @@ public class TestDataReaderSun1_7_0 {
         assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0114994, 0.00000001));
         assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
         assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0117633 - 0.0114994, 0.00000001));
+        assertThat("timestamp (1)", model.get(1).getTimestamp(), closeTo(0.266, 0.0000001));
         
         assertThat("total pause", model.getPause().getSum(), closeTo(0.0117633, 0.00000001));
-        assertThat("throughput", model.getThroughput(), closeTo(100 * (0.012 - 0.0117633) / 0.012, 0.00001));
+        assertThat("throughput", model.getThroughput(), closeTo(4.081898907, 0.00000001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
     
     @Test
-    public void CmsPrintGCApplicationStopped() throws Exception {
+    public void cmsPrintGCApplicationStopped() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
@@ -300,13 +303,13 @@ public class TestDataReaderSun1_7_0 {
         assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0003502 - 0.0002081, 0.00000001));
         
         assertThat("total pause", model.getPause().getSum(), closeTo(0.0015562, 0.0000001));
-        assertThat("throughput", model.getThroughput(), closeTo(89.6253333333, 0.00001));
+        assertThat("throughput", model.getThroughput(), closeTo(89.731645035, 0.00001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
     
     @Test
-    public void CmsPrintGCApplicationStoppedTimeTenuringDist() throws Exception {
+    public void cmsPrintGCApplicationStoppedTimeTenuringDist() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
@@ -326,9 +329,44 @@ public class TestDataReaderSun1_7_0 {
         assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0320233 - 0.0318639, 0.00000001));
         
         assertThat("total pause", model.getPause().getSum(), closeTo(0.0488497, 0.00000001));
-        assertThat("throughput", model.getThroughput(), closeTo(29.2033333333, 0.00001));
+        assertThat("throughput", model.getThroughput(), closeTo(29.66965410503, 0.00000000001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
     
+    /**
+     * Pre 1.7.0_u50 -XX:+PrintGCApplicationStoppedTime wrote it's data without a timestamp.
+     * Test here, that they are still added to the {@link GCModel}.
+     */
+    @Test
+    public void cmsPrintGCApplicationStoppedTimeWithoutTimestampsTenuringDist() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-04-26T23:59:50.899+0400: 33395.153: [GC 33395.153: [ParNew"
+                 + "\nDesired survivor size 32768 bytes, new threshold 0 (max 0)" 
+                 + "\n: 130944K->0K(131008K), 0.0158820 secs] 1078066K->949934K(4194240K), 0.1120380 secs] [Times: user=0.07 sys=0.00, real=0.02 secs]"
+                 + "\nTotal time for which application threads were stopped: 0.0174010 seconds")
+                        .getBytes());
+         
+        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(2));
+        assertThat("ParNew timestamp", model.get(0).getTimestamp(), closeTo(33395.153, 0.00001));
+        assertThat("is 'Total time...'", 
+                model.get(1).getExtendedType().getName(), 
+                equalTo(AbstractGCEvent.Type.APPLICATION_STOPPED_TIME.getName()));
+        assertThat("Application Stopped timestamp", 
+                model.get(1).getTimestamp(), 
+                closeTo(33395.153 + 0.1120380, 0.0000001));
+        assertThat("Application Stopped datestamp", 
+                dateFormatter.format(model.get(1).getDatestamp()), 
+                equalTo("2012-04-26T23:59:51.011"));
+        assertThat("first timestamp", model.getFirstPauseTimeStamp(), closeTo(33395.153, 0.00001));
+    }
 }

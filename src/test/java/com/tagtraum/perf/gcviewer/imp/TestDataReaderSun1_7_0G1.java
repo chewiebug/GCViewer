@@ -502,7 +502,7 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("GC pause (2)", model.get(2).getPause(), closeTo(0.0000694, 0.00000001));
         
         assertThat("total pause", model.getPause().getSum(), closeTo(0.0009342, 0.00000001));
-        assertThat("throughput", model.getThroughput(), closeTo(99.886626214, 0.000001));
+        assertThat("throughput", model.getThroughput(), closeTo(99.88663576, 0.000001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }

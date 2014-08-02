@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -86,8 +87,9 @@ public class GCModel implements Serializable {
 	private static final Logger LOG = Logger.getLogger(GCModel.class.getName());
 
     private List<AbstractGCEvent<?>> allEvents;
-    private List<GCEvent> stopTheWorldEvents;
+    private List<AbstractGCEvent<?>> stopTheWorldEvents;
     private List<GCEvent> gcEvents;
+    private List<AbstractGCEvent<?>> vmOperationEvents;
     private List<ConcurrentGCEvent> concurrentGCEvents;
     private List<GCEvent> currentNoFullGCEvents;
     private List<GCEvent> fullGCEvents;
@@ -96,7 +98,7 @@ public class GCModel implements Serializable {
     private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
     private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
     private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
-    private Map<String, DoubleData> vmOperationEventPauses; // pause inforamtion about vm operations ("application stopped")
+    private Map<String, DoubleData> vmOperationEventPauses; // pause information about vm operations ("application stopped")
     
     private IntData heapAllocatedSizes; // allocated heap size of every event
     private IntData tenuredAllocatedSizes; // allocated tenured size of every event that has this information
@@ -138,8 +140,9 @@ public class GCModel implements Serializable {
         this.countTenuredAsFull = countTenuredAsFull;
         
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
-        this.stopTheWorldEvents = new ArrayList<GCEvent>();
+        this.stopTheWorldEvents = new ArrayList<AbstractGCEvent<?>>();
         this.gcEvents = new ArrayList<GCEvent>();
+        this.vmOperationEvents = new ArrayList<AbstractGCEvent<?>>();
         this.concurrentGCEvents = new ArrayList<ConcurrentGCEvent>();
         this.fullGCEvents = new ArrayList<GCEvent>();
         this.currentNoFullGCEvents = new ArrayList<GCEvent>();
@@ -227,7 +230,7 @@ public class GCModel implements Serializable {
         printIntData("young size used", youngUsedSizes);
     }
     
-    private FileInformation readFileInformation(final URL url) {
+    private FileInformation readFileInformation(URL url) {
         FileInformation fileInformation = new FileInformation();
         URLConnection urlConnection = null;
         try {
@@ -247,7 +250,7 @@ public class GCModel implements Serializable {
         return fileInformation;
     }
     
-    public void setURL(final URL url) {
+    public void setURL(URL url) {
         this.url = url;
         this.fileInformation.setFileInformation(readFileInformation(url));
     }
@@ -267,6 +270,7 @@ public class GCModel implements Serializable {
 
     /**
      * Returns the event that was last added or <code>null</code> if there is none yet.
+     * 
      * @return last event or <code>null</code>
      */
     public AbstractGCEvent<?> getLastEventAdded() {
@@ -278,18 +282,57 @@ public class GCModel implements Serializable {
         }
     }
     
-    public Iterator<GCEvent> getGCEvents() {
+    /**
+     * Returns an iterator to all stop the world events (everything that stops the vm to perfom
+     * its action - includes vm operations of present).
+     * 
+     * @return iterator to all stop the world events
+     */
+    public Iterator<AbstractGCEvent<?>> getStopTheWorldEvents() {
         return stopTheWorldEvents.iterator();
     }
+    
+    /**
+     * Returns an iterator to all garbage collection events (without full gcs / vm operations).
+     * 
+     * @return iterator to all gc events (without full gcs).
+     */
+    public Iterator<GCEvent> getGCEvents() {
+        return gcEvents.iterator();
+    }
 
+    /**
+     * Returns an iterator to all vm operation events.
+     *  
+     * @return iterator to all vm operation events
+     */
+    public Iterator<AbstractGCEvent<?>> getVmOperationsEvents() {
+        return vmOperationEvents.iterator();
+    }
+    
+    /**
+     * Returns an iterator to all concurrent gc events.
+     * 
+     * @return iterator to all concurrent gc events.
+     */
     public Iterator<ConcurrentGCEvent> getConcurrentGCEvents() {
         return concurrentGCEvents.iterator();
     }
 
+    /**
+     * Returns an iterator to all events in the order they were added to the model.
+     * 
+     * @return iterator to all events
+     */
     public Iterator<AbstractGCEvent<?>> getEvents() {
         return allEvents.iterator();
     }
     
+    /**
+     * Returns an iterator to all full gc events.
+     * 
+     * @return iterator to all full gc events
+     */
     public Iterator<GCEvent> getFullGCEvents() {
     	return fullGCEvents.iterator();
     }
@@ -304,12 +347,15 @@ public class GCModel implements Serializable {
     	return data;
     }
     
-    public void add(final AbstractGCEvent<?> abstractEvent) {
+    public void add(AbstractGCEvent<?> abstractEvent) {
         allEvents.add(abstractEvent);
         
-        firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
-        lastPauseTimeStamp = Math.max(lastPauseTimeStamp, abstractEvent.getTimestamp());
-
+        if (abstractEvent.isStopTheWorld()) {
+            // totalPause must not be added here yet, because in case of vmOperationEvents, the
+            // pause might be adjusted
+            stopTheWorldEvents.add(abstractEvent);
+        }
+        
         if (abstractEvent instanceof ConcurrentGCEvent) {
         	ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
             concurrentGCEvents.add(concEvent);
@@ -324,7 +370,7 @@ public class GCModel implements Serializable {
             
             updateHeapSizes(event);
             
-            updatePauseInterval(event);
+            updateGcPauseInterval(event);
             
             updatePromotion(event);
             
@@ -332,10 +378,8 @@ public class GCModel implements Serializable {
                 updateInitiatingOccupancyFraction(event);
             }
             
-            stopTheWorldEvents.add(event);
             footprint = Math.max(footprint, event.getTotal());
             freedMemory += event.getPreUsed() - event.getPostUsed();
-            totalPause.add(event.getPause());
             
             if (!event.isFull()) {
             	// make a difference between stop the world events, which only collect from some generations...
@@ -380,27 +424,70 @@ public class GCModel implements Serializable {
         }
         else if (abstractEvent instanceof VmOperationEvent) {
             adjustPause((VmOperationEvent) abstractEvent);
+            if (abstractEvent.getTimestamp() < 0.000001) {
+                setTimeStamp((VmOperationEvent) abstractEvent);
+            }
             vmOperationPause.add(abstractEvent.getPause());
-            totalPause.add(abstractEvent.getPause());
+            vmOperationEvents.add(abstractEvent);
             DoubleData vmOpPauses = getDoubleData(abstractEvent.getTypeAsString(), vmOperationEventPauses);
             vmOpPauses.add(abstractEvent.getPause());
+        }
+
+        firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
+        lastPauseTimeStamp = Math.max(lastPauseTimeStamp, abstractEvent.getTimestamp());
+        if (abstractEvent.isStopTheWorld()) {
+            // add to total pause here, because then adjusted VmOperationEvents are added correctly 
+            // as well
+            totalPause.add(abstractEvent.getPause());
         }
     }
 
     private void adjustPause(VmOperationEvent vmOpEvent) {
-        if (allEvents.size() > 1) {
-            AbstractGCEvent<?> previousEvent = allEvents.get(allEvents.size() - 2);
+        if (stopTheWorldEvents.size() > 1) {
+            AbstractGCEvent<?> previousEvent = stopTheWorldEvents.get(stopTheWorldEvents.size() - 2);
             
             // if the event directly before this event is also a VM_OPERATION event,
             // it was a VM_OPERATION without gc pause -> whole pause is "overhead"
-            if (previousEvent.isStopTheWorld() 
-                    && !previousEvent.getExtendedType().getCollectionType().equals(CollectionType.VM_OPERATION)) {
+            if (!previousEvent.getExtendedType().getCollectionType().equals(CollectionType.VM_OPERATION)) {
 
                 // only count overhead of vmOpEvent, not whole pause,
                 // because it includes the previous stop the world event
                 vmOpEvent.setPause(vmOpEvent.getPause() - previousEvent.getPause());
+                adjustTimeStamp(previousEvent, vmOpEvent);
+
                 assert vmOpEvent.getPause() > 0 : "vmOpEvent at " + vmOpEvent.getTimestamp() + " should not have negative pause";
             }
+        }
+    }
+    
+    /**
+     * Make sure, time / datestamp of <code>vmOpEvent</code> is at least as long later as the
+     * pause duration of <code>previousEvent</code>. 
+     * 
+     * @param previousEvent event just before <code>vmOpEvent</code>
+     * @param vmOpEvent event to be adjusted
+     */
+    private void adjustTimeStamp(AbstractGCEvent<?> previousEvent, VmOperationEvent vmOpEvent) {
+        if (previousEvent.getTimestamp() + previousEvent.getPause() > vmOpEvent.getTimestamp()) {
+            vmOpEvent.setTimestamp(previousEvent.getTimestamp() + previousEvent.getPause());
+            if (previousEvent.getDatestamp() != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(previousEvent.getDatestamp());
+                cal.add(Calendar.MINUTE, (int)Math.rint(previousEvent.getPause() / 60));
+                cal.add(Calendar.SECOND, (int)Math.rint(previousEvent.getPause()));
+                cal.add(Calendar.MILLISECOND, (int)Math.rint(previousEvent.getPause() * 1000));
+                vmOpEvent.setDateStamp(cal.getTime());
+            }
+        }
+    }
+    
+    private void setTimeStamp(VmOperationEvent vmOpEvent) {
+        AbstractGCEvent<?> previousEvent = stopTheWorldEvents.size() > 1 
+                ? stopTheWorldEvents.get(stopTheWorldEvents.size() - 2) 
+                : null;
+                
+        if (previousEvent != null) {
+            adjustTimeStamp(previousEvent, vmOpEvent);
         }
     }
     
@@ -430,7 +517,7 @@ public class GCModel implements Serializable {
         }
     }
 
-    private void updatePauseInterval(final GCEvent event) {
+    private void updateGcPauseInterval(GCEvent event) {
         if (lastGcPauseTimeStamp > 0) {
             if (!event.isConcurrencyHelper()) {
                 // JRockit sometimes has special timestamps that seem to go back in time,
@@ -504,39 +591,52 @@ public class GCModel implements Serializable {
         return allEvents.size();
     }
 
-    public AbstractGCEvent<?> get(final int index) {
+    /**
+     * Get all types of events in the order they were added to the model.
+     * 
+     * @param index index of event
+     * @return event at <code>index</code>
+     * @throws IndexOutOfBoundsException if <code>index</code> is out of bounds
+     */
+    public AbstractGCEvent<?> get(int index) {
         return allEvents.get(index);
     }
 
-
     /**
-     * Pauses caused by full garbage collections.
+     * Statistical data about pauses caused by full garbage collections.
      */
     public DoubleData getFullGCPause() {
         return fullGCPause;
     }
 
     /**
-     * Pauses caused by garbage collections.
+     * Statistical data about pauses caused by garbage collections (full gcs excluded).
      */
     public DoubleData getGCPause() {
         return gcPause;
     }
     
     /**
-     * Pauses caused by vm operations other than gc pauses ("application stopped")
+     * Statistical data about pauses caused by vm operations other than gc pauses 
+     * ("application stopped").
      */
     public DoubleData getVmOperationPause() {
         return vmOperationPause;
     }
 
     /**
-     * Interval between all types of stop the world pauses.
+     * Interval between gc pauses (full gcs excluded).
      */
     public DoubleData getPauseInterval() {
         return pauseInterval;
     }
     
+    /**
+     * Return statistical data about fraction of tenured heap when concurrent collection cycles
+     * are started.
+     * 
+     * @return statistical data about tenured heap occupation at start of concurrent collections
+     */
     public DoubleData getCmsInitiatingOccupancyFraction() {
         return initiatingOccupancyFraction;
     }
@@ -719,7 +819,10 @@ public class GCModel implements Serializable {
      * Running time in sec.
      */
     public double getRunningTime() {
-        return lastPauseTimeStamp - firstPauseTimeStamp;
+        return lastPauseTimeStamp - firstPauseTimeStamp 
+                + (stopTheWorldEvents.size() > 0 
+                        ? stopTheWorldEvents.get(stopTheWorldEvents.size() - 1).getPause() 
+                        : 0);
     }
 
     /**
@@ -747,7 +850,7 @@ public class GCModel implements Serializable {
         return format;
     }
 
-    public void setFormat(final Format format) {
+    public void setFormat(Format format) {
         this.format = format;
     }
 
@@ -776,7 +879,7 @@ public class GCModel implements Serializable {
 		
 		private String format;
 
-        private Format(final String format) {
+        private Format(String format) {
             this.format = format;
         }
 

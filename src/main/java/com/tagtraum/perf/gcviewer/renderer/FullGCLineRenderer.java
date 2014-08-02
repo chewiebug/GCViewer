@@ -25,16 +25,16 @@ public class FullGCLineRenderer extends ChartRenderer {
     public void paintComponent(Graphics2D g2d) {
         // make sure that we ignore the AntiAliasing flag as it does not make sense for vertical lines
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        final double scaleFactor = getModelChart().getScaleFactor();
-        final Rectangle clipBounds = g2d.getClipBounds();
-        final int minX = clipBounds.x;
-        final int maxX = clipBounds.x+clipBounds.width;
+        double scaleFactor = getModelChart().getScaleFactor();
+        Rectangle clipBounds = g2d.getClipBounds();
+        int minX = clipBounds.x;
+        int maxX = clipBounds.x+clipBounds.width;
 
-        final int height = getHeight();
+        int height = getHeight();
         int lastScaledTimestamp = Integer.MIN_VALUE;
         for (Iterator<GCEvent> i = getModelChart().getModel().getFullGCEvents(); i.hasNext();) {
             GCEvent event = i.next();
-            final int scaledTimestamp = (int)(scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
+            int scaledTimestamp = (int)(scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
             if (scaledTimestamp != lastScaledTimestamp && scaledTimestamp >= minX && scaledTimestamp <= maxX) {
                 g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
                 lastScaledTimestamp = scaledTimestamp;

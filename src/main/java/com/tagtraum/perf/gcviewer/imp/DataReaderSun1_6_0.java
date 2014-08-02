@@ -73,7 +73,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     static {
         EXCLUDE_STRINGS.add(UNLOADING_CLASS);
         EXCLUDE_STRINGS.add(APPLICATION_TIME); // -XX:+PrintGCApplicationConcurrentTime
-        EXCLUDE_STRINGS.add(Type.APPLICATION_STOPPED_TIME.getName());  // -XX:+PrintGCApplicationStoppedTime
+        //EXCLUDE_STRINGS.add(Type.APPLICATION_STOPPED_TIME.getName());  // -XX:+PrintGCApplicationStoppedTime
         EXCLUDE_STRINGS.add("Desired survivor"); // -XX:+PrintTenuringDistribution
         EXCLUDE_STRINGS.add("- age"); // -XX:+PrintTenuringDistribution
         EXCLUDE_STRINGS.add(" [Times");
@@ -223,6 +223,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (line.indexOf(APPLICATION_TIME) > 0) {
+                        // -XX:+PrintGCApplicationConcurrentTime
                         // when it occurs including timestamp (since about jdk1.7.0_50) it should still be ignored
                         continue;
                     }

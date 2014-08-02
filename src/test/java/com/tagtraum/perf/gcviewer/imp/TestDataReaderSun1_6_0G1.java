@@ -43,9 +43,9 @@ public class TestDataReaderSun1_6_0G1 {
         GCModel model = reader.read();
         
         assertEquals("gc pause sum", 62.616796, model.getPause().getSum(), 0.000000001);
-        assertEquals("throughput", 47.75795226, model.getThroughput(), 0.000000001);
+        assertEquals("throughput", 47.7730602904, model.getThroughput(), 0.000000001);
         assertEquals("longest pause", 0.1581177, model.getPause().getMax(), 0.000001);
-        assertEquals("total runtime", 119.859, model.getRunningTime(), 0.000001);
+        assertEquals("total runtime", 119.8936724, model.getRunningTime(), 0.000001);
         
         assertEquals("number of errors", 0, handler.getCount());
         
