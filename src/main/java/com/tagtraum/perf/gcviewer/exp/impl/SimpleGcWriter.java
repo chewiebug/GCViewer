@@ -7,9 +7,8 @@ import java.util.Locale;
 
 import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  * <p>Exports stop-the-world events in the "simple gc log" format (compatible to GCHisto).</p>
@@ -39,8 +38,11 @@ public class SimpleGcWriter extends AbstractDataWriter {
         while (i.hasNext()) {
             AbstractGCEvent<?> abstractEvent = i.next();
             if (abstractEvent.isStopTheWorld()) {
-                GCEvent event = (GCEvent)abstractEvent;
-                out.printf(NO_LOCALE, "%s %f %f%n", getSimpleType(event), event.getTimestamp(), event.getPause());
+                out.printf(NO_LOCALE, 
+                        "%s %f %f%n", 
+                        getSimpleType(abstractEvent), 
+                        abstractEvent.getTimestamp(), 
+                        abstractEvent.getPause());
             }
         }
 
@@ -53,7 +55,7 @@ public class SimpleGcWriter extends AbstractDataWriter {
      * @param typeName name of the gc event type
      * @return name without spaces
      */
-    private String getSimpleType(GCEvent event) {
+    private String getSimpleType(AbstractGCEvent<?> event) {
         String simpleType;
         
         if (isYoungOnly(event)) {
@@ -81,16 +83,17 @@ public class SimpleGcWriter extends AbstractDataWriter {
      * @param event event to be analysed.
      * @return <code>true</code> if the event is only in the young generation, <code>false</code> otherwise
      */
-    private boolean isYoungOnly(GCEvent event) {
+    private boolean isYoungOnly(AbstractGCEvent<?> event) {
         boolean isYoungOnly = false;
         if (!event.hasDetails() && event.getExtendedType().getGeneration().equals(Generation.YOUNG)) {
             isYoungOnly = true;
         }
         else if (event.getExtendedType().getGeneration().equals(Generation.YOUNG)) {
             isYoungOnly = true;
-            Iterator<GCEvent> iterator = event.details();
+            @SuppressWarnings("unchecked")
+            Iterator<AbstractGCEvent<?>> iterator = (Iterator<AbstractGCEvent<?>>) event.details();
             while (iterator.hasNext()) {
-                GCEvent currentEvent = iterator.next();
+                AbstractGCEvent<?> currentEvent = iterator.next();
                 if (!currentEvent.getExtendedType().getGeneration().equals(Generation.YOUNG)) {
                     isYoungOnly = false;
                     break;

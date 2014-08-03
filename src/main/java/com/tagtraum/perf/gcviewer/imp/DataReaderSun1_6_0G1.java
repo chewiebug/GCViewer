@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
@@ -21,6 +22,7 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
@@ -39,9 +41,9 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+PrintGCTimeStamps</li>
  * <li>-XX:+PrintGCDateStamps</li>
  * <li>-XX:+PrintGCCause</li>
+ * <li>-XX:+PrintGCApplicationStoppedTime</li>
  * <li>-XX:+PrintHeapAtGC (output ignored)</li>
  * <li>-XX:+PrintTenuringDistribution (output ignored)</li>
- * <li>-XX:+PrintGCApplicationStoppedTime (output ignored)</li>
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
  * <li>-XX:+PrintReferenceGC (output ignored)</li>
@@ -61,18 +63,17 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     
     private static final String TIMES_ALONE = " " + TIMES;
     private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
-    private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:"; // -XX:+PrintGCApplicationStoppedTime
     private static final String DESIRED_SURVIVOR = "Desired survivor"; // -XX:+PrintTenuringDistribution
     private static final String SURVIVOR_AGE = "- age"; // -XX:+PrintTenuringDistribution
     private static final String MARK_STACK_IS_FULL = "Mark stack is full.";
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final String G1_ERGONOMICS = "G1Ergonomics";
+    private static final String SOFT_REFERENCE = "SoftReference";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
         EXCLUDE_STRINGS.add(APPLICATION_TIME);
-        EXCLUDE_STRINGS.add(TOTAL_TIME_THREADS_STOPPED);
         EXCLUDE_STRINGS.add(DESIRED_SURVIVOR);
         EXCLUDE_STRINGS.add(SURVIVOR_AGE);
         EXCLUDE_STRINGS.add(MARK_STACK_IS_FULL);
@@ -92,7 +93,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static final String INITIAL_MARK = "(initial-mark)";
     private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
-    private static final String TO_SPACE_EXHAUSTED = "(to-space exhausted)";
     
     // JDK 8 leading log entries
     private static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
@@ -164,6 +164,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     if (startsWith(line, EXCLUDE_STRINGS, false)) {
                         continue;
                     }
+                    else if (line.indexOf(APPLICATION_TIME) > 0) {
+                        continue;
+                    }
                     else if (startsWith(line, LOG_INFORMATION_STRINGS, false)) {
                         LOG.info(line);
                         continue;
@@ -174,7 +177,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         ergonomicsMatcher.reset(line);
                         if (ergonomicsMatcher.matches()) {
                             String firstMatch = (ergonomicsMatcher.group(1));
-                            if (firstMatch.length() > 0 && line.indexOf("SoftReference") < 0) {
+                            if (firstMatch.length() > 0 && line.indexOf(SOFT_REFERENCE) < 0) {
                                 beginningOfLine = firstMatch;
                             }
                             continue;
@@ -191,6 +194,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                           model.add(parseLine(linesMixedMatcher.group(2), parsePosition));
                           parsePosition.setIndex(0);
                           continue; // rest of collection is on the next line, so continue there
+                        }
+                        else if (line.indexOf(SOFT_REFERENCE) > 0 && line.indexOf(Type.FULL_GC.getName()) > 0) {
+                            // for Full GCs, SoftReference entries are treated as unknown detail events
+                            // -> parseLine can do this
                         }
                         else if (line.endsWith("secs]")) {
                             // all other patterns: some timestamps follow that are part of a concurrent collection
@@ -212,17 +219,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             throw new ParseException("unexpected mixed line", line, parsePosition);
                         }
                     }
-                    else if (line.indexOf(TOTAL_TIME_THREADS_STOPPED) > 0) {
-                        beginningOfLine = line.substring(0, line.indexOf(TOTAL_TIME_THREADS_STOPPED));
-                        continue;
-                    }
-                    else if (line.indexOf(APPLICATION_TIME) > 0) {
-                        beginningOfLine = line.substring(0, line.indexOf(APPLICATION_TIME));
-                        continue;
-                    }
                     else if (beginningOfLine != null) {
                         // filter output of -XX:+PrintReferencePolicy away
-                        if (line.indexOf("SoftReference") >= 0) {
+                        if (line.indexOf(SOFT_REFERENCE) >= 0) {
                             line = line.substring(line.lastIndexOf(","));
                         }
                         
@@ -431,22 +430,32 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     }
     
     @Override
-    protected AbstractGCEvent<?> parseLine(final String line, final ParseInformation pos) throws ParseException {
+    protected AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException {
         AbstractGCEvent<?> ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
             // parse timestamp          "double:"
             // parse collection type    "[TYPE"
             // pre-used->post-used, total, time
-            final Date datestamp = parseDatestamp(line, pos);
-            final double timestamp = getTimestamp(line, pos, datestamp);
-            final ExtendedType type = parseType(line, pos);
+            Date datestamp = parseDatestamp(line, pos);
+            double timestamp = getTimestamp(line, pos, datestamp);
+            ExtendedType type = parseType(line, pos);
             // special provision for concurrent events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 ae = parseConcurrentEvent(line, pos, datestamp, timestamp, type);
             } 
+            else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
+                ae = new VmOperationEvent();
+                VmOperationEvent vmOpEvent = (VmOperationEvent) ae;
+                
+                vmOpEvent.setDateStamp(datestamp);
+                vmOpEvent.setTimestamp(timestamp);
+                vmOpEvent.setExtendedType(type);
+                vmOpEvent.setPause(parsePause(line, pos));
+            }
             else {
-                final GCEvent event = new GCEvent();
+                ae = new GCEvent();
+                GCEvent event = (GCEvent) ae;
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
                 event.setExtendedType(type);
@@ -454,9 +463,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 // 0.197: [GC remark 0.197: [GC ref-proc, 0.0000070 secs], 0.0005297 secs]
                 // or when PrintDateTimeStamps is on like:
                 // 2013-09-09T06:45:45.825+0000: 83146.942: [GC remark 2013-09-09T06:45:45.825+0000: 83146.943: [GC ref-proc, 0.0069100 secs], 0.0290090 secs]
-                if (nextIsTimestamp(line, pos) || nextIsDatestamp(line,pos)) {
                     parseDetailEventsIfExist(line, pos, event);
-                }
                 
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
                     setMemoryAndPauses(event, line, pos);
@@ -464,7 +471,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 else {
                     event.setPause(parsePause(line, pos));
                 }
-                ae = event;
             }
             return ae;
         } 

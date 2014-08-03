@@ -1,0 +1,28 @@
+2014-04-09T15:27:23.456+0200: 0.304: [GC2014-04-09T15:27:23.456+0200: 0.304: [ParNew
+Desired survivor size 2424832 bytes, new threshold 1 (max 6)
+- age   1:    4819248 bytes,    4819248 total
+: 42995K->4706K(43008K), 0.0317664 secs] 78525K->78471K(138624K), 0.0318639 secs] [Times: user=0.05 sys=0.06, real=0.03 secs] 
+2014-04-09T15:27:23.486+0200: 0.336: Total time for which application threads were stopped: 0.0320233 seconds
+2014-04-09T15:27:23.486+0200: 0.336: Application time: 0.0000930 seconds
+2014-04-09T15:27:23.486+0200: 0.337: [GC [1 CMS-initial-mark: 73765K(95616K)] 78715K(138624K), 0.0001983 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:27:23.486+0200: 0.337: Total time for which application threads were stopped: 0.0003183 seconds
+2014-04-09T15:27:23.486+0200: 0.337: [CMS-concurrent-mark-start]
+2014-04-09T15:27:23.496+0200: 0.346: [CMS-concurrent-mark: 0.009/0.009 secs] [Times: user=0.02 sys=0.00, real=0.01 secs] 
+2014-04-09T15:27:23.496+0200: 0.346: [CMS-concurrent-preclean-start]
+2014-04-09T15:27:23.496+0200: 0.347: [CMS-concurrent-preclean: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:27:23.496+0200: 0.347: [CMS-concurrent-abortable-preclean-start]
+2014-04-09T15:27:23.496+0200: 0.347: [CMS-concurrent-abortable-preclean: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:27:23.496+0200: 0.347: Application time: 0.0101509 seconds
+2014-04-09T15:27:23.496+0200: 0.347: [GC[YG occupancy: 24286 K (43008 K)]2014-04-09T15:27:23.496+0200: 0.347: [GC2014-04-09T15:27:23.496+0200: 0.347: [ParNew: 24286K->24286K(43008K), 0.0000496 secs] 98052K->98052K(138624K), 0.0002310 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:27:23.496+0200: 0.348: [Rescan (parallel) , 0.0004158 secs]2014-04-09T15:27:23.496+0200: 0.348: [weak refs processing, 0.0000188 secs]2014-04-09T15:27:23.496+0200: 0.348: [class unloading, 0.0001528 secs]2014-04-09T15:27:23.496+0200: 0.348: [scrub symbol table, 0.0004412 secs]2014-04-09T15:27:23.496+0200: 0.349: [scrub string table, 0.0000270 secs] [1 CMS-remark: 73765K(95616K)] 98052K(138624K), 0.0015702 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:27:23.496+0200: 0.349: Total time for which application threads were stopped: 0.0018196 seconds
+2014-04-09T15:27:23.496+0200: 0.349: [CMS-concurrent-sweep-start]
+2014-04-09T15:27:23.506+0200: 0.350: [CMS-concurrent-sweep: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+2014-04-09T15:27:23.506+0200: 0.350: [CMS-concurrent-reset-start]
+2014-04-09T15:27:23.506+0200: 0.353: [CMS-concurrent-reset: 0.003/0.003 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:27:23.506+0200: 0.359: Application time: 0.0100428 seconds
+2014-04-09T15:27:23.506+0200: 0.359: [GC2014-04-09T15:27:23.506+0200: 0.359: [ParNew
+Desired survivor size 2424832 bytes, new threshold 1 (max 6)
+- age   1:    4827496 bytes,    4827496 total
+: 42951K->4720K(43008K), 0.0139913 secs] 84508K->60204K(138624K), 0.0142498 secs] [Times: user=0.08 sys=0.03, real=0.02 secs] 
+2014-04-09T15:27:23.526+0200: 0.373: Total time for which application threads were stopped: 0.0144575 seconds

@@ -3,7 +3,6 @@ package com.tagtraum.perf.gcviewer.model;
 import java.util.Map;
 import java.util.TreeMap;
 
-
 /**
  * The GCEvent is the type of event that contains memory (preused, postused, total) and 
  * pause information.
@@ -24,9 +23,6 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     /** Capacity in KB */
     private int total;
     
-    /** Pause in seconds */
-    private double pause;
-    
     /** the generationMap contains all detail events and additionally the inferred events as well. */
     private Map<Generation, GCEvent> generationMap = new TreeMap<Generation, GCEvent>();
     
@@ -38,7 +34,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
         this.preUsed = preUsed;
         this.postUsed = postUsed;
         this.total = total;
-        this.pause = pause;
+        this.setPause(pause);
         this.setType(type);
     }
 
@@ -155,16 +151,8 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
         sb.append("K(");
         sb.append(total);
         sb.append("K), ");
-        sb.append(pause);
+        sb.append(getPause());
         sb.append(" secs]");
-    }
-    
-    public void setPause(double pause) {
-        this.pause = pause;
-    }
-
-    public double getPause() {
-        return pause;
     }
 
 }

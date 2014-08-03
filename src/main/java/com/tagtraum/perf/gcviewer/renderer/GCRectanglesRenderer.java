@@ -10,10 +10,10 @@ import java.util.Iterator;
 import com.tagtraum.perf.gcviewer.ChartRenderer;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 
 /**
- * GCRectanglesRenderer.
+ * Renders all stop the world event pauses as rectangles.
  * <p/>
  * Date: Jun 2, 2005
  * Time: 3:31:21 PM
@@ -22,7 +22,6 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
  */
 public class GCRectanglesRenderer extends ChartRenderer {
     public static final Paint DEFAULT_LINEPAINT = Color.GRAY;
-    private Paint darker;
     private Paint brighter;
 
     public GCRectanglesRenderer(ModelChartImpl modelChart) {
@@ -33,11 +32,9 @@ public class GCRectanglesRenderer extends ChartRenderer {
     public void setLinePaint(Paint linePaint) {
         super.setLinePaint(linePaint);
         if (linePaint instanceof Color) {
-            darker = ((Color) linePaint).darker();
             brighter = ((Color) linePaint).brighter();
         } else {
             // TODO add fancy logic for GradientPaint etc...
-            darker = linePaint;
             brighter = linePaint;
         }
     }
@@ -57,21 +54,32 @@ public class GCRectanglesRenderer extends ChartRenderer {
         int leftBoundary = clip.x;
         int rightBoundary = clip.x + clip.width;
         
-        for (Iterator<GCEvent> i = getModelChart().getModel().getGCEvents(); i.hasNext() && lastX < rightBoundary;) {
-            GCEvent event = i.next();
-            final double pause = event.getPause();
-            final int width = (int) Math.max(Math.abs(scaleFactor * pause), 1.0d);
-            final int height = (int) (pause * scaledHeight);
-            final int x = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
-            final int y = getHeight() - (int) (pause * scaledHeight);
+        for (Iterator<AbstractGCEvent<?>> i = getModelChart().getModel().getStopTheWorldEvents(); i.hasNext() && lastX < rightBoundary;) {
+            AbstractGCEvent<?> event = i.next();
+            double pause = event.getPause();
+            int width = (int) Math.max(Math.abs(scaleFactor * pause), 1.0d);
+            int height = (int) (pause * scaledHeight);
+            int x = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
+            int y = getHeight() - (int) (pause * scaledHeight);
             if (lastX != x || lastY != y || lastWidth != width || lastHeight != height) {
                 if ((x + width) > leftBoundary && x < rightBoundary) {
                     // make sure only visible rectangles are drawn
                     if (event.isFull()) {
-                        g2d.setPaint(darker);
-                    } else if (event.getExtendedType().getType() == AbstractGCEvent.Type.INC_GC) {
+                        g2d.setPaint(Color.BLACK);
+                    } 
+                    else if (event.isInitialMark()) {
+                        g2d.setPaint(Color.BLUE);
+                    }
+                    else if (event.isRemark()) {
+                        g2d.setPaint(Color.ORANGE);
+                    }
+                    else if (event.getExtendedType().getType() == AbstractGCEvent.Type.INC_GC) {
                         g2d.setPaint(brighter);
-                    } else {
+                    } 
+                    else if (event instanceof VmOperationEvent) {
+                        g2d.setPaint(Color.RED);
+                    } 
+                    else {
                         g2d.setPaint(getLinePaint());
                     }
                     g2d.fillRect(x, y, width, height);
