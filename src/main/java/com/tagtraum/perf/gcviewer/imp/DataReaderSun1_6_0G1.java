@@ -63,18 +63,17 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     
     private static final String TIMES_ALONE = " " + TIMES;
     private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
-    private static final String TOTAL_TIME_THREADS_STOPPED = "Total time for which application threads were stopped:"; // -XX:+PrintGCApplicationStoppedTime
     private static final String DESIRED_SURVIVOR = "Desired survivor"; // -XX:+PrintTenuringDistribution
     private static final String SURVIVOR_AGE = "- age"; // -XX:+PrintTenuringDistribution
     private static final String MARK_STACK_IS_FULL = "Mark stack is full.";
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final String G1_ERGONOMICS = "G1Ergonomics";
+    private static final String SOFT_REFERENCE = "SoftReference";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
         EXCLUDE_STRINGS.add(APPLICATION_TIME);
-        EXCLUDE_STRINGS.add(TOTAL_TIME_THREADS_STOPPED);
         EXCLUDE_STRINGS.add(DESIRED_SURVIVOR);
         EXCLUDE_STRINGS.add(SURVIVOR_AGE);
         EXCLUDE_STRINGS.add(MARK_STACK_IS_FULL);
@@ -160,7 +159,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         ergonomicsMatcher.reset(line);
                         if (ergonomicsMatcher.matches()) {
                             String firstMatch = (ergonomicsMatcher.group(1));
-                            if (firstMatch.length() > 0 && line.indexOf("SoftReference") < 0) {
+                            if (firstMatch.length() > 0 && line.indexOf(SOFT_REFERENCE) < 0) {
                                 beginningOfLine = firstMatch;
                             }
                             continue;
@@ -177,6 +176,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                           model.add(parseLine(linesMixedMatcher.group(2), parsePosition));
                           parsePosition.setIndex(0);
                           continue; // rest of collection is on the next line, so continue there
+                        }
+                        else if (line.indexOf(SOFT_REFERENCE) > 0 && line.indexOf(Type.FULL_GC.getName()) > 0) {
+                            // for Full GCs, SoftReference entries are treated as unknown detail events
+                            // -> parseLine can do this
                         }
                         else if (line.endsWith("secs]")) {
                             // all other patterns: some timestamps follow that are part of a concurrent collection
@@ -200,7 +203,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     }
                     else if (beginningOfLine != null) {
                         // filter output of -XX:+PrintReferencePolicy away
-                        if (line.indexOf("SoftReference") >= 0) {
+                        if (line.indexOf(SOFT_REFERENCE) >= 0) {
                             line = line.substring(line.lastIndexOf(","));
                         }
                         

@@ -349,14 +349,14 @@ public class TestDataReaderSun1_7_0G1 {
         final DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
         
-        assertEquals("number of events", 5, model.size());
+        assertEquals("number of events", 9, model.size());
         assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
         
         GCEvent youngEvent = (GCEvent) model.get(0);
         assertEquals("gc pause (young)", 0.00784501, youngEvent.getPause(), 0.000000001);
         assertEquals("heap (young)", 20 * 1024, youngEvent.getTotal());
 
-        GCEvent partialEvent = (GCEvent) model.get(4);
+        GCEvent partialEvent = (GCEvent) model.get(7);
         assertEquals("gc pause (partial)", 0.02648319, partialEvent.getPause(), 0.000000001);
         assertEquals("heap (partial)", 128 * 1024, partialEvent.getTotal());
 
@@ -507,4 +507,25 @@ public class TestDataReaderSun1_7_0G1 {
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
     
+    @Test
+    public void printAdaptiveSizePolicyFullGc() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = new ByteArrayInputStream(
+                ("2014-08-03T13:33:50.932+0200: 0.992: [Full GC0.995: [SoftReference, 34 refs, 0.0000090 secs]0.995: [WeakReference, 0 refs, 0.0000016 secs]0.996: [FinalReference, 4 refs, 0.0000020 secs]0.996: [PhantomReference, 0 refs, 0.0000012 secs]0.996: [JNI Weak Reference, 0.0000016 secs] 128M->63M(128M), 0.0434091 secs]"
+                        + "\n [Times: user=0.03 sys=0.00, real=0.03 secs] ")
+                .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertThat("gc pause", model.getFullGCPause().getMax(), closeTo(0.0434091, 0.000000001));
+        GCEvent heap = (GCEvent) model.getEvents().next();
+        assertThat("heap", heap.getTotal(), is(128*1024));
+
+        assertThat("number of errors", handler.getCount(), is(0));
+    }
 }

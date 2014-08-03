@@ -433,7 +433,11 @@ public class GCModel implements Serializable {
             vmOpPauses.add(abstractEvent.getPause());
         }
 
-        firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
+        if (size() == 1 || (size() > 1 && abstractEvent.getTimestamp() > 0.0)) {
+            // timestamp == 0 is only valid, if it is the first event.
+            // sometimes, no timestamp is present, because the line is mixed -> don't count these here
+            firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
+        }
         lastPauseTimeStamp = Math.max(lastPauseTimeStamp, abstractEvent.getTimestamp());
         if (abstractEvent.isStopTheWorld()) {
             // add to total pause here, because then adjusted VmOperationEvents are added correctly 
