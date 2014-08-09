@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.view;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;

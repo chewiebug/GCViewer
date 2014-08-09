@@ -9,11 +9,14 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.logging.Level;
 
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -30,7 +33,11 @@ public class TestDataReaderSun1_7_0 {
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
     }
-    
+
+    private DataReader getDataReader(GCResource gcResource) throws UnsupportedEncodingException, IOException {
+        return new DataReaderSun1_6_0(gcResource, getInputStream(gcResource.getResourceName()), GcLogType.SUN1_7);
+    }
+
     @Test
     public void testPrintGCCause() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
@@ -98,7 +105,7 @@ public class TestDataReaderSun1_7_0 {
     }
     
     @Test
-    public void CmsRemarkWithTimestamps() throws Exception {
+    public void cmsRemarkWithTimestamps() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-09-11T23:03:44.987+0200: 1518.733: [GC[YG occupancy: 3247177 K (4718592 K)]2013-09-11T23:03:45.231+0200: 1518.977: [Rescan (parallel) , 0.0941360 secs]2013-09-11T23:03:45.325+0200: 1519.071: [weak refs processing, 0.0006010 secs]2013-09-11T23:03:45.325+0200: 1519.071: [scrub string table, 0.0028480 secs] [1 CMS-remark: 4246484K(8388608K)] 4557930K(13107200K), 0.3410220 secs] [Times: user=2.48 sys=0.01, real=0.34 secs]"
                         .getBytes());
@@ -112,7 +119,7 @@ public class TestDataReaderSun1_7_0 {
     }    
     
     @Test
-    public void CmsWithoutTimestamps() throws Exception {
+    public void cmsWithoutTimestamps() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-12-19T17:52:49.323+0100: [GC2013-12-19T17:52:49.323+0100: [ParNew: 4872K->480K(4928K), 0.0031563 secs] 102791K->102785K(140892K), 0.0032042 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]"
                         .getBytes());
@@ -187,7 +194,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-10-13T09:52:30.164+0200: 0.189: [GC (Allocation Failure)2013-10-13T09:52:30.164+0200: 0.189: [DefNew2013-10-13T09:52:30.180+0200: 0.205: [SoftReference, 0 refs, 0.0001004 secs]2013-10-13T09:52:30.180+0200: 0.205: [WeakReference, 0 refs, 0.0000287 secs]2013-10-13T09:52:30.180+0200: 0.205: [FinalReference, 0 refs, 0.0000283 secs]2013-10-13T09:52:30.180+0200: 0.205: [PhantomReference, 0 refs, 0.0000279 secs]2013-10-13T09:52:30.180+0200: 0.205: [JNI Weak Reference, 0.0000332 secs]: 17472K->2176K(19648K), 0.0159181 secs] 17472K->16957K(63360K), 0.0161033 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]"
                         .getBytes());
          
-        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_7);
+        DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(1));
@@ -218,7 +225,7 @@ public class TestDataReaderSun1_7_0 {
                         + "\n2013-11-17T15:09:50.633+0100: 0.691: [GC [1 CMS-initial-mark: 55837K(119488K)] 58378K(140992K), 0.0001819 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
                         .getBytes());
          
-        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_7);
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(2));
@@ -240,8 +247,7 @@ public class TestDataReaderSun1_7_0 {
         GCResource gcResource = new GCResource("SampleSun1_7_0CMSTenuringDistributionInitiationStatistics.txt");
         gcResource.getLogger().addHandler(handler);
         
-        InputStream in = getInputStream(gcResource.getResourceName());
-        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(1));
@@ -251,4 +257,117 @@ public class TestDataReaderSun1_7_0 {
         assertThat("number of parse problems", handler.getCount(), is(0));
     }    
     
+    @Test
+    public void parallelPrintGCApplicationStoppedTime() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2014-04-08T22:04:36.018+0200: 0.254: Application time: 0.1310290 seconds"
+                 + "\n2014-04-08T22:04:36.018+0200: 0.254: [GC [PSYoungGen: 16865K->2529K(19456K)] 16865K->16175K(62976K), 0.0114994 secs] [Times: user=0.06 sys=0.00, real=0.01 secs]" 
+                 + "\n2014-04-08T22:04:36.030+0200: 0.266: Total time for which application threads were stopped: 0.0117633 seconds")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(2));
+        assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; PSYoungGen"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0114994, 0.00000001));
+        assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0117633 - 0.0114994, 0.00000001));
+        assertThat("timestamp (1)", model.get(1).getTimestamp(), closeTo(0.266, 0.0000001));
+        
+        assertThat("total pause", model.getPause().getSum(), closeTo(0.0117633, 0.00000001));
+        assertThat("throughput", model.getThroughput(), closeTo(4.081898907, 0.00000001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void cmsPrintGCApplicationStopped() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0_51_CMS_PrintApplStoppedTime.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(14));
+        assertThat("application stopped count", model.getVmOperationPause().getN(), is(2));
+        
+        assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; CMS-initial-mark"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0002081, 0.00000001));
+        assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0003502 - 0.0002081, 0.00000001));
+        
+        assertThat("total pause", model.getPause().getSum(), closeTo(0.0015562, 0.0000001));
+        assertThat("throughput", model.getThroughput(), closeTo(89.731645035, 0.00001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+    
+    @Test
+    public void cmsPrintGCApplicationStoppedTimeTenuringDist() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0_51_CMS_PrintApplStoppedTime_TenuringDist.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(19));
+        assertThat("application stopped count", model.getVmOperationPause().getN(), is(4));
+        
+        assertThat("type name (0)", model.get(0).getTypeAsString(), equalTo("GC; ParNew"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0318639, 0.00000001));
+        
+        assertThat("type name (1)", model.get(1).getTypeAsString(), equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (1)", model.get(1).getPause(), closeTo(0.0320233 - 0.0318639, 0.00000001));
+        
+        assertThat("total pause", model.getPause().getSum(), closeTo(0.0488497, 0.00000001));
+        assertThat("throughput", model.getThroughput(), closeTo(29.66965410503, 0.00000000001));
+        
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+    
+    /**
+     * Pre 1.7.0_u50 -XX:+PrintGCApplicationStoppedTime wrote it's data without a timestamp.
+     * Test here, that they are still added to the {@link GCModel}.
+     */
+    @Test
+    public void cmsPrintGCApplicationStoppedTimeWithoutTimestampsTenuringDist() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2012-04-26T23:59:50.899+0400: 33395.153: [GC 33395.153: [ParNew"
+                 + "\nDesired survivor size 32768 bytes, new threshold 0 (max 0)" 
+                 + "\n: 130944K->0K(131008K), 0.0158820 secs] 1078066K->949934K(4194240K), 0.1120380 secs] [Times: user=0.07 sys=0.00, real=0.02 secs]"
+                 + "\nTotal time for which application threads were stopped: 0.1250117 seconds")
+                        .getBytes());
+         
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(2));
+        assertThat("ParNew timestamp", model.get(0).getTimestamp(), closeTo(33395.153, 0.00001));
+        assertThat("is 'Total time...'", 
+                model.get(1).getExtendedType().getName(), 
+                equalTo(AbstractGCEvent.Type.APPLICATION_STOPPED_TIME.getName()));
+        assertThat("Application Stopped timestamp", 
+                model.get(1).getTimestamp(), 
+                closeTo(33395.153 + 0.1120380, 0.0000001));
+        assertThat("Application Stopped datestamp", 
+                dateFormatter.format(model.get(1).getDatestamp()), 
+                equalTo("2012-04-26T23:59:51.011"));
+        assertThat("first timestamp", model.getFirstPauseTimeStamp(), closeTo(33395.153, 0.00001));
+    }
 }

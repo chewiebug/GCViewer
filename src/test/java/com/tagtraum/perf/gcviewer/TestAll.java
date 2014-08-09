@@ -9,6 +9,7 @@ import com.tagtraum.perf.gcviewer.imp.TestAllImp;
 import com.tagtraum.perf.gcviewer.math.TestAllMath;
 import com.tagtraum.perf.gcviewer.model.TestAllModel;
 import com.tagtraum.perf.gcviewer.util.TestAllUtil;
+import com.tagtraum.perf.gcviewer.view.TestAllView;
 
 /**
  * TestSuite in JUnit 4 style; points to all testcases, that should be run.
@@ -18,8 +19,7 @@ import com.tagtraum.perf.gcviewer.util.TestAllUtil;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ModelMetricsPanelTest.class,
-    ModelChartImplTest.class,
+    TestAllView.class,
     TestBuildInfoReader.class,
     TestAllExp.class,
     TestAllImp.class,

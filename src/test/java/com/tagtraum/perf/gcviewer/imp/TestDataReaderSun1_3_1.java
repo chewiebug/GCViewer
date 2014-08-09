@@ -31,8 +31,8 @@ public class TestDataReaderSun1_3_1 {
         DataReader reader = new DataReaderSun1_3_1(new GCResource("byteArray"), in, GcLogType.SUN1_3_1);
         GCModel model = reader.read();
         assertTrue(model.size() == 4);
-        Iterator<GCEvent> i = model.getGCEvents();
-        AbstractGCEvent<GCEvent> event = i.next();
+        Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents();
+        AbstractGCEvent<?> event = i.next();
         assertEquals(event, event1);
         event = i.next();
         assertEquals(event, event2);
@@ -41,7 +41,7 @@ public class TestDataReaderSun1_3_1 {
         event = i.next();
         assertEquals(event, event4);
 
-        assertEquals("throughput", 89.13905666, model.getThroughput(), 0.00000001);
+        assertEquals("throughput", 90.17011554119, model.getThroughput(), 0.00000001);
     }
 
 }

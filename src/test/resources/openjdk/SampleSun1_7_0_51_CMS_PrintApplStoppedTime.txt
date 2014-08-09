@@ -1,0 +1,17 @@
+2014-04-09T15:26:52.201+0200: 0.384: Application time: 0.0016652 seconds
+2014-04-09T15:26:52.201+0200: 0.384: [GC [1 CMS-initial-mark: 73765K(95616K)] 85022K(138624K), 0.0002081 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:26:52.201+0200: 0.385: Total time for which application threads were stopped: 0.0003502 seconds
+2014-04-09T15:26:52.201+0200: 0.385: [CMS-concurrent-mark-start]
+2014-04-09T15:26:52.211+0200: 0.395: [CMS-concurrent-mark: 0.010/0.010 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+2014-04-09T15:26:52.211+0200: 0.395: [CMS-concurrent-preclean-start]
+2014-04-09T15:26:52.211+0200: 0.395: [CMS-concurrent-preclean: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:26:52.211+0200: 0.395: [CMS-concurrent-abortable-preclean-start]
+2014-04-09T15:26:52.211+0200: 0.395: [CMS-concurrent-abortable-preclean: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:26:52.211+0200: 0.395: Application time: 0.0107584 seconds
+2014-04-09T15:26:52.211+0200: 0.395: [GC[YG occupancy: 41306 K (43008 K)]2014-04-09T15:26:52.211+0200: 0.395: [GC2014-04-09T15:26:52.211+0200: 0.395: [ParNew: 41306K->41306K(43008K), 0.0000221 secs] 115072K->115072K(138624K), 0.0000537 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:26:52.211+0200: 0.396: [Rescan (parallel) , 0.0003130 secs]2014-04-09T15:26:52.211+0200: 0.396: [weak refs processing, 0.0000172 secs]2014-04-09T15:26:52.211+0200: 0.396: [class unloading, 0.0000991 secs]2014-04-09T15:26:52.211+0200: 0.396: [scrub symbol table, 0.0004031 secs]2014-04-09T15:26:52.211+0200: 0.396: [scrub string table, 0.0000254 secs] [1 CMS-remark: 73765K(95616K)] 115072K(138624K), 0.0010507 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:26:52.211+0200: 0.396: Total time for which application threads were stopped: 0.0011523 seconds
+2014-04-09T15:26:52.211+0200: 0.397: [CMS-concurrent-sweep-start]
+2014-04-09T15:26:52.211+0200: 0.398: [CMS-concurrent-sweep: 0.002/0.002 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+2014-04-09T15:26:52.211+0200: 0.399: [CMS-concurrent-reset-start]
+2014-04-09T15:26:52.211+0200: 0.399: Application time: 0.0024308 seconds

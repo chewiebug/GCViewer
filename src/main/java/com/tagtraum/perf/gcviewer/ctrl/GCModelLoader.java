@@ -63,7 +63,7 @@ public class GCModelLoader extends SwingWorker<GCModel, Object> implements Prope
 			logger.log(Level.FINE, "model get() interrupted", e);
 		} 
 		catch (ExecutionException | RuntimeException e) {
-			if (logger.isLoggable(Level.FINE))
+			if (logger.isLoggable(Level.WARNING))
 				logger.log(Level.WARNING, "Failed to create GCModel from " + gcResource.getResourceName(), e);			
 		}
 	}

@@ -109,8 +109,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         chart.add(usedHeapRenderer, gridBagConstraints);
         usedTenuredRenderer = new UsedTenuredRenderer(this);
         chart.add(usedTenuredRenderer, gridBagConstraints);
-        gcTimesRenderer = new GCTimesRenderer(this);
-        chart.add(gcTimesRenderer, gridBagConstraints);
         fullGCLineRenderer = new FullGCLineRenderer(this);
         chart.add(fullGCLineRenderer, gridBagConstraints);
         gcRectanglesRenderer = new GCRectanglesRenderer(this);
@@ -119,6 +117,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         chart.add(incLineRenderer, gridBagConstraints);
         concurrentGcLineRenderer = new ConcurrentGcBegionEndRenderer(this);
         chart.add(concurrentGcLineRenderer, gridBagConstraints);
+        gcTimesRenderer = new GCTimesRenderer(this);
+        chart.add(gcTimesRenderer, gridBagConstraints);
         usedYoungRenderer = new UsedYoungRenderer(this);
         chart.add(usedYoungRenderer, gridBagConstraints);
         totalTenuredRenderer = new TotalTenuredRenderer(this);

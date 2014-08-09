@@ -8,7 +8,6 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -132,8 +131,6 @@ public class ModelMetricsPanel extends JTabbedPane {
     }
     
     private class ValuesTab extends JPanel {
-        private final Logger LOG = Logger.getLogger(ValuesTab.class.getName());
-        
     	private JPanel currentPanel;
     	private GridBagLayout currentLayout;
     	private GridBagConstraints currentConstraints;
@@ -191,15 +188,20 @@ public class ModelMetricsPanel extends JTabbedPane {
             labelMap.put(name, new TwoLabelsContainer(nameLabel, valueLabel));
     	}
     	
-    	public void updateValue(String name, String value, boolean enabled) {
+    	public void removeEntry(String name) {
     	    TwoLabelsContainer labelContainer = labelMap.get(name);
     	    if (labelContainer != null) {
-    	        labelContainer.updateValue(value);
-    	        labelContainer.setEnabled(enabled);
+                labelContainer.nameLabel.getParent().remove(labelContainer.nameLabel);
+                labelContainer.valueLabel.getParent().remove(labelContainer.valueLabel);
+                labelMap.remove(name);
     	    }
-    	    else {
-    	       LOG.severe("'" + name + "' not present in labelMap, was it registered?");
-    	    }
+    	}
+    	
+    	public void updateValue(String name, String value, boolean enabled) {
+    	    TwoLabelsContainer labelContainer = labelMap.get(name);
+            assert labelContainer != null : "labelContainer for '" + name + "' is null -> was it registered?";
+	        labelContainer.updateValue(value);
+	        labelContainer.setEnabled(enabled);
     	}
     	
     }
@@ -235,12 +237,12 @@ public class ModelMetricsPanel extends JTabbedPane {
        }
         
         public void setModel(GCModel model) {
-            final boolean fullGCDataVailable = model.getFootprintAfterFullGC().getN() != 0;
-            final boolean fullGCSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
-            final boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
-            final boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
-            final boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
-            final boolean promotionAvailable = model.getPromotion().getN() > 0;
+            boolean fullGCDataVailable = model.getFootprintAfterFullGC().getN() != 0;
+            boolean fullGCSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
+            boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
+            boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
+            boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
+            boolean promotionAvailable = model.getPromotion().getN() > 0;
 
             updateValue(LocalisationHelper.getString("data_panel_memory_heap_usage"),
                     footprintFormatter.format(model.getHeapUsedSizes().getMax()) 
@@ -336,6 +338,7 @@ public class ModelMetricsPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_min_max_pause"));
             addEntry(LocalisationHelper.getString("data_panel_avg_pause_interval"));
             addEntry(LocalisationHelper.getString("data_panel_min_max_pause_interval"));
+            addEntry(LocalisationHelper.getString("data_panel_vm_op_overhead"));
 
             newGroup(LocalisationHelper.getString("data_panel_group_full_gc_pauses"), true);
             addEntry(LocalisationHelper.getString("data_panel_acc_fullgcpauses"));
@@ -351,10 +354,11 @@ public class ModelMetricsPanel extends JTabbedPane {
         }
         
         public void setModel(GCModel model) {
-            final boolean pauseDataAvailable = model.getPause().getN() > 0;
-            final boolean gcDataAvailable = model.getGCPause().getN() > 0;
-            final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
-            final boolean pauseIntervalDataAvailable = model.getPauseInterval().getN() > 0; // fix for "Exception if only one GC log line in file"
+            boolean pauseDataAvailable = model.getPause().getN() > 0;
+            boolean gcDataAvailable = model.getGCPause().getN() > 0;
+            boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
+            boolean pauseIntervalDataAvailable = model.getPauseInterval().getN() > 0; // fix for "Exception if only one GC log line in file"
+            boolean vmOperationsAvailable = model.getVmOperationPause().getN() > 0;
             
             updateValue(LocalisationHelper.getString("data_panel_acc_pauses"), 
             		gcTimeFormatter.format(model.getPause().getSum()) + "s", 
@@ -374,6 +378,14 @@ public class ModelMetricsPanel extends JTabbedPane {
             updateValue(LocalisationHelper.getString("data_panel_min_max_pause_interval"), 
                     pauseIntervalDataAvailable ? pauseFormatter.format(model.getPauseInterval().getMin()) + "s / " +pauseFormatter.format(model.getPauseInterval().getMax()) + "s" : "n/a", 
                     pauseIntervalDataAvailable);
+            if (vmOperationsAvailable) {
+                updateValue(LocalisationHelper.getString("data_panel_vm_op_overhead"), 
+                        gcTimeFormatter.format(model.getVmOperationPause().getSum())+ "s (" + percentFormatter.format(model.getVmOperationPause().getSum()*100.0 / model.getPause().getSum()) + "%)",
+                        true);
+            }
+            else if (model.size() > 1) {
+                removeEntry(LocalisationHelper.getString("data_panel_vm_op_overhead"));
+            }
 
             updateValue(LocalisationHelper.getString("data_panel_acc_fullgcpauses"), 
             		gcTimeFormatter.format(model.getFullGCPause().getSum())+ "s (" + percentFormatter.format(model.getFullGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 

@@ -61,8 +61,8 @@ public class TestDataReaderSun1_4_0 {
         final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_4);
         GCModel model = reader.read();
         assertEquals("model size", 6, model.size());
-        Iterator<GCEvent> i = model.getGCEvents();
-        AbstractGCEvent<GCEvent> event = i.next();
+        Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents();
+        AbstractGCEvent<?> event = i.next();
         assertEquals("event 1", event, event1);
         event = i.next();
         assertEquals("event 2", event, event2);
@@ -75,8 +75,8 @@ public class TestDataReaderSun1_4_0 {
         event = i.next();
         assertEquals("event 6", event, event6);
         
-        assertEquals("running time", 5, model.getRunningTime(), 0.0001);
-        assertEquals("throughput", 65.680144, model.getThroughput(), 0.0000001);
+        assertEquals("running time", 5 + 1.0754938, model.getRunningTime(), 0.0001);
+        assertEquals("throughput", 71.75550076275, model.getThroughput(), 0.0000001);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class TestDataReaderSun1_4_0 {
         event = i.next();
         assertEquals("event 6", event, event6);
         
-        assertEquals("throughput", 98.92780024997158, model.getThroughput(), 0.00000000001);
+        assertEquals("throughput", 98.928592417159, model.getThroughput(), 0.00000000001);
     }
 
     @Test
@@ -142,8 +142,8 @@ public class TestDataReaderSun1_4_0 {
         event4.add(new GCEvent(31.788d, 16141, 13914, 16528, 0.8032950d, AbstractGCEvent.Type.TENURED));
 
         assertEquals("model.size()", 4, model.size());
-        Iterator<GCEvent> i = model.getGCEvents();
-        AbstractGCEvent<GCEvent> event = i.next();
+        Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents();
+        AbstractGCEvent<?> event = i.next();
         assertEquals("event 1", event1, event);
         event = i.next();
         assertEquals("event 2", event2, event);
@@ -152,7 +152,7 @@ public class TestDataReaderSun1_4_0 {
         event = i.next();
         assertEquals("event 4", event4, event);
 
-        assertEquals("throughput", 93.984703347, model.getThroughput(), 0.000001);
+        assertEquals("throughput", 94.133029724, model.getThroughput(), 0.000001);
     }
 
     @Test

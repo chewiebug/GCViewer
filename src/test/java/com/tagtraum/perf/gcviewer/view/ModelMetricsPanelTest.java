@@ -1,11 +1,11 @@
-package com.tagtraum.perf.gcviewer;
+package com.tagtraum.perf.gcviewer.view;
 
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.view.ModelMetricsPanel;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 
 /**
  * Test {@link ModelMetricsPanel}. The tests all just check that no Exception occurs. 
@@ -36,9 +36,38 @@ public class ModelMetricsPanelTest {
         model.add(event);
         
         ModelMetricsPanel panel = new ModelMetricsPanel();
+        // first add empty model; is done when opened
+        panel.setModel(new GCModel(false));
+        // only later a model with entries is set
         panel.setModel(model);
     }
 
+    @Test
+    public void testVmOpModel() {
+        GCEvent event = new GCEvent();
+        event.setTimestamp(0.5);
+        event.setType(Type.G1_YOUNG_INITIAL_MARK);
+        event.setPause(0.245);
+        event.setPreUsed(900);
+        event.setPostUsed(400);
+        event.setTotal(1024);
+        
+        GCModel model = new GCModel(false);
+        model.add(event);
+        
+        VmOperationEvent vmOpEvent = new VmOperationEvent();
+        vmOpEvent.setTimestamp(0.7);
+        vmOpEvent.setType(Type.APPLICATION_STOPPED_TIME);
+        vmOpEvent.setPause(0.26);
+        model.add(vmOpEvent);
+        
+        ModelMetricsPanel panel = new ModelMetricsPanel();
+        // first add empty model; is done when opened
+        panel.setModel(new GCModel(false));
+        // only later a model with entries is set
+        panel.setModel(model);
+    }
+    
     @Test
     public void testTwoElementsModel() {
         GCModel model = new GCModel(false);

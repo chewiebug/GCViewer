@@ -29,6 +29,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     private String typeAsString;
     private Generation generation;
     protected List<T> details;
+    private double pause;
 
     public Iterator<T> details() {
         if (details == null) return EMPTY_ITERATOR;
@@ -242,6 +243,20 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0;
     }
     
+    public boolean hasPause() {
+        return getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE)
+                || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE)
+                || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION);
+    }
+    
+    public double getPause() {
+        return pause;
+    }
+
+    public void setPause(double pause) {
+        this.pause = pause;
+    }
+
     /**
      * Wrapper for the {@link Type} class adding a field for the full type name. That name may
      * be different from the name in <code>Type</code>. Since all other attributes of 
@@ -390,6 +405,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type TRAIN = new Type("Train", Generation.TENURED);
         public static final Type TRAIN_MSC = new Type("Train MSC", Generation.TENURED);
         public static final Type PERM = new Type("Perm", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        // since about java 7_u45 these have a time stamp prepended
+        public static final Type APPLICATION_STOPPED_TIME = new Type("Total time for which application threads were stopped", Generation.OTHER, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.VM_OPERATION);
         // java 8: perm gen is moved to metaspace
         public static final Type Metaspace = new Type("Metaspace", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
 
@@ -416,8 +433,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("CMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type CMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("CMS-concurrent-abortable-preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
 
-        public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
-        public static final Type CMS_REMARK = new Type("CMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY, CollectionType.CONCURRENCY_HELPER);
+        public static final Type CMS_REMARK = new Type("CMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY, CollectionType.CONCURRENCY_HELPER);
         
         // CMS (Concurrent Mark Sweep) AdaptiveSizePolicy Event Types
         public static final Type ASCMS = new Type("ASCMS", Generation.TENURED);
@@ -440,8 +457,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type ASCMS_CONCURRENT_ABORTABLE_PRECLEAN_START = new Type("ASCMS-concurrent-abortable-preclean-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type ASCMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("ASCMS-concurrent-abortable-preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE_DURATION);
 
-        public static final Type ASCMS_INITIAL_MARK = new Type("ASCMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type ASCMS_REMARK = new Type("ASCMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY);
+        public static final Type ASCMS_INITIAL_MARK = new Type("ASCMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        public static final Type ASCMS_REMARK = new Type("ASCMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY, CollectionType.CONCURRENCY_HELPER);
         
         // G1 stop the world types
         public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
@@ -502,11 +519,22 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     
     public static enum Concurrency { CONCURRENT, SERIAL };
 
-    public static enum Generation { YOUNG, TENURED, PERM, ALL };
+    public static enum Generation { YOUNG, 
+        TENURED, 
+        /** also used for "metaspace" that is introduced with java 8 */ 
+        PERM, 
+        ALL, 
+        /** special value for vm operations that are not collections */ 
+        OTHER };
     
     public static enum CollectionType {
-        // plain GC pause collection garbage
+        /** plain GC pause collection garbage */
         COLLECTION,
-        // stop the world pause but used to prepare concurrent collection, does not collect garbage
+        /**
+         * Not really a collection, but some other event that stops the vm. 
+         * @see http://stackoverflow.com/questions/2850514/meaning-of-message-operations-coalesced-during-safepoint
+         */
+        VM_OPERATION,
+        /** stop the world pause but used to prepare concurrent collection, might not collect garbage */
         CONCURRENCY_HELPER };
 }

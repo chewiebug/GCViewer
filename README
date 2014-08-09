@@ -43,9 +43,12 @@ GCViewer shows a number of lines etc. in a chart (first tab). These are:
 - GC Times Line:
      o Green line that shows the length of all GCs
 - GC Times Rectangles:
-     o Dark grey rectangle at every Full GC
-     o Light grey rectangle at every Incremental GC
+     o black rectangle at every Full GC
+     o blue rectangle at every inital mark event
+     o orange rectangle at every remark event
+     o red rectangle at every vm operation event ("application stopped...")
      o Grey rectangle at every 'normal' GC
+     o Light grey rectangle at every Incremental GC
 - Total Heap:
      o Red line that shows heap size
 - Tenured Generation:
