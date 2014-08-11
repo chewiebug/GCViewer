@@ -350,7 +350,7 @@ public class TestDataReaderSun1_7_0 {
                 ("2012-04-26T23:59:50.899+0400: 33395.153: [GC 33395.153: [ParNew"
                  + "\nDesired survivor size 32768 bytes, new threshold 0 (max 0)" 
                  + "\n: 130944K->0K(131008K), 0.0158820 secs] 1078066K->949934K(4194240K), 0.1120380 secs] [Times: user=0.07 sys=0.00, real=0.02 secs]"
-                 + "\nTotal time for which application threads were stopped: 0.0174010 seconds")
+                 + "\nTotal time for which application threads were stopped: 0.2174010 seconds")
                         .getBytes());
          
         final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
