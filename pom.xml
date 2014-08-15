@@ -549,9 +549,13 @@
                                     <target>
                                         <scp todir="${scp.username}:${scp.password}@frs.sourceforge.net:/home/frs/project/gcviewer/" trust="true" failonerror="true">
                                             <fileset dir="${project.basedir}/target">
+                                                <!-- 
                                                 <include name="${project.build.finalName}.${project.packaging}" />
+                                                 -->
                                                 <include name="${project.build.finalName}-dist-mac.zip" />
+                                                <!-- 
                                                 <include name="README" />
+                                                 -->
                                             </fileset>
                                         </scp>
                                     </target>
