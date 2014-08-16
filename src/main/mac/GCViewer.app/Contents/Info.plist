@@ -26,8 +26,6 @@
         <string>${project.version}</string>
         <key>LSApplicationCategoryType</key>
         <string>public.app-category.developer-tools</string>
-        <key>JVMRuntime</key>
-        <string>jre7</string>
         <key>JVMMainClassName</key>
         <string>com.tagtraum.perf.gcviewer.GCViewer</string>
         <key>JVMOptions</key>
