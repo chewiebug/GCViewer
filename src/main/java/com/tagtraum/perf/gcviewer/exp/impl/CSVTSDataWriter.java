@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.exp.impl;
 
 import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -30,28 +31,32 @@ public class CSVTSDataWriter extends AbstractDataWriter {
     public void write(GCModel model) throws IOException {
         writeHeader();
         
-        Iterator<GCEvent> i = model.getGCEvents();
+        Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents();
         while (i.hasNext()) {
-            GCEvent event = i.next();
-            // Since this data writer is only concerned with one line per gc entry, don't write two like the others.
+            AbstractGCEvent<?> abstractGCEvent = i.next();
+            // filter "application stopped" events
+            if (abstractGCEvent instanceof GCEvent) {
+                GCEvent event = (GCEvent) abstractGCEvent;
+                // Since this data writer is only concerned with one line per gc entry, don't write two like the others.
 
-            // If the true timestamp is present, output the unix timestamp
-            if (model.hasDateStamp()) {
-                out.print(event.getDatestamp().getTime());
-            } else if (model.hasCorrectTimestamp()) {
-                // we have the timestamps therefore we can correct it with the pause time
-                out.print((event.getTimestamp() - event.getPause()));
-            } else {
-                out.print(event.getTimestamp());
+                // If the true timestamp is present, output the unix timestamp
+                if (model.hasDateStamp()) {
+                    out.print(event.getDatestamp().getTime());
+                } else if (model.hasCorrectTimestamp()) {
+                    // we have the timestamps therefore we can correct it with the pause time
+                    out.print((event.getTimestamp() - event.getPause()));
+                } else {
+                    out.print(event.getTimestamp());
+                }
+                out.print(',');
+                out.print(event.getPreUsed()); // pre
+                out.print(',');
+                out.print(event.getTotal());
+                out.print(',');
+                out.print(event.getPause());
+                out.print(',');
+                out.println(event.getExtendedType());
             }
-            out.print(',');
-            out.print(event.getPreUsed()); // pre
-            out.print(',');
-            out.print(event.getTotal());
-            out.print(',');
-            out.print(event.getPause());
-            out.print(',');
-            out.println(event.getExtendedType());
         }
         out.flush();
     }

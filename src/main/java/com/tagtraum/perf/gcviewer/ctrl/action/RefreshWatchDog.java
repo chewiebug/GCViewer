@@ -6,8 +6,8 @@ import java.util.TimerTask;
 
 import javax.swing.SwingWorker;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 
 /**
