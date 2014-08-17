@@ -35,8 +35,7 @@ public class InitialMarkLevelRenderer extends PolygonChartRenderer {
                 polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getPreUsed());
             }
         }
-        // dummy point to make the polygon complete
-        polygon.addPoint(model.getRunningTime(), 0.0d);
+        // Don't add dummy point to make the polygon complete! Just stop drawing.
         return polygon;
     }
 }

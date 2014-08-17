@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import com.tagtraum.perf.gcviewer.ModelChart;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -32,28 +33,31 @@ public class UsedYoungRenderer extends PolygonChartRenderer {
         ScaledPolygon polygon = createMemoryScaledPolygon();
         GCEvent lastTenuredEvent = null;
         GCEvent tenuredEvent = null;
-        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
-            GCEvent event = i.next();
-            GCEvent youngEvent = event.getYoung();
-            int lastTenuredTotal = 0;
-            int tenuredTotal = 0;
-            if (youngEvent != null) {
-                // event contains information about generation (only with -XX:+PrintGCDetails)
-                if (modelChart.isShowTenured()) {
-                    if (tenuredEvent != null && tenuredEvent.getTotal() > 0) {
-                        lastTenuredEvent = tenuredEvent;
+        for (Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents(); i.hasNext();) {
+            AbstractGCEvent<?> abstractGCEvent = i.next();
+            if (abstractGCEvent instanceof GCEvent) {
+                GCEvent event = (GCEvent) abstractGCEvent;
+                GCEvent youngEvent = event.getYoung();
+                int lastTenuredTotal = 0;
+                int tenuredTotal = 0;
+                if (youngEvent != null) {
+                    // event contains information about generation (only with -XX:+PrintGCDetails)
+                    if (modelChart.isShowTenured()) {
+                        if (tenuredEvent != null && tenuredEvent.getTotal() > 0) {
+                            lastTenuredEvent = tenuredEvent;
+                        }
+                        if (lastTenuredEvent == null) lastTenuredEvent = event.getTenured();
+                        tenuredEvent = event.getTenured();
+
+                        lastTenuredTotal = lastTenuredEvent.getTotal();
+                        tenuredTotal = tenuredEvent.getTotal();
                     }
-                    if (lastTenuredEvent == null) lastTenuredEvent = event.getTenured();
-                    tenuredEvent = event.getTenured();
-                    
-                    lastTenuredTotal = lastTenuredEvent.getTotal();
-                    tenuredTotal = tenuredEvent.getTotal();
-                }
-                // e.g. "GC remark" of G1 algorithm does not contain memory information
-                if (youngEvent.getTotal() > 0) {
-                    final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
-                    polygon.addPoint(timestamp, lastTenuredTotal + youngEvent.getPreUsed());
-                    polygon.addPoint(timestamp + event.getPause(), tenuredTotal + youngEvent.getPostUsed());
+                    // e.g. "GC remark" of G1 algorithm does not contain memory information
+                    if (youngEvent.getTotal() > 0) {
+                        final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
+                        polygon.addPoint(timestamp, lastTenuredTotal + youngEvent.getPreUsed());
+                        polygon.addPoint(timestamp + event.getPause(), tenuredTotal + youngEvent.getPostUsed());
+                    }
                 }
             }
         }

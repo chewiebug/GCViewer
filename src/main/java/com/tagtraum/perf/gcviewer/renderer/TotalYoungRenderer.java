@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import com.tagtraum.perf.gcviewer.ModelChart;
 import com.tagtraum.perf.gcviewer.ModelChartImpl;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
@@ -36,32 +37,35 @@ public class TotalYoungRenderer extends PolygonChartRenderer {
         polygon.addPoint(0.0d, 0.0d);
         double lastTenured = 0;
         double lastYoung = 0;
-        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
-            GCEvent event = i.next();
-            double tenuredSize = 0;
-            double youngSize = 0;
-            GCEvent young = event.getYoung();
-            GCEvent tenured = event.getTenured();
-            if (hasMemoryInformation(event) && young != null && tenured != null) {
-                if (modelChart.isShowTenured()) {
-                    tenuredSize = tenured.getTotal();
-                }
-                youngSize = young.getTotal();
-                
-                if (polygon.npoints == 1) {
-                    // first point needs to be treated different from the rest,
-                    // because otherwise the polygon would not start with a vertical line at 0, 
-                    // but with a slanting line between 0 and after the first pause
-                    polygon.addPoint(0, tenuredSize + youngSize);
-                    lastYoung = youngSize;                
+        for (Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents(); i.hasNext();) {
+            AbstractGCEvent<?> abstractGCEvent = i.next();
+            if (abstractGCEvent instanceof GCEvent) {
+                GCEvent event = (GCEvent) abstractGCEvent;
+                double tenuredSize = 0;
+                double youngSize = 0;
+                GCEvent young = event.getYoung();
+                GCEvent tenured = event.getTenured();
+                if (hasMemoryInformation(event) && young != null && tenured != null) {
+                    if (modelChart.isShowTenured()) {
+                        tenuredSize = tenured.getTotal();
+                    }
+                    youngSize = young.getTotal();
+
+                    if (polygon.npoints == 1) {
+                        // first point needs to be treated different from the rest,
+                        // because otherwise the polygon would not start with a vertical line at 0,
+                        // but with a slanting line between 0 and after the first pause
+                        polygon.addPoint(0, tenuredSize + youngSize);
+                        lastYoung = youngSize;
+                        lastTenured = tenuredSize;
+                    }
+                    if (((lastTenured + lastYoung) - (tenuredSize + youngSize)) > 0.0000001) {
+                        polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), lastTenured + lastYoung);
+                    }
+                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), tenuredSize + youngSize);
+                    lastYoung = youngSize;
                     lastTenured = tenuredSize;
                 }
-                if (((lastTenured + lastYoung) - (tenuredSize + youngSize)) > 0.0000001) {
-                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), lastTenured + lastYoung);
-                }
-                polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), tenuredSize + youngSize);
-                lastYoung = youngSize;
-                lastTenured = tenuredSize;
             }
         }
         polygon.addPointNotOptimised(model.getRunningTime(), lastTenured + lastYoung);
