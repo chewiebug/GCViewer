@@ -556,7 +556,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                 }
             } else {
                 double halfLineDistance = lineDistance / 2.0d;
-                double start = clip.x - (clip.x % lineDistance);
+                double start = clip.x - ((clip.x + offset * getPixelsPerUnit()) % lineDistance);
                 double end = clip.x + clip.width;
                 for (double line = start; line < end; line += lineDistance) {
                     g.drawLine((int) line, 0, (int) line, getHeight());
