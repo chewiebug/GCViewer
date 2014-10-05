@@ -9,11 +9,20 @@
 		<fileSet>
 			<directory>${project.build.directory}/mac</directory>
 			<outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>GCViewer.app/Contents/MacOS/**</exclude>
+            </excludes>
 		</fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/mac/GCViewer.app/Contents/MacOS</directory>
+            <outputDirectory>/GCViewer.app/Contents/MacOS/</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0755</fileMode>
+        </fileSet>
 	</fileSets>
 	<dependencySets>
 		<dependencySet>
-			<outputDirectory>GCViewer.app/Contents/Resources</outputDirectory>
+			<outputDirectory>GCViewer.app/Contents/Java</outputDirectory>
 		</dependencySet>
 	</dependencySets>
 </assembly>
