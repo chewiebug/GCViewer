@@ -69,7 +69,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     public void setType(Type type) {
-        setExtendedType(new ExtendedType(type));
+        setExtendedType(ExtendedType.lookup(type));
     }
     
     public void setExtendedType(ExtendedType extendedType) {
@@ -266,19 +266,35 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
      * <p>created on: 05.10.2013</p>
      */
     public static class ExtendedType implements Serializable {
-        public static final ExtendedType UNDEFINED = new ExtendedType(Type.UNDEFINED);
-        
+        private static final Map<Type, ExtendedType> WRAPPER_MAP = new HashMap<Type, ExtendedType>();
+        static {
+            for (Type type : Type.TYPE_MAP.values()) {
+                WRAPPER_MAP.put(type, new ExtendedType(type));
+            }
+        }
+        public static final ExtendedType UNDEFINED = WRAPPER_MAP.get(Type.UNDEFINED);
+
         private String fullName;
         private Type type;
         
-        public ExtendedType(Type type) {
-            this.fullName = type.getName().intern();
-            this.type = type;
+        private ExtendedType(Type type) {
+            this(type, type.getName());
         }
         
-        public ExtendedType (Type type, String fullName) {
-            this.fullName = fullName.intern();
+        private ExtendedType(Type type, String fullName) {
             this.type = type;
+            this.fullName = fullName.intern();
+        }
+
+        public static ExtendedType lookup(Type type) {
+            return WRAPPER_MAP.get(type);
+        }
+
+        public static ExtendedType lookup(Type type, String fullName) {
+            if (type.getName().equals(fullName)) {
+                return WRAPPER_MAP.get(type);
+            }
+            return new ExtendedType(type, fullName);
         }
         
         public String getName() {
