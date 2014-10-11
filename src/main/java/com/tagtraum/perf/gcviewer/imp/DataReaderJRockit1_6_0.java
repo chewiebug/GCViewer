@@ -34,7 +34,7 @@ public class DataReaderJRockit1_6_0 implements DataReader {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading JRockit 1.6.0 format...");
         boolean gcSummary = false;
         try {
-            GCModel model = new GCModel(true);
+            GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line = null;
             GCEvent event = null;

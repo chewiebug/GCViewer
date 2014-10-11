@@ -52,7 +52,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
     public ModelChartImpl() {
         super();
-        this.model = new GCModel(true);
+        this.model = new GCModel();
         this.chart = new Chart();
         this.chart.setPreferredSize(new Dimension(0, 0));
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

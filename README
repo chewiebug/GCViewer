@@ -265,16 +265,13 @@ Therefore values like 'Total Time', 'Throughput', and 'Freed Mem/Min'
 cannot be calculated.
 
 
-Sun / Oracle JDK 1.6 / 1.7 (a.k.a. Java 6 / 7)
+Sun / Oracle JDK 1.6 / 1.7 / 1.8 (a.k.a. Java 6 / 7 / 8)
 ---------------------------
 
 CMS and G1 collector sometimes mix concurrent events with stop the world 
 collections in the output. In some cases the parser can recover from 
 such mixed lines, sometimes it can't and will show an error message.
 
-If G1 collector is used with -XX:-PrintGCTimeStamps (without timestamps)
-but with -XX:+PrintGCDateStamps (with full date information) GCViewer can't 
-parse the log.
 
 BEA JRockit 1.4.2/1.5/1.6
 -------------------------

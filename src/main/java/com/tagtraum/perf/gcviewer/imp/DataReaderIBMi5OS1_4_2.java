@@ -47,7 +47,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading IBM i5/OS 1.4.2 format...");
         try {
         	// Initialize model
-            final GCModel model = new GCModel(true);
+            final GCModel model = new GCModel();
             model.setFormat(GCModel.Format.IBM_VERBOSE_GC);
             
             // Initialize local variables

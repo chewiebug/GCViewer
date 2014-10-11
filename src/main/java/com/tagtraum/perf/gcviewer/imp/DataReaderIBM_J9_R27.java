@@ -44,7 +44,7 @@ public class DataReaderIBM_J9_R27 implements DataReader {
 
     @Override
     public GCModel read() throws IOException {
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLEventReader eventReader = factory.createXMLEventReader(in);

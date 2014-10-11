@@ -217,8 +217,9 @@ public class ModelPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_memory_tenured_heap_usage"));
             addEntry(LocalisationHelper.getString("data_panel_memory_young_heap_usage"));
             addEntry(LocalisationHelper.getString("data_panel_memory_perm_heap_usage"));
-            addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc"));
-            addEntry(LocalisationHelper.getString("data_panel_footprintaftergc"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc_avg"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintaftergc_avg"));
             
             addEntry(LocalisationHelper.getString("data_panel_freedmemorybyfullgc"));
             addEntry(LocalisationHelper.getString("data_panel_freedmemorybygc"));
@@ -239,8 +240,8 @@ public class ModelPanel extends JTabbedPane {
        }
         
         public void setModel(GCModel model) {
-            boolean fullGCDataVailable = model.getFootprintAfterFullGC().getN() != 0;
-            boolean fullGCSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
+            boolean fullGcDataAvailable = model.getFootprintAfterFullGC().getN() != 0;
+            boolean fullGcSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
             boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
             boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
             boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
@@ -266,30 +267,34 @@ public class ModelPanel extends JTabbedPane {
                             + " (" + percentFormatter.format(model.getPermUsedSizes().getMax() / (double)model.getPermAllocatedSizes().getMax() * 100) + "%)"
                             + " / " + footprintFormatter.format(model.getPermAllocatedSizes().getMax()) : "n/a",
                     model.getPermAllocatedSizes().getN() > 0);
-            updateValue(LocalisationHelper.getString("data_panel_footprintafterfullgc"),
-        			fullGCDataVailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
+            updateValue(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"),
+                    fullGcDataAvailable ? footprintFormatter.format(model.getFootprintAfterFullGC().getMax())
+                            + " (" + percentFormatter.format(model.getFootprintAfterFullGC().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",
+                    fullGcDataAvailable);
+            updateValue(LocalisationHelper.getString("data_panel_footprintafterfullgc_avg"),
+        			fullGcDataAvailable ? footprintFormatter.format(model.getFootprintAfterFullGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterFullGC().standardDeviation()) +")" : "n/a",
-                    fullGCDataVailable && isSignificant(model.getFootprintAfterFullGC().average(),
+                    fullGcDataAvailable && isSignificant(model.getFootprintAfterFullGC().average(),
                             model.getFootprintAfterFullGC().standardDeviation()));
-            updateValue(LocalisationHelper.getString("data_panel_footprintaftergc"),
+            updateValue(LocalisationHelper.getString("data_panel_footprintaftergc_avg"),
         			gcDataAvailable ? footprintFormatter.format(model.getFootprintAfterGC().average())
                             + " (\u03c3=" + sigmaMemoryFormat(model.getFootprintAfterGC().standardDeviation()) + ")" : "n/a",
                     gcDataAvailable && isSignificant(model.getFootprintAfterGC().average(),
                                     model.getFootprintAfterGC().standardDeviation()));
         	
             updateValue(LocalisationHelper.getString("data_panel_freedmemorybyfullgc"),
-        			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum())
+        			fullGcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().getSum())
                             + " (" + percentFormatter.format(model.getFreedMemoryByFullGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
-                    fullGCDataVailable);
+                    fullGcDataAvailable);
             updateValue(LocalisationHelper.getString("data_panel_freedmemorybygc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().getSum())
                             + " (" + percentFormatter.format(model.getFreedMemoryByGC().getSum()*100.0/model.getFreedMemory()) + "%)" : "n/a",
                     gcDataAvailable);
         	
             updateValue(LocalisationHelper.getString("data_panel_avgfreedmemorybyfullgc"),
-        			fullGCDataVailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().average())
+        			fullGcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByFullGC().average())
                             + "/coll (\u03c3=" + sigmaMemoryFormat(model.getFreedMemoryByFullGC().standardDeviation()) + ")" : "n/a",
-                    fullGCDataVailable && isSignificant(model.getFreedMemoryByFullGC().average(),
+                    fullGcDataAvailable && isSignificant(model.getFreedMemoryByFullGC().average(),
                             model.getFreedMemoryByFullGC().standardDeviation()));
             updateValue(LocalisationHelper.getString("data_panel_avgfreedmemorybygc"),
         			gcDataAvailable ? footprintFormatter.format(model.getFreedMemoryByGC().average())
@@ -298,15 +303,15 @@ public class ModelPanel extends JTabbedPane {
                             model.getFreedMemoryByGC().standardDeviation()));
         	
             updateValue(LocalisationHelper.getString("data_panel_avgrelativepostfullgcincrease"),
-        			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostFullGCIncrease().slope()) + "/coll" : "n/a",
-        			fullGCSlopeDataAvailable);
+        			fullGcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostFullGCIncrease().slope()) + "/coll" : "n/a",
+        			fullGcSlopeDataAvailable);
             updateValue(LocalisationHelper.getString("data_panel_avgrelativepostgcincrease"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getRelativePostGCIncrease().average()) + "/coll" : "n/a",
         			gcSlopeDataAvailable);
         	
             updateValue(LocalisationHelper.getString("data_panel_slopeafterfullgc"),
-        			fullGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostFullGCSlope().slope()) + "/s" : "n/a",
-        			fullGCSlopeDataAvailable);
+        			fullGcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostFullGCSlope().slope()) + "/s" : "n/a",
+        			fullGcSlopeDataAvailable);
             updateValue(LocalisationHelper.getString("data_panel_slopeaftergc"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostGCSlope()) + "/s" : "n/a",
         			gcSlopeDataAvailable);
@@ -429,7 +434,8 @@ public class ModelPanel extends JTabbedPane {
         public SummaryTab() {
             super();
             
-            addEntry(LocalisationHelper.getString("data_panel_footprint"));
+            addEntry(LocalisationHelper.getString("data_panel_memory_heap_usage"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"));
             addEntry(LocalisationHelper.getString("data_panel_freedmemory"));
             addEntry(LocalisationHelper.getString("data_panel_freedmemorypermin"));
             addEntry(LocalisationHelper.getString("data_panel_total_time"));
@@ -442,9 +448,17 @@ public class ModelPanel extends JTabbedPane {
         }
         
         public void setModel(GCModel model) {
-        	updateValue(LocalisationHelper.getString("data_panel_footprint"),
-        			footprintFormatter.format(model.getFootprint()), 
-        			true);
+            boolean fullGcDataAvailable = model.getFootprintAfterFullGC().getN() > 0;
+                    
+            updateValue(LocalisationHelper.getString("data_panel_memory_heap_usage"),
+                    footprintFormatter.format(model.getHeapUsedSizes().getMax()) 
+                        + " (" + percentFormatter.format(model.getHeapUsedSizes().getMax() / (double)model.getHeapAllocatedSizes().getMax() * 100) + "%)"
+                        + " / " + footprintFormatter.format(model.getHeapAllocatedSizes().getMax()),
+                    true);
+            updateValue(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"),
+                    fullGcDataAvailable ? footprintFormatter.format(model.getFootprintAfterFullGC().getMax())
+                            + " (" + percentFormatter.format(model.getFootprintAfterFullGC().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",
+                    fullGcDataAvailable);
         	updateValue(LocalisationHelper.getString("data_panel_freedmemory"),
         			footprintFormatter.format(model.getFreedMemory()),
         			true);
