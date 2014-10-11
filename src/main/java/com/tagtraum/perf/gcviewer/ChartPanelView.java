@@ -58,10 +58,12 @@ public class ChartPanelView {
     private TextAreaLogHandler textAreaLogHandler;
     private DataReaderFacade dataReaderFacade;
     
-    public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {
+    private GCViewerGui gui;
+
+    public ChartPanelView(GCViewerGui gui, GCDocument gcDocument, URL url) throws DataReaderException {
         this.gcDocument = gcDocument;
         this.preferences = gcDocument.getPreferences();
-        this.modelChart = new ModelChartImpl();
+        this.modelChart = new ModelChartImpl(gui);
         this.modelPanel = new ModelPanel();
         this.modelDetailsPanel = new ModelDetailsPanel();
         

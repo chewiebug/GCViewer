@@ -17,7 +17,7 @@ public class SimpleChartRenderer {
         GCPreferences gcPreferences = new GCPreferences();
         gcPreferences.load();
 
-        final ModelChartImpl pane = new ModelChartImpl();
+        final ModelChartImpl pane = new ModelChartImpl(null);
         pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         pane.setModel(model, gcPreferences);

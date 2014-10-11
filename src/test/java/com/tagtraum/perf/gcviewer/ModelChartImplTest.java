@@ -34,7 +34,7 @@ public class ModelChartImplTest {
     @Theory
     public void shouldShowOrNotDateStampAccordingToModelAndSettings(TestCase testCase) throws Exception {
         //given
-        ModelChartImpl modelChart = new ModelChartImpl();
+        ModelChartImpl modelChart = new ModelChartImpl(null);
         GCPreferences preferences = new GCPreferences();
         GCModel gcModel = Mockito.mock(GCModel.class);
         Mockito.when(gcModel.hasDateStamp()).thenReturn(testCase.hasDateStamp());
