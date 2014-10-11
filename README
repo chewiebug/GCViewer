@@ -106,6 +106,8 @@ Summary
 
 - Footprint:
      o Maximal amount of memory allocated
+- Max heap after full gc:
+     o Max used heap after full gc. Indicates max live object size and can help to determine heap size.
 - Freed Memory:
      o Total amount of memory that has been freed
 - Freed Mem/Min:
@@ -136,6 +138,8 @@ Memory
      o Max memory usage / allocation in young space
 - Perm heap (usage / alloc max):
      o Max memory usage / allocation in perm space
+- Max heap after full gc:
+     o see in "summary" section
 - Avg after full GC:
      o The average heap memory consumption after a full collection
 - Avg after GC:
