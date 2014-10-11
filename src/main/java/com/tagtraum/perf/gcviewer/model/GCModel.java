@@ -133,12 +133,9 @@ public class GCModel implements Serializable {
     private DoubleData relativePostGCIncrease;
     private RegressionLine postFullGCSlope;
     private RegressionLine relativePostFullGCIncrease;
-    private boolean countTenuredAsFull = true;
     private URL url;
 
-    public GCModel(boolean countTenuredAsFull) {
-        this.countTenuredAsFull = countTenuredAsFull;
-        
+    public GCModel() {
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
         this.stopTheWorldEvents = new ArrayList<AbstractGCEvent<?>>();
         this.gcEvents = new ArrayList<GCEvent>();
@@ -179,10 +176,6 @@ public class GCModel implements Serializable {
         this.youngUsedSizes = new IntData();
         
         this.promotion = new IntData();
-    }
-
-    public boolean isCountTenuredAsFull() {
-        return countTenuredAsFull;
     }
 
     public long getLastModified() {

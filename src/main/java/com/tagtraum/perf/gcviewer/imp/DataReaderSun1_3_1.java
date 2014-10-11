@@ -35,7 +35,7 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataRea
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.3.1 format...");
         try {
             count = 0;
-            GCModel model = new GCModel(true);
+            GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_VERBOSE_GC);
             List<StringBuilder> lineStack = new ArrayList<StringBuilder>();
             int i;

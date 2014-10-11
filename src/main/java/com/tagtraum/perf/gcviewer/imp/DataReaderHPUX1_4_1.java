@@ -39,7 +39,7 @@ public class DataReaderHPUX1_4_1 implements DataReader {
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading HP-UX 1.4.1-1.4.2 format...");
         try {
-            final GCModel model = new GCModel(true);
+            final GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line = null;
             GCEvent event = null;

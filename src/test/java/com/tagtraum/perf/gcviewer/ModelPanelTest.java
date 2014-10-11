@@ -16,7 +16,7 @@ public class ModelPanelTest {
     
     @Test
     public void testEmptyModel() {
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
         ModelPanel panel = new ModelPanel();
         panel.setModel(model);
     }
@@ -31,7 +31,7 @@ public class ModelPanelTest {
         event.setPostUsed(400);
         event.setTotal(1024);
         
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
         model.add(event);
         
         ModelPanel panel = new ModelPanel();
@@ -40,7 +40,7 @@ public class ModelPanelTest {
 
     @Test
     public void testTwoElementsModel() {
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
 
         GCEvent event = new GCEvent();
         event.setTimestamp(0.5);

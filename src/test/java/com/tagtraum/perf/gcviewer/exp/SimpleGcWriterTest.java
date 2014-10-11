@@ -48,7 +48,7 @@ public class SimpleGcWriterTest {
         concGCEvent.setTimestamp(0.708);
         concGCEvent.setType(AbstractGCEvent.Type.CMS_CONCURRENT_MARK_START);
         
-        gcModel = new GCModel(false);
+        gcModel = new GCModel();
         gcModel.add(gcEvent);
         gcModel.add(gcEvent2);
         gcModel.add(concGCEvent);

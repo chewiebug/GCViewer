@@ -140,7 +140,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x / 1.7.x G1 format...");
 
         try (BufferedReader in = this.in) {
-            final GCModel model = new GCModel(true);
+            final GCModel model = new GCModel();
             // TODO what is this for?
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line;

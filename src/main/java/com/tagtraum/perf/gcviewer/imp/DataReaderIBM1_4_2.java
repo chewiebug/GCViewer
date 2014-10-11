@@ -43,7 +43,7 @@ public class DataReaderIBM1_4_2 implements DataReader {
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading IBM 1.4.2 format...");
         try {
-            final GCModel model = new GCModel(true);
+            final GCModel model = new GCModel();
             model.setFormat(GCModel.Format.IBM_VERBOSE_GC);
             int state = 0;
             String line = null;
