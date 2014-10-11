@@ -1,8 +1,5 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * The GCEvent is the type of event that contains memory (preused, postused, total) and 
  * pause information.
@@ -23,8 +20,10 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     /** Capacity in KB */
     private int total;
     
-    /** the generationMap contains all detail events and additionally the inferred events as well. */
-    private Map<Generation, GCEvent> generationMap = new TreeMap<Generation, GCEvent>();
+    /** store references to related/inferred events */
+    private GCEvent young;
+    private GCEvent tenured;
+    private GCEvent perm;
     
     public GCEvent() {
     }
@@ -41,8 +40,23 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     @Override
     public void add(GCEvent event) {
         super.add(event);
-        
-        generationMap.put(event.getExtendedType().getGeneration(), event);
+
+        switch (event.getExtendedType().getGeneration()) {
+            case YOUNG:
+                young = event;
+                break;
+            case TENURED:
+                tenured = event;
+                break;
+            case PERM:
+                perm = event;
+                break;
+            // ALL and OTHER are never read
+            case ALL:
+                break;
+            case OTHER:
+                break;
+        }
     }
     
     /**
@@ -53,9 +67,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
      * @return Information on young generation if possible, <code>null</code> otherwise.
      */
     public GCEvent getYoung() {
-        GCEvent young = generationMap.get(Generation.YOUNG);
         if (young == null) {
-            GCEvent tenured = generationMap.get(Generation.TENURED);
             if (tenured != null) {
                 young = new GCEvent();
                 young.setTimestamp(tenured.getTimestamp());
@@ -63,8 +75,6 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
                 young.setPostUsed(postUsed - tenured.getPostUsed());
                 young.setTotal(total - tenured.getTotal());
                 young.setPause(tenured.getPause());
-                
-                generationMap.put(Generation.YOUNG, young);
             }
         }
         
@@ -79,9 +89,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
      * @return Information on young generation if possible, <code>null</code> otherwise.
      */
     public GCEvent getTenured() {
-        GCEvent tenured = generationMap.get(Generation.TENURED);
         if (tenured == null) {
-            GCEvent young = generationMap.get(Generation.YOUNG);
             if (young != null) {
                 tenured = new GCEvent();
                 tenured.setTimestamp(young.getTimestamp());
@@ -89,8 +97,6 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
                 tenured.setPostUsed(postUsed - young.getPostUsed());
                 tenured.setTotal(total - young.getTotal());
                 tenured.setPause(young.getPause());
-                
-                generationMap.put(Generation.TENURED, tenured);
             }
         }
         
@@ -104,7 +110,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
      * @return Information on perm generation or <code>null</code> if not present.
      */
     public GCEvent getPerm() {
-        return generationMap.get(Generation.PERM);
+        return perm;
     }
     
     public void setPreUsed(int preUsed) {

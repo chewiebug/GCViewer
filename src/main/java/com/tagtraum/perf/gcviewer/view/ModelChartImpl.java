@@ -597,38 +597,41 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
             g.setColor(Color.black);
             if (isVertical()) {
                 double halfLineDistance = lineDistance / 2.0d;
-                for (double line = getHeight() - (minUnit % lineDistance); line > 0; line -= lineDistance) {
+                for (double line = getHeight(); line > 0; line -= lineDistance) {
                     g.drawLine(0, (int) line, getWidth(), (int) line);
                 }
-                for (double line = getHeight() - ((minUnit - halfLineDistance) % lineDistance); line > 0; line -= lineDistance) {
+                for (double line = getHeight() - halfLineDistance; line > 0; line -= lineDistance) {
                     int inset = 3;
                     g.drawLine(inset, (int) line, getWidth() - inset, (int) line);
                 }
                 String number = null;
-                for (double line = getHeight() - (minUnit % lineDistance); line > 0; line -= lineDistance) {
+                for (double line = getHeight(); line > 0; line -= lineDistance) {
                     g.setFont(font);
-                    String newNumber = format((getHeight() - line) / getPixelsPerUnit()) + getUnitName();
-                    if (!newNumber.equals(number))
+                    String newNumber = format((getHeight() - line) / getPixelsPerUnit() + minUnit) + getUnitName();
+                    if (!newNumber.equals(number)) {
                         g.drawString(newNumber, 2, (int) line - 2);
+                    }
                     number = newNumber;
                 }
             }
             else {
                 double halfLineDistance = lineDistance / 2.0d;
-                for (double line = (minUnit % lineDistance); line < getWidth(); line += lineDistance) {
+                double start = clip.x - ((clip.x + offset * getPixelsPerUnit()) % lineDistance);
+                double end = clip.x + clip.width;
+                for (double line = start; line < end; line += lineDistance) {
                     g.drawLine((int) line, 0, (int) line, getHeight());
                 }
-                for (double line = (minUnit - halfLineDistance) % lineDistance; line < getWidth(); line += lineDistance) {
+                for (double line = start + halfLineDistance; line < end; line += lineDistance) {
                     int inset = 3;
                     g.drawLine((int) line, inset, (int) line, getHeight() - inset);
                 }
                 String number = null;
-                for (double line = (minUnit % lineDistance); line < getWidth(); line += lineDistance) {
-                //for (double line = unitStart; line < unitEnd; line += lineDistance) {
+                for (double line = start; line < end; line += lineDistance) {
                     g.setFont(font);
-                    String newNumber = format(line / getPixelsPerUnit()) + getUnitName();
-                    if (!newNumber.equals(number))
+                    String newNumber = format(line / getPixelsPerUnit() + minUnit) + getUnitName();
+                    if (!newNumber.equals(number)) {
                         g.drawString(newNumber, ((int) line) + 3, getHeight() - 2);
+                    }
                     number = newNumber;
                 }
             }

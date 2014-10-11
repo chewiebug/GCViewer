@@ -6,6 +6,7 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.util.Iterator;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
@@ -34,13 +35,16 @@ public class TotalHeapRenderer extends PolygonChartRenderer {
         ScaledPolygon polygon = createMemoryScaledPolygon();
         polygon.addPoint(0.0d, 0.0d);
         int lastTotal = 0;
-        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
-            GCEvent event = i.next();
-            if (event.getTotal() > 0) {
-            	// there are events that don't have a heap size associated (like "GC remark" of G1)
-            	// -> skip them
-            	polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getTotal());
-            	lastTotal = event.getTotal();
+        for (Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents(); i.hasNext();) {
+            AbstractGCEvent<?> abstractGCEvent = i.next();
+            if (abstractGCEvent instanceof GCEvent) {
+                GCEvent event = (GCEvent) abstractGCEvent;
+                if (event.getTotal() > 0) {
+                    // there are events that don't have a heap size associated (like "GC remark" of G1)
+                    // -> skip them
+                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getTotal());
+                    lastTotal = event.getTotal();
+                }
             }
         }
         polygon.addPointNotOptimised(model.getRunningTime(), lastTotal);

@@ -92,7 +92,7 @@ public class TestAbstractGCEvent {
     public void addExtendedTypePrintGcCause() {
         // 2013-05-25T17:02:46.238+0200: 0.194: [GC (Allocation Failure) [PSYoungGen: 16430K->2657K(19136K)] 16430K->15759K(62848K), 0.0109373 secs] [Times: user=0.05 sys=0.02, real=0.02 secs]
         GCEvent event = new GCEvent();
-        event.setExtendedType(new ExtendedType(Type.GC, "GC (Allocation Failure)"));
+        event.setExtendedType(ExtendedType.lookup(Type.GC, "GC (Allocation Failure)"));
         
         GCEvent detailedEvent = new GCEvent();
         detailedEvent.setType(Type.PS_YOUNG_GEN);

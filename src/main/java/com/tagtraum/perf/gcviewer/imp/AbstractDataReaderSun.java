@@ -332,7 +332,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
         
         if (gcType != null) {
-            extendedType = new ExtendedType(gcType, typeName);
+            extendedType = ExtendedType.lookup(gcType, typeName);
         }
         
         return extendedType;

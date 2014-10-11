@@ -190,11 +190,13 @@ public class ModelMetricsPanel extends JTabbedPane {
     	
     	public void removeEntry(String name) {
     	    TwoLabelsContainer labelContainer = labelMap.get(name);
-    	    if (labelContainer != null) {
-                labelContainer.nameLabel.getParent().remove(labelContainer.nameLabel);
-                labelContainer.valueLabel.getParent().remove(labelContainer.valueLabel);
-                labelMap.remove(name);
-    	    }
+    	    assert labelContainer != null : "labelContainer for '" + name + "' is null -> was it registered?";
+    	    assert labelContainer.nameLabel != null : "Name label for '" + name + "' is null.";
+    	    assert labelContainer.nameLabel.getParent() != null : "Parent for name label for '" + name + "' is null.";
+    	    labelContainer.nameLabel.getParent().remove(labelContainer.nameLabel);
+    	    assert labelContainer.valueLabel != null : "Value label for '" + name + "' is null.";
+    	    assert labelContainer.valueLabel.getParent() != null : "Parent for value label for '" + name + "' is null.";
+    	    labelContainer.valueLabel.getParent().remove(labelContainer.valueLabel);
     	}
     	
     	public void updateValue(String name, String value, boolean enabled) {
@@ -327,7 +329,7 @@ public class ModelMetricsPanel extends JTabbedPane {
     }
 
     private class PauseTab extends ValuesTab {
-
+        private boolean hasOverheadEntry;
         public PauseTab() {
             super();
             
@@ -339,7 +341,8 @@ public class ModelMetricsPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_avg_pause_interval"));
             addEntry(LocalisationHelper.getString("data_panel_min_max_pause_interval"));
             addEntry(LocalisationHelper.getString("data_panel_vm_op_overhead"));
-
+            hasOverheadEntry = true;
+            
             newGroup(LocalisationHelper.getString("data_panel_group_full_gc_pauses"), true);
             addEntry(LocalisationHelper.getString("data_panel_acc_fullgcpauses"));
             addEntry(LocalisationHelper.getString("data_panel_count_full_gc_pauses"));
@@ -379,12 +382,17 @@ public class ModelMetricsPanel extends JTabbedPane {
                     pauseIntervalDataAvailable ? pauseFormatter.format(model.getPauseInterval().getMin()) + "s / " +pauseFormatter.format(model.getPauseInterval().getMax()) + "s" : "n/a", 
                     pauseIntervalDataAvailable);
             if (vmOperationsAvailable) {
+                if (!hasOverheadEntry) {
+                    addEntry(LocalisationHelper.getString("data_panel_vm_op_overhead"));
+                    hasOverheadEntry = true;
+                }
                 updateValue(LocalisationHelper.getString("data_panel_vm_op_overhead"), 
                         gcTimeFormatter.format(model.getVmOperationPause().getSum())+ "s (" + percentFormatter.format(model.getVmOperationPause().getSum()*100.0 / model.getPause().getSum()) + "%)",
                         true);
             }
-            else if (model.size() > 1) {
+            else if (hasOverheadEntry) {
                 removeEntry(LocalisationHelper.getString("data_panel_vm_op_overhead"));
+                hasOverheadEntry = false;
             }
 
             updateValue(LocalisationHelper.getString("data_panel_acc_fullgcpauses"), 

@@ -23,13 +23,13 @@ public class IncLineRenderer extends ChartRenderer {
     }
 
     public void paintComponent(Graphics2D g2d) {
-        final double scaleFactor = getModelChart().getScaleFactor();
-        final int height = getHeight();
+        double scaleFactor = getModelChart().getScaleFactor();
+        int height = getHeight();
         int lastScaledTimestamp = Integer.MIN_VALUE;
         for (Iterator<GCEvent> i = getModelChart().getModel().getGCEvents(); i.hasNext();) {
-            final GCEvent event = i.next();
+            GCEvent event = i.next();
             if (event.isInc()) {
-                final int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
+                int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
                 if (scaledTimestamp != lastScaledTimestamp) {
                     g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
                     lastScaledTimestamp = scaledTimestamp;

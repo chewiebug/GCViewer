@@ -5,6 +5,7 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.util.Iterator;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
@@ -29,16 +30,19 @@ public class UsedTenuredRenderer extends PolygonChartRenderer {
     @Override
     public Polygon computePolygon(ModelChart modelChart, GCModel model) {
         ScaledPolygon polygon = createMemoryScaledPolygon();
-        for (Iterator<GCEvent> i = model.getGCEvents(); i.hasNext();) {
-            GCEvent event = i.next();
-            GCEvent tenuredEvent = event.getTenured();
-            if (tenuredEvent != null) {
-                // only -XX:+PrintGCDetails adds information about generations
-                // e.g. "GC remark" of G1 algorithm does not contain memory information
-                if (tenuredEvent.getTotal() > 0) {
-                    final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
-                    polygon.addPoint(timestamp, tenuredEvent.getPreUsed());
-                    polygon.addPoint(timestamp + event.getPause(), tenuredEvent.getPostUsed());
+        for (Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents(); i.hasNext();) {
+            AbstractGCEvent<?> abstractGCEvent = i.next();
+            if (abstractGCEvent instanceof GCEvent) {
+                GCEvent event = (GCEvent) abstractGCEvent;
+                GCEvent tenuredEvent = event.getTenured();
+                if (tenuredEvent != null) {
+                    // only -XX:+PrintGCDetails adds information about generations
+                    // e.g. "GC remark" of G1 algorithm does not contain memory information
+                    if (tenuredEvent.getTotal() > 0) {
+                        final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
+                        polygon.addPoint(timestamp, tenuredEvent.getPreUsed());
+                        polygon.addPoint(timestamp + event.getPause(), tenuredEvent.getPostUsed());
+                    }
                 }
             }
         }
