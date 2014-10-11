@@ -111,7 +111,6 @@ public class GCModel implements Serializable {
     
     private IntData promotion; // promotion from young to tenured generation during young collections
     
-    private long footprint;
     private double firstPauseTimeStamp = Double.MAX_VALUE;
     private double lastPauseTimeStamp = 0;
     private DoubleData totalPause;
@@ -124,7 +123,7 @@ public class GCModel implements Serializable {
     private long freedMemory;
     private Format format;
     private IntData postGCUsedMemory;
-    private IntData postFullGCUsedMemory;
+    private IntData postFullGCUsedHeap;
     private IntData freedMemoryByGC;
     private IntData freedMemoryByFullGC;
     private DoubleData postGCSlope;
@@ -148,7 +147,7 @@ public class GCModel implements Serializable {
         this.postGCSlope = new DoubleData();
         this.freedMemoryByGC = new IntData();
         this.freedMemoryByFullGC = new IntData();
-        this.postFullGCUsedMemory = new IntData();
+        this.postFullGCUsedHeap = new IntData();
         this.postGCUsedMemory = new IntData();
         this.totalPause = new DoubleData();
         this.fullGCPause = new DoubleData();
@@ -371,7 +370,6 @@ public class GCModel implements Serializable {
                 updateInitiatingOccupancyFraction(event);
             }
             
-            footprint = Math.max(footprint, event.getTotal());
             freedMemory += event.getPreUsed() - event.getPostUsed();
             
             if (!event.isFull()) {
@@ -394,7 +392,7 @@ public class GCModel implements Serializable {
                 pauses.add(event.getPause());
                 
                 fullGCEvents.add(event);
-                postFullGCUsedMemory.add(event.getPostUsed());
+                postFullGCUsedHeap.add(event.getPostUsed());
                 int freed = event.getPreUsed() - event.getPostUsed();
                 freedMemoryByFullGC.add(freed);
                 fullGCPause.add(event.getPause());
@@ -664,20 +662,12 @@ public class GCModel implements Serializable {
         return postGCSlope.average();
     }
 
-    public IntData getPostGCUsedMemory() {
-        return postGCUsedMemory;
-    }
-
     public RegressionLine getCurrentPostGCSlope() {
         return currentPostGCSlope;
     }
 
     public RegressionLine getPostFullGCSlope() {
         return postFullGCSlope;
-    }
-
-    public IntData getPostFullGCUsedMemory() {
-        return postFullGCUsedMemory;
     }
 
     /**
@@ -705,9 +695,9 @@ public class GCModel implements Serializable {
      * Heap memory consumption after a <em>full</em> garbage collection.
      */
     public IntData getFootprintAfterFullGC() {
-        return postFullGCUsedMemory;
+        return postFullGCUsedHeap;
     }
-
+    
     /**
      * Pause in sec.
      */
@@ -809,7 +799,7 @@ public class GCModel implements Serializable {
      * Footprint in KB.
      */
     public long getFootprint() {
-        return footprint;
+        return heapAllocatedSizes.getMax();
     }
 
     /**
