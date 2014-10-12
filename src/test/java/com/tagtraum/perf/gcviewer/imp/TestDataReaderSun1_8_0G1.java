@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -45,6 +46,8 @@ public class TestDataReaderSun1_8_0G1 {
         
         assertThat("tenured size after concurrent cycle", model.getPostConcurrentCycleTenuredUsedSizes().getMax(), is(31949 - 10*1024 - 3072));
         assertThat("heap size after concurrent cycle", model.getPostConcurrentCycleHeapUsedSizes().getMax(), is(31949));
+        
+        assertThat("initiatingOccupancyFraction", model.getCmsInitiatingOccupancyFraction().getMax(), closeTo(0.69, 0.001));
         
         assertThat("number of errors", handler.getCount(), is(0));
     }

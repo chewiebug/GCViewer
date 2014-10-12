@@ -553,17 +553,15 @@ public class GCModel implements Serializable {
     }
 
     private void updateInitiatingOccupancyFraction(GCEvent event) {
-        GCEvent initialMarkEvent = null;
+        GCEvent initialMarkEvent = event;
         
-        if (!event.hasDetails() && event.isInitialMark()) {
-            initialMarkEvent = event;
-        }
-        else {
+        if (event.hasDetails()) {
             Iterator<GCEvent> i = event.details();
-            while (i.hasNext() && initialMarkEvent == null) {
+            while (i.hasNext()) {
                 GCEvent gcEvent = i.next();
                 if (gcEvent.isInitialMark()) {
                     initialMarkEvent = gcEvent;
+                    break;
                 }
             }
         }
