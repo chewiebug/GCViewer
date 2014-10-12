@@ -332,6 +332,9 @@ public class TestDataReaderSun1_7_0 {
         assertThat("throughput", model.getThroughput(), closeTo(29.66965410503, 0.00000000001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
+        
+        assertThat("post concurrent cycle tenured size", model.getPostConcurrentCycleTenuredUsedSizes().getMax(), is(84508 - 42951));
+        assertThat("post concurrent cycle size", model.getPostConcurrentCycleHeapUsedSizes().getMax(), is(84508));
     }
     
     /**

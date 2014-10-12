@@ -74,16 +74,16 @@ public abstract class AbstractDataReaderSun implements DataReader {
      */
     private int getMemoryInKiloByte(double memoryValue, char memUnit, String line) {
         if ('B' == memUnit) {
-            return (int) (memoryValue / 1024);
+            return (int) Math.rint(memoryValue / 1024);
         }
         else if ('K' == memUnit) {
-            return (int) memoryValue;
+            return (int) Math.rint(memoryValue);
         }
         else if ('M' == memUnit) {
-            return (int) (memoryValue * 1024);
+            return (int) Math.rint(memoryValue * 1024);
         }
         else if ('G' == memUnit) {
-            return (int) (memoryValue * 1024*1024);
+            return (int) Math.rint(memoryValue * 1024*1024);
         }
         else {
             if (LOG.isLoggable(Level.WARNING)) {
