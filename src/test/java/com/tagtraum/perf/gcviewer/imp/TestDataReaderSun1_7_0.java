@@ -372,4 +372,38 @@ public class TestDataReaderSun1_7_0 {
                 equalTo("2012-04-26T23:59:51.011"));
         assertThat("first timestamp", model.getFirstPauseTimeStamp(), closeTo(33395.153, 0.00001));
     }
+    
+    @Test
+    public void cmsPrintFlsStatistics1() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0CmsPrintFlsStats1.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(1));
+        assertThat("pause", model.get(0).getPause(), closeTo(0.0030039, 0.00000001));
+        assertThat("number of parse problems", handler.getCount(), is(0));
+
+    }
+
+    @Test
+    public void cmsPrintFlsStatistics2() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0CmsPrintFlsStats2.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(1));
+        assertThat("pause", model.get(0).getPause(), closeTo(0.0054252, 0.00000001));
+        assertThat("number of parse problems", handler.getCount(), is(0));
+
+    }
 }

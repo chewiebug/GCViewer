@@ -1,0 +1,55 @@
+2014-10-20T21:48:57.565+0200: 0.199: [GCBefore GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 2801664
+Max   Chunk Size: 2801664
+Number of Blocks: 1
+Av.  Block  Size: 2801664
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=2801664 frag=0.0000
+Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+2014-10-20T21:48:57.566+0200: 0.199: [ParNew: 4389K->509K(4928K), 0.0051086 secs] 4389K->4001K(15872K)After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 1891130
+Max   Chunk Size: 1891130
+Number of Blocks: 1
+Av.  Block  Size: 1891130
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=1891130 frag=0.0000
+After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+, 0.0054252 secs] [Times: user=0.02 sys=0.05, real=0.01 secs]

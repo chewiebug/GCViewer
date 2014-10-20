@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
@@ -55,6 +54,7 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:PrintCMSStatistics=2 (output ignored)</li>
  * <li>-XX:+PrintReferenceGC (output ignored)</li>
  * <li>-XX:+PrintCMSInitiationStatistics (output ignored)</li>
+ * <li>-XX:+PrintFLSStatistics (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -68,6 +68,9 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     
     private static final String UNLOADING_CLASS = "[Unloading class ";
     private static final String APPLICATION_TIME = "Application time:";
+    private static final String BEFORE_GC = "Before GC:"; // -XX:+PrintFLSStatistics=1
+    private static final String AFTER_GC = "After GC:"; // -XX:+PrintFLSStatistics=1
+
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
@@ -88,6 +91,19 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("cms_allocation_rate"); // -XX:+PrintCMSInitiationStatistics
         EXCLUDE_STRINGS.add("occupancy"); // -XX:+PrintCMSInitiationStatistics
         EXCLUDE_STRINGS.add("initiating"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("Statistics"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("----------------"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Total Free Space:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Max   Chunk Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Number of Blocks:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Av.  Block  Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Tree      Height:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add(BEFORE_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add(AFTER_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("CMS: Large "); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add(" free"); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS.add("size["); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS.add("demand"); // -XX:+PrintFLSStatistics=2
     }
     
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -268,6 +284,15 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     }
                     if (line.indexOf(PRINT_REFERENCE_GC_INDICATOR) > 0) {
                         line = filterAwayReferenceGc(line);
+                    }
+                    if (line.endsWith(BEFORE_GC)) {
+                        beginningOfLine.addFirst(line.substring(0, line.indexOf(BEFORE_GC)));
+                        continue;
+                    }
+                    else if (line.endsWith(AFTER_GC)) {
+                        String beginning = beginningOfLine.removeFirst();
+                        beginningOfLine.addFirst(beginning + line.substring(0, line.indexOf(AFTER_GC)));
+                        continue;
                     }
 
                     if (isCmsScavengeBeforeRemark(line)) {
