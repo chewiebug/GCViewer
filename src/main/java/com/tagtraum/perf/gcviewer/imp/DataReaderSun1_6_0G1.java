@@ -94,21 +94,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String INITIAL_MARK = "(initial-mark)";
     private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
     
-    // JDK 8 leading log entries
-    private static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
-    private static final String LOG_INFORMATION_HOTSPOT = "Java HotSpot";
-    private static final String LOG_INFORMATION_MEMORY = "Memory:";
-    private static final String LOG_INFORMATION_COMMANDLINE_FLAGS = "CommandLine flags:";
-    
-    private static final List<String> LOG_INFORMATION_STRINGS = new LinkedList<String>();
-
-    static {
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_OPENJDK);
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_HOTSPOT);
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_MEMORY);
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
-    }
-    
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
     // the pattern is "...)<timestamp>..."
     // or "...Full GC<timestamp>..."

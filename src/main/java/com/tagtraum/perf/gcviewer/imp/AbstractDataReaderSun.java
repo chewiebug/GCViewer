@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,13 +41,27 @@ public abstract class AbstractDataReaderSun implements DataReader {
     public static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
     private static final int LENGTH_OF_DATESTAMP = 29;
     
-    private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
-    
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
+
+    private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
     private final SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
     
     private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
+    // java 8 log output
+    protected static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
+    protected static final String LOG_INFORMATION_HOTSPOT = "Java HotSpot";
+    protected static final String LOG_INFORMATION_MEMORY = "Memory:";
+    protected static final String LOG_INFORMATION_COMMANDLINE_FLAGS = "CommandLine flags:";
+    protected static final List<String> LOG_INFORMATION_STRINGS = new LinkedList<String>();
+    
+    static {
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_OPENJDK);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_HOTSPOT);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_MEMORY);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
+    }
+    
     /** the reader accessing the log file */
     protected BufferedReader in;
     /** the log type allowing for small differences between different versions of the gc logs */
