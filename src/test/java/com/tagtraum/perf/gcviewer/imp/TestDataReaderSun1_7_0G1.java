@@ -274,7 +274,7 @@ public class TestDataReaderSun1_7_0G1 {
         event.setPause(0.2);
         // but no memory information -> all values zero there
         
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
         model.add(event);
         
         DoubleData initiatingOccupancyFraction = model.getCmsInitiatingOccupancyFraction();

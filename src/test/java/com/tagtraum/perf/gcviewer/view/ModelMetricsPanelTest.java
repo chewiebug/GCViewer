@@ -17,7 +17,7 @@ public class ModelMetricsPanelTest {
     
     @Test
     public void testEmptyModel() {
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
         ModelMetricsPanel panel = new ModelMetricsPanel();
         panel.setModel(model);
     }
@@ -32,12 +32,12 @@ public class ModelMetricsPanelTest {
         event.setPostUsed(400);
         event.setTotal(1024);
         
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
         model.add(event);
         
         ModelMetricsPanel panel = new ModelMetricsPanel();
         // first add empty model; is done when opened
-        panel.setModel(new GCModel(false));
+        panel.setModel(new GCModel());
         // only later a model with entries is set
         panel.setModel(model);
     }
@@ -52,7 +52,7 @@ public class ModelMetricsPanelTest {
         event.setPostUsed(400);
         event.setTotal(1024);
         
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
         model.add(event);
         
         VmOperationEvent vmOpEvent = new VmOperationEvent();
@@ -63,14 +63,14 @@ public class ModelMetricsPanelTest {
         
         ModelMetricsPanel panel = new ModelMetricsPanel();
         // first add empty model; is done when opened
-        panel.setModel(new GCModel(false));
+        panel.setModel(new GCModel());
         // only later a model with entries is set
         panel.setModel(model);
     }
     
     @Test
     public void testTwoElementsModel() {
-        GCModel model = new GCModel(false);
+        GCModel model = new GCModel();
 
         GCEvent event = new GCEvent();
         event.setTimestamp(0.5);

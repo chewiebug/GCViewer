@@ -1,0 +1,64 @@
+2014-10-20T21:03:07.419+0200: 0.356: [GCBefore GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 7289486
+Max   Chunk Size: 7252328
+Number of Blocks: 41
+Av.  Block  Size: 177792
+Tree      Height: 13
+Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+2014-10-20T21:03:07.419+0200: 0.356: [ParNew: 4878K->492K(4928K), 0.0028687 secs] 69671K->68647K(98300K)After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 6428906
+Max   Chunk Size: 6391748
+Number of Blocks: 41
+Av.  Block  Size: 156802
+Tree      Height: 13
+After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+, 0.0030039 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2014-10-21T20:58:53.838+0200: 0.545: [GCBefore GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 22278
+Max   Chunk Size: 22278
+Number of Blocks: 1
+Av.  Block  Size: 22278
+Tree      Height: 1
+Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+2014-10-21T20:58:53.838+0200: 0.545: [ParNew: 19586K->19586K(19648K), 0.0000205 secs]2014-10-21T20:58:53.838+0200: 0.545: [CMS2014-10-21T20:58:53.838+0200: 0.545: [CMS-concurrent-abortable-preclean: 0.005/0.111 secs] [Times: user=0.23 sys=0.08, real=0.11 secs] 
+ (concurrent mode failure)CMS: Large block 0x00000000f8648448
+: 83511K->54817K(84032K), 0.0336464 secs] 103097K->54817K(103680K), [CMS Perm : 2472K->2471K(21248K)]After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 5205879
+Max   Chunk Size: 5205879
+Number of Blocks: 1
+Av.  Block  Size: 5205879
+Tree      Height: 1
+After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+, 0.0339164 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 

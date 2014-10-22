@@ -35,7 +35,7 @@ public class TestDataReaderFacade {
     }
     
     /**
-     * Tests {@link DataReaderFacade#loadModel(String)}
+     * Tests {@link DataReaderFacade#loadModel(GCResource)}
      * with filename that does exist.
      */
     @Test
@@ -53,7 +53,7 @@ public class TestDataReaderFacade {
     }
 
     /**
-     * Tests {@link DataReaderFacade#loadModel(String)}
+     * Tests {@link DataReaderFacade#loadModel(GCResource)}
      * with a malformed url.
      */
     @Test
@@ -71,7 +71,7 @@ public class TestDataReaderFacade {
     }
 
     /**
-     * Tests {@link DataReaderFacade#loadModel(String)}
+     * Tests {@link DataReaderFacade#loadModel(GCResource)}
      * with a malformed url.
      */
     @Test
@@ -89,7 +89,7 @@ public class TestDataReaderFacade {
     }
 
     /**
-     * Tests {@link DataReaderFacade#loadModel(java.net.URL)}
+     * Tests {@link DataReaderFacade#loadModel(GCResource)}
      * with filename that does not exist.
      */
     @Test

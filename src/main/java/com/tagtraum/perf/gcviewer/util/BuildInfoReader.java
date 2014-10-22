@@ -16,7 +16,7 @@ public class BuildInfoReader {
     private final static String FILE_NAME = "META-INF/MANIFEST.MF";
     private final static String BUILD_VERSION = "Implementation-Version";
     private final static String BUILD_TIMESTAMP = "Implementation-Date";
-    
+
     /**
      * Reads the value of a property from FILE_NAME (must be in classpath).
      * 
@@ -34,17 +34,17 @@ public class BuildInfoReader {
                     propertyValue = "n/a";
                 }
             }
-        } 
+        }
         catch (IOException e) {
             e.printStackTrace();
         }
 
         return propertyValue;
     }
-    
+
     /**
      * Read version from properties file in classpath if it can be found.
-     * 
+     *
      * @return version or "n/a" if not found.
      */
     public static String getVersion() {

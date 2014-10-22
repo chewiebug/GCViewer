@@ -32,7 +32,7 @@ public class DataReaderJRockit1_4_2 extends AbstractDataReader {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading JRockit 1.4.2 format...");
         boolean gcSummary = false;
         try {
-            GCModel model = new GCModel(true);
+            GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line = null;
             GCEvent event = null;

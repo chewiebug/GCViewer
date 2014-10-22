@@ -27,7 +27,7 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
- * <p>Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7
+ * <p>Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7 / 1.8
  * <br>Supports the following gc algorithms:
  * <ul>
  * <li>-XX:+UseSerialGC</li>
@@ -55,6 +55,7 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:PrintCMSStatistics=2 (output ignored)</li>
  * <li>-XX:+PrintReferenceGC (output ignored)</li>
  * <li>-XX:+PrintCMSInitiationStatistics (output ignored)</li>
+ * <li>-XX:+PrintFLSStatistics (output ignored)</li>
  * </ul>
  * </p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -66,6 +67,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
     private static final String UNLOADING_CLASS = "[Unloading class ";
     private static final String APPLICATION_TIME = "Application time:";
+    private static final String BEFORE_GC = "Before GC:"; // -XX:+PrintFLSStatistics=1
+    private static final String AFTER_GC = "After GC:"; // -XX:+PrintFLSStatistics=1
+    private static final String CMS_LARGE_BLOCK = "CMS: Large "; // -XX:+PrintFLSStatistics=1
+    private static final String SIZE = "size["; // -XX:+PrintFLSStatistics=1
+
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
     static {
@@ -86,6 +92,19 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("cms_allocation_rate"); // -XX:+PrintCMSInitiationStatistics
         EXCLUDE_STRINGS.add("occupancy"); // -XX:+PrintCMSInitiationStatistics
         EXCLUDE_STRINGS.add("initiating"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS.add("Statistics"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("----------------"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Total Free Space:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Max   Chunk Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Number of Blocks:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Av.  Block  Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add("Tree      Height:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add(BEFORE_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add(AFTER_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add(CMS_LARGE_BLOCK); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS.add(" free"); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS.add(SIZE); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS.add("demand"); // -XX:+PrintFLSStatistics=2
     }
     
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -189,10 +208,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     }
 
     public GCModel read() throws IOException {
-        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x / 1.8.x format...");
         
         try (BufferedReader in = this.in) {
-            GCModel model = new GCModel(false);
+            GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             Matcher mixedLineMatcher = linesMixedPattern.matcher("");
             Matcher adaptiveSizePolicyMatcher = adaptiveSizePolicyPattern.matcher("");
@@ -206,7 +225,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             boolean lastLineWasScavengeBeforeRemark = false;
             boolean lineSkippedForScavengeBeforeRemark = false;
             boolean printTenuringDistributionOn = false;
-            final ParseInformation parsePosition = new ParseInformation(0);
+            ParseInformation parsePosition = new ParseInformation(0);
 
             while ((line = in.readLine()) != null) {
                 ++lineNumber;
@@ -225,6 +244,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         // when it occurs including timestamp (since about jdk1.7.0_50) it should still be ignored
                         continue;
                     }
+                    else if (startsWith(line, LOG_INFORMATION_STRINGS, false)) {
+                        getLogger().info(line);
+                        continue;
+                    }
+                    
                     if (line.indexOf(CMS_ABORT_PRECLEAN) >= 0) {
                         // line contains like " CMS: abort preclean due to time "
                         // -> remove the text
@@ -267,6 +291,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     if (line.indexOf(PRINT_REFERENCE_GC_INDICATOR) > 0) {
                         line = filterAwayReferenceGc(line);
                     }
+                    if (lineHasPrintFlsStatistics(line)) {
+                        handlePrintFlsStatistics(line, beginningOfLine);
+                        continue;
+                    }
 
                     if (isCmsScavengeBeforeRemark(line)) {
                         // This is the case, when option -XX:+CMSScavengeBeforeRemark is used.
@@ -290,7 +318,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         lastLineWasScavengeBeforeRemark = true;
                         continue;
                     }
-                    final int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
+                    int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassIndex > 0) {
                         beginningOfLine.addFirst(line.substring(0, unloadingClassIndex));
                         continue;
@@ -299,19 +327,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         // this is the case, when e.g. -XX:+PrintTenuringDistribution is used
                         // where we want to skip "Desired survivor..." and "- age..." lines
                         beginningOfLine.addFirst(line);
-                        continue;
-                    }
-                    else if (isMixedLine(line, mixedLineMatcher)) {
-                        // if PrintTenuringDistribution is used and a line is mixed, 
-                        // beginningOfLine may already contain a value, which must be preserved
-                        String firstPartOfBeginningOfLine = beginningOfLine.pollFirst();
-                        if (firstPartOfBeginningOfLine == null) {
-                            firstPartOfBeginningOfLine = "";
-                        }
-                        beginningOfLine.addFirst(firstPartOfBeginningOfLine + mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP));
-                        
-                        model.add(parseLine(mixedLineMatcher.group(LINES_MIXED_ENDOFLINE_GROUP), parsePosition));
-                        parsePosition.setIndex(0);
                         continue;
                     }
                     else if (line.indexOf(ADAPTIVE_PATTERN) >= 0) {
@@ -367,9 +382,23 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
 
+                    if (isMixedLine(line, mixedLineMatcher)) {
+                        // if PrintTenuringDistribution is used and a line is mixed, 
+                        // beginningOfLine may already contain a value, which must be preserved
+                        String firstPartOfBeginningOfLine = beginningOfLine.pollFirst();
+                        if (firstPartOfBeginningOfLine == null) {
+                            firstPartOfBeginningOfLine = "";
+                        }
+                        beginningOfLine.addFirst(firstPartOfBeginningOfLine + mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP));
+                        
+                        model.add(parseLine(mixedLineMatcher.group(LINES_MIXED_ENDOFLINE_GROUP), parsePosition));
+                        parsePosition.setIndex(0);
+                        continue;
+                    }
+                    
                     AbstractGCEvent<?> gcEvent = parseLine(line, parsePosition);
                      
-                     if (lastLineWasScavengeBeforeRemark && !printTenuringDistributionOn) {
+                    if (lastLineWasScavengeBeforeRemark && !printTenuringDistributionOn) {
                          // according to http://mail.openjdk.java.net/pipermail/hotspot-gc-use/2012-August/001297.html
                          // the pause time reported for cms-remark includes the scavenge-before-remark time
                          // so it has to be corrected to show only the time spent in remark event
@@ -394,6 +423,34 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         } 
         finally {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
+        }
+    }
+
+    private boolean lineHasPrintFlsStatistics(String line) {
+        return line.endsWith(BEFORE_GC) 
+                || line.endsWith(AFTER_GC) 
+                || line.indexOf(CMS_LARGE_BLOCK) > 0
+                || line.indexOf(SIZE) > 0;
+    }
+    
+    private void handlePrintFlsStatistics(String line, Deque<String> beginningOfLine) {
+        if (line.endsWith(BEFORE_GC)) {
+            beginningOfLine.addFirst(line.substring(0, line.indexOf(BEFORE_GC)));
+        }
+        else if (line.endsWith(AFTER_GC)) {
+            String beginning = beginningOfLine.removeFirst();
+            beginningOfLine.addFirst(beginning + line.substring(0, line.indexOf(AFTER_GC)));
+        }
+        else if (line.indexOf(CMS_LARGE_BLOCK) > 0) {
+            String beginning = beginningOfLine.removeFirst();
+            beginningOfLine.addFirst(beginning + line.substring(0, line.indexOf(CMS_LARGE_BLOCK)));
+        }
+        else if (line.indexOf(SIZE) > 0) {
+            String beginning = beginningOfLine.removeFirst();
+            beginningOfLine.addFirst(beginning + line.substring(0, line.indexOf(SIZE)));
+        }
+        else {
+            getLogger().warning("line should contain some known PrintFLSStatistics output, which it doesn't (" + line + ")");
         }
     }
 

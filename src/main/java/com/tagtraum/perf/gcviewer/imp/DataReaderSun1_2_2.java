@@ -26,7 +26,7 @@ public class DataReaderSun1_2_2 extends AbstractDataReader {
     public GCModel read() throws IOException {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.2.2 format...");
         try {
-            GCModel model = new GCModel(true);
+            GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_1_2_2VERBOSE_GC);
             String line = null;
             boolean timeline = false;

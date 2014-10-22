@@ -229,12 +229,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
     
     public boolean isInitialMark() {
-        return getTypeAsString().indexOf(Type.CMS_INITIAL_MARK.getName()) >= 0
-                || getTypeAsString().indexOf(Type.ASCMS_INITIAL_MARK.getName()) >= 0
-                || getTypeAsString().indexOf(Type.G1_YOUNG_INITIAL_MARK.getName()) >= 0
-                || getTypeAsString().indexOf(Type.G1_YOUNG_INITIAL_MARK_TO_SPACE_OVERFLOW.getName()) >= 0
-                || getTypeAsString().indexOf(Type.G1_PARTIAL_INITIAL_MARK.getName()) >= 0
-                || getTypeAsString().indexOf(Type.G1_PARTIAL_INITIAL_MARK_TO_SPACE_OVERFLOW.getName()) >= 0;
+        return getTypeAsString().indexOf("initial-mark") >= 0;
     }
     
     public boolean isRemark() {

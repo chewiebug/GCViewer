@@ -31,7 +31,7 @@ public class DataReaderHPUX1_2 extends AbstractDataReader {
     public GCModel read() throws IOException {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading HP-UX 1.2-1.4.0 format...");
         try {
-            GCModel model = new GCModel(true);
+            GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line = null;
             GCEvent event = null;

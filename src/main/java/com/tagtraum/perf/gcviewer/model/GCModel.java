@@ -109,9 +109,11 @@ public class GCModel implements Serializable {
     private IntData youngUsedSizes; // used young size of every event that has this information
     private IntData permUsedSizes; // used perm size of every event that has this information
     
+    private IntData postConcurrentCycleUsedTenuredSizes; // used tenured heap after concurrent collections
+    private IntData postConcurrentCycleUsedHeapSizes; // used heap after concurrent collections
+    
     private IntData promotion; // promotion from young to tenured generation during young collections
     
-    private long footprint;
     private double firstPauseTimeStamp = Double.MAX_VALUE;
     private double lastPauseTimeStamp = 0;
     private DoubleData totalPause;
@@ -124,7 +126,7 @@ public class GCModel implements Serializable {
     private long freedMemory;
     private Format format;
     private IntData postGCUsedMemory;
-    private IntData postFullGCUsedMemory;
+    private IntData postFullGCUsedHeap;
     private IntData freedMemoryByGC;
     private IntData freedMemoryByFullGC;
     private DoubleData postGCSlope;
@@ -133,12 +135,9 @@ public class GCModel implements Serializable {
     private DoubleData relativePostGCIncrease;
     private RegressionLine postFullGCSlope;
     private RegressionLine relativePostFullGCIncrease;
-    private boolean countTenuredAsFull = true;
     private URL url;
 
-    public GCModel(boolean countTenuredAsFull) {
-        this.countTenuredAsFull = countTenuredAsFull;
-        
+    public GCModel() {
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
         this.stopTheWorldEvents = new ArrayList<AbstractGCEvent<?>>();
         this.gcEvents = new ArrayList<GCEvent>();
@@ -151,7 +150,7 @@ public class GCModel implements Serializable {
         this.postGCSlope = new DoubleData();
         this.freedMemoryByGC = new IntData();
         this.freedMemoryByFullGC = new IntData();
-        this.postFullGCUsedMemory = new IntData();
+        this.postFullGCUsedHeap = new IntData();
         this.postGCUsedMemory = new IntData();
         this.totalPause = new DoubleData();
         this.fullGCPause = new DoubleData();
@@ -178,11 +177,10 @@ public class GCModel implements Serializable {
         this.tenuredUsedSizes = new IntData();
         this.youngUsedSizes = new IntData();
         
+        this.postConcurrentCycleUsedTenuredSizes = new IntData();
+        this.postConcurrentCycleUsedHeapSizes = new IntData();
+        
         this.promotion = new IntData();
-    }
-
-    public boolean isCountTenuredAsFull() {
-        return countTenuredAsFull;
     }
 
     public long getLastModified() {
@@ -377,8 +375,10 @@ public class GCModel implements Serializable {
             if (event.isInitialMark()) {
                 updateInitiatingOccupancyFraction(event);
             }
+            if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd()) {
+                updatePostConcurrentCycleUsedSizes(event);
+            }
             
-            footprint = Math.max(footprint, event.getTotal());
             freedMemory += event.getPreUsed() - event.getPostUsed();
             
             if (!event.isFull()) {
@@ -401,7 +401,7 @@ public class GCModel implements Serializable {
                 pauses.add(event.getPause());
                 
                 fullGCEvents.add(event);
-                postFullGCUsedMemory.add(event.getPostUsed());
+                postFullGCUsedHeap.add(event.getPostUsed());
                 int freed = event.getPreUsed() - event.getPostUsed();
                 freedMemoryByFullGC.add(freed);
                 fullGCPause.add(event.getPause());
@@ -444,6 +444,20 @@ public class GCModel implements Serializable {
             // as well
             totalPause.add(abstractEvent.getPause());
         }
+    }
+
+    private void updatePostConcurrentCycleUsedSizes(GCEvent event) {
+        // Most interesting is the size of the life objects immediately after a concurrent cycle.
+        // Since the "concurrent-end" events don't have the heap size information, the next event
+        // after is taken to get the information. Young generation, that has already filled up
+        // again since the concurrent-end should not be counted, so take tenured size, if available.
+        GCEvent afterConcurrentEvent = event;
+        if (event.hasDetails()) {
+            afterConcurrentEvent = event.getTenured();
+        }
+        
+        postConcurrentCycleUsedTenuredSizes.add(afterConcurrentEvent.getPreUsed());
+        postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
     }
 
     private void adjustPause(VmOperationEvent vmOpEvent) {
@@ -539,17 +553,15 @@ public class GCModel implements Serializable {
     }
 
     private void updateInitiatingOccupancyFraction(GCEvent event) {
-        GCEvent initialMarkEvent = null;
+        GCEvent initialMarkEvent = event;
         
-        if (!event.hasDetails() && event.isInitialMark()) {
-            initialMarkEvent = event;
-        }
-        else {
+        if (event.hasDetails()) {
             Iterator<GCEvent> i = event.details();
-            while (i.hasNext() && initialMarkEvent == null) {
+            while (i.hasNext()) {
                 GCEvent gcEvent = i.next();
                 if (gcEvent.isInitialMark()) {
                     initialMarkEvent = gcEvent;
+                    break;
                 }
             }
         }
@@ -671,20 +683,12 @@ public class GCModel implements Serializable {
         return postGCSlope.average();
     }
 
-    public IntData getPostGCUsedMemory() {
-        return postGCUsedMemory;
-    }
-
     public RegressionLine getCurrentPostGCSlope() {
         return currentPostGCSlope;
     }
 
     public RegressionLine getPostFullGCSlope() {
         return postFullGCSlope;
-    }
-
-    public IntData getPostFullGCUsedMemory() {
-        return postFullGCUsedMemory;
     }
 
     /**
@@ -712,9 +716,9 @@ public class GCModel implements Serializable {
      * Heap memory consumption after a <em>full</em> garbage collection.
      */
     public IntData getFootprintAfterFullGC() {
-        return postFullGCUsedMemory;
+        return postFullGCUsedHeap;
     }
-
+    
     /**
      * Pause in sec.
      */
@@ -805,6 +809,21 @@ public class GCModel implements Serializable {
     }
     
     /**
+     * Sizes of tenured heap (or if not available total heap) immediately after completion of 
+     * a concurrent cycle.
+     */
+    public IntData getPostConcurrentCycleTenuredUsedSizes() {
+        return postConcurrentCycleUsedTenuredSizes;
+    }
+    
+    /**
+     * Sizes of heap immediately after completion of a concurrent cycle.
+     */
+    public IntData getPostConcurrentCycleHeapUsedSizes() {
+        return postConcurrentCycleUsedHeapSizes;
+    }
+    
+    /**
      * Returns promotion information for all young collections (how much memory was promoted to
      * tenured space per young collection?)
      */
@@ -816,7 +835,7 @@ public class GCModel implements Serializable {
      * Footprint in KB.
      */
     public long getFootprint() {
-        return footprint;
+        return heapAllocatedSizes.getMax();
     }
 
     /**
@@ -877,7 +896,7 @@ public class GCModel implements Serializable {
     }
 
     public String toString() {
-        return allEvents.toString();
+        return "GCModel[size=" + size() + "]: " + allEvents.toString();
     }
 
     public static class Format implements Serializable {

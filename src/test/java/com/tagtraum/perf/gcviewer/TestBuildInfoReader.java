@@ -12,7 +12,7 @@ import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 /**
  * Tests the class {@link BuildInfoReader} - makes sure that the properties from the file
  * can be read. 
- * 
+ *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 05.12.2012</p>
  */

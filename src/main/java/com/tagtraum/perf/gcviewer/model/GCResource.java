@@ -35,7 +35,7 @@ public class GCResource {
 		
 		this.resourceName = resourceName;
 		this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
-		this.model = new GCModel(false);
+		this.model = new GCModel();
 
 	    logger = Logger.getLogger("GCResource".concat(Integer.toString(COUNT.incrementAndGet())));
     }

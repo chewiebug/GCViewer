@@ -92,21 +92,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String INITIAL_MARK = "(initial-mark)";
     private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
     
-    // JDK 8 leading log entries
-    private static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
-    private static final String LOG_INFORMATION_HOTSPOT = "Java HotSpot";
-    private static final String LOG_INFORMATION_MEMORY = "Memory:";
-    private static final String LOG_INFORMATION_COMMANDLINE_FLAGS = "CommandLine flags:";
-    
-    private static final List<String> LOG_INFORMATION_STRINGS = new LinkedList<String>();
-
-    static {
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_OPENJDK);
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_HOTSPOT);
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_MEMORY);
-        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
-    }
-    
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
     // the pattern is "...)<timestamp>..."
     // or "...Full GC<timestamp>..."
@@ -125,7 +110,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("compacting perm gen");
         HEAP_STRINGS.add("the space");
         HEAP_STRINGS.add("No shared spaces configured.");
-        HEAP_STRINGS.add("Metaspace");
+        HEAP_STRINGS.add("Metaspace"); // java 8
+        HEAP_STRINGS.add("class space"); // java 8
         HEAP_STRINGS.add("}");
     }
     
@@ -138,11 +124,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.6.x / 1.7.x G1 format...");
 
         try (BufferedReader in = this.in) {
-            final GCModel model = new GCModel(true);
+            GCModel model = new GCModel();
             // TODO what is this for?
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line;
-            final ParseInformation parsePosition = new ParseInformation(0);
+            ParseInformation parsePosition = new ParseInformation(0);
             Matcher gcPauseMatcher = PATTERN_GC_PAUSE.matcher("");
             Matcher linesMixedMatcher = PATTERN_LINES_MIXED.matcher("");
             Matcher ergonomicsMatcher = PATTERN_G1_ERGONOMICS.matcher("");
@@ -274,6 +260,30 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             model.add(parseLine(line, parsePosition));
                         }
                     }
+                    else if (line.indexOf(Type.FULL_GC.getName()) > 0) {
+                        // since jdk 1.8 full gc events in G1 have detailed heap sizing information on the next line
+                        GCEvent fullGcEvent = (GCEvent) parseLine(line, parsePosition);
+                        if (!in.markSupported()) {
+                            getLogger().warning("input stream does not support marking!");
+                        } 
+                        else {
+                            in.mark(200);
+                            try {
+                                line = in.readLine();
+                                if (line != null && line.trim().startsWith("[Eden")) {
+                                    parseMemoryDetails(fullGcEvent, line, parsePosition);
+                                }
+                                else {
+                                    // push last read line back into stream - it is the next event to be parsed
+                                    in.reset();
+                                }
+                            }
+                            catch (IOException e) {
+                                throw new ParseException("problem resetting stream (" + e.toString() + ")", line, parsePosition);
+                            }
+                        }
+                        model.add(fullGcEvent);
+                    }
                     else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                         // the next few lines will be the sizing of the heap
                         lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
@@ -357,31 +367,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // now we parse details of a pause
             // currently everything except memory is skipped
             if (line.indexOf("Eden") >= 0) {
-                // it is java 1.7_u2
-                // memory part looks like
-                //    [Eden: 8192K(8192K)->0B(8192K) Survivors: 0B->8192K Heap: 8192K(16M)->7895K(16M)]
-                
-                // parse Eden
-                pos.setIndex(line.indexOf("Eden:"));
-                GCEvent youngEvent = new GCEvent();
-                youngEvent.setDateStamp(event.getDatestamp());
-                youngEvent.setTimestamp(event.getTimestamp());
-                youngEvent.setExtendedType(parseType(line, pos));
-                setMemoryExtended(youngEvent, line, pos);
-                
-                // add survivors
-                pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
-                GCEvent survivorsEvent = new GCEvent();
-                setMemoryExtended(survivorsEvent, line, pos);
-                youngEvent.setPreUsed(youngEvent.getPreUsed() + survivorsEvent.getPreUsed());
-                youngEvent.setPostUsed(youngEvent.getPostUsed() + survivorsEvent.getPostUsed());
-                youngEvent.setTotal(youngEvent.getTotal() + survivorsEvent.getPostUsed());
-                
-                event.add(youngEvent);
-
-                // parse heap size
-                pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
-                setMemoryExtended(event, line, pos);
+                parseMemoryDetails(event, line, pos);
             }
             else if (line.indexOf(INCOMPLETE_CONCURRENT_MARK_INDICATOR) >= 0) {
                 parseIncompleteConcurrentEvent(model, event, line, pos);
@@ -409,6 +395,56 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         model.add(event);
 
         return lineNumber;
+    }
+    
+    /**
+     * Parse detailed memory format of G1 ("[Eden: ... Survivors: ... Heap: ...]")
+     * 
+     * @param event Event to add the detailed head information to
+     * @param line line containing the detailed heap information
+     * @param pos parseInformation concerning gc log
+     * @throws ParseException problem while parsing
+     */
+    private void parseMemoryDetails(GCEvent event, String line, ParseInformation pos) throws ParseException {
+        assert line.indexOf("Eden") > 0 : "String 'Eden' not found in line (" + line + ")";
+        // it is java 1.7_u2
+        // memory part looks like
+        //    [Eden: 8192K(8192K)->0B(8192K) Survivors: 0B->8192K Heap: 8192K(16M)->7895K(16M)]
+        
+        // parse Eden
+        pos.setIndex(line.indexOf("Eden:"));
+        GCEvent youngEvent = new GCEvent();
+        youngEvent.setDateStamp(event.getDatestamp());
+        youngEvent.setTimestamp(event.getTimestamp());
+        youngEvent.setExtendedType(parseType(line, pos));
+        setMemoryExtended(youngEvent, line, pos);
+        
+        // add survivors
+        pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
+        GCEvent survivorsEvent = new GCEvent();
+        setMemoryExtended(survivorsEvent, line, pos);
+        youngEvent.setPreUsed(youngEvent.getPreUsed() + survivorsEvent.getPreUsed());
+        youngEvent.setPostUsed(youngEvent.getPostUsed() + survivorsEvent.getPostUsed());
+        youngEvent.setTotal(youngEvent.getTotal() + survivorsEvent.getPostUsed());
+        
+        event.add(youngEvent);
+
+        // parse heap size
+        pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
+        setMemoryExtended(event, line, pos);
+        
+        // parse Metaspace
+        if (line.indexOf("Metaspace:") > 0) {
+            pos.setIndex(line.indexOf("Metaspace:"));
+            GCEvent metaSpace = new GCEvent();
+            metaSpace.setDateStamp(event.getDatestamp());
+            metaSpace.setTimestamp(event.getTimestamp());
+            metaSpace.setExtendedType(parseType(line, pos));
+            setMemoryExtended(metaSpace, line, pos);
+            
+            event.add(metaSpace);
+        }
+        
     }
 
     /**
@@ -488,11 +524,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @return complete concurrent event
      * @throws ParseException 
      */
-    private AbstractGCEvent<?> parseConcurrentEvent(final String line,
-            final ParseInformation pos, final Date datestamp,
-            final double timestamp, final ExtendedType type) throws ParseException {
+    private AbstractGCEvent<?> parseConcurrentEvent(String line,
+            ParseInformation pos, Date datestamp,
+            double timestamp, final ExtendedType type) throws ParseException {
         
-        final ConcurrentGCEvent event = new ConcurrentGCEvent();
+        ConcurrentGCEvent event = new ConcurrentGCEvent();
         
         // simple concurrent events (ending with -start) just are of type GcPattern.GC
         event.setDateStamp(datestamp);

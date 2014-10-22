@@ -27,7 +27,7 @@ public class DataReaderIBM1_3_0 extends AbstractDataReader {
     public GCModel read() throws IOException {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading IBM 1.3.0 format...");
         try {
-            GCModel model = new GCModel(true);
+            GCModel model = new GCModel();
             model.setFormat(GCModel.Format.IBM_VERBOSE_GC);
             int state = 0;
             String line = null;

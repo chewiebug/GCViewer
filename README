@@ -16,7 +16,7 @@ to generate a report (including optional chart image file).
 
 Supported verbose:gc formats are:
 
-- Oracle JDK 1.8 (experimental support) -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
+- Oracle JDK 1.8 -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.7 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.6 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun JDK 1.4/1.5 with the option -Xloggc:<file> [-XX:+PrintGCDetails]
@@ -106,6 +106,12 @@ Summary
 
 - Footprint:
      o Maximal amount of memory allocated
+- Max heap after conc GC:
+     o Max used heap after concurrent gc.
+- Max tenured after conc GC:
+     o Max used tenured heap after concurrent gc (followed by % of max tenured / % of max total heap).
+- Max heap after full GC:
+     o Max used heap after full gc. Indicates max live object size and can help to determine heap size.
 - Freed Memory:
      o Total amount of memory that has been freed
 - Freed Mem/Min:
@@ -136,6 +142,16 @@ Memory
      o Max memory usage / allocation in young space
 - Perm heap (usage / alloc max):
      o Max memory usage / allocation in perm space
+- Max tenured after conc GC:
+     o see in "summary" section
+- Avg tenured after conc GC:
+     o average size of tenured heap after concurrent collection
+- Max heap after conc GC:
+     o see in "summary" section
+- Avg heap after conc GC:
+     o average size of concurrent heap after concurrent collection
+- Max heap after full GC:
+     o see in "summary" section
 - Avg after full GC:
      o The average heap memory consumption after a full collection
 - Avg after GC:
@@ -265,16 +281,13 @@ Therefore values like 'Total Time', 'Throughput', and 'Freed Mem/Min'
 cannot be calculated.
 
 
-Sun / Oracle JDK 1.6 / 1.7 (a.k.a. Java 6 / 7)
+Sun / Oracle JDK 1.6 / 1.7 / 1.8 (a.k.a. Java 6 / 7 / 8)
 ---------------------------
 
 CMS and G1 collector sometimes mix concurrent events with stop the world 
 collections in the output. In some cases the parser can recover from 
 such mixed lines, sometimes it can't and will show an error message.
 
-If G1 collector is used with -XX:-PrintGCTimeStamps (without timestamps)
-but with -XX:+PrintGCDateStamps (with full date information) GCViewer can't 
-parse the log.
 
 BEA JRockit 1.4.2/1.5/1.6
 -------------------------

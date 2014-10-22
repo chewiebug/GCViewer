@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -45,6 +46,20 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     
     private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
+    // java 8 log output
+    protected static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
+    protected static final String LOG_INFORMATION_HOTSPOT = "Java HotSpot";
+    protected static final String LOG_INFORMATION_MEMORY = "Memory:";
+    protected static final String LOG_INFORMATION_COMMANDLINE_FLAGS = "CommandLine flags:";
+    protected static final List<String> LOG_INFORMATION_STRINGS = new LinkedList<String>();
+    
+    static {
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_OPENJDK);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_HOTSPOT);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_MEMORY);
+        LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
+    }
+    
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
 
@@ -69,16 +84,16 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      */
     private int getMemoryInKiloByte(double memoryValue, char memUnit, String line) {
         if ('B' == memUnit) {
-            return (int) (memoryValue / 1024);
+            return (int) Math.rint(memoryValue / 1024);
         }
         else if ('K' == memUnit) {
-            return (int) memoryValue;
+            return (int) Math.rint(memoryValue);
         }
         else if ('M' == memUnit) {
-            return (int) (memoryValue * 1024);
+            return (int) Math.rint(memoryValue * 1024);
         }
         else if ('G' == memUnit) {
-            return (int) (memoryValue * 1024*1024);
+            return (int) Math.rint(memoryValue * 1024*1024);
         }
         else {
             if (getLogger().isLoggable(Level.WARNING)) {
