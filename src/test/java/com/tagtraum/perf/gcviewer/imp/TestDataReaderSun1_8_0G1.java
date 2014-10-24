@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -32,18 +33,23 @@ public class TestDataReaderSun1_8_0G1 {
     }
 
     @Test
-    public void printGCCauseTenuringDistribution() throws Exception {
+    public void fullConcurrentCycle() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
-        
-        DataReader reader = getDataReader("SampleSun1_8_0G1PrintGCCausePrintTenuringDistribution.txt");
+
+        DataReader reader = getDataReader("SampleSun1_8_0G1_ConcurrentCycle.txt");
         GCModel model = reader.read();
         
-        assertEquals("gc pause sum", 16.7578613, model.getPause().getSum(), 0.000000001);
+        assertThat("size", model.size(), is(10));
         
-        assertEquals("number of errors", 0, handler.getCount());
+        assertThat("tenured size after concurrent cycle", model.getPostConcurrentCycleTenuredUsedSizes().getMax(), is(31949 - 10*1024 - 3072));
+        assertThat("heap size after concurrent cycle", model.getPostConcurrentCycleHeapUsedSizes().getMax(), is(31949));
+        
+        assertThat("initiatingOccupancyFraction", model.getCmsInitiatingOccupancyFraction().getMax(), closeTo(0.69, 0.001));
+        
+        assertThat("number of errors", handler.getCount(), is(0));
     }
     
     /**
@@ -76,4 +82,36 @@ public class TestDataReaderSun1_8_0G1 {
         
         assertThat("warning count", handler.getCount(), is(0));
     }
+
+    @Test
+    public void printGCCauseTenuringDistribution() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        DataReader reader = getDataReader("SampleSun1_8_0G1PrintGCCausePrintTenuringDistribution.txt");
+        GCModel model = reader.read();
+        
+        assertEquals("gc pause sum", 16.7578613, model.getPause().getSum(), 0.000000001);
+        
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    @Test
+    public void printHeapAtGC() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        
+        DataReader reader = getDataReader("SampleSun1_8_0G1PrintHeapAtGc.txt");
+        GCModel model = reader.read();
+        
+        assertEquals("gc pause sum", 0.0055924, model.getPause().getSum(), 0.000000001);
+        
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    
 }

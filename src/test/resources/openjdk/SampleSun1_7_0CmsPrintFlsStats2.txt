@@ -1,0 +1,427 @@
+2014-10-20T21:48:57.565+0200: 0.199: [GCBefore GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 2801664
+Max   Chunk Size: 2801664
+Number of Blocks: 1
+Av.  Block  Size: 2801664
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=2801664 frag=0.0000
+Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+2014-10-20T21:48:57.566+0200: 0.199: [ParNew: 4389K->509K(4928K), 0.0051086 secs] 4389K->4001K(15872K)After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 1891130
+Max   Chunk Size: 1891130
+Number of Blocks: 1
+Av.  Block  Size: 1891130
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=1891130 frag=0.0000
+After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+, 0.0054252 secs] [Times: user=0.02 sys=0.05, real=0.01 secs]
+2014-10-21T20:59:40.327+0200: 0.339: [GCBefore GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 21654
+Max   Chunk Size: 21654
+Number of Blocks: 1
+Av.  Block  Size: 21654
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 28611
+Max   Chunk Size: 141
+Number of Blocks: 1043
+Av.  Block  Size: 27
+ free=50265 frag=0.8137
+Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+2014-10-21T20:59:40.327+0200: 0.339: [ParNew: 19586K->19586K(19648K), 0.0000242 secs]2014-10-21T20:59:40.327+0200: 0.339: [CMS2014-10-21T20:59:40.327+0200: 0.339: [CMS-concurrent-abortable-preclean: 0.004/0.087 secs] [Times: user=0.14 sys=0.05, real=0.09 secs] 
+ (concurrent mode failure)size[3] : demand: 1693, old_rate: 0.000000, current_rate: 5079.955078, new_rate: 5079.955078, old_desired: 0, new_desired: 0
+size[4] : demand: 726, old_rate: 0.000000, current_rate: 2178.409424, new_rate: 2178.409424, old_desired: 0, new_desired: 0
+size[5] : demand: 343, old_rate: 0.000000, current_rate: 1029.193481, new_rate: 1029.193481, old_desired: 0, new_desired: 0
+size[6] : demand: 191, old_rate: 0.000000, current_rate: 573.107727, new_rate: 573.107727, old_desired: 0, new_desired: 0
+size[7] : demand: 109, old_rate: 0.000000, current_rate: 327.061493, new_rate: 327.061493, old_desired: 0, new_desired: 0
+size[8] : demand: 71, old_rate: 0.000000, current_rate: 213.040054, new_rate: 213.040054, old_desired: 0, new_desired: 0
+size[9] : demand: 115, old_rate: 0.000000, current_rate: 345.064880, new_rate: 345.064880, old_desired: 0, new_desired: 0
+size[10] : demand: 79, old_rate: 0.000000, current_rate: 237.044556, new_rate: 237.044556, old_desired: 0, new_desired: 0
+size[11] : demand: 16, old_rate: 0.000000, current_rate: 48.009026, new_rate: 48.009026, old_desired: 0, new_desired: 0
+size[12] : demand: 8, old_rate: 0.000000, current_rate: 24.004513, new_rate: 24.004513, old_desired: 0, new_desired: 0
+size[13] : demand: 13, old_rate: 0.000000, current_rate: 39.007332, new_rate: 39.007332, old_desired: 0, new_desired: 0
+size[14] : demand: 260, old_rate: 0.000000, current_rate: 780.146667, new_rate: 780.146667, old_desired: 0, new_desired: 0
+size[15] : demand: 131, old_rate: 0.000000, current_rate: 393.073883, new_rate: 393.073883, old_desired: 0, new_desired: 0
+size[16] : demand: 47, old_rate: 0.000000, current_rate: 141.026505, new_rate: 141.026505, old_desired: 0, new_desired: 0
+size[17] : demand: 35, old_rate: 0.000000, current_rate: 105.019745, new_rate: 105.019745, old_desired: 0, new_desired: 0
+size[18] : demand: 42, old_rate: 0.000000, current_rate: 126.023689, new_rate: 126.023689, old_desired: 0, new_desired: 0
+size[19] : demand: 17, old_rate: 0.000000, current_rate: 51.009590, new_rate: 51.009590, old_desired: 0, new_desired: 0
+size[20] : demand: 9, old_rate: 0.000000, current_rate: 27.005077, new_rate: 27.005077, old_desired: 0, new_desired: 0
+size[21] : demand: 6, old_rate: 0.000000, current_rate: 18.003384, new_rate: 18.003384, old_desired: 0, new_desired: 0
+size[22] : demand: 3, old_rate: 0.000000, current_rate: 9.001692, new_rate: 9.001692, old_desired: 0, new_desired: 0
+size[23] : demand: 9, old_rate: 0.000000, current_rate: 27.005077, new_rate: 27.005077, old_desired: 0, new_desired: 0
+size[24] : demand: 1, old_rate: 0.000000, current_rate: 3.000564, new_rate: 3.000564, old_desired: 0, new_desired: 0
+size[25] : demand: 6, old_rate: 0.000000, current_rate: 18.003384, new_rate: 18.003384, old_desired: 0, new_desired: 0
+size[26] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[27] : demand: 3, old_rate: 0.000000, current_rate: 9.001692, new_rate: 9.001692, old_desired: 0, new_desired: 0
+size[28] : demand: 1, old_rate: 0.000000, current_rate: 3.000564, new_rate: 3.000564, old_desired: 0, new_desired: 0
+size[29] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[30] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[31] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[32] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[33] : demand: 2, old_rate: 0.000000, current_rate: 6.001128, new_rate: 6.001128, old_desired: 0, new_desired: 0
+size[34] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[35] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[36] : demand: 1, old_rate: 0.000000, current_rate: 3.000564, new_rate: 3.000564, old_desired: 0, new_desired: 0
+size[37] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[38] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[39] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[40] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[41] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[42] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[43] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[44] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[45] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[46] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[47] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[48] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[49] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[50] : demand: 3, old_rate: 0.000000, current_rate: 9.001692, new_rate: 9.001692, old_desired: 0, new_desired: 0
+size[51] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[52] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[53] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[54] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[55] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[56] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[57] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[58] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[59] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[60] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[61] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[62] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[63] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[64] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[65] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[66] : demand: 7, old_rate: 0.000000, current_rate: 21.003948, new_rate: 21.003948, old_desired: 0, new_desired: 0
+size[67] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[68] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[69] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[70] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[71] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[72] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[73] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[74] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[75] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[76] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[77] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[78] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[79] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[80] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[81] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[82] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[83] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[84] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[85] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[86] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[87] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[88] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[89] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[90] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[91] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[92] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[93] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[94] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[95] : demand: 1, old_rate: 0.000000, current_rate: 3.000564, new_rate: 3.000564, old_desired: 0, new_desired: 0
+size[96] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[97] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[98] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[99] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[100] : demand: 1, old_rate: 0.000000, current_rate: 3.000564, new_rate: 3.000564, old_desired: 0, new_desired: 0
+size[101] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[102] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[103] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[104] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[105] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[106] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[107] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[108] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[109] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[110] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[111] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[112] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[113] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[114] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[115] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[116] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[117] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[118] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[119] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[120] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[121] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[122] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[123] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[124] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[125] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[126] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[127] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[128] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[129] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[130] : demand: 2, old_rate: 0.000000, current_rate: 6.001128, new_rate: 6.001128, old_desired: 0, new_desired: 0
+size[131] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[132] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[133] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[134] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[135] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[136] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[137] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[138] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[139] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[140] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[141] : demand: 1, old_rate: 0.000000, current_rate: 3.000564, new_rate: 3.000564, old_desired: 0, new_desired: 0
+size[142] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[143] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[144] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[145] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[146] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[147] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[148] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[149] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[150] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[151] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[152] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[153] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[154] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[155] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[156] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[157] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[158] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[159] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[160] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[161] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[162] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[163] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[164] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[165] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[166] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[167] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[168] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[169] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[170] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[171] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[172] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[173] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[174] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[175] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[176] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[177] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[178] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[179] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[180] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[181] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[182] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[183] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[184] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[185] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[186] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[187] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[188] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[189] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[190] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[191] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[192] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[193] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[194] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[195] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[196] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[197] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[198] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[199] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[200] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[201] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[202] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[203] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[204] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[205] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[206] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[207] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[208] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[209] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[210] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[211] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[212] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[213] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[214] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[215] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[216] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[217] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[218] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[219] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[220] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[221] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[222] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[223] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[224] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[225] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[226] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[227] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[228] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[229] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[230] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[231] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[232] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[233] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[234] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[235] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[236] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[237] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[238] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[239] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[240] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[241] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[242] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[243] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[244] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[245] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[246] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[247] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[248] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[249] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[250] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[251] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[252] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[253] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[254] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[255] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+size[256] : demand: 0, old_rate: 0.000000, current_rate: 0.000000, new_rate: 0.000000, old_desired: 0, new_desired: 0
+demand: 1, old_rate: 0.000000, current_rate: 3.000564, new_rate: 3.000564, old_desired: 0, new_desired: 0
+CMS: Large block 0x00000000f8648448
+: 83511K->54817K(84032K), 0.0353489 secs] 103097K->54817K(103680K), [CMS Perm : 2472K->2471K(21248K)]After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 5205879
+Max   Chunk Size: 5205879
+Number of Blocks: 1
+Av.  Block  Size: 5205879
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=5205879 frag=0.0000
+After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+, 0.0356364 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 
+2014-10-21T21:00:01.180+0200: 21.197: [GCBefore GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 4713650
+Max   Chunk Size: 3114480
+Number of Blocks: 4
+Av.  Block  Size: 1178412
+Tree      Height: 2
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 119
+Max   Chunk Size: 7
+Number of Blocks: 32
+Av.  Block  Size: 3
+ free=4713769 frag=0.4487
+Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+2014-10-21T21:00:01.180+0200: 21.198: [ParNew: 42954K->42954K(43008K), 0.0000377 secs]2014-10-21T21:00:01.180+0200: 21.198: [CMSCMS: Large block 0x00000000f8424ec0
+2014-10-21T21:00:01.180+0200: 21.198: [CMS-concurrent-sweep: 0.002/0.002 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+ (concurrent mode failure)size[3] : size[4] : size[5] : size[6] : size[7] : size[8] : size[9] : size[10] : size[11] : size[12] : size[13] : size[14] : size[15] : size[16] : size[17] : size[18] : size[19] : size[20] : size[21] : size[22] : size[23] : size[24] : size[25] : size[26] : size[27] : size[28] : size[29] : size[30] : size[31] : size[32] : size[33] : size[34] : size[35] : size[36] : size[37] : size[38] : size[39] : size[40] : size[41] : size[42] : size[43] : size[44] : size[45] : size[46] : size[47] : size[48] : size[49] : size[50] : size[51] : size[52] : size[53] : size[54] : size[55] : size[56] : size[57] : size[58] : size[59] : size[60] : size[61] : size[62] : size[63] : size[64] : size[65] : size[66] : size[67] : size[68] : size[69] : size[70] : size[71] : size[72] : size[73] : size[74] : size[75] : size[76] : size[77] : size[78] : size[79] : size[80] : size[81] : size[82] : size[83] : size[84] : size[85] : size[86] : size[87] : size[88] : size[89] : size[90] : size[91] : size[92] : size[93] : size[94] : size[95] : size[96] : size[97] : size[98] : size[99] : size[100] : size[101] : size[102] : size[103] : size[104] : size[105] : size[106] : size[107] : size[108] : size[109] : size[110] : size[111] : size[112] : size[113] : size[114] : size[115] : size[116] : size[117] : size[118] : size[119] : size[120] : size[121] : size[122] : size[123] : size[124] : size[125] : size[126] : size[127] : size[128] : size[129] : size[130] : size[131] : size[132] : size[133] : size[134] : size[135] : size[136] : size[137] : size[138] : size[139] : size[140] : size[141] : size[142] : size[143] : size[144] : size[145] : size[146] : size[147] : size[148] : size[149] : size[150] : size[151] : size[152] : size[153] : size[154] : size[155] : size[156] : size[157] : size[158] : size[159] : size[160] : size[161] : size[162] : size[163] : size[164] : size[165] : size[166] : size[167] : size[168] : size[169] : size[170] : size[171] : size[172] : size[173] : size[174] : size[175] : size[176] : size[177] : size[178] : size[179] : size[180] : size[181] : size[182] : size[183] : size[184] : size[185] : size[186] : size[187] : size[188] : size[189] : size[190] : size[191] : size[192] : size[193] : size[194] : size[195] : size[196] : size[197] : size[198] : size[199] : size[200] : size[201] : size[202] : size[203] : size[204] : size[205] : size[206] : size[207] : size[208] : size[209] : size[210] : size[211] : size[212] : size[213] : size[214] : size[215] : size[216] : size[217] : size[218] : size[219] : size[220] : size[221] : size[222] : size[223] : size[224] : size[225] : size[226] : size[227] : size[228] : size[229] : size[230] : size[231] : size[232] : size[233] : size[234] : size[235] : size[236] : size[237] : size[238] : size[239] : size[240] : size[241] : size[242] : size[243] : size[244] : size[245] : size[246] : size[247] : size[248] : size[249] : size[250] : size[251] : size[252] : size[253] : size[254] : size[255] : size[256] : CMS: Large block 0x00000000f5e8cf98
+: 58661K->14131K(95616K), 0.0261361 secs] 101616K->14131K(138624K), [CMS Perm : 2471K->2471K(21248K)]After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 10413581
+Max   Chunk Size: 10413581
+Number of Blocks: 1
+Av.  Block  Size: 10413581
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=10413581 frag=0.0000
+After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=0 frag=0.0000
+, 0.0264843 secs] [Times: user=0.02 sys=0.00, real=0.03 secs] 

@@ -332,6 +332,9 @@ public class TestDataReaderSun1_7_0 {
         assertThat("throughput", model.getThroughput(), closeTo(29.66965410503, 0.00000000001));
         
         assertThat("number of parse problems", handler.getCount(), is(0));
+        
+        assertThat("post concurrent cycle tenured size", model.getPostConcurrentCycleTenuredUsedSizes().getMax(), is(84508 - 42951));
+        assertThat("post concurrent cycle size", model.getPostConcurrentCycleHeapUsedSizes().getMax(), is(84508));
     }
     
     /**
@@ -368,5 +371,48 @@ public class TestDataReaderSun1_7_0 {
                 dateFormatter.format(model.get(1).getDatestamp()), 
                 equalTo("2012-04-26T23:59:51.011"));
         assertThat("first timestamp", model.getFirstPauseTimeStamp(), closeTo(33395.153, 0.00001));
+    }
+    
+    @Test
+    public void cmsPrintFlsStatistics1() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0CmsPrintFlsStats1.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(3));
+        assertThat("event 1 pause", model.get(0).getPause(), closeTo(0.0030039, 0.00000001));
+        assertThat("event 2", model.get(1).isConcurrent(), is(true));
+        assertThat("event 3", model.get(2).isFull(), is(true));
+        assertThat("event 3 pause", model.get(2).getPause(), closeTo(0.0339164, 0.00000001));
+        assertThat("number of parse problems", handler.getCount(), is(0));
+
+    }
+
+    @Test
+    public void cmsPrintFlsStatistics2() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0CmsPrintFlsStats2.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(5));
+        assertThat("event 1 pause", model.get(0).getPause(), closeTo(0.0054252, 0.00000001));
+        assertThat("event 2", model.get(1).isConcurrent(), is(true));
+        assertThat("event 3", model.get(2).isFull(), is(true));
+        assertThat("event 3 pause", model.get(2).getPause(), closeTo(0.0356364, 0.00000001));
+        assertThat("event 4", model.get(3).isConcurrent(), is(true));
+        assertThat("event 5", model.get(4).isFull(), is(true));
+        assertThat("event 5 pause", model.get(4).getPause(), closeTo(0.0264843, 0.00000001));
+        assertThat("number of parse problems", handler.getCount(), is(0));
+
     }
 }

@@ -217,6 +217,10 @@ public class ModelPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_memory_tenured_heap_usage"));
             addEntry(LocalisationHelper.getString("data_panel_memory_young_heap_usage"));
             addEntry(LocalisationHelper.getString("data_panel_memory_perm_heap_usage"));
+            addEntry(LocalisationHelper.getString("data_panel_tenuredafterconcgc_max"));
+            addEntry(LocalisationHelper.getString("data_panel_tenuredafterconcgc_avg"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintafterconcgc_max"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintafterconcgc_avg"));
             addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"));
             addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc_avg"));
             addEntry(LocalisationHelper.getString("data_panel_footprintaftergc_avg"));
@@ -246,6 +250,8 @@ public class ModelPanel extends JTabbedPane {
             boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
             boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
             boolean promotionAvailable = model.getPromotion().getN() > 0;
+            boolean postConcurrentUsedSizeAvailable = model.getPostConcurrentCycleHeapUsedSizes().getN() > 0;
+            boolean postConcurrentUsedTenuredSizeAvailable = model.getPostConcurrentCycleTenuredUsedSizes().getN() > 0;
 
             updateValue(LocalisationHelper.getString("data_panel_memory_heap_usage"),
                     footprintFormatter.format(model.getHeapUsedSizes().getMax()) 
@@ -267,6 +273,25 @@ public class ModelPanel extends JTabbedPane {
                             + " (" + percentFormatter.format(model.getPermUsedSizes().getMax() / (double)model.getPermAllocatedSizes().getMax() * 100) + "%)"
                             + " / " + footprintFormatter.format(model.getPermAllocatedSizes().getMax()) : "n/a",
                     model.getPermAllocatedSizes().getN() > 0);
+            updateValue(LocalisationHelper.getString("data_panel_footprintafterconcgc_max"),
+                    postConcurrentUsedSizeAvailable ? footprintFormatter.format(model.getPostConcurrentCycleHeapUsedSizes().getMax())
+                            + " (" + percentFormatter.format(model.getPostConcurrentCycleHeapUsedSizes().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",
+                    postConcurrentUsedSizeAvailable);
+            updateValue(LocalisationHelper.getString("data_panel_footprintafterconcgc_avg"),
+                    postConcurrentUsedSizeAvailable ? footprintFormatter.format(model.getPostConcurrentCycleHeapUsedSizes().average())
+                            + " (\u03c3=" + sigmaMemoryFormat(model.getPostConcurrentCycleHeapUsedSizes().standardDeviation()) +")" : "n/a",
+                            postConcurrentUsedSizeAvailable && isSignificant(model.getPostConcurrentCycleHeapUsedSizes().average(),
+                            model.getPostConcurrentCycleHeapUsedSizes().standardDeviation()));
+            updateValue(LocalisationHelper.getString("data_panel_tenuredafterconcgc_max"),
+                    postConcurrentUsedTenuredSizeAvailable ? footprintFormatter.format(model.getPostConcurrentCycleTenuredUsedSizes().getMax())
+                            + " (" + percentFormatter.format(model.getPostConcurrentCycleTenuredUsedSizes().getMax() / (double)model.getTenuredAllocatedSizes().getMax() * 100) + "% / "
+                                   + percentFormatter.format(model.getPostConcurrentCycleTenuredUsedSizes().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",
+                    postConcurrentUsedTenuredSizeAvailable);
+            updateValue(LocalisationHelper.getString("data_panel_tenuredafterconcgc_avg"),
+                    postConcurrentUsedTenuredSizeAvailable ? footprintFormatter.format(model.getPostConcurrentCycleTenuredUsedSizes().average())
+                            + " (\u03c3=" + sigmaMemoryFormat(model.getPostConcurrentCycleTenuredUsedSizes().standardDeviation()) +")" : "n/a",
+                            postConcurrentUsedTenuredSizeAvailable && isSignificant(model.getPostConcurrentCycleTenuredUsedSizes().average(),
+                            model.getPostConcurrentCycleTenuredUsedSizes().standardDeviation()));
             updateValue(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"),
                     fullGcDataAvailable ? footprintFormatter.format(model.getFootprintAfterFullGC().getMax())
                             + " (" + percentFormatter.format(model.getFootprintAfterFullGC().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",
@@ -435,6 +460,8 @@ public class ModelPanel extends JTabbedPane {
             super();
             
             addEntry(LocalisationHelper.getString("data_panel_memory_heap_usage"));
+            addEntry(LocalisationHelper.getString("data_panel_footprintafterconcgc_max"));
+            addEntry(LocalisationHelper.getString("data_panel_tenuredafterconcgc_max"));
             addEntry(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"));
             addEntry(LocalisationHelper.getString("data_panel_freedmemory"));
             addEntry(LocalisationHelper.getString("data_panel_freedmemorypermin"));
@@ -449,12 +476,23 @@ public class ModelPanel extends JTabbedPane {
         
         public void setModel(GCModel model) {
             boolean fullGcDataAvailable = model.getFootprintAfterFullGC().getN() > 0;
+            boolean postConcurrentUsedSizeAvailable = model.getPostConcurrentCycleHeapUsedSizes().getN() > 0;
+            boolean postConcurrentUsedTenuredSizeAvailable = model.getPostConcurrentCycleTenuredUsedSizes().getN() > 0;
                     
             updateValue(LocalisationHelper.getString("data_panel_memory_heap_usage"),
                     footprintFormatter.format(model.getHeapUsedSizes().getMax()) 
                         + " (" + percentFormatter.format(model.getHeapUsedSizes().getMax() / (double)model.getHeapAllocatedSizes().getMax() * 100) + "%)"
                         + " / " + footprintFormatter.format(model.getHeapAllocatedSizes().getMax()),
                     true);
+            updateValue(LocalisationHelper.getString("data_panel_footprintafterconcgc_max"),
+                    postConcurrentUsedSizeAvailable ? footprintFormatter.format(model.getPostConcurrentCycleHeapUsedSizes().getMax())
+                            + " (" + percentFormatter.format(model.getPostConcurrentCycleHeapUsedSizes().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",
+                    postConcurrentUsedSizeAvailable);
+            updateValue(LocalisationHelper.getString("data_panel_tenuredafterconcgc_max"),
+                    postConcurrentUsedTenuredSizeAvailable ? footprintFormatter.format(model.getPostConcurrentCycleTenuredUsedSizes().getMax())
+                            + " (" + percentFormatter.format(model.getPostConcurrentCycleTenuredUsedSizes().getMax() / (double)model.getTenuredAllocatedSizes().getMax() * 100) + "% / "
+                                   + percentFormatter.format(model.getPostConcurrentCycleTenuredUsedSizes().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",
+                    postConcurrentUsedTenuredSizeAvailable);
             updateValue(LocalisationHelper.getString("data_panel_footprintafterfullgc_max"),
                     fullGcDataAvailable ? footprintFormatter.format(model.getFootprintAfterFullGC().getMax())
                             + " (" + percentFormatter.format(model.getFootprintAfterFullGC().getMax() / (double)model.getFootprint() * 100) + "%)": "n/a",

@@ -109,6 +109,9 @@ public class GCModel implements Serializable {
     private IntData youngUsedSizes; // used young size of every event that has this information
     private IntData permUsedSizes; // used perm size of every event that has this information
     
+    private IntData postConcurrentCycleUsedTenuredSizes; // used tenured heap after concurrent collections
+    private IntData postConcurrentCycleUsedHeapSizes; // used heap after concurrent collections
+    
     private IntData promotion; // promotion from young to tenured generation during young collections
     
     private double firstPauseTimeStamp = Double.MAX_VALUE;
@@ -173,6 +176,9 @@ public class GCModel implements Serializable {
         this.permUsedSizes = new IntData();
         this.tenuredUsedSizes = new IntData();
         this.youngUsedSizes = new IntData();
+        
+        this.postConcurrentCycleUsedTenuredSizes = new IntData();
+        this.postConcurrentCycleUsedHeapSizes = new IntData();
         
         this.promotion = new IntData();
     }
@@ -369,6 +375,9 @@ public class GCModel implements Serializable {
             if (event.isInitialMark()) {
                 updateInitiatingOccupancyFraction(event);
             }
+            if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd()) {
+                updatePostConcurrentCycleUsedSizes(event);
+            }
             
             freedMemory += event.getPreUsed() - event.getPostUsed();
             
@@ -435,6 +444,20 @@ public class GCModel implements Serializable {
             // as well
             totalPause.add(abstractEvent.getPause());
         }
+    }
+
+    private void updatePostConcurrentCycleUsedSizes(GCEvent event) {
+        // Most interesting is the size of the life objects immediately after a concurrent cycle.
+        // Since the "concurrent-end" events don't have the heap size information, the next event
+        // after is taken to get the information. Young generation, that has already filled up
+        // again since the concurrent-end should not be counted, so take tenured size, if available.
+        GCEvent afterConcurrentEvent = event;
+        if (event.hasDetails()) {
+            afterConcurrentEvent = event.getTenured();
+        }
+        
+        postConcurrentCycleUsedTenuredSizes.add(afterConcurrentEvent.getPreUsed());
+        postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
     }
 
     private void adjustPause(VmOperationEvent vmOpEvent) {
@@ -530,17 +553,15 @@ public class GCModel implements Serializable {
     }
 
     private void updateInitiatingOccupancyFraction(GCEvent event) {
-        GCEvent initialMarkEvent = null;
+        GCEvent initialMarkEvent = event;
         
-        if (!event.hasDetails() && event.isInitialMark()) {
-            initialMarkEvent = event;
-        }
-        else {
+        if (event.hasDetails()) {
             Iterator<GCEvent> i = event.details();
-            while (i.hasNext() && initialMarkEvent == null) {
+            while (i.hasNext()) {
                 GCEvent gcEvent = i.next();
                 if (gcEvent.isInitialMark()) {
                     initialMarkEvent = gcEvent;
+                    break;
                 }
             }
         }
@@ -788,6 +809,21 @@ public class GCModel implements Serializable {
     }
     
     /**
+     * Sizes of tenured heap (or if not available total heap) immediately after completion of 
+     * a concurrent cycle.
+     */
+    public IntData getPostConcurrentCycleTenuredUsedSizes() {
+        return postConcurrentCycleUsedTenuredSizes;
+    }
+    
+    /**
+     * Sizes of heap immediately after completion of a concurrent cycle.
+     */
+    public IntData getPostConcurrentCycleHeapUsedSizes() {
+        return postConcurrentCycleUsedHeapSizes;
+    }
+    
+    /**
      * Returns promotion information for all young collections (how much memory was promoted to
      * tenured space per young collection?)
      */
@@ -858,7 +894,7 @@ public class GCModel implements Serializable {
     }
 
     public String toString() {
-        return allEvents.toString();
+        return "GCModel[size=" + size() + "]: " + allEvents.toString();
     }
 
     public static class Format implements Serializable {

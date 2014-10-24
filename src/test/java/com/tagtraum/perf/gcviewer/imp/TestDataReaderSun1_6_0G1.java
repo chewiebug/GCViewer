@@ -54,6 +54,12 @@ public class TestDataReaderSun1_6_0G1 {
         
         assertThat("count footprint after full gc", model.getFootprintAfterFullGC().getN(), is(5));
         assertThat("max footprint after full gc", model.getFootprintAfterFullGC().getMax(), is(33*1024));
+        
+        assertThat("tenured: count after concurrent sizes", model.getPostConcurrentCycleTenuredUsedSizes().getN(), is(242));
+        assertThat("tenured: max size after concurrent", model.getPostConcurrentCycleTenuredUsedSizes().getMax(), is(152576));
+        
+        assertThat("count after concurrent sizes", model.getPostConcurrentCycleHeapUsedSizes().getN(), is(242));
+        assertThat("max size after concurrent", model.getPostConcurrentCycleHeapUsedSizes().getMax(), is(152576));
     }
     
     @Test
