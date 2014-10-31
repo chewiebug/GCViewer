@@ -31,9 +31,10 @@ public class DataReaderIBM_J9_R27 implements DataReader {
     private static final String INITIALIZED = "initialized";
     private static final String EXCLUSIVE_START = "exclusive-start";
     private static final String GC_START = "gc-start";
+    private static final String GC_END = "gc-end";
     private static final String EXCLUSIVE_END = "exclusive-end";
 
-    private static Logger LOG = Logger.getLogger(DataReaderIBM_J9_5_0.class.getName());
+    private static Logger LOG = Logger.getLogger(DataReaderIBM_J9_R27.class.getName());
     private final SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
 
     private LineNumberReader in;
@@ -58,16 +59,16 @@ public class DataReaderIBM_J9_R27 implements DataReader {
                             handleInitialized(eventReader);
                             break;
                         case EXCLUSIVE_START:
-                            currentGcEvent = handleExclusiveStart(eventReader, startElement);
+                            currentGcEvent = handleExclusiveStart(startElement);
                             break;
                         case GC_START:
                             handleGcStart(eventReader, startElement, currentGcEvent);
                             break;
-//                        case "gc-end":
-//                            handleGcEnd(eventReader);
-//                            break;
+                        case GC_END:
+                            handleGcEnd(eventReader, currentGcEvent);
+                            break;
                         case EXCLUSIVE_END:
-                            // TODO read pause time
+                            handleExclusiveEnd(startElement, currentGcEvent);
                             model.add(currentGcEvent);
                             currentGcEvent = null;
                             break;
@@ -83,7 +84,7 @@ public class DataReaderIBM_J9_R27 implements DataReader {
         return model;
     }
 
-    private GCEvent handleExclusiveStart(XMLEventReader eventReader, StartElement startElement) {
+    private GCEvent handleExclusiveStart(StartElement startElement) {
         GCEvent event = new GCEvent();
         try {
             event.setDateStamp(dateParser.parse(getAttributeValue(startElement, "timestamp")));
@@ -93,6 +94,10 @@ public class DataReaderIBM_J9_R27 implements DataReader {
         }
         
         return event;
+    }
+
+    private void handleExclusiveEnd(StartElement startElement, GCEvent event) {
+        event.setPause(NumberParser.parseDouble(getAttributeValue(startElement, "durationms")) / 1000);
     }
 
     private void handleGcStart(XMLEventReader eventReader, StartElement startElement, GCEvent event) throws XMLStreamException {
@@ -109,14 +114,23 @@ public class DataReaderIBM_J9_R27 implements DataReader {
             if (xmlEvent.isStartElement()) {
                 StartElement startEl = xmlEvent.asStartElement();
                 if (startEl.getName().getLocalPart().equals("mem-info")) {
-                    event.setTotal(NumberParser.parseInt(getAttributeValue(startEl, "total")) / 1024);
-                    event.setPreUsed(event.getTotal() - (NumberParser.parseInt(getAttributeValue(startEl, "free")) / 1024));
+                    setTotalAndPreUsed(event, startEl);
                 }
                 else if (startEl.getName().getLocalPart().equals("mem")) {
                     switch (getAttributeValue(startEl, "type")) {
                         case "nursery":
-                            // TODO read young
+                            GCEvent young = new GCEvent();
+                            young.setType(Type.lookup("nursery"));
+                            setTotalAndPreUsed(young, startEl);
+                            event.add(young);
                             break;
+                        case "tenure":
+                            GCEvent tenured = new GCEvent();
+                            tenured.setType(Type.lookup("tenure"));
+                            setTotalAndPreUsed(tenured, startEl);
+                            event.add(tenured);
+                            break;
+                        // all other are ignored
                     }
                 }
             }
@@ -125,6 +139,46 @@ public class DataReaderIBM_J9_R27 implements DataReader {
                 currentElementName = endElement.getName().getLocalPart();
             }
         }
+    }
+
+    private void handleGcEnd(XMLEventReader eventReader, GCEvent event) throws XMLStreamException {
+        String currentElementName = "";
+        while (eventReader.hasNext() && !currentElementName.equals(GC_END)) {
+
+            XMLEvent xmlEvent = eventReader.nextEvent();
+            if (xmlEvent.isStartElement()) {
+                StartElement startEl = xmlEvent.asStartElement();
+                if (startEl.getName().getLocalPart().equals("mem-info")) {
+                    setPostUsed(event, startEl);
+                }
+                else if (startEl.getName().getLocalPart().equals("mem")) {
+                    switch (getAttributeValue(startEl, "type")) {
+                        case "nursery":
+                            setPostUsed(event.getYoung(), startEl);
+                            break;
+                        case "tenure":
+                            setPostUsed(event.getTenured(), startEl);
+                            break;
+                        // all other are ignored
+                    }
+                }
+            }
+            else if (xmlEvent.isEndElement()) {
+                EndElement endElement = xmlEvent.asEndElement();
+                currentElementName = endElement.getName().getLocalPart();
+            }
+        }
+    }
+
+    private void setTotalAndPreUsed(GCEvent event, StartElement startEl) {
+        long total = NumberParser.parseInt(getAttributeValue(startEl, "total"));
+        event.setTotal(toKiloBytes(total));
+        event.setPreUsed(toKiloBytes(total - NumberParser.parseInt(getAttributeValue(startEl, "free"))));
+    }
+
+    private void setPostUsed(GCEvent event, StartElement startEl) {
+        long total = NumberParser.parseInt(getAttributeValue(startEl, "total"));
+        event.setPostUsed(toKiloBytes(total - NumberParser.parseInt(getAttributeValue(startEl, "free"))));
     }
 
     private void handleInitialized(XMLEventReader eventReader) throws XMLStreamException {
@@ -155,5 +209,9 @@ public class DataReaderIBM_J9_R27 implements DataReader {
         }
         
         return value;
+    }
+
+    private int toKiloBytes(long bytes) {
+        return (int)Math.rint(bytes / (double)1024);
     }
 }

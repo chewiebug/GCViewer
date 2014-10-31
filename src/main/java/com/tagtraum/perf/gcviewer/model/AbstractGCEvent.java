@@ -520,6 +520,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         // TODO: are scavenge always young only??
         public static final Type IBM_SCAVENGE = new Type("scavenge", Generation.YOUNG, Concurrency.SERIAL);
         public static final Type IBM_GLOBAL = new Type("global", Generation.ALL, Concurrency.SERIAL);
+        public static final Type IBM_NURSERY = new Type("nursery", Generation.YOUNG);
+        public static final Type IBM_TENURE = new Type("tenure", Generation.TENURED);
     }
 
     public static enum GcPattern {
