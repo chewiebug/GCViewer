@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -244,7 +244,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             // detailed G1 events start with GC_MEMORY pattern, but are of type GC_MEMORY_PAUSE
 
                             gcEvent = new G1GcEvent();
-                            Date datestamp = parseDatestamp(gcPauseMatcher.group(GC_PAUSE_GROUP_DATESTAMP), parsePosition);
+                            ZonedDateTime datestamp = parseDatestamp(gcPauseMatcher.group(GC_PAUSE_GROUP_DATESTAMP), parsePosition);
                             gcEvent.setDateStamp(datestamp);
                             double timestamp = 0;
                             if (gcPauseMatcher.group(GC_PAUSE_GROUP_TIMESTAMP) == null) {
@@ -348,7 +348,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @param beginningOfLine GC_PAUSE lines are sometimes mixed lines; the extracted parts
      * of such a line are stored inside "beginningOfLine"
      * @return line number of last line read in this method
-     * @throws ParseException Problem parsing a part of the details
      * @throws IOException problem reading from file
      */
     private int parseDetails(BufferedReader in, 
@@ -357,7 +356,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             int lineNumber, 
             GCEvent event, 
             String beginningOfLine)
-                    throws ParseException, IOException {
+                    throws IOException {
         
         Matcher memoryMatcher = PATTERN_MEMORY.matcher("");
 
@@ -501,7 +500,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // parse timestamp          "double:"
             // parse collection type    "[TYPE"
             // pre-used->post-used, total, time
-            Date datestamp = parseDatestamp(line, pos);
+            ZonedDateTime datestamp = parseDatestamp(line, pos);
             double timestamp = getTimestamp(line, pos, datestamp);
             ExtendedType type = parseType(line, pos);
             // special provision for concurrent events
@@ -555,7 +554,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @throws ParseException 
      */
     private AbstractGCEvent<?> parseConcurrentEvent(String line,
-            ParseInformation pos, Date datestamp,
+            ParseInformation pos, ZonedDateTime datestamp,
             double timestamp, final ExtendedType type) throws ParseException {
         
         ConcurrentGCEvent event = new ConcurrentGCEvent();
