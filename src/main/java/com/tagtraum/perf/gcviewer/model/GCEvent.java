@@ -140,7 +140,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     public void toStringBuffer(StringBuffer sb) {
         sb.append(getTimestamp());
         sb.append(": [");
-        sb.append(getExtendedType().getName());
+        sb.append(getExtendedType() != null ? getExtendedType().getName() : ExtendedType.UNDEFINED);
         if (details != null) {
             sb.append(' ');
             for (GCEvent event : details) {
