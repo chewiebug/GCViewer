@@ -38,7 +38,13 @@ public class TotalHeapRenderer extends PolygonChartRenderer {
                 if (event.getTotal() > 0) {
                     // there are events that don't have a heap size associated (like "GC remark" of G1)
                     // -> skip them
-                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getTotal());
+                    if (polygon.npoints == 1) {
+                        // first point needs to be treated different from the rest,
+                        // because otherwise the polygon would not start with a vertical line at 0,
+                        // but with a slanting line between 0 and after the first pause
+                        polygon.addPoint(0, (double)event.getTotal());
+                    }
+                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), event.getTotal());
                     lastTotal = event.getTotal();
                 }
             }
