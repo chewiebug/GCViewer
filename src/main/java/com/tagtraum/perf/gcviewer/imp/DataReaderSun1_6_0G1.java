@@ -1,5 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.model.*;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.*;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,20 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
-import com.tagtraum.perf.gcviewer.model.G1GcEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * <p>Parses log output from Sun / Oracle Java 1.6. / 1.7
@@ -356,7 +347,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             int lineNumber, 
             GCEvent event, 
             String beginningOfLine)
-                    throws IOException {
+                    throws ParseException, IOException {
         
         Matcher memoryMatcher = PATTERN_MEMORY.matcher("");
 

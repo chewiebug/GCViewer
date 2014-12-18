@@ -1,12 +1,16 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
+
+import java.io.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,13 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * <p>The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
@@ -474,14 +471,18 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @param pos current parse position
      * @return returns parsed datestamp if found one, <code>null</code> otherwise
      */
-    protected ZonedDateTime parseDatestamp(String line, ParseInformation pos) {
+    protected ZonedDateTime parseDatestamp(String line, ParseInformation pos) throws ParseException {
         ZonedDateTime zonedDateTime = null;
         if (nextIsDatestamp(line, pos)) {
-            zonedDateTime = ZonedDateTime.parse(line.substring(pos.getIndex(), pos.getIndex()+LENGTH_OF_DATESTAMP-1),
-                    DATE_TIME_FORMATTER);
-            pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
-            if (pos.getFirstDateStamp() == null) {
-                pos.setFirstDateStamp(zonedDateTime);
+            try {
+                zonedDateTime = ZonedDateTime.parse(line.substring(pos.getIndex(), pos.getIndex() + LENGTH_OF_DATESTAMP - 1),
+                        DATE_TIME_FORMATTER);
+                pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
+                if (pos.getFirstDateStamp() == null) {
+                    pos.setFirstDateStamp(zonedDateTime);
+                }
+            } catch (DateTimeParseException e){
+                 throw new ParseException(e.toString(), line);
             }
         }
         
