@@ -110,9 +110,6 @@
         <source.plugin.version>2.2.1</source.plugin.version>
         <javadoc.plugin.version>2.9</javadoc.plugin.version>
         <gpg.plugin.version>1.4</gpg.plugin.version>
-        <!-- system property for maven-compiler-plugin -->
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
     <scm>
