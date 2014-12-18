@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.action;
 
+import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
@@ -17,6 +18,7 @@ import javax.swing.SwingConstants;
 import com.tagtraum.perf.gcviewer.GCViewerGui;
 import com.tagtraum.perf.gcviewer.util.ExtensionFileFilter;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.util.OSXSupport;
 
 /**
  *
@@ -40,6 +42,7 @@ public class OpenFile extends AbstractAction {
         putValue(ACTION_COMMAND_KEY, "open");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() ));
         putValue(SMALL_ICON, new ImageIcon(Toolkit.getDefaultToolkit().getImage(gcViewer.getClass().getResource("images/open.png"))));
+        
         openDialog = new JFileChooser();
         openDialog.setDialogTitle(LocalisationHelper.getString("fileopen_dialog_title"));
         openDialog.setMultiSelectionEnabled(true);
@@ -60,6 +63,19 @@ public class OpenFile extends AbstractAction {
 
     public void actionPerformed(final ActionEvent e) {
         final boolean aDocumentIsAlreadyOpen = gcViewer.getSelectedGCDocument() != null;
+        
+        if(OSXSupport.isOSX()) {
+            // there is no way to show a checkbox on the native dialog so
+            // instead add instead of overwrite
+            FileDialog dialog = new FileDialog(gcViewer, LocalisationHelper.getString("fileopen_dialog_title"), FileDialog.LOAD);
+            dialog.setMultipleMode(true);
+            dialog.setVisible(true);
+            // dialog.setFilenameFilter doesn't do much on OSX
+            openFiles(dialog.getFiles(), aDocumentIsAlreadyOpen);
+            dialog.dispose();
+            return;
+        }
+        
         addURLCheckBox.setVisible(aDocumentIsAlreadyOpen);
         addURLCheckBox.setEnabled(aDocumentIsAlreadyOpen);
         if (!aDocumentIsAlreadyOpen) {
@@ -70,16 +86,23 @@ public class OpenFile extends AbstractAction {
         }
         final int val = openDialog.showOpenDialog(gcViewer);
         if (val == JFileChooser.APPROVE_OPTION) {
-            lastSelectedFiles = openDialog.getSelectedFiles();
-            if (addURLCheckBox.isSelected()) {
-                gcViewer.add(lastSelectedFiles);
-            }
-            else {
-                gcViewer.open(lastSelectedFiles);
-            }
+            openFiles(openDialog.getSelectedFiles(), addURLCheckBox.isSelected());
         }
     }
 
+    private void openFiles(File[] files, boolean shouldAdd) {
+        if (files == null || files.length == 0) {
+            return;
+        }
+        lastSelectedFiles = files;
+        if (shouldAdd) {
+            gcViewer.add(lastSelectedFiles);
+        }
+        else {
+            gcViewer.open(lastSelectedFiles);
+        }
+    }
+    
     public void setSelectedFile(final File file) {
         openDialog.setCurrentDirectory(file.getParentFile());
         openDialog.setSelectedFile(file);
