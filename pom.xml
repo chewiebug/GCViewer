@@ -147,17 +147,7 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>build.info.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
                 <filtering>false</filtering>
-                <excludes>
-                    <exclude>build.info.properties</exclude>
-                </excludes>
             </resource>
             <resource>
                 <directory>src/main/mac</directory>
