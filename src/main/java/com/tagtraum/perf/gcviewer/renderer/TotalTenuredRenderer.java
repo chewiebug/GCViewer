@@ -35,27 +35,22 @@ public class TotalTenuredRenderer extends PolygonChartRenderer {
     public Polygon computePolygon(ModelChart modelChart, GCModel model) {
         ScaledPolygon polygon = createMemoryScaledPolygon();
         polygon.addPoint(0.0d, 0.0d);
-        double lastTotal = 0.0d;
+        double lastTotal = 0;
         for (Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents(); i.hasNext();) {
             AbstractGCEvent<?> abstractGCEvent = i.next();
             if (abstractGCEvent instanceof GCEvent) {
                 GCEvent event = (GCEvent) abstractGCEvent;
                 GCEvent tenured = event.getTenured();
                 if (hasMemoryInformation(event) && tenured != null) {
-                    double total = tenured.getTotal();
                     if (polygon.npoints == 1) {
                         // first point needs to be treated different from the rest,
                         // because otherwise the polygon would not start with a vertical line at 0,
                         // but with a slanting line between 0 and after the first pause
-                        polygon.addPoint(0.0d, total);
-                        lastTotal = total;
+                        polygon.addPoint(0, (double)tenured.getTotal());
                     }
-
-                    if (lastTotal != total) {
-                        polygon.addPoint(tenured.getTimestamp() - model.getFirstPauseTimeStamp(), lastTotal);
-                    }
-                    polygon.addPoint(tenured.getTimestamp() - model.getFirstPauseTimeStamp() + tenured.getPause(), total);
-                    lastTotal = total;
+                    polygon.addPoint(tenured.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(),
+                            tenured.getTotal());
+                    lastTotal = tenured.getTotal();
                 }
             }
         }
