@@ -63,7 +63,7 @@ public class GCViewer {
             }
         }
         else {
-            new GCViewerGuiController().startGui(args.length == 1 ? args[0] : null);
+            new GCViewerGuiController().startGui(argsParser.getArgumentCount() == 1 ? argsParser.getGcfile() : null);
         }
     }
 

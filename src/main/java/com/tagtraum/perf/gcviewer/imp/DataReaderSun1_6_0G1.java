@@ -55,7 +55,7 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  */
 public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
-    private static final String INCOMPLETE_CONCURRENT_MARK_INDICATOR = "concurrent-mark";
+    private static final String INCOMPLETE_CONCURRENT_EVENT_INDICATOR = "concurrent-";
 
     private static final String TIMES = "[Times";
     
@@ -113,8 +113,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("Metaspace"); // java 8
         HEAP_STRINGS.add("class space"); // java 8
         HEAP_STRINGS.add("}");
+        HEAP_STRINGS.add("[0x"); // special case of line following one containing a concurrent event mixed with heap information
+        HEAP_STRINGS.add("total"); // special case of line following one containing a concurrent event mixed with heap information
     }
-    
+
+    /** is true, if "[Times ..." information is present in the gc log */
+    private boolean hasTimes = false;
+
     public DataReaderSun1_6_0G1(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super(gcResource, in, gcLogType);
     }
@@ -286,10 +291,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     }
                     else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                         // the next few lines will be the sizing of the heap
-                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
+                        lineNumber = skipLinesRespectingConcurrentEvents(in, model, parsePosition, lineNumber, HEAP_STRINGS);
                         continue;
                     }
-                    else if (line.indexOf(INCOMPLETE_CONCURRENT_MARK_INDICATOR) >= 0) {
+                    else if (hasIncompleteConcurrentEvent(line, parsePosition)) {
                         parseIncompleteConcurrentEvent(model, model.getLastEventAdded(), line, parsePosition);
                     }
                     else {
@@ -309,6 +314,12 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 getLogger().info("Done reading.");
             }
         }
+    }
+
+    private boolean hasIncompleteConcurrentEvent(String line, ParseInformation paresPosition) {
+        return !nextIsTimestamp(line, paresPosition)
+                && !nextIsDatestamp(line, paresPosition)
+                && line.indexOf(INCOMPLETE_CONCURRENT_EVENT_INDICATOR) >= 0;
     }
 
     /**
@@ -355,7 +366,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             ++lineNumber;
             pos.setLineNumber(lineNumber);
             pos.setIndex(0);
-            
+
+            if (line.length() == 0) {
+                continue;
+            }
+
             // we might have had a mixed line before; then we just parsed the second part of the mixed line
             if (beginningOfLine != null) {
                 line = beginningOfLine + line;
@@ -369,7 +384,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             if (line.indexOf("Eden") >= 0) {
                 parseMemoryDetails(event, line, pos);
             }
-            else if (line.indexOf(INCOMPLETE_CONCURRENT_MARK_INDICATOR) >= 0) {
+            else if (line.charAt(0) != ' ' && !hasTimes && (nextIsDatestamp(line, pos) || nextIsTimestamp(line, pos))) {
+                // special case for simple logs (marked by missing "[Times..." in the log)
+                // since the line starts with a time / datestamp, the detailed event seems to be finished (unexpectedly)
+                model.add(parseLine(line, pos));
+                isInDetailedEvent = false;
+            }
+            else if (line.indexOf(INCOMPLETE_CONCURRENT_EVENT_INDICATOR) >= 0) {
                 parseIncompleteConcurrentEvent(model, event, line, pos);
             }
             else {
@@ -385,12 +406,17 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             if (line.indexOf(TIMES) >= 0) {
                 // detailed gc description ends with " [Times: user=...]" -> stop reading lines
                 isInDetailedEvent = false;
+                hasTimes = true;
             }
         }
         
         if (event.getTotal() == 0) {
             // is currently the case for jdk 1.7.0_02 which changed the memory format
-            getLogger().warning("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
+            // as of 1.7.0_25 for "GC cleanup" events, there seem to be rare cases, where this just happens
+            // => don't log as warning; just log on debug level
+            if (getLogger().isLoggable(Level.FINE)) {
+                getLogger().fine("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
+            }
         }
         model.add(event);
 
@@ -460,7 +486,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         // some concurrent event is mixed in -> extract it
         pos.setIndex(line.indexOf("GC conc"));
         ExtendedType type = parseType(line, pos);
-        model.add(parseConcurrentEvent(line, pos, previousEvent.getDatestamp(), previousEvent.getTimestamp(), type));
+        model.add(parseConcurrentEvent(line,
+                pos,
+                previousEvent != null ? previousEvent.getDatestamp() : null,
+                previousEvent != null ? previousEvent.getTimestamp() : 0,
+                type));
     }
     
     @Override
@@ -542,4 +572,58 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         return event;
     }
     
+    /**
+     * Skips a block of lines containing information like they are generated by
+     * -XX:+PrintHeapAtGC or -XX:+PrintAdaptiveSizePolicy.
+     * 
+     * @param in inputStream of the current log to be read
+     * @param lineNumber current line number
+     * @param lineStartStrings lines starting with these strings should be ignored
+     * @return line number including lines read in this method
+     * @throws IOException problem with reading from the file
+     */
+    private int skipLinesRespectingConcurrentEvents(BufferedReader in, GCModel model, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
+        String line = "";
+        
+        if (!in.markSupported()) {
+            getLogger().warning("input stream does not support marking!");
+        } 
+        else {
+            in.mark(200);
+        }
+        
+        boolean startsWithString = true;
+        while (startsWithString && (line = in.readLine()) != null) {
+            ++lineNumber;
+            pos.setLineNumber(lineNumber);
+            
+            if (line.indexOf(INCOMPLETE_CONCURRENT_EVENT_INDICATOR) >= 0) {
+                parseIncompleteConcurrentEvent(model, model.getLastEventAdded(), line, pos);
+            }
+            else {
+                // for now just skip those lines
+                startsWithString = startsWith(line, lineStartStrings, true);
+                if (startsWithString) {
+                    // don't mark any more if line didn't match -> it is the first line that
+                    // is of interest after the skipped block
+                    if (in.markSupported()) {
+                        in.mark(200);
+                    }
+                }
+            }
+        }
+        
+        // push last read line back into stream - it is the next event to be parsed
+        if (in.markSupported()) {
+            try {
+                in.reset();
+            }
+            catch (IOException e) {
+                throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
+            }
+        }
+        
+        return --lineNumber;
+    }
+
 }

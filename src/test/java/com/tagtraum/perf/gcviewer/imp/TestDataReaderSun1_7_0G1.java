@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
@@ -15,6 +16,11 @@ import java.util.logging.Level;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 public class TestDataReaderSun1_7_0G1 {
 
@@ -186,13 +192,19 @@ public class TestDataReaderSun1_7_0G1 {
         // 371.856:    [Parallel Time: 268.0 ms]
         // [GC concurrent-mark-start]
 
-        final DataReader reader = getDataReader("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine2.txt");
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine2.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        final DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
         
-        assertEquals("nummber of events", 2, model.size());
+        assertEquals("number of events", 3, model.size());
+        assertEquals("number of warnings", 0, handler.getCount());
         assertEquals("concurrent event type", Type.G1_CONCURRENT_MARK_START.toString(), model.getConcurrentGCEvents().next().getTypeAsString());
-        assertEquals("number of pauses", 1, model.getPause().getN());
-        assertEquals("gc pause sum", 0.28031200, model.getPause().getSum(), 0.000000001);
+        assertEquals("number of pauses", 2, model.getPause().getN());
+        assertEquals("gc pause max", 0.28031200, model.getPause().getMax(), 0.000000001);
         assertEquals("gc memory", 20701*1024 - 20017*1024, model.getFreedMemoryByGC().getMax());
     }
     
@@ -349,6 +361,53 @@ public class TestDataReaderSun1_7_0G1 {
         GCEvent partialEvent = (GCEvent) model.get(7);
         assertEquals("gc pause (partial)", 0.02648319, partialEvent.getPause(), 0.000000001);
         assertEquals("heap (partial)", 128 * 1024, partialEvent.getTotal());
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+    
+    /**
+     * Usually "cleanup" events have memory information; if it doesn't the parser should just continue
+     */
+    @Test
+    public void simpleLogCleanUpNoMemory() throws Exception {
+        final InputStream in = new ByteArrayInputStream(
+                ("2013-06-22T18:58:45.955+0200: 1.433: [Full GC 128M->63M(128M), 0.0385026 secs]"
+                        + "\n2013-06-22T18:58:45.986+0200: 1.472: [GC cleanup, 0.0000004 secs]"
+                        + "\n2013-06-22T18:58:45.986+0200: 1.472: [GC concurrent-mark-abort]"
+                        + "\n2013-06-22T18:58:46.002+0200: 1.483: [GC pause (young) 91M->90M(128M), 0.0128787 secs]")
+                .getBytes());
+        
+        final DataReader reader = new DataReaderSun1_6_0G1(new GCResource("bytearray"), in, GcLogType.SUN1_7G1);
+        GCModel model = reader.read();
+
+        assertEquals("count", 4, model.size());
+        
+        // the order of the events is in fact wrong; but for the sake of simplicity in the parser I accept it
+        assertEquals("cleanup event", "GC cleanup", model.get(2).getTypeAsString());
+        assertEquals("concurrent-mark-abort event", "GC concurrent-mark-abort", model.get(1).getTypeAsString());
+    }
+    
+    @Test
+    public void printHeapAtGcWithConcurrentEvents() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0G1_PrintHeapAtGC_withConcurrent.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        final DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+        
+        assertEquals("number of events", 3, model.size());
+        assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
+        
+        ConcurrentGCEvent concurrentEvent = (ConcurrentGCEvent) model.get(0);
+        assertEquals("GC concurrent-root-region-scan-end expected", "GC concurrent-root-region-scan-end", concurrentEvent.getTypeAsString());
+
+        concurrentEvent = (ConcurrentGCEvent) model.get(1);
+        assertEquals("GC concurrent-mark-start expected", "GC concurrent-mark-start", concurrentEvent.getTypeAsString());
+
+        GCEvent fullGcEvent = (GCEvent) model.get(2);
+        assertEquals("full gc", "Full GC", fullGcEvent.getTypeAsString());
 
         assertEquals("number of errors", 0, handler.getCount());
     }
