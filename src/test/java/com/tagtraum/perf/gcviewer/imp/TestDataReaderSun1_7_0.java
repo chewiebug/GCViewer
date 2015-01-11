@@ -417,4 +417,20 @@ public class TestDataReaderSun1_7_0 {
         assertThat("number of parse problems", handler.getCount(), is(0));
 
     }
+
+    @Test
+    public void cmsPrintPromotionFailureTenuringDistribution() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0CMS_PrintTenuringDistributionPromotionFailure.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(7));
+        assertThat("pause", model.get(4).getPause(), closeTo(129.9468220, 0.00000001));
+        assertThat("warning count", handler.getCount(), is(0));
+    }
 }

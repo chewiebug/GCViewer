@@ -1,0 +1,25 @@
+2014-03-12T21:18:20.385-0500: 13289.993: Total time for which application threads were stopped: 0.0052850 seconds
+2014-03-12T21:18:24.340-0500: 13293.948: Total time for which application threads were stopped: 0.0069100 seconds
+2014-03-12T21:18:24.641-0500: 13294.249: Total time for which application threads were stopped: 0.0047170 seconds
+{Heap before GC invocations=1470 (full 99):
+ par new generation   total 6932288K, used 6906246K [0x00007fc05c000000, 0x00007fc21c000000, 0x00007fc21c000000)
+  eden space 6524544K, 100% used [0x00007fc05c000000, 0x00007fc1ea3a0000, 0x00007fc1ea3a0000)
+  from space 407744K,  93% used [0x00007fc1ea3a0000, 0x00007fc2018619c0, 0x00007fc2031d0000)
+  to   space 407744K,   0% used [0x00007fc2031d0000, 0x00007fc2031d0000, 0x00007fc21c000000)
+ concurrent mark-sweep generation total 25165824K, used 23525321K [0x00007fc21c000000, 0x00007fc81c000000, 0x00007fc81c000000)
+ concurrent-mark-sweep perm gen total 262912K, used 137329K [0x00007fc81c000000, 0x00007fc82c0c0000, 0x00007fc84c000000)
+2014-03-12T21:18:26.029-0500: 13295.637: [GC2014-03-12T21:18:26.029-0500: 13295.637: [ParNew (0: promotion failure size = 11863)  (1: promotion failure size = 11883)  (2: promotion failure size = 302386)  (3: promotion failure size = 11863)  (5: promotion failure size = 6769)  (6: promotion failure size = 9280)  (7: promotion failure size = 32770)  (8: promotion failure size = 8370)  (9: promotion failure size = 11880)  (11: promotion failure size = 15811)  (16: promotion failure size = 11863)  (20: promotion failure size = 11883)  (promotion failed)
+Desired survivor size 208764928 bytes, new threshold 15 (max 15)
+- age   1:  187860912 bytes,  187860912 total
+: 6906246K->6819243K(6932288K), 2.7300470 secs]2014-03-12T21:18:28.759-0500: 13298.367: [CMS2014-03-12T21:18:31.372-0500: 13300.980: [CMS-concurrent-sweep: 16.244/20.725 secs] [Times: user=100.59 sys=4.74, real=20.72 secs]
+ (concurrent mode failure): 23591969K->23342845K(25165824K), 127.2159440 secs] 30431568K->23342845K(32098112K), [CMS Perm : 137329K->97298K(262912K)], 129.9468220 secs] [Times: user=131.28 sys=0.07, real=129.93 secs]
+Heap after GC invocations=1471 (full 100):
+ par new generation   total 6932288K, used 0K [0x00007fc05c000000, 0x00007fc21c000000, 0x00007fc21c000000)
+  eden space 6524544K,   0% used [0x00007fc05c000000, 0x00007fc05c000000, 0x00007fc1ea3a0000)
+  from space 407744K,   0% used [0x00007fc2031d0000, 0x00007fc2031d0000, 0x00007fc21c000000)
+  to   space 407744K,   0% used [0x00007fc1ea3a0000, 0x00007fc1ea3a0000, 0x00007fc2031d0000)
+ concurrent mark-sweep generation total 25165824K, used 23342845K [0x00007fc21c000000, 0x00007fc81c000000, 0x00007fc81c000000)
+ concurrent-mark-sweep perm gen total 262912K, used 97298K [0x00007fc81c000000, 0x00007fc82c0c0000, 0x00007fc84c000000)
+}
+2014-03-12T21:20:35.976-0500: 13425.584: Total time for which application threads were stopped: 129.9531350 seconds
+2014-03-12T21:20:35.999-0500: 13425.607: Total time for which application threads were stopped: 0.0082770 seconds
