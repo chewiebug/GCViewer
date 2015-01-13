@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,6 +22,7 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
+
 /**
  * <p>The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
  * It contains a lot of helper methods to do the actual parsing of the details of a gc event.
@@ -32,18 +35,11 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  */
 public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
-    /**
-     * Datestamps are parsed without timezone information. I assume that if two people
-     * discuss a gc log, it is easier for them to use the same timestamps without 
-     * timezone adjustments.
-     */
-    public static final String DATE_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.S";
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static final int LENGTH_OF_DATESTAMP = 29;
     
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
-    
-    private final SimpleDateFormat dateParser = new SimpleDateFormat(DATE_STAMP_FORMAT);
-    
+
     private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
     // java 8 log output
@@ -431,7 +427,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      * @return timestamp (either parsed or derived from datestamp)
      * @throws ParseException it seemed to be a timestamp but still couldn't be parsed
      */
-    protected double getTimestamp(final String line, final ParseInformation pos, final Date datestamp)
+    protected double getTimestamp(final String line, final ParseInformation pos, final ZonedDateTime datestamp)
             throws ParseException {
                 
         double timestamp = 0;
@@ -440,7 +436,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
         else if (datestamp != null && pos.getFirstDateStamp() != null) {
             // if no timestamp was present, calculate difference between last and this date
-            timestamp = (datestamp.getTime() - pos.getFirstDateStamp().getTime()) / (double)1000; 
+            timestamp = pos.getFirstDateStamp().until(datestamp, ChronoUnit.MILLIS) / (double) 1000;
         }
         return timestamp;
     }
@@ -474,24 +470,23 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      * @param line current line
      * @param pos current parse position
      * @return returns parsed datestamp if found one, <code>null</code> otherwise
-     * @throws ParseException datestamp could not be parsed
      */
-    protected Date parseDatestamp(String line, ParseInformation pos) throws ParseException {
-        Date date = null;
+    protected ZonedDateTime parseDatestamp(String line, ParseInformation pos) throws ParseException {
+        ZonedDateTime zonedDateTime = null;
         if (nextIsDatestamp(line, pos)) {
             try {
-                date = dateParser.parse(line.substring(pos.getIndex(), pos.getIndex()+LENGTH_OF_DATESTAMP-1));
+                zonedDateTime = ZonedDateTime.parse(line.substring(pos.getIndex(), pos.getIndex() + LENGTH_OF_DATESTAMP - 1),
+                        DATE_TIME_FORMATTER);
                 pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
                 if (pos.getFirstDateStamp() == null) {
-                    pos.setFirstDateStamp(date);
+                    pos.setFirstDateStamp(zonedDateTime);
                 }
-            }
-            catch (java.text.ParseException e) {
-                throw new ParseException(e.toString(), line);
+            } catch (DateTimeParseException e){
+                 throw new ParseException(e.toString(), line);
             }
         }
         
-        return date;
+        return zonedDateTime;
     }
 
     /**
@@ -530,7 +525,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
                     detailEvent.setTimestamp(event.getTimestamp());
                 } 
                 else {
-                    Date datestamp = parseDatestamp(line, pos);
+                    ZonedDateTime datestamp = parseDatestamp(line, pos);
                     detailEvent.setDateStamp(datestamp);
                     detailEvent.setTimestamp(getTimestamp(line, pos, datestamp));
                 }

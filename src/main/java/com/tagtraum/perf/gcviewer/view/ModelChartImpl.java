@@ -199,7 +199,14 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                         timeOffsetPanel.setCheckboxSelected(true);
                     }
                     else {
-                        timeOffsetPanel.setDate(model.getFirstDateStamp());
+                        long suggestedStartDate = model.getLastModified();
+                        if (model.hasDateStamp()) {
+                            suggestedStartDate = model.getFirstDateStamp().toInstant().toEpochMilli();
+                        }
+                        else if (model.hasCorrectTimestamp()) {
+                            suggestedStartDate -= (long)(model.getRunningTime() * 1000.0d);
+                        }
+                        timeOffsetPanel.setDate(new Date(suggestedStartDate));
                         timeOffsetPanel.setCheckboxSelected(false);
                     }
                     timestampRulerPopup.show(e.getComponent(), e.getX(),  e.getY());
@@ -414,7 +421,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         this.model = model;
 
         if (model.getFirstDateStamp() != null) {
-            this.timeOffsetPanel.setDate(model.getFirstDateStamp());
+            this.timeOffsetPanel.setDate(new Date(model.getFirstDateStamp().toInstant().toEpochMilli()));
         }
         applyPreferences(preferences);
         setScaleFactor(getScaleFactor());

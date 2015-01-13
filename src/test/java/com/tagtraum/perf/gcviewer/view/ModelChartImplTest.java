@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.view;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.junit.experimental.theories.DataPoint;
@@ -49,7 +50,7 @@ public class ModelChartImplTest {
         GCPreferences preferences = new GCPreferences();
         GCModel gcModel = Mockito.mock(GCModel.class);
         Mockito.when(gcModel.hasDateStamp()).thenReturn(testCase.hasDateStamp());
-        Mockito.when(gcModel.getFirstDateStamp()).thenReturn(new Date());
+        Mockito.when(gcModel.getFirstDateStamp()).thenReturn(ZonedDateTime.now());
         Mockito.when(gcModel.getPause()).thenReturn(new DoubleData());
         preferences.setShowDateStamp(testCase.isShowDateStamp());
 

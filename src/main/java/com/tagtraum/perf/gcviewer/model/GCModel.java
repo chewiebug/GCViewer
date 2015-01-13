@@ -7,9 +7,11 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -489,12 +491,11 @@ public class GCModel implements Serializable {
         if (previousEvent.getTimestamp() + previousEvent.getPause() > vmOpEvent.getTimestamp()) {
             vmOpEvent.setTimestamp(previousEvent.getTimestamp() + previousEvent.getPause());
             if (previousEvent.getDatestamp() != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(previousEvent.getDatestamp());
-                cal.add(Calendar.MINUTE, (int)Math.rint(previousEvent.getPause() / 60));
-                cal.add(Calendar.SECOND, (int)Math.rint(previousEvent.getPause()));
-                cal.add(Calendar.MILLISECOND, (int)Math.rint(previousEvent.getPause() * 1000));
-                vmOpEvent.setDateStamp(cal.getTime());
+                Duration adjustment = Duration.ofMinutes((long) Math.rint(previousEvent.getPause() / 60))
+                        .plus((long) Math.rint(previousEvent.getPause()), ChronoUnit.SECONDS)
+                        .plus((long) Math.rint(previousEvent.getPause() * 1000), ChronoUnit.MILLIS);
+                ZonedDateTime adjustedDatestamp = previousEvent.getDatestamp().plus(adjustment);
+                vmOpEvent.setDateStamp(adjustedDatestamp);
             }
         }
     }
@@ -887,11 +888,9 @@ public class GCModel implements Serializable {
     			: false;
     }
     
-    public Date getFirstDateStamp() {
+    public ZonedDateTime getFirstDateStamp() {
     	return allEvents.size() > 0 
-    			? hasDateStamp()
-    			        ? get(0).getDatestamp()
-    			        : new Date(getLastModified() - (long)(getRunningTime() * 1000.0d))
+                ? get(0).getDatestamp()
     			: null;
     }
 

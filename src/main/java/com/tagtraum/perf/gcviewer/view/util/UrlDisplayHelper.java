@@ -3,7 +3,6 @@ package com.tagtraum.perf.gcviewer.view.util;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Desktop.Action;
-import java.awt.Frame;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -51,7 +50,7 @@ public class UrlDisplayHelper {
     /**
      * Convenience method to display an url.
      * 
-     * @see #displayUrl(Frame, String)
+     * @see #displayUrl(Component, String)
      */
     public static void displayUrl(Component parent, URL url) {
         displayUrl(parent, url.toString());
