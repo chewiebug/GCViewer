@@ -1,7 +1,7 @@
 package com.tagtraum.perf.gcviewer.util;
 
 import java.text.ParsePosition;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 /**
  * This class holds information about the current parsing process. 
@@ -11,14 +11,14 @@ import java.util.Date;
  */
 public class ParseInformation extends ParsePosition {
 
-    private Date firstDateStamp;
+    private ZonedDateTime firstDateStamp;
     private int lineNumber;
 
     public ParseInformation(int index) {
         super(index);
     }
     
-    public Date getFirstDateStamp() {
+    public ZonedDateTime getFirstDateStamp() {
         return firstDateStamp;
     }
     
@@ -26,7 +26,7 @@ public class ParseInformation extends ParsePosition {
         return lineNumber;
     }
 
-    public void setFirstDateStamp(Date firstDateStamp) {
+    public void setFirstDateStamp(ZonedDateTime firstDateStamp) {
         this.firstDateStamp = firstDateStamp;
     }
 

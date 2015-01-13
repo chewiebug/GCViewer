@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.logging.Logger;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -35,7 +35,7 @@ public class DataReaderIBM_J9_R27 implements DataReader {
     private static final String EXCLUSIVE_END = "exclusive-end";
 
     private static Logger LOG = Logger.getLogger(DataReaderIBM_J9_R27.class.getName());
-    private final SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
 
     private LineNumberReader in;
 
@@ -87,9 +87,9 @@ public class DataReaderIBM_J9_R27 implements DataReader {
     private GCEvent handleExclusiveStart(StartElement startElement) {
         GCEvent event = new GCEvent();
         try {
-            event.setDateStamp(dateParser.parse(getAttributeValue(startElement, "timestamp")));
+            event.setDateStamp(ZonedDateTime.parse(getAttributeValue(startElement, "timestamp"), dateTimeFormatter));
         }
-        catch (ParseException e) {
+        catch (DateTimeParseException e) {
             e.printStackTrace();
         }
         

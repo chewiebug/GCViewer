@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -490,7 +490,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private boolean isPrintTenuringDistribution(String line) {
         return line.endsWith("[DefNew") // serial young (CMS, Serial GC)
                 || line.endsWith("[ParNew") // parallel young (CMS, parallel GC) 
-                || line.endsWith("[ParNew (promotion failed)") // CMS
+                || line.endsWith(" (promotion failed)") // CMS (if -XX:+PrintPromotionFailure is active, additional text between "ParNew" + "(promotion failed)" is introduced...)
                 || line.endsWith("[GC"); // PSYoungGen (parallel sweep)
     }
 
@@ -507,7 +507,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             // parse collection type    "[TYPE"
             // either GC data or another collection type starting with timestamp
             // pre-used->post-used, total, time
-            Date datestamp = parseDatestamp(line, pos);
+            ZonedDateTime datestamp = parseDatestamp(line, pos);
             double timestamp = getTimestamp(line, pos, datestamp);
             ExtendedType type = parseType(line, pos);
             // special provision for CMS events

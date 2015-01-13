@@ -8,7 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ public class TestDataReaderSun1_6_0 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
-    private final SimpleDateFormat dateParser = new SimpleDateFormat(AbstractDataReaderSun.DATE_STAMP_FORMAT);
+    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
@@ -38,7 +39,7 @@ public class TestDataReaderSun1_6_0 {
 
 		assertTrue("hasDateStamp", model.hasDateStamp());
 		assertEquals("DateStamp",
-				dateParser.parse("2011-10-05T04:23:39.427+0200"),
+				ZonedDateTime.parse("2011-10-05T04:23:39.427+0200", dateTimeFormatter),
 				model.getFirstDateStamp());
         assertEquals("gc pause", 0.0388082, model.getGCPause().getMax(), 0.000001);
 	}
