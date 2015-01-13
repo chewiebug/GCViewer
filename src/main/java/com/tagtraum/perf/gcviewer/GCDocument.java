@@ -37,9 +37,9 @@ import javax.swing.event.ChangeListener;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 
 /**
+ * GCDocument.
+ *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- *         Date: May 5, 2005
- *         Time: 10:25:16 AM
  */
 public class GCDocument extends JInternalFrame {
 
@@ -121,7 +121,10 @@ public class GCDocument extends JInternalFrame {
     }
 
     /**
+     * Reload Models.
+     *
      * @return true, if any of the files has been reloaded
+     * @param background true if relayout should be skipped.
      * @throws DataReaderException if something went wrong reading the data
      */
     public boolean reloadModels(boolean background) throws DataReaderException {
@@ -142,7 +145,7 @@ public class GCDocument extends JInternalFrame {
     public GCPreferences getPreferences() {
         return preferences;
     }
-    
+
     public void add(final URL url) throws DataReaderException {
         ChartPanelView chartPanelView = new ChartPanelView(this, url);
         chartPanelViews.add(chartPanelView);
@@ -612,12 +615,9 @@ public class GCDocument extends JInternalFrame {
         }
 
     }
-    
+
     /**
-     * 
-     * 
      * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
-     * <p>created on: 22.07.2012</p>
      */
     private class ResizeListener extends ComponentAdapter {
 
@@ -625,6 +625,6 @@ public class GCDocument extends JInternalFrame {
         public void componentResized(ComponentEvent e) {
             modelChartListFacade.resetPolygonCache();
         }
-        
+
     }
 }

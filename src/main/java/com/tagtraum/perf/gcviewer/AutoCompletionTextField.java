@@ -14,9 +14,6 @@ import java.awt.*;
 
 /**
  * AutoCompletionTextField.
- * <p/>
- * Date: Oct 6, 2005
- * Time: 9:49:21 AM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */

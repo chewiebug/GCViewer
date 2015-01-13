@@ -7,9 +7,6 @@ import java.awt.event.ItemEvent;
 
 /**
  * AutoCompletionComboBox.
- * <p/>
- * Date: Oct 6, 2005
- * Time: 1:16:42 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */

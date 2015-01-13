@@ -20,12 +20,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * <p>The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
+ * The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
+ * <p>
  * It contains a lot of helper methods to do the actual parsing of the details of a gc event.
- * New parsers for Sun / Oracle gc algorithms should derive from this class.</p>
+ * New parsers for Sun / Oracle gc algorithms should derive from this class.
  *
- * <p>Date: Feb 12, 2002</p>
- * <p>Time: 4:30:27 PM</p>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
@@ -33,7 +32,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static final int LENGTH_OF_DATESTAMP = 29;
-    
+
     private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
 
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
@@ -46,14 +45,14 @@ public abstract class AbstractDataReaderSun implements DataReader {
     protected static final String LOG_INFORMATION_MEMORY = "Memory:";
     protected static final String LOG_INFORMATION_COMMANDLINE_FLAGS = "CommandLine flags:";
     protected static final List<String> LOG_INFORMATION_STRINGS = new LinkedList<String>();
-    
+
     static {
         LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_OPENJDK);
         LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_HOTSPOT);
         LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_MEMORY);
         LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
     }
-    
+
     /** the reader accessing the log file */
     protected BufferedReader in;
     /** the log type allowing for small differences between different versions of the gc logs */
@@ -70,7 +69,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
         this.in = new BufferedReader(new InputStreamReader(in, "ASCII"), 64 * 1024);
         this.gcLogType = gcLogType;
     }
-    
+
     /**
      * Returns the amount of memory in kilobyte. Depending on <code>memUnit</code>, input is
      * converted to kilobyte.
@@ -99,10 +98,10 @@ public abstract class AbstractDataReaderSun implements DataReader {
             return 1;
         }
     }
-    
+
     /**
      * Convenience method to parse memory information followed by a pause time.
-     * 
+     *
      * @param event event where the result should be written to
      * @param line line to be parsed (from the beginning)
      * @throws ParseException is thrown to report any problems the parser runs into
@@ -114,7 +113,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 
     /**
      * Parses memory information in the format &lt;number&gt;KB-&gt;&lt;number&gt;KB(&lt;number&gt;KB), &lt;number&gt;ms
-     * 
+     *
      * @param event event where result of parsing is to be stored
      * @param line line to be parsed
      * @param pos position where parsing should start
@@ -126,9 +125,9 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
 
     /**
-     * Parses a memory information with the following form: 8192K[(16M)]->7895K[(16M)] ("[...]"
+     * Parses a memory information with the following form: {@literal 8192K[(16M)]->7895K[(16M)]} ("[...]"
      * means optional).
-     * 
+     *
      * @param event event, where parsed information should be stored
      * @param line line to be parsed
      * @param pos current parse position; all characters between current position and next digits
@@ -148,7 +147,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
             pos.setIndex(currentPos);
             throw new ParseException("unexpected memory format found", line, pos);
         }
-        
+
         int endOfNextNumber = line.indexOf("(", currentPos);
         int separatorPos = line.indexOf("->", currentPos);
         if (endOfNextNumber > separatorPos) {
@@ -158,11 +157,11 @@ public abstract class AbstractDataReaderSun implements DataReader {
         event.setPreUsed(getMemoryInKiloByte(NumberParser.parseDouble(line, currentPos, endOfNextNumber-currentPos-1),
                 line.charAt(endOfNextNumber-1),
                 line));
-        
+
         // skip until after "->"
         currentPos = line.indexOf("->", endOfNextNumber) + 2;
-        
-        
+
+
         boolean hasTotalHeap = true;
         endOfNextNumber = line.indexOf("(", currentPos);
         if (endOfNextNumber == -1 || endOfNextNumber-currentPos > 10) {
@@ -170,18 +169,18 @@ public abstract class AbstractDataReaderSun implements DataReader {
             hasTotalHeap = false;
             endOfNextNumber = currentPos;
             // goto end of next number
-            
+
             while (isNumberCharacter(line.charAt(endOfNextNumber))) {
                 ++endOfNextNumber;
             }
-            
+
             ++endOfNextNumber;
         }
         event.setPostUsed(getMemoryInKiloByte(NumberParser.parseDouble(line, currentPos, endOfNextNumber-currentPos-1),
                 line.charAt(endOfNextNumber-1),
                 line));
         currentPos = endOfNextNumber;
-        
+
         if (hasTotalHeap) {
             // skip "(" and read heap size
             ++currentPos;
@@ -191,16 +190,16 @@ public abstract class AbstractDataReaderSun implements DataReader {
                     line));
             currentPos = endOfNextNumber;
         }
-        
+
         pos.setIndex(currentPos);
     }
-    
+
     private boolean isNumberCharacter(char character) {
         return Character.isDigit(character)
                || character == '.'
                || character == ','; // some localised log files contain "," instead of "." in numbers
     }
-    
+
     protected void setMemory(GCEvent event, String line, ParseInformation pos) throws ParseException {
         int start = skipUntilNextDigit(line, pos);
         int end = line.indexOf("->", pos.getIndex()) - 1;
@@ -234,30 +233,30 @@ public abstract class AbstractDataReaderSun implements DataReader {
     protected double parsePause(String line, ParseInformation pos) throws ParseException {
     	// usual pattern expected: "..., 0.002032 secs]"
     	// but may be as well (G1): "..., 0.003032]"
-        
+
         // if the next token is "icms_dc" skip until after the comma
         // ...] icms_dc=0 , 8.0600619 secs]
         if (line.indexOf("icms_dc", pos.getIndex()) >= 0) {
             pos.setIndex(line.indexOf(",", pos.getIndex()));
         }
-        
+
         int begin = skipUntilNextDigit(line, pos);
-        
+
         int end = line.indexOf(' ', begin);
         if (end < 0) {
         	end = line.indexOf(']', begin);
         }
         final double pause = NumberParser.parseDouble(line.substring(begin, end));
-        
+
         // skip "secs]"
         pos.setIndex(line.indexOf(']', end) + 1);
-        
+
         return pause;
     }
 
     protected boolean hasNextDetail(String line, ParseInformation pos) throws ParseException {
-        return nextIsTimestamp(line, pos) 
-                || nextIsDatestamp(line, pos) 
+        return nextIsTimestamp(line, pos)
+                || nextIsDatestamp(line, pos)
                 || nextCharIsBracket(line, pos);
     }
 
@@ -322,15 +321,15 @@ public abstract class AbstractDataReaderSun implements DataReader {
         if (gcType == null) {
             throw new UnknownGcTypeException(typeString, line, pos);
         }
-        
+
         return gcType;
     }
 
 
     protected ExtendedType extractTypeFromParsedString(String typeName) throws UnknownGcTypeException {
         ExtendedType extendedType = null;
-        String lookupTypeName = typeName.endsWith("--") 
-                ? typeName.substring(0, typeName.length()-2) 
+        String lookupTypeName = typeName.endsWith("--")
+                ? typeName.substring(0, typeName.length()-2)
                         : typeName;
         AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
         // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
@@ -341,17 +340,17 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 gcType = AbstractGCEvent.Type.lookup(parenMatcher.replaceFirst(""));
             }
         }
-        
+
         if (gcType != null) {
             extendedType = ExtendedType.lookup(gcType, typeName);
         }
-        
+
         return extendedType;
     }
 
     /**
      * Returns <code>true</code>, if next "token" is a timestamp.
-     * 
+     *
      * @param line line to be parsed
      * @param pos current position in line
      * @return <code>true</code> if next is timestamp, <code>false</code> otherwise
@@ -359,43 +358,43 @@ public abstract class AbstractDataReaderSun implements DataReader {
     protected boolean nextIsTimestamp(String line, ParseInformation pos) {
         // format of a timestamp is the following: "0.013:"
         // make sure that after the next blanks a timestamp follows
-        
+
         if (line.indexOf(':', pos.getIndex()) < 0) {
             return false;
         }
-        
+
         int index = pos.getIndex();
         // skip blanks
         while (Character.isSpaceChar(line.charAt(index))) {
             ++index;
         }
-        
+
         boolean hasDigitsBeforeDot = false;
         boolean hasDot = false;
         boolean hasDigitsAfterDot = false;
         boolean hasColon = false;
-        
+
         // digits before "."
         int startIndex = index;
         while (Character.isDigit(line.charAt(index))) {
             ++index;
             hasDigitsBeforeDot = true;
         }
-        
+
         // "." / ","
         if (line.charAt(index) == '.' || line.charAt(index) == ',') {
             ++index;
             hasDot = true;
         }
-        
+
         // digits after "."
         while (Character.isDigit(line.charAt(index))) {
             ++index;
             hasDigitsAfterDot = true;
         }
-        
+
         hasColon = line.charAt(index) == ':';
-        
+
         return index > startIndex && hasDigitsBeforeDot && hasDot && hasDigitsAfterDot && hasColon;
     }
 
@@ -420,7 +419,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     /**
      * If the next thing in <code>line</code> is a timestamp, it is parsed and returned. If there
      * is no timestamp present, the timestamp is calculated
-     * 
+     *
      * @param line current line
      * @param pos current parse positition
      * @param datestamp datestamp that may have been parsed
@@ -429,7 +428,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
      */
     protected double getTimestamp(final String line, final ParseInformation pos, final ZonedDateTime datestamp)
             throws ParseException {
-                
+
         double timestamp = 0;
         if (nextIsTimestamp(line, pos)) {
             timestamp = parseTimestamp(line, pos);
@@ -440,17 +439,17 @@ public abstract class AbstractDataReaderSun implements DataReader {
         }
         return timestamp;
     }
-    
+
     protected abstract AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException;
 
     /**
      * Tests if <code>line</code> starts with one of the strings in <code>lineStartStrings</code>.
-     * If <code>trimLine</code> is <code>true</code>, then <code>line</code> is trimmed first. 
-     * 
+     * If <code>trimLine</code> is <code>true</code>, then <code>line</code> is trimmed first.
+     *
      * @param line line to be checked against
      * @param lineStartStrings list of strings to check
      * @param trimLine if <code>true</code> then trim <code>line</code>
-     * @return <code>true</code>, if <code>line</code> starts with one of the strings in 
+     * @return <code>true</code>, if <code>line</code> starts with one of the strings in
      * <code>lineStartStrings</code>
      */
     protected boolean startsWith(String line, List<String> lineStartStrings, boolean trimLine) {
@@ -460,16 +459,17 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 return true;
             }
         }
-        
+
         return false;
     }
 
     /**
      * Parses a datestamp in <code>line</code> at <code>pos</code>.
-     * 
-     * @param line current line
-     * @param pos current parse position
-     * @return returns parsed datestamp if found one, <code>null</code> otherwise
+     *
+     * @param line current line.
+     * @param pos current parse position.
+     * @return returns parsed datestamp if found one, <code>null</code> otherwise.
+     * @throws ParseException if line could not be parsed.
      */
     protected ZonedDateTime parseDatestamp(String line, ParseInformation pos) throws ParseException {
         ZonedDateTime zonedDateTime = null;
@@ -485,13 +485,13 @@ public abstract class AbstractDataReaderSun implements DataReader {
                  throw new ParseException(e.toString(), line);
             }
         }
-        
+
         return zonedDateTime;
     }
 
     /**
      * Returns <code>true</code> if text at parsePosition is a datestamp.
-     * 
+     *
      * @param line current line
      * @param pos current parse position
      * @return <code>true</code> if in current line at current parse position we have a datestamp
@@ -500,13 +500,13 @@ public abstract class AbstractDataReaderSun implements DataReader {
         if (line == null || line.length() < 10) {
             return false;
         }
-    
+
         return line.indexOf("-", pos.getIndex()) == pos.getIndex()+4 && line.indexOf("-", pos.getIndex() + 5) == pos.getIndex()+7;
     }
 
     /**
      * Parses detail events if any exist at current <code>pos</code> in <code>line</code>.
-     * 
+     *
      * @param line current line
      * @param pos current parse position
      * @param event enclosing event
@@ -514,7 +514,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
      */
     protected void parseDetailEventsIfExist(final String line, final ParseInformation pos,
             final GCEvent event) throws ParseException {
-                
+
         int currentIndex = pos.getIndex();
         boolean currentIndexHasChanged = true;
         while (hasNextDetail(line, pos) && currentIndexHasChanged) {
@@ -523,7 +523,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 if (nextCharIsBracket(line, pos)) {
                     detailEvent.setDateStamp(event.getDatestamp());
                     detailEvent.setTimestamp(event.getTimestamp());
-                } 
+                }
                 else {
                     ZonedDateTime datestamp = parseDatestamp(line, pos);
                     detailEvent.setDateStamp(datestamp);
@@ -547,26 +547,26 @@ public abstract class AbstractDataReaderSun implements DataReader {
                     detailEvent.setPause(parsePause(line, pos));
                 }
                 event.add(detailEvent);
-            } 
+            }
             catch (UnknownGcTypeException e) {
                 skipUntilEndOfDetail(line, pos, e);
-            } 
+            }
             catch (NumberFormatException e) {
                 skipUntilEndOfDetail(line, pos, e);
             }
-            
+
             // promotion failed indicators "--" are sometimes separated from their primary
             // event name -> stick them together here (they are part of the "parent" event)
             if (nextIsPromotionFailed(line, pos)) {
                 pos.setIndex(pos.getIndex() + 2);
                 event.setExtendedType(extractTypeFromParsedString(event.getExtendedType() + "--"));
             }
-    
+
             // in a line with complete garbage the parser must not get stuck; just stop parsing.
             currentIndexHasChanged = currentIndex != pos.getIndex();
             currentIndex = pos.getIndex();
         }
-        
+
     }
 
     private boolean nextIsPromotionFailed(String line, ParseInformation pos) {
@@ -575,19 +575,20 @@ public abstract class AbstractDataReaderSun implements DataReader {
         while (line.charAt(index) == ' ') {
             ++index;
         }
-        
+
         if (index < line.length()-3) {
             nextString.append(line.charAt(index)).append(line.charAt(index + 1));
         }
-        
+
         return nextString.toString().equals("--");
     }
 
     /**
      * Skips a block of lines containing information like they are generated by
      * -XX:+PrintHeapAtGC or -XX:+PrintAdaptiveSizePolicy.
-     * 
+     *
      * @param in inputStream of the current log to be read
+     * @param pos current parse position
      * @param lineNumber current line number
      * @param lineStartStrings lines starting with these strings should be ignored
      * @return line number including lines read in this method
@@ -595,14 +596,14 @@ public abstract class AbstractDataReaderSun implements DataReader {
      */
     protected int skipLines(BufferedReader in, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
         String line = "";
-        
+
         if (!in.markSupported()) {
             LOG.warning("input stream does not support marking!");
-        } 
+        }
         else {
             in.mark(200);
         }
-        
+
         boolean startsWithString = true;
         while (startsWithString && (line = in.readLine()) != null) {
             ++lineNumber;
@@ -617,7 +618,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 }
             }
         }
-        
+
         // push last read line back into stream - it is the next event to be parsed
         if (in.markSupported()) {
             try {
@@ -627,27 +628,27 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
             }
         }
-        
+
         return --lineNumber;
     }
 
     /**
      * Skips until the end of the current detail event.
-     * 
+     *
      * @param line current line
      * @param pos current parse position
      * @param e exception that made skipping necessary
      */
     private void skipUntilEndOfDetail(final String line, final ParseInformation pos, Exception e) {
         skipUntilEndOfDetail(line, pos, 1);
-        
+
         if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
     }
 
     /**
      * Skips until end of current detail event. If the detail event contains detail events
      * itself, those are skipped as well.
-     * 
+     *
      * @param line current line
      * @param pos current parse position
      * @param levelOfDetailEvent level of nesting within detail event
@@ -669,7 +670,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
             // unexpected: no opening and no closing bracket -> skip out
             --levelOfDetailEvent;
         }
-        
+
         if (levelOfDetailEvent > 0) {
             skipUntilEndOfDetail(line, pos, levelOfDetailEvent);
         }
@@ -680,27 +681,27 @@ public abstract class AbstractDataReaderSun implements DataReader {
         while (!Character.isDigit(line.charAt(begin)) && begin < line.length()) {
             ++begin;
         }
-        
+
         if (begin == line.length()-1) {
             throw new ParseException("no digit found after position " + pos.getIndex() + "; ", line, pos);
         }
-        
+
         pos.setIndex(begin);
-        
+
         return begin;
     }
-    
+
     private void skipBlanksAndCommas(String line, ParseInformation parseInfo) throws ParseException {
         int begin = parseInfo.getIndex();
         while ((line.charAt(begin) == ' ' || line.charAt(begin) == ',') && begin+1 < line.length()) {
             ++begin;
         }
-        
+
         if (begin == line.length()-1) {
             throw new ParseException("unexpected end of line after position " + parseInfo.getIndex() + "; ", line, parseInfo);
         }
-        
+
         parseInfo.setIndex(begin);
     }
-    
+
 }

@@ -14,9 +14,6 @@ import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 
 /**
  * Renders all stop the world event pauses as rectangles.
- * <p/>
- * Date: Jun 2, 2005
- * Time: 3:31:21 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
@@ -53,7 +50,7 @@ public class GCRectanglesRenderer extends ChartRenderer {
         Rectangle clip = g2d.getClipBounds();
         int leftBoundary = clip.x;
         int rightBoundary = clip.x + clip.width;
-        
+
         for (Iterator<AbstractGCEvent<?>> i = getModelChart().getModel().getStopTheWorldEvents(); i.hasNext() && lastX < rightBoundary;) {
             AbstractGCEvent<?> event = i.next();
             double pause = event.getPause();
@@ -66,7 +63,7 @@ public class GCRectanglesRenderer extends ChartRenderer {
                     // make sure only visible rectangles are drawn
                     if (event.isFull()) {
                         g2d.setPaint(Color.BLACK);
-                    } 
+                    }
                     else if (event.isInitialMark()) {
                         g2d.setPaint(Color.BLUE);
                     }
@@ -75,10 +72,10 @@ public class GCRectanglesRenderer extends ChartRenderer {
                     }
                     else if (event.getExtendedType().getType() == AbstractGCEvent.Type.INC_GC) {
                         g2d.setPaint(brighter);
-                    } 
+                    }
                     else if (event instanceof VmOperationEvent) {
                         g2d.setPaint(Color.RED);
-                    } 
+                    }
                     else {
                         g2d.setPaint(getLinePaint());
                     }

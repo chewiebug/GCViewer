@@ -27,15 +27,15 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
- * <p>Parses log output from Sun / Oracle Java 1.6. / 1.7
- * <br>Supports the following gc algorithms:
+ * Parses log output from Sun / Oracle Java 1.6. / 1.7.
+ * <p>
+ * Supports the following gc algorithms:
  * <ul>
  * <li>-XX:+UseG1GC</li>
  * </ul>
- * </p>
- * <p>All other algorithms for 1.6 / 1.7 are supported by {@link DataReaderSun1_6_0G1}
- * </p>
- * <p>Supports the following options:
+ * All other algorithms for 1.6 / 1.7 are supported by {@link DataReaderSun1_6_0G1}
+ * <p>
+ * Supports the following options:
  * <ul>
  * <li>-XX:+PrintGCDetails</li>
  * <li>-XX:+PrintGCTimeStamps</li>
@@ -48,9 +48,8 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
  * <li>-XX:+PrintReferenceGC (output ignored)</li>
  * </ul>
- * </p>
+ *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>created on: 23.10.2011</p>
  * @see DataReaderSun1_6_0
  */
 public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
@@ -60,7 +59,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0G1.class .getName());
 
     private static final String TIMES = "[Times";
-    
+
     private static final String TIMES_ALONE = " " + TIMES;
     private static final String APPLICATION_TIME = "Application time:"; // -XX:+PrintGCApplicationConcurrentTime
     private static final String DESIRED_SURVIVOR = "Desired survivor"; // -XX:+PrintTenuringDistribution
@@ -79,7 +78,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(MARK_STACK_IS_FULL);
         EXCLUDE_STRINGS.add(SETTING_ABORT_IN);
     }
-    
+
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
     // "[<datestamp>: ]0.295: [GC pause (young), 0.00594747 secs]"
     private static final Pattern PATTERN_GC_PAUSE = Pattern.compile("^([0-9-T:.+]{29})?[ ]?([0-9.,]+)?[: \\[]{2,3}([A-Z0-9a-z- ().]+)[, ]+([0-9.,]+)[ sec\\]]+$");
@@ -93,7 +92,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static final String INITIAL_MARK = "(initial-mark)";
     private static final String TO_SPACE_OVERFLOW = "(to-space overflow)";
-    
+
     // G1 log output in 1.6.0_u25 sometimes starts a new line somewhere in line being written
     // the pattern is "...)<timestamp>..."
     // or "...Full GC<timestamp>..."
@@ -118,10 +117,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("[0x"); // special case of line following one containing a concurrent event mixed with heap information
         HEAP_STRINGS.add("total"); // special case of line following one containing a concurrent event mixed with heap information
     }
-    
+
     /** is true, if "[Times ..." information is present in the gc log */
     private boolean hasTimes = false;
-    
+
     public DataReaderSun1_6_0G1(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super(in, gcLogType);
     }
@@ -162,7 +161,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         LOG.info(line);
                         continue;
                     }
-                    
+
                     // remove G1 ergonomics pieces
                     if (line.indexOf(G1_ERGONOMICS) >= 0) {
                         ergonomicsMatcher.reset(line);
@@ -177,7 +176,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
                     // if a new timestamp occurs in the middle of a line, that should be treated as a new line
                     // -> the rest of the old line appears on the next line
-                    linesMixedMatcher.reset(line); 
+                    linesMixedMatcher.reset(line);
                     if (linesMixedMatcher.matches()) {
                         if (line.indexOf("concurrent") > 0) {
                             // 1st pattern (complete concurrent collection follows)
@@ -195,8 +194,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             // but the rest of the line is the rest of the same collection
                             StringBuilder realLine = new StringBuilder();
                             realLine.append(linesMixedMatcher.group(1));
-                            int toSpaceIndex = line.indexOf(TO_SPACE_OVERFLOW); 
-                            int initialMarkIndex = line.indexOf(INITIAL_MARK); 
+                            int toSpaceIndex = line.indexOf(TO_SPACE_OVERFLOW);
+                            int initialMarkIndex = line.indexOf(INITIAL_MARK);
                             if (toSpaceIndex > 0 && realLine.length() < toSpaceIndex) {
                                 realLine.append(" ").append(TO_SPACE_OVERFLOW);
                             }
@@ -215,12 +214,12 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         if (line.indexOf(SOFT_REFERENCE) >= 0) {
                             line = line.substring(line.lastIndexOf(","));
                         }
-                        
+
                         // not detailed log but mixed line
                         line = beginningOfLine + line;
                         beginningOfLine = null;
                     }
-                    
+
                     if (line.endsWith(MARK_STACK_IS_FULL)) {
                         // "Mark stack is full" message is treated as part of the event name
                         beginningOfLine = line;
@@ -230,10 +229,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         beginningOfLine = line;
                         continue;
                     }
-                    
+
                     // the following case is special for -XX:+PrintGCDetails and must be treated
                     // different from the other cases occurring in G1 standard mode
-                    // 0.356: [GC pause (young), 0.00219944 secs] -> GC_PAUSE pattern but GC_MEMORY_PAUSE 
+                    // 0.356: [GC pause (young), 0.00219944 secs] -> GC_PAUSE pattern but GC_MEMORY_PAUSE
                     //   event (has extensive details)
                     // all other GC types are the same as in standard G1 mode.
                     gcPauseMatcher.reset(line);
@@ -256,7 +255,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             gcEvent.setTimestamp(timestamp);
                             gcEvent.setExtendedType(type);
                             gcEvent.setPause(NumberParser.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_PAUSE)));
-                            
+
                             // now parse the details of this event
                             lineNumber = parseDetails(in, model, parsePosition, lineNumber, gcEvent, beginningOfLine);
                             beginningOfLine = null;
@@ -272,7 +271,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         GCEvent fullGcEvent = (GCEvent) parseLine(line, parsePosition);
                         if (!in.markSupported()) {
                             LOG.warning("input stream does not support marking!");
-                        } 
+                        }
                         else {
                             in.mark(200);
                             try {
@@ -302,7 +301,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     else {
                         model.add(parseLine(line, parsePosition));
                     }
-                } 
+                }
                 catch (Exception pe) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.toString());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.toString(), pe);
@@ -310,7 +309,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 parsePosition.setIndex(0);
             }
             return model;
-        } 
+        }
         finally {
             if (LOG.isLoggable(Level.INFO)) {
                 LOG.info("Done reading.");
@@ -326,20 +325,20 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     /**
      * Returns true, if <code>line</code> ends with one of the detailed event types.
-     * 
+     *
      * @param line current line
      * @return <code>true</code>, if <code>-XX:+PrintTenuringDistribution</code> was used
      */
     private boolean isPrintTenuringDistribution(String line) {
-        return     (line.indexOf("GC pause") >= 0 && line.endsWith(")")) 
+        return     (line.indexOf("GC pause") >= 0 && line.endsWith(")"))
                 || (line.indexOf(Type.FULL_GC.getName()) >= 0 && line.endsWith(")"))
-                ; 
+                ;
     }
 
     /**
      * Parses details of a standard gc collection event (e.g. GC pause (young)) with
      * -XX:+PrintGCDetails
-     * 
+     *
      * @param in reader reading from log file
      * @param model current model
      * @param pos parsePosition
@@ -350,14 +349,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @return line number of last line read in this method
      * @throws IOException problem reading from file
      */
-    private int parseDetails(BufferedReader in, 
+    private int parseDetails(BufferedReader in,
             GCModel model,
-            ParseInformation pos, 
-            int lineNumber, 
-            GCEvent event, 
+            ParseInformation pos,
+            int lineNumber,
+            GCEvent event,
             String beginningOfLine)
                     throws ParseException, IOException {
-        
+
         Matcher memoryMatcher = PATTERN_MEMORY.matcher("");
 
         pos.setIndex(0);
@@ -379,7 +378,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 model.add(parseLine(line, pos));
                 continue;
             }
-            
+
             // now we parse details of a pause
             // currently everything except memory is skipped
             if (line.indexOf("Eden") >= 0) {
@@ -410,7 +409,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 hasTimes = true;
             }
         }
-        
+
         if (event.getTotal() == 0) {
             // is currently the case for jdk 1.7.0_02 which changed the memory format
             // as of 1.7.0_25 for "GC cleanup" events, there seem to be rare cases, where this just happens
@@ -421,10 +420,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
         return lineNumber;
     }
-    
+
     /**
      * Parse detailed memory format of G1 ("[Eden: ... Survivors: ... Heap: ...]")
-     * 
+     *
      * @param event Event to add the detailed head information to
      * @param line line containing the detailed heap information
      * @param pos parseInformation concerning gc log
@@ -435,7 +434,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         // it is java 1.7_u2
         // memory part looks like
         //    [Eden: 8192K(8192K)->0B(8192K) Survivors: 0B->8192K Heap: 8192K(16M)->7895K(16M)]
-        
+
         // parse Eden
         pos.setIndex(line.indexOf("Eden:"));
         GCEvent youngEvent = new GCEvent();
@@ -443,7 +442,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         youngEvent.setTimestamp(event.getTimestamp());
         youngEvent.setExtendedType(parseType(line, pos));
         setMemoryExtended(youngEvent, line, pos);
-        
+
         // add survivors
         pos.setIndex(line.indexOf("Survivors:") + "Survivors:".length() + 1);
         GCEvent survivorsEvent = new GCEvent();
@@ -451,13 +450,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         youngEvent.setPreUsed(youngEvent.getPreUsed() + survivorsEvent.getPreUsed());
         youngEvent.setPostUsed(youngEvent.getPostUsed() + survivorsEvent.getPostUsed());
         youngEvent.setTotal(youngEvent.getTotal() + survivorsEvent.getPostUsed());
-        
+
         event.add(youngEvent);
 
         // parse heap size
         pos.setIndex(line.indexOf("Heap:") + "Heap:".length() + 1);
         setMemoryExtended(event, line, pos);
-        
+
         // parse Metaspace
         if (line.indexOf("Metaspace:") > 0) {
             pos.setIndex(line.indexOf("Metaspace:"));
@@ -466,20 +465,20 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             metaSpace.setTimestamp(event.getTimestamp());
             metaSpace.setExtendedType(parseType(line, pos));
             setMemoryExtended(metaSpace, line, pos);
-            
+
             event.add(metaSpace);
         }
-        
+
     }
 
     /**
      * Parses an incomplete line containing a concurrent-mark-start / -end event. The timestamp
      * is taken from the previous event.
-     *  
+     *
      * @param model model where event should be added
-     * @param previousEvent last complete event that occurred 
+     * @param previousEvent last complete event that occurred
      * @param line line containing the incomplete concurrent event
-     * @throws ParseException 
+     * @throws ParseException
      */
     private void parseIncompleteConcurrentEvent(GCModel model, AbstractGCEvent<?> previousEvent, String line, ParseInformation pos) throws ParseException {
         // some concurrent event is mixed in -> extract it
@@ -491,7 +490,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 previousEvent != null ? previousEvent.getTimestamp() : 0,
                 type));
     }
-    
+
     @Override
     protected AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException {
         AbstractGCEvent<?> ae = null;
@@ -506,11 +505,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // special provision for concurrent events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 ae = parseConcurrentEvent(line, pos, datestamp, timestamp, type);
-            } 
+            }
             else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
                 ae = new VmOperationEvent();
                 VmOperationEvent vmOpEvent = (VmOperationEvent) ae;
-                
+
                 vmOpEvent.setDateStamp(datestamp);
                 vmOpEvent.setTimestamp(timestamp);
                 vmOpEvent.setExtendedType(type);
@@ -527,7 +526,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 // or when PrintDateTimeStamps is on like:
                 // 2013-09-09T06:45:45.825+0000: 83146.942: [GC remark 2013-09-09T06:45:45.825+0000: 83146.943: [GC ref-proc, 0.0069100 secs], 0.0290090 secs]
                     parseDetailEventsIfExist(line, pos, event);
-                
+
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
                     setMemoryAndPauses(event, line, pos);
                 }
@@ -536,7 +535,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 }
             }
             return ae;
-        } 
+        }
         catch (RuntimeException rte) {
             throw new ParseException(rte.toString(), line, pos);
         }
@@ -544,21 +543,21 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     /**
      * Parse concurrent event
-     * 
+     *
      * @param line line containing concurrent event
      * @param pos position where event starts
      * @param datestamp datestamp
      * @param timestamp timestamp
      * @param type type of event
      * @return complete concurrent event
-     * @throws ParseException 
+     * @throws ParseException
      */
     private AbstractGCEvent<?> parseConcurrentEvent(String line,
             ParseInformation pos, ZonedDateTime datestamp,
             double timestamp, final ExtendedType type) throws ParseException {
-        
+
         ConcurrentGCEvent event = new ConcurrentGCEvent();
-        
+
         // simple concurrent events (ending with -start) just are of type GcPattern.GC
         event.setDateStamp(datestamp);
         event.setTimestamp(timestamp);
@@ -570,11 +569,11 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         }
         return event;
     }
-    
+
     /**
      * Skips a block of lines containing information like they are generated by
      * -XX:+PrintHeapAtGC or -XX:+PrintAdaptiveSizePolicy.
-     * 
+     *
      * @param in inputStream of the current log to be read
      * @param lineNumber current line number
      * @param lineStartStrings lines starting with these strings should be ignored
@@ -583,19 +582,19 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      */
     private int skipLinesRespectingConcurrentEvents(BufferedReader in, GCModel model, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
         String line = "";
-        
+
         if (!in.markSupported()) {
             LOG.warning("input stream does not support marking!");
-        } 
+        }
         else {
             in.mark(200);
         }
-        
+
         boolean startsWithString = true;
         while (startsWithString && (line = in.readLine()) != null) {
             ++lineNumber;
             pos.setLineNumber(lineNumber);
-            
+
             if (line.indexOf(INCOMPLETE_CONCURRENT_EVENT_INDICATOR) >= 0) {
                 parseIncompleteConcurrentEvent(model, model.getLastEventAdded(), line, pos);
             }
@@ -611,7 +610,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 }
             }
         }
-        
+
         // push last read line back into stream - it is the next event to be parsed
         if (in.markSupported()) {
             try {
@@ -621,7 +620,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
             }
         }
-        
+
         return --lineNumber;
     }
 

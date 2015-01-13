@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class OSXSupport {
 
     private static final Logger LOGGER = Logger.getLogger(OSXSupport.class.getName());
-    
+
     private static Object application = null;
 
     /**
@@ -26,6 +26,7 @@ public class OSXSupport {
      *
      * @param aboutAction the action to use for the About menu item
      * @param quitAction the action to use for the Quit menu item
+     * @param preferencesAction the action to use for the Prferences menu item
      * @param iconImage the icon image to use for the dock
      * @param fullScreenableWindow the window that should be full screen enabled
      */
@@ -74,7 +75,7 @@ public class OSXSupport {
                 OSXAdapter.setQuitHandler(quitAction, quitAction.getClass().getDeclaredMethod("quit", (Class[]) null));
                 OSXAdapter.setAboutHandler(aboutAction, aboutAction.getClass().getDeclaredMethod("about", (Class[])null));
             }
-                
+
             // Use the screen menu bar instead of the window menu bar
             System.setProperty("apple.laf.useScreenMenuBar", "true");
 
@@ -89,11 +90,11 @@ public class OSXSupport {
         }
     }
 
-    
-    
+
+
     /**
      * Adds an OS X handler to the application
-     * 
+     *
      * @param handlerClassName the class name of the handler to add
      * @param handlerMethodName the name of the method that is called on the handler when invoked
      * @param handlerSetterMethodName the name of the method used to set the handler
@@ -131,7 +132,7 @@ public class OSXSupport {
 
     /**
      * Get an Apple eAWT Application object
-     * 
+     *
      * @return an Application object
      */
     public static Object getOSXApplication() {
@@ -144,10 +145,10 @@ public class OSXSupport {
                 LoggerHelper.logException(LOGGER, Level.SEVERE, "getOSXApplication() failed", e);
             }
         }
-        
+
         return application;
     }
-       
+
     /**
      * Determine whether we are running on MAC OS X or not
      * @return <code>true</code> if is running on MAC OS X

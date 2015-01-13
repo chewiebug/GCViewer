@@ -27,8 +27,9 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
- * <p>Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7 / 1.8
- * <br>Supports the following gc algorithms:
+ * Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7 / 1.8.
+ * <p>
+ * Supports the following gc algorithms:
  * <ul>
  * <li>-XX:+UseSerialGC</li>
  * <li>-XX:+UseParallelGC</li>
@@ -37,10 +38,10 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+UseConcMarkSweepGC</li>
  * <li>-Xincgc (1.4 / 1.5)</li>
  * </ul>
- * </p>
- * <p>-XX:+UseG1GC is not supported by this class, but by {@link DataReaderSun1_6_0G1}
- * </p>
- * <p>Supports the following options:
+ * <p>
+ * -XX:+UseG1GC is not supported by this class, but by {@link DataReaderSun1_6_0G1}
+ * <p>
+ * Supports the following options:
  * <ul>
  * <li>-XX:+PrintGCDetails</li>
  * <li>-XX:+PrintGCTimeStamps</li>
@@ -57,16 +58,15 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+PrintCMSInitiationStatistics (output ignored)</li>
  * <li>-XX:+PrintFLSStatistics (output ignored)</li>
  * </ul>
- * </p>
+ *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>created on: 23.10.2011 (copied from 1.5 implementation)</p>
  * @see DataReaderSun1_6_0G1
  */
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
     private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
-    
+
     private static final String UNLOADING_CLASS = "[Unloading class ";
     private static final String APPLICATION_TIME = "Application time:";
     private static final String BEFORE_GC = "Before GC:"; // -XX:+PrintFLSStatistics=1
@@ -84,7 +84,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("- age"); // -XX:+PrintTenuringDistribution
         EXCLUDE_STRINGS.add(" [Times");
         EXCLUDE_STRINGS.add("Finished"); // -XX:PrintCmsStatistics=2
-        EXCLUDE_STRINGS.add(" (cardTable: "); // -XX:PrintCmsStatistics=2 
+        EXCLUDE_STRINGS.add(" (cardTable: "); // -XX:PrintCmsStatistics=2
         EXCLUDE_STRINGS.add("GC locker: Trying a full collection because scavenge failed");
         EXCLUDE_STRINGS.add("CMSCollector"); // -XX:+PrintCMSInitiationStatistics
         EXCLUDE_STRINGS.add("time_until_cms_gen_full"); // -XX:+PrintCMSInitiationStatistics
@@ -108,15 +108,15 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(SIZE); // -XX:+PrintFLSStatistics=2
         EXCLUDE_STRINGS.add("demand"); // -XX:+PrintFLSStatistics=2
     }
-    
+
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
     private static final String EVENT_PARNEW = "ParNew";
     private static final String EVENT_DEFNEW = "DefNew";
-    
+
     private static final String CMS_ABORT_PRECLEAN = " CMS: abort preclean due to time ";
 
     private static final String HEAP_SIZING_START = "Heap";
-    
+
     private static final List<String> HEAP_STRINGS = new LinkedList<String>();
     static {
         HEAP_STRINGS.add("def new generation"); // serial young collection -XX:+UseSerialGC
@@ -126,7 +126,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("eden");
         HEAP_STRINGS.add("from");
         HEAP_STRINGS.add("to");
-        
+
         HEAP_STRINGS.add("ParOldGen"); // parallel old collection -XX:+UseParallelOldGC
         HEAP_STRINGS.add("PSOldGen"); // serial old collection -XX:+UseParallelGC without -XX:+UseParallelOldGC
         HEAP_STRINGS.add("object");
@@ -138,15 +138,15 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("compacting perm gen"); // serial perm collection -XX:+UseSerialGC
         HEAP_STRINGS.add("concurrent mark-sweep generation total"); // CMS old collection
         HEAP_STRINGS.add("concurrent-mark-sweep perm gen"); // CMS perm collection
-        
+
         HEAP_STRINGS.add("Metaspace"); // java 8
         HEAP_STRINGS.add("data space"); // java 8
         HEAP_STRINGS.add("class space"); // java 8
         HEAP_STRINGS.add("No shared spaces configured.");
-        
+
         HEAP_STRINGS.add("}");
     }
-    
+
     private static final List<String> ADAPTIVE_SIZE_POLICY_STRINGS = new LinkedList<String>();
     static {
         ADAPTIVE_SIZE_POLICY_STRINGS.add("PSAdaptiveSize");
@@ -163,55 +163,55 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final int LINES_MIXED_STARTOFLINE_GROUP = 1;
     // Matcher group of end of line
     private static final int LINES_MIXED_ENDOFLINE_GROUP = 3;
-    
+
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:+UseAdaptiveSizePolicy outputs the following lines:
-    // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1 
+    // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1
     // PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0.059538 major_cost: 0.000000 mutator_cost: 0.940462 throughput_goal: 0.990000 live_space: 273821824 free_space: 33685504 old_promo_size: 16842752 old_eden_size: 16842752 desired_promo_size: 16842752 desired_eden_size: 33685504
-    // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512) 
-    // AdaptiveSizeStop: collection: 1 
+    // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512)
+    // AdaptiveSizeStop: collection: 1
     //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
     private static final String ADAPTIVE_SIZE_POLICY_PATTERN_STRING = "(.*GC \\([a-zA-Z ]*\\)|.*GC)(?:[0-9.:]*.*)[ ]?AdaptiveSize.*";
     private static final Pattern adaptiveSizePolicyPattern = Pattern.compile(ADAPTIVE_SIZE_POLICY_PATTERN_STRING);
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
-    
+
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
     // outputs the following line:
-    // 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] 
+    // 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs]
     private static final Pattern printAdaptiveSizePolicyPattern = Pattern.compile(ADAPTIVE_SIZE_POLICY_PATTERN_STRING + "(?:true|false)([ ]?\\[.*).*");
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_BEFORE = 1;
     private static final int PRINT_ADAPTIVE_SIZE_GROUP_AFTER = 2;
-    
+
     // -XX:PrintCmsStatistics=2
     private static final String PRINT_CMS_STATISTICS_ITERATIONS = "iterations";
     private static final Pattern printCmsStatisticsIterationsPattern = Pattern.compile("(.*)[ ][\\[][0-9]+[ ]iterations[, 0-9]+[ ]waits[, 0-9]+[ ]cards[)][\\]][ ](.*)");
     private static final int PRINT_CMS_STATISTICS_ITERATIONS_GROUP_BEFORE = 1;
     private static final int PRINT_CMS_STATISTICS_ITERATIONS_GROUP_AFTER = 2;
     private static final String PRINT_CMS_STATISTICS_SURVIVOR = "  (Survivor:";
-    
-    // -XX:+PrintTenuringDistribution in OpenJDK 1.6.0_22 (RHEL 64-bit) 
+
+    // -XX:+PrintTenuringDistribution in OpenJDK 1.6.0_22 (RHEL 64-bit)
     // outputs the following line (looks similar but not identical to what older versions of jdk1.5 wrote):
     // 3.141: [GCDesired survivor size 134217728 bytes, new threshold 7 (max 2) [PSYoungGen: 188744K->13345K(917504K)] 188744K->13345K(4063232K), 0.0285820 secs] [Times: user=0.06 sys=0.01, real=0.03 secs]
     // in JDK1.4 / 1.5 it looked like this:
     // 5.0: [GC Desired survivor size 3342336 bytes, new threshold 1 (max 32) - age   1:  6684672 bytes,  6684672 total 52471K->22991K(75776K), 1.0754938 secs]
-    private static final String PRINT_TENURING_DISTRIBUTION = "Desired survivor size"; 
+    private static final String PRINT_TENURING_DISTRIBUTION = "Desired survivor size";
     private static final Pattern printTenuringDistributionPattern = Pattern.compile("(.*GC)[ ]?Desired.*(?:[0-9]\\)|total)( \\[.*|[ ][0-9]*.*)");
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE = 1;
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER = 2;
-    
+
     // -XX:+PrintReferenceGC
     private static final String PRINT_REFERENCE_GC_INDICATOR = "Reference";
-    
+
     // -XX:+CMSScavengeBeforeRemark JDK 1.5
     private static final String SCAVENGE_BEFORE_REMARK = Type.SCAVENGE_BEFORE_REMARK.getName();
-    
+
     public DataReaderSun1_6_0(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super(in, gcLogType);
     }
 
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x / 1.8.x format...");
-        
+
         try (BufferedReader in = this.in) {
             GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
@@ -250,7 +250,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         LOG.info(line);
                         continue;
                     }
-                    
+
                     if (line.indexOf(CMS_ABORT_PRECLEAN) >= 0) {
                         // line contains like " CMS: abort preclean due to time "
                         // -> remove the text
@@ -266,7 +266,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             LOG.severe("printCmsStatisticsIterationsMatcher did not match for line " + lineNumber + ": '" + line + "'");
                             continue;
                         }
-                        
+
                         line = printCmsStatisticsIterationsMatcher.group(PRINT_CMS_STATISTICS_ITERATIONS_GROUP_BEFORE)
                                 + printCmsStatisticsIterationsMatcher.group(PRINT_CMS_STATISTICS_ITERATIONS_GROUP_AFTER);
                     }
@@ -286,7 +286,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             LOG.severe("printDistributionMatcher did not match for line " + lineNumber + ": '" + line + "'");
                             continue;
                         }
-                        
+
                         line = printTenuringDistributionMatcher.group(PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE)
                                     + printTenuringDistributionMatcher.group(PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER);
                     }
@@ -316,7 +316,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         else {
                             beginningOfLine.addFirst(line.substring(startOf2ndEvent));
                         }
-                        
+
                         lastLineWasScavengeBeforeRemark = true;
                         continue;
                     }
@@ -339,10 +339,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                                 LOG.severe("printAdaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
                                 continue;
                             }
-                            
+
                             model.add(parseLine(
                                     printAdaptiveSizePolicyMatcher.group(PRINT_ADAPTIVE_SIZE_GROUP_BEFORE)
-                                        + printAdaptiveSizePolicyMatcher.group(PRINT_ADAPTIVE_SIZE_GROUP_AFTER), 
+                                        + printAdaptiveSizePolicyMatcher.group(PRINT_ADAPTIVE_SIZE_GROUP_AFTER),
                                     parsePosition));
                             parsePosition.setIndex(0);
                         }
@@ -362,10 +362,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         // -XX:+CMSScavengeBeforeRemark combined with -XX:+PrintTenuringDistribution
                         // is the only case where beginningOfLine.size() > 1
                         printTenuringDistributionOn = beginningOfLine.size() == 2;
-                        if (gcLogType == GcLogType.SUN1_5 
+                        if (gcLogType == GcLogType.SUN1_5
                                 && lastLineWasScavengeBeforeRemark
                                 && ! lineSkippedForScavengeBeforeRemark) {
-                            
+
                             // -XX:+CMSScavengeBeforeRemark inserts a pause on its own line between
                             // the first and the second part of the enclosing remark event. Probably
                             // that is the duration of the Scavenge-Before-Remark event; this information
@@ -385,21 +385,21 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     }
 
                     if (isMixedLine(line, mixedLineMatcher)) {
-                        // if PrintTenuringDistribution is used and a line is mixed, 
+                        // if PrintTenuringDistribution is used and a line is mixed,
                         // beginningOfLine may already contain a value, which must be preserved
                         String firstPartOfBeginningOfLine = beginningOfLine.pollFirst();
                         if (firstPartOfBeginningOfLine == null) {
                             firstPartOfBeginningOfLine = "";
                         }
                         beginningOfLine.addFirst(firstPartOfBeginningOfLine + mixedLineMatcher.group(LINES_MIXED_STARTOFLINE_GROUP));
-                        
+
                         model.add(parseLine(mixedLineMatcher.group(LINES_MIXED_ENDOFLINE_GROUP), parsePosition));
                         parsePosition.setIndex(0);
                         continue;
                     }
-                    
+
                     AbstractGCEvent<?> gcEvent = parseLine(line, parsePosition);
-                     
+
                     if (lastLineWasScavengeBeforeRemark && !printTenuringDistributionOn) {
                          // according to http://mail.openjdk.java.net/pipermail/hotspot-gc-use/2012-August/001297.html
                          // the pause time reported for cms-remark includes the scavenge-before-remark time
@@ -410,9 +410,9 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                          AbstractGCEvent<?> remarkEvent = gcEvent;
                          remarkEvent.setPause(remarkEvent.getPause() - scavengeBeforeRemarkEvent.getPause());
                      }
-                     
+
                      model.add(gcEvent);
-                } 
+                }
                 catch (Exception pe) {
                     if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
                     if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
@@ -422,19 +422,19 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 parsePosition.setIndex(0);
             }
             return model;
-        } 
+        }
         finally {
             if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
         }
     }
 
     private boolean lineHasPrintFlsStatistics(String line) {
-        return line.endsWith(BEFORE_GC) 
-                || line.endsWith(AFTER_GC) 
+        return line.endsWith(BEFORE_GC)
+                || line.endsWith(AFTER_GC)
                 || line.indexOf(CMS_LARGE_BLOCK) > 0
                 || line.indexOf(SIZE) > 0;
     }
-    
+
     private void handlePrintFlsStatistics(String line, Deque<String> beginningOfLine) {
         if (line.endsWith(BEFORE_GC)) {
             beginningOfLine.addFirst(line.substring(0, line.indexOf(BEFORE_GC)));
@@ -460,10 +460,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         int lastIndexOfReference = line.lastIndexOf(PRINT_REFERENCE_GC_INDICATOR);
         int endOfLastReference = line.indexOf("]", lastIndexOfReference) + 1;
         int index = findEndOfNextEventNameBefore(line, line.indexOf(PRINT_REFERENCE_GC_INDICATOR));
-        
+
         return line.substring(0, index + 1) + line.substring(endOfLastReference);
     }
-    
+
     private int findEndOfNextEventNameBefore(String line, int pos) {
         int index = line.lastIndexOf("[", pos) - 1;
         char ch = 0;
@@ -471,14 +471,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             ch = line.charAt(index--);
         }
         while (index >= 0
-               && (ch == ' ' || Character.isDigit(ch) || ch == 'T' 
+               && (ch == ' ' || Character.isDigit(ch) || ch == 'T'
                    || ch == '.' || ch == ':' || ch == '+' || ch == '-'));
-        
+
         if (index < 0) {
             LOG.warning("could not find name of event before " + pos);
             index = pos-1;
         }
-        
+
         return index + 1;
     }
 
@@ -486,16 +486,16 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         mixedLineMatcher.reset(line);
         return mixedLineMatcher.matches();
     }
-    
+
     private boolean isPrintTenuringDistribution(String line) {
         return line.endsWith("[DefNew") // serial young (CMS, Serial GC)
-                || line.endsWith("[ParNew") // parallel young (CMS, parallel GC) 
+                || line.endsWith("[ParNew") // parallel young (CMS, parallel GC)
                 || line.endsWith(" (promotion failed)") // CMS (if -XX:+PrintPromotionFailure is active, additional text between "ParNew" + "(promotion failed)" is introduced...)
                 || line.endsWith("[GC"); // PSYoungGen (parallel sweep)
     }
 
     private boolean isCmsScavengeBeforeRemark(String line) {
-        return line.indexOf(EVENT_YG_OCCUPANCY) >= 0 
+        return line.indexOf(EVENT_YG_OCCUPANCY) >= 0
                 && (line.indexOf(EVENT_PARNEW) >= 0 || line.indexOf(EVENT_DEFNEW) >= 0);
     }
 
@@ -533,7 +533,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
                 ae = new VmOperationEvent();
                 VmOperationEvent vmOpEvent = (VmOperationEvent) ae;
-                
+
                 vmOpEvent.setDateStamp(datestamp);
                 vmOpEvent.setTimestamp(timestamp);
                 vmOpEvent.setExtendedType(type);
@@ -542,7 +542,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             else {
                 ae = new GCEvent();
                 GCEvent event = (GCEvent) ae;
-                
+
                 event.setDateStamp(datestamp);
                 event.setTimestamp(timestamp);
                 event.setExtendedType(type);
@@ -550,14 +550,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 parseDetailEventsIfExist(line, pos, event);
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE
                     || event.getExtendedType().getPattern() == GcPattern.GC_MEMORY) {
-                    
+
                     setMemory(event, line, pos);
                 }
                 // then more detail events follow (perm gen is usually here)
                 parseDetailEventsIfExist(line, pos, event);
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE
                         || event.getExtendedType().getPattern() == GcPattern.GC_PAUSE) {
-                    
+
                     event.setPause(parsePause(line, pos));
                 }
             }
@@ -567,5 +567,5 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
         }
     }
-    
+
 }

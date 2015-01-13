@@ -9,9 +9,6 @@ import java.util.TimeZone;
 
 /**
  * TimeStampFormatter.
- * <p/>
- * Date: Sep 17, 2005
- * Time: 1:01:13 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
@@ -37,12 +34,12 @@ public class TimeFormat extends DateFormat {
 
     //@author sean
     public FormattedValue formatToFormatted(Date date) {
-    	StringBuffer appendTo = new StringBuffer();
-    	appendTo.append(date.getTime() / ONE_SECOND);   	
-    	FormattedValue formed = new FormattedValue(appendTo, "s");
-    	return formed;
-    }    
-    
+        StringBuffer appendTo = new StringBuffer();
+        appendTo.append(date.getTime() / ONE_SECOND);
+        FormattedValue formed = new FormattedValue(appendTo, "s");
+        return formed;
+    }
+
     public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
         long time = date.getTime();
         if (time >= ONE_DAY * 365) {

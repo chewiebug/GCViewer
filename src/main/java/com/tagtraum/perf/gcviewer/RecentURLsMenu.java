@@ -8,9 +8,6 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * RecentFilesMenu.
- * <p/>
- * Date: Sep 25, 2005
- * Time: 10:54:45 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
