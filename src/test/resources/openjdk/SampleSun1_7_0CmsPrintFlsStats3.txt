@@ -1,0 +1,52 @@
+2015-01-09T23:56:50.868+0000: 14.110: Total time for which application threads were stopped: 0.0000670 seconds
+{Heap before GC invocations=0 (full 0):
+ par new generation   total 4404032K, used 3914752K [0x000000047ae00000, 0x00000005a58a0000, 0x00000005a58a0000)
+  eden space 3914752K, 100% used [0x000000047ae00000, 0x0000000569d00000, 0x0000000569d00000)
+  from space 489280K,   0% used [0x0000000569d00000, 0x0000000569d00000, 0x0000000587ad0000)
+  to   space 489280K,   0% used [0x0000000587ad0000, 0x0000000587ad0000, 0x00000005a58a0000)
+ concurrent mark-sweep generation total 9786752K, used 0K [0x00000005a58a0000, 0x00000007fae00000, 0x00000007fae00000)
+ concurrent-mark-sweep perm gen total 21248K, used 19013K [0x00000007fae00000, 0x00000007fc2c0000, 0x0000000800000000)
+2015-01-09T23:56:50.872+0000: 14.114: [GCBefore GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 1252704256
+Max   Chunk Size: 1252704256
+Number of Blocks: 1
+Av.  Block  Size: 1252704256
+Tree      Height: 1
+Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+2015-01-09T23:56:50.872+0000: 14.114: [ParNew
+Desired survivor size 250511360 bytes, new threshold 10 (max 10)
+- age   1:   21552952 bytes,   21552952 total
+: 3914752K->21242K(4404032K), 0.0250820 secs] 3914752K->21242K(14190784K)After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 1252687872
+Max   Chunk Size: 1252687872
+Number of Blocks: 1
+Av.  Block  Size: 1252687872
+Tree      Height: 1
+After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+Tree      Height: 0
+, 0.0252550 secs] [Times: user=0.30 sys=0.00, real=0.02 secs]
+Heap after GC invocations=1 (full 0):
+ par new generation   total 4404032K, used 21242K [0x000000047ae00000, 0x00000005a58a0000, 0x00000005a58a0000)
+  eden space 3914752K,   0% used [0x000000047ae00000, 0x000000047ae00000, 0x0000000569d00000)
+  from space 489280K,   4% used [0x0000000587ad0000, 0x0000000588f8e938, 0x00000005a58a0000)
+  to   space 489280K,   0% used [0x0000000569d00000, 0x0000000569d00000, 0x0000000587ad0000)
+ concurrent mark-sweep generation total 9786752K, used 0K [0x00000005a58a0000, 0x00000007fae00000, 0x00000007fae00000)
+ concurrent-mark-sweep perm gen total 21248K, used 19013K [0x00000007fae00000, 0x00000007fc2c0000, 0x0000000800000000)
+}
+2015-01-09T23:56:50.897+0000: 14.139: Total time for which application threads were stopped: 0.0255420 seconds
+2015-01-09T23:56:50.898+0000: 14.140: Total time for which application threads were stopped: 0.0001050 seconds
