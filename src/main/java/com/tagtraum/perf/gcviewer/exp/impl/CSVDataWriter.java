@@ -9,9 +9,10 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
+ * Write GC history with comma separated values.
+ * <p>
+ * It uses the {@literal "Timestamp(sec/#),Used(K),Total(K),Pause(sec),GC-Type"} format.
  *
- * Date: Feb 1, 2002
- * Time: 10:07:52 AM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class CSVDataWriter extends AbstractDataWriter {
@@ -29,7 +30,7 @@ public class CSVDataWriter extends AbstractDataWriter {
      */
     public void write(GCModel model) throws IOException {
         writeHeader();
-        
+
         Iterator<GCEvent> i = model.getGCEvents();
         while (i.hasNext()) {
             GCEvent event = i.next();
@@ -59,7 +60,7 @@ public class CSVDataWriter extends AbstractDataWriter {
             out.print(',');
             out.println("NONE");
         }
-        
+
         out.flush();
     }
 

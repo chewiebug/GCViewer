@@ -15,9 +15,6 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * DataReaderJRockit1_4_2.
- * <p/>
- * Date: Jan 5, 2006
- * Time: 5:31:50 AM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */

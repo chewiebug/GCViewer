@@ -4,9 +4,6 @@ import java.util.EventObject;
 
 /**
  * RecentURLEvent.
- * <p/>
- * Date: Oct 6, 2005
- * Time: 10:18:15 AM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */

@@ -8,9 +8,6 @@ import java.net.URL;
 
 /**
  * OpenRecent.
- * <p/>
- * Date: Sep 25, 2005
- * Time: 11:16:49 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */

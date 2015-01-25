@@ -27,8 +27,9 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
- * <p>Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7 / 1.8
- * <br>Supports the following gc algorithms:
+ * Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7 / 1.8.
+ * <p>
+ * Supports the following gc algorithms:
  * <ul>
  * <li>-XX:+UseSerialGC</li>
  * <li>-XX:+UseParallelGC</li>
@@ -37,10 +38,10 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+UseConcMarkSweepGC</li>
  * <li>-Xincgc (1.4 / 1.5)</li>
  * </ul>
- * </p>
- * <p>-XX:+UseG1GC is not supported by this class, but by {@link DataReaderSun1_6_0G1}
- * </p>
- * <p>Supports the following options:
+ * <p>
+ * -XX:+UseG1GC is not supported by this class, but by {@link DataReaderSun1_6_0G1}
+ * <p>
+ * Supports the following options:
  * <ul>
  * <li>-XX:+PrintGCDetails</li>
  * <li>-XX:+PrintGCTimeStamps</li>
@@ -57,10 +58,9 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+PrintCMSInitiationStatistics (output ignored)</li>
  * <li>-XX:+PrintFLSStatistics (output ignored)</li>
  * </ul>
- * </p>
+ *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>created on: 23.10.2011 (copied from 1.5 implementation)</p>
  * @see DataReaderSun1_6_0G1
  */
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {

@@ -22,9 +22,6 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * TimeOffsetPanel.
- * <p/>
- * Date: Sep 24, 2005
- * Time: 5:53:41 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
