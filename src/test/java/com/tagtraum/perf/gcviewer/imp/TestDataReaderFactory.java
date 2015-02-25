@@ -39,7 +39,7 @@ public class TestDataReaderFactory {
     private void assertDataReader(
             Class<? extends DataReader> expected, 
             Class<? extends DataReader> actual) {
-    
+
         assertDataReader(name.getMethodName(), expected, actual);
     }
     
@@ -59,14 +59,27 @@ public class TestDataReaderFactory {
     
     @Test
     public void testGetDataReaderJDK6GZipped() throws Exception {
-        final String sampleGz = "SampleSun1_6_0PrintHeapAtGC.txt.gz";
+        String sampleGz = "SampleSun1_6_0PrintHeapAtGC.txt.gz";
         try (InputStream in = getInputStreamOpenJdk(sampleGz)) {
         
-	        final DataReader reader = new DataReaderFactory().getDataReader(new GCResource(sampleGz), in);
-    	    assertDataReader("getDataReader() reading " + sampleGz, DataReaderSun1_6_0.class, reader.getClass());
-    	    
-    	    GCModel model = reader.read();
-    	    assertEquals("# events", 2, model.size());
+            final DataReader reader = new DataReaderFactory().getDataReader(new GCResource(sampleGz), in);
+            assertDataReader("getDataReader() reading " + sampleGz, DataReaderSun1_6_0.class, reader.getClass());
+
+            GCModel model = reader.read();
+            assertEquals("# events", 2, model.size());
+        }
+    }
+
+    @Test
+    public void getDataReaderG1() throws Exception {
+        String sampleFile = "SampleSun1_7_0G1-ApplicationStopped.txt";
+        try (InputStream in = getInputStreamOpenJdk(sampleFile)) {
+
+            DataReader reader = new DataReaderFactory().getDataReader(new GCResource(sampleFile), in);
+            assertDataReader("getDataReader() reading " + sampleFile, DataReaderSun1_6_0G1.class, reader.getClass());
+
+            GCModel model = reader.read();
+            assertEquals("# events", 55, model.size());
         }
     }
     

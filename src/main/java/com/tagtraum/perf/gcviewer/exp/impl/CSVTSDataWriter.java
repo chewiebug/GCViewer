@@ -10,9 +10,10 @@ import java.io.OutputStream;
 import java.util.Iterator;
 
 /**
+ * Export GC history with comma separated values.
+ * <p>
+ * It uses the {@literal "Timestamp(unix/#),Used(K),Total(K),Pause(sec),GC-Type"} format.
  *
- * Date: Feb 1, 2002
- * Time: 10:07:52 AM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class CSVTSDataWriter extends AbstractDataWriter {

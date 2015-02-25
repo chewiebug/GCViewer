@@ -34,8 +34,6 @@ import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
  * for layouting.
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * <p>Date: May 5, 2005<br/>
- * Time: 2:14:36 PM</p>
  */
 public class ChartPanelView implements PropertyChangeListener {
 
@@ -68,12 +66,12 @@ public class ChartPanelView implements PropertyChangeListener {
         JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        
+
         JScrollBar hScrollBar = modelDetailsScrollPane.getHorizontalScrollBar();
         hScrollBar.setUnitIncrement(10);
         JScrollBar vScrollBar = modelDetailsScrollPane.getVerticalScrollBar();
         vScrollBar.setUnitIncrement(10);
-        
+
         this.modelChartAndDetailsPanel = new JTabbedPane();
         this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_chart"), modelChart);
         this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_details"), modelDetailsScrollPane);
@@ -124,7 +122,7 @@ public class ChartPanelView implements PropertyChangeListener {
     public JTabbedPane getModelChartAndDetails() {
         return modelChartAndDetailsPanel;
     }
-    
+
     public ModelChart getModelChart() {
         return modelChart;
     }

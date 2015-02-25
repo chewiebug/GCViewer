@@ -5,9 +5,6 @@ import java.util.logging.*;
 
 /**
  * TextAreaLogHandler.
- * <p/>
- * Date: Sep 29, 2005
- * Time: 9:20:36 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
@@ -33,7 +30,7 @@ public class TextAreaLogHandler extends Handler {
      */
     public void flush() {
     }
-    
+
     public int getErrorCount() {
     	return errorCount;
     }

@@ -67,20 +67,21 @@ public class DataReaderFactory {
             nextPos += length;
 
             s = new String(buf, 0, length, "ASCII");
+            // prepend chunk of last block
             if (chunkOfLastLine != null && chunkOfLastLine.length() > 0) {
                 s = chunkOfLastLine + s;
             }
+            // deal with chunk of last line in the new block; cut it from end of block
+            chunkOfLastLine = getChunkOfLastLine(s);
+            if (chunkOfLastLine.length() > 0) {
+                s = s.substring(0, s.lastIndexOf(chunkOfLastLine));
+            }
+
             dataReader = getDataReaderBySample(s, gcResource, in);
             if (dataReader != null) {
                 break;
             }
 
-            int index = s.lastIndexOf('\n');
-            if (index >= 0) {
-                chunkOfLastLine = s.substring(index + 1, s.length());
-            } else {
-                chunkOfLastLine = "";
-            }
             attemptCount++;
         }
 
@@ -91,6 +92,18 @@ public class DataReaderFactory {
             throw new IOException(LocalisationHelper.getString("datareaderfactory_instantiation_failed"));
         }
         return dataReader;
+    }
+
+    private String getChunkOfLastLine(String currentTextBlock) {
+        String chunkOfLastLine;
+        int index = currentTextBlock.lastIndexOf('\n');
+        if (index >= 0) {
+            chunkOfLastLine = currentTextBlock.substring(index + 1, currentTextBlock.length());
+        }
+        else {
+            chunkOfLastLine = "";
+        }
+        return chunkOfLastLine;
     }
 
     private DataReader getDataReaderBySample(String s, GCResource gcResource, InputStream in) throws IOException {
@@ -156,7 +169,7 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.5.x");
             return new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_5);
         } 
-        else if (s.indexOf(": [") != -1) {
+        else if (s.indexOf(": [GC") != -1) {
             // format is 1.4, but datareader for 1_6_0 can handle it
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.4.x");
             return new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_4);

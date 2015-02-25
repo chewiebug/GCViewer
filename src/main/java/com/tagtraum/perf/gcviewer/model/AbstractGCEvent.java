@@ -15,8 +15,6 @@ import java.util.TreeSet;
  * The abstract gc event is the base class for all types of events. All sorts of general
  * information can be queried from it and it provides the possibility to add detail events.
  *
- * Date: Jun 1, 2005
- * Time: 1:47:32 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
@@ -46,16 +44,16 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         if (detail.getExtendedType().getGeneration() == Generation.TENURED) {
         	tenuredDetail = true;
         }
-        
+
         // will be calculated upon call to "getGeneration()"
         generation = null;
     }
 
     public boolean hasDetails() {
-        return details != null 
+        return details != null
                 && details.size() > 0;
     }
-    
+
     public boolean hasTenuredDetail() {
         return tenuredDetail;
     }
@@ -63,7 +61,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public void setDateStamp(ZonedDateTime datestamp) {
     	this.datestamp = datestamp;
     }
-    
+
     public void setTimestamp(double timestamp) {
         this.timestamp = timestamp;
     }
@@ -71,7 +69,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public void setType(Type type) {
         setExtendedType(ExtendedType.lookup(type));
     }
-    
+
     public void setExtendedType(ExtendedType extendedType) {
         this.extendedType = extendedType;
         this.typeAsString = extendedType.getName();
@@ -81,37 +79,37 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     private String buildTypeAsString() {
-    	StringBuilder sb = new StringBuilder(getExtendedType().getName());
-    	if (details != null) {
-    		for (T event : details) {
-    			sb.append("; ").append(event.getExtendedType().getName());
-    		}
-    	}
-    	
-    	return sb.toString();
+        StringBuilder sb = new StringBuilder(getExtendedType().getName());
+        if (details != null) {
+            for (T event : details) {
+                sb.append("; ").append(event.getExtendedType().getName());
+            }
+        }
+
+        return sb.toString();
     }
-    
+
     public ExtendedType getExtendedType() {
         return extendedType;
     }
-    
+
     public String getTypeAsString() {
     	return typeAsString;
     }
-    
+
     public boolean isStopTheWorld() {
-    	boolean isStopTheWorld = getExtendedType().getConcurrency() == Concurrency.SERIAL;
-    	if (details != null) {
-    		for (T detailEvent : details) {
-    			if (!isStopTheWorld) {
-    				isStopTheWorld = detailEvent.getExtendedType().getConcurrency() == Concurrency.SERIAL;
-    			}
-    		}
-    	}
-    	
-    	return isStopTheWorld;
+        boolean isStopTheWorld = getExtendedType().getConcurrency() == Concurrency.SERIAL;
+        if (details != null) {
+            for (T detailEvent : details) {
+                if (!isStopTheWorld) {
+                    isStopTheWorld = detailEvent.getExtendedType().getConcurrency() == Concurrency.SERIAL;
+                }
+            }
+        }
+
+        return isStopTheWorld;
     }
-    
+
     /**
      * Returns the generation of the event including generation of detail events if present.
      * @return generation of event including generation of detail events
@@ -127,7 +125,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 for (T detailEvent : details) {
                     generationSet.add(detailEvent.getExtendedType().getGeneration());
                 }
-                
+
                 if (generationSet.size() > 1 || generationSet.contains(Generation.ALL)) {
                     generation = Generation.ALL;
                 }
@@ -140,16 +138,16 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 }
             }
         }
-        
+
         return generation;
     }
-    
+
     public double getTimestamp() {
         return timestamp;
     }
-    
+
     public ZonedDateTime getDatestamp() {
-    	return datestamp;
+        return datestamp;
     }
 
     public abstract void toStringBuffer(StringBuffer sb);
@@ -178,7 +176,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         if (!(obj instanceof AbstractGCEvent<?>)) {
             return false;
         }
-        
+
         return toString().equals(obj.toString());
     }
 
@@ -192,22 +190,20 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         if (getExtendedType().getGeneration().compareTo(Generation.ALL) == 0) {
             return true;
         }
-        
+
         if (details != null) {
-            // the assumption is, that a full collection is everything, that collects from more 
+            // the assumption is, that a full collection is everything, that collects from more
             // than one generation.
             // Probably this is not always strictly right, but often enough a good assumption
             return details.size() > 1;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public boolean isInc() {
         return getExtendedType().getType() == GCEvent.Type.INC_GC;
     }
-    
+
     public boolean isConcurrent() {
         return getExtendedType().getConcurrency().equals(Concurrency.CONCURRENT);
     }
@@ -215,35 +211,35 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public boolean isConcurrencyHelper() {
         return getExtendedType().getCollectionType().equals(CollectionType.CONCURRENCY_HELPER);
     }
-    
+
     public boolean isConcurrentCollectionStart() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_MARK_START.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_MARK_START.getName()) // CMS AdaptiveSizePolicy
                 || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName());// G1
     }
-    
+
     public boolean isConcurrentCollectionEnd() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_RESET.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_RESET.getName()) // CMS AdaptiveSizePolicy
                 || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()); // G1
     }
-    
+
     public boolean isInitialMark() {
         return getTypeAsString().indexOf("initial-mark") >= 0;
     }
-    
+
     public boolean isRemark() {
         return getTypeAsString().indexOf(Type.CMS_REMARK.getName()) >= 0
                 || getTypeAsString().indexOf(Type.ASCMS_REMARK.getName()) >= 0
                 || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0;
     }
-    
+
     public boolean hasPause() {
         return getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE)
                 || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE)
                 || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION);
     }
-    
+
     public double getPause() {
         return pause;
     }
@@ -254,11 +250,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     /**
      * Wrapper for the {@link Type} class adding a field for the full type name. That name may
-     * be different from the name in <code>Type</code>. Since all other attributes of 
+     * be different from the name in <code>Type</code>. Since all other attributes of
      * <code>Type</code> are shared, only this attribute is additionally held.
-     * 
+     *
      * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
-     * <p>created on: 05.10.2013</p>
      */
     public static class ExtendedType implements Serializable {
         private static final Map<String, ExtendedType> WRAPPER_MAP = new HashMap<>();
@@ -269,11 +264,11 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
         private String fullName;
         private Type type;
-        
+
         private ExtendedType(Type type) {
             this(type, type.getName());
         }
-        
+
         private ExtendedType(Type type, String fullName) {
             this.type = type;
             this.fullName = fullName.intern();
@@ -289,41 +284,41 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 extType = new ExtendedType(type, fullName);
                 WRAPPER_MAP.put(fullName, extType);
             }
-            
+
             return extType;
         }
-        
+
         public String getName() {
             return fullName;
         }
-        
+
         public Type getType() {
             return type;
         }
-        
+
         public GcPattern getPattern() {
             return type.getPattern();
         }
-        
+
         public Generation getGeneration() {
             return type.getGeneration();
         }
-        
+
         public CollectionType getCollectionType() {
             return type.getCollectionType();
         }
-        
+
         public Concurrency getConcurrency() {
             return type.getConcurrency();
         }
-        
+
         @Override
         public String toString() {
             return fullName;
         }
 
     }
-    
+
     /**
      * Representation of an event type
      */
@@ -354,7 +349,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
             this.concurrency = concurrency;
             this.pattern = pattern;
             this.collectionType = collectionType;
-            
+
             TYPE_MAP.put(this.name, this);
         }
 
@@ -377,7 +372,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public GcPattern getPattern() {
         	return pattern;
         }
-        
+
         public CollectionType getCollectionType() {
             return collectionType;
         }
@@ -397,10 +392,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type JROCKIT_16_OLD_GC = new Type("jrockit.OC", Generation.TENURED);
         public static final Type JROCKIT_16_YOUNG_GC = new Type("jrockit.YC", Generation.YOUNG);
         public static final Type JROCKIT_16_PARALLEL_NURSERY_GC = new Type("jrockit.parallel nursery GC", Generation.YOUNG);
-        
+
         // Sun JDK 1.5
         public static final Type SCAVENGE_BEFORE_REMARK = new Type("Scavenge-Before-Remark", Generation.ALL);
-        
+
         public static final Type FULL_GC = new Type("Full GC", Generation.ALL);
         public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
         public static final Type GC = new Type("GC", Generation.YOUNG);
@@ -425,10 +420,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         // CMS types
         public static final Type CMS = new Type("CMS", Generation.TENURED);
         public static final Type CMS_PERM = new Type("CMS Perm", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
-        
+
         // Parnew (promotion failed)
         public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
-        
+
         // CMS (concurrent mode failure / interrupted)
         public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
         public static final Type CMS_CMI = new Type("CMS (concurrent mode interrupted)", Generation.TENURED, Concurrency.SERIAL);
@@ -447,13 +442,13 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
         public static final Type CMS_INITIAL_MARK = new Type("CMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY, CollectionType.CONCURRENCY_HELPER);
         public static final Type CMS_REMARK = new Type("CMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY, CollectionType.CONCURRENCY_HELPER);
-        
+
         // CMS (Concurrent Mark Sweep) AdaptiveSizePolicy Event Types
         public static final Type ASCMS = new Type("ASCMS", Generation.TENURED);
 
         // Parnew (promotion failed) AdaptiveSizePolicy
         public static final Type ASPAR_NEW_PROMOTION_FAILED = new Type("ASParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
-        
+
         // CMS (concurrent mode failure / interrupted) AdaptiveSizePolicy
         public static final Type ASCMS_CMF = new Type("ASCMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
         public static final Type ASCMS_CMI = new Type("ASCMS (concurrent mode interrupted)", Generation.TENURED, Concurrency.SERIAL);
@@ -471,10 +466,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
         public static final Type ASCMS_INITIAL_MARK = new Type("ASCMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.CONCURRENCY_HELPER);
         public static final Type ASCMS_REMARK = new Type("ASCMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY, CollectionType.CONCURRENCY_HELPER);
-        
+
         // G1 stop the world types
         public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
-        
+
         // only young collection
         public static final Type G1_YOUNG = new Type("GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_YOUNG_MARK_STACK_FULL = new Type("GC pause (young)Mark stack is full.", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
@@ -488,11 +483,11 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_MIXED = new Type("GC pause (mixed)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_MIXED_TO_SPACE_OVERFLOW = new Type("GC pause (mixed) (to-space overflow)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_MIXED_TO_SPACE_EXHAUSTED = new Type("GC pause (mixed) (to-space exhausted)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
-        
+
         // TODO: Generation: young and tenured!
         public static final Type G1_YOUNG_INITIAL_MARK = new Type("GC pause (young) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_YOUNG_INITIAL_MARK_TO_SPACE_OVERFLOW = new Type("GC pause (young) (to-space overflow) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
-        // The following two Types are basically the same but in a different order. In JDK 6 the order was defined, no longer the case with JDK 7 (see: https://github.com/chewiebug/GCViewer/issues/100) 
+        // The following two Types are basically the same but in a different order. In JDK 6 the order was defined, no longer the case with JDK 7 (see: https://github.com/chewiebug/GCViewer/issues/100)
         public static final Type G1_YOUNG_INITIAL_MARK_TO_SPACE_EXHAUSTED = new Type("GC pause (young) (initial-mark) (to-space exhausted)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_YOUNG_TO_SPACE_EXHAUSTED_INITIAL_MARK = new Type("GC pause (young) (to-space exhausted) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type G1_PARTIAL_INITIAL_MARK = new Type("GC pause (partial) (initial-mark)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
@@ -503,7 +498,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_CLEANUP = new Type("GC cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
         // Java 7_u2; detailed info in all detailed events
         public static final Type G1_EDEN = new Type("Eden", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
-        
+
         // G1 concurrent types
         public static final Type G1_CONCURRENT_ROOT_REGION_SCAN_START = new Type("GC concurrent-root-region-scan-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_ROOT_REGION_SCAN_END = new Type("GC concurrent-root-region-scan-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
@@ -518,33 +513,35 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     public static enum GcPattern {
-    	// <timestamp>: [<GC type>]
-    	GC,
-    	// <timestamp>: [<GC type>, <pause>]
-    	GC_PAUSE,
-    	// <timestamp>: [<GC type>, <pause>/<duration>]
-    	GC_PAUSE_DURATION,
-    	// [<GC type>, <mem current>(<mem total>)]
-    	GC_MEMORY,
-    	// <timestamp>: [<GC type> <mem before>-><mem after>(<mem total>), <pause>]
-    	GC_MEMORY_PAUSE} 
-    
+        // <timestamp>: [<GC type>]
+        GC,
+        // <timestamp>: [<GC type>, <pause>]
+        GC_PAUSE,
+        // <timestamp>: [<GC type>, <pause>/<duration>]
+        GC_PAUSE_DURATION,
+        // [<GC type>, <mem current>(<mem total>)]
+        GC_MEMORY,
+        // <timestamp>: [<GC type> <mem before>-><mem after>(<mem total>), <pause>]
+    	GC_MEMORY_PAUSE}
+
     public static enum Concurrency { CONCURRENT, SERIAL };
 
-    public static enum Generation { YOUNG, 
-        TENURED, 
-        /** also used for "metaspace" that is introduced with java 8 */ 
-        PERM, 
-        ALL, 
-        /** special value for vm operations that are not collections */ 
+    public static enum Generation { YOUNG,
+        TENURED,
+        /** also used for "metaspace" that is introduced with java 8 */
+        PERM,
+        ALL,
+        /** special value for vm operations that are not collections */
         OTHER };
-    
+
     public static enum CollectionType {
         /** plain GC pause collection garbage */
         COLLECTION,
         /**
-         * Not really a collection, but some other event that stops the vm. 
-         * @see http://stackoverflow.com/questions/2850514/meaning-of-message-operations-coalesced-during-safepoint
+         * Not really a collection, but some other event that stops the vm.
+         *
+         * @see <a href="http://stackoverflow.com/questions/2850514/meaning-of-message-operations-coalesced-during-safepoint">
+         * Stackoverflow: meaning of message operations coalesced during safepoint</a>
          */
         VM_OPERATION,
         /** stop the world pause but used to prepare concurrent collection, might not collect garbage */

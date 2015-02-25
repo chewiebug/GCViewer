@@ -20,10 +20,9 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file
- * including standard error handling. 
- * 
+ * including standard error handling.
+ *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>created on: 24.11.2012</p>
  */
 public class DataReaderFacade {
 
@@ -37,11 +36,11 @@ public class DataReaderFacade {
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeListeners.add(listener);
     }
-    
+
     /**
-     * Loads a model from a given <code>pathToData</code> logging all exceptions that occur.
+     * Loads a model from a given <code>gcResource</code> logging all exceptions that occur.
      * 
-     * @param fileOrUrl path to a file or URL
+     * @param gcResource where to find data to be parsed
      * @return instance of GCModel containing all information that was parsed
      * @throws DataReaderException if any exception occurred, it is logged and added as the cause
      * to this exception
@@ -72,12 +71,12 @@ public class DataReaderFacade {
 
         return model;
     }
-    
+
     /**
-     * Open and parse data designated by <code>url</code>.
+     * Open and parse data designated by <code>gcResource</code>.
      * 
-     * @param url where to find data to be parsed
-     * @return GCModel containing events parsed from <code>url</code>
+     * @param gcResource where to find data to be parsed
+     * @return GCModel containing events parsed from <code>gcResource</code>
      * @throws IOException problem reading the data
      */
     private GCModel readModel(GCResource gcResource) throws IOException {
@@ -86,28 +85,28 @@ public class DataReaderFacade {
         long contentLength = 0L;
         InputStream in;
         if (url.getProtocol().startsWith("http")) {
-        	final AtomicLong cl = new AtomicLong();
-        	final URLConnection conn = url.openConnection();        	
-        	in = HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP, cl);
-        	contentLength = cl.get();
+            AtomicLong cl = new AtomicLong();
+            URLConnection conn = url.openConnection();
+            in = HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP, cl);
+            contentLength = cl.get();
         } 
         else {
-        	in = url.openStream();
-        	if (url.getProtocol().startsWith("file")) {
-        		final File file = new File(url.getFile());
-        		if (file.exists()) {
-        			contentLength = file.length();
-        		}
-        	}
+            in = url.openStream();
+            if (url.getProtocol().startsWith("file")) {
+                File file = new File(url.getFile());
+                if (file.exists()) {
+                contentLength = file.length();
+                }
+            }
         }
         if (contentLength > 100L) {
-        	in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength);
-        	for (PropertyChangeListener listener : propertyChangeListeners) {
+            in = new MonitoredBufferedInputStream(in, DataReaderFactory.FOUR_KB, contentLength);
+            for (PropertyChangeListener listener : propertyChangeListeners) {
                 ((MonitoredBufferedInputStream)in).addPropertyChangeListener(listener);
-        	}
+            }
         }
         
-        final DataReader reader = factory.getDataReader(gcResource, in);
+        DataReader reader = factory.getDataReader(gcResource, in);
         GCModel model = reader.read();
         model.setURL(url);
         

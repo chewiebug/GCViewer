@@ -1,5 +1,17 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
@@ -8,19 +20,6 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import com.tagtraum.perf.gcviewer.math.DoubleData;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
 
 public class TestDataReaderSun1_7_0G1 {
 
@@ -585,7 +584,36 @@ public class TestDataReaderSun1_7_0G1 {
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
-    
+
+    @Test
+    public void printGCApplicationStoppedTimeTenuringDistErgonomicsComma() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_7_0G1_AppStopped_TenuringDist_Ergonomics_comma.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(3));
+
+        // standalone "application stopped"
+        assertThat("type name (0)", model.get(0).getTypeAsString(),
+                equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0003060, 0.00000001));
+
+        // standard event
+        assertThat("type name (0)", model.get(1).getTypeAsString(), equalTo("GC pause (G1 Evacuation Pause) (young)"));
+        assertThat("GC pause (0)", model.get(1).getPause(), closeTo(0.0282200, 0.00000001));
+
+        // standalone "application stopped", without immediate GC event before
+        assertThat("type name (2)", model.get(2).getTypeAsString(), equalTo(
+                "Total time for which application threads were stopped"));
+        assertThat("GC pause (2)", model.get(2).getPause(), closeTo(0.0292120 - 0.0282200, 0.00000001));
+
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+
     @Test
     public void printAdaptiveSizePolicyFullGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();

@@ -28,9 +28,9 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
 
 /**
+ * GCDocument.
+ *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- *         Date: May 5, 2005
- *         Time: 10:25:16 AM
  */
 public class GCDocument extends JInternalFrame {
 
@@ -617,10 +617,9 @@ public class GCDocument extends JInternalFrame {
         }
 
     }
-    
+
     /**
      * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
-     * <p>created on: 22.07.2012</p>
      */
     private class ResizeListener extends ComponentAdapter {
 
@@ -628,7 +627,7 @@ public class GCDocument extends JInternalFrame {
         public void componentResized(ComponentEvent e) {
             modelChartListFacade.resetPolygonCache();
         }
-        
+
     }
 
 }

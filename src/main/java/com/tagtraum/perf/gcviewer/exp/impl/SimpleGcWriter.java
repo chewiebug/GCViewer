@@ -11,16 +11,17 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
- * <p>Exports stop-the-world events in the "simple gc log" format (compatible to GCHisto).</p>
- * <p>This writer writes every event on its own line with the following format<br/>
- * GC_TYPE START_SEC DURATION_SEC</p> 
- * 
+ * Exports stop-the-world events in the "simple gc log" format (compatible to GCHisto).
+ * <p>
+ * This writer writes every event on its own line with the following format
+ * <p>
+ * {@code GC_TYPE START_SEC DURATION_SEC}
+ *
  * @see <a href="http://mail.openjdk.java.net/pipermail/hotspot-gc-use/2012-November/001428.html">http://mail.openjdk.java.net/pipermail/hotspot-gc-use/2012-November/001428.html</a>
  * @see <a href="http://java.net/projects/gchisto">GCHisto</a>
  * @see <a href="https://svn.java.net/svn/gchisto~svn/trunk/www/index.html">GCHisto documentation</a>
- * 
+ *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>created on: 08.12.2012</p>
  */
 public class SimpleGcWriter extends AbstractDataWriter {
 
@@ -38,26 +39,26 @@ public class SimpleGcWriter extends AbstractDataWriter {
         while (i.hasNext()) {
             AbstractGCEvent<?> abstractEvent = i.next();
             if (abstractEvent.isStopTheWorld()) {
-                out.printf(NO_LOCALE, 
-                        "%s %f %f%n", 
-                        getSimpleType(abstractEvent), 
-                        abstractEvent.getTimestamp(), 
+                out.printf(NO_LOCALE,
+                        "%s %f %f%n",
+                        getSimpleType(abstractEvent),
+                        abstractEvent.getTimestamp(),
                         abstractEvent.getPause());
             }
         }
 
         out.flush();
     }
-    
+
     /**
      * Simple GC Logs GC_TYPE must not contain spaces. This method makes sure they don't.
-     * 
+     *
      * @param typeName name of the gc event type
      * @return name without spaces
      */
     private String getSimpleType(AbstractGCEvent<?> event) {
         String simpleType;
-        
+
         if (isYoungOnly(event)) {
             simpleType = "YoungGC";
         }
@@ -73,13 +74,13 @@ public class SimpleGcWriter extends AbstractDataWriter {
         else {
             simpleType = stripBlanks(event.getTypeAsString());
         }
-        
+
         return simpleType;
     }
-    
+
     /**
      * Does the event consist of young generation events only (main and detail events).
-     * 
+     *
      * @param event event to be analysed.
      * @return <code>true</code> if the event is only in the young generation, <code>false</code> otherwise
      */
@@ -100,10 +101,10 @@ public class SimpleGcWriter extends AbstractDataWriter {
                 }
             }
         }
-        
+
         return isYoungOnly;
     }
-    
+
     private String stripBlanks(String eventTypeName) {
         StringBuilder sb = new StringBuilder(eventTypeName);
         for (int i = sb.length()-1; i >= 0; --i) {
@@ -111,7 +112,7 @@ public class SimpleGcWriter extends AbstractDataWriter {
                 sb.deleteCharAt(i);
             }
         }
-        
+
         return sb.toString();
     }
 
