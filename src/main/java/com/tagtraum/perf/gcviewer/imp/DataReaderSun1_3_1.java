@@ -21,7 +21,7 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * Time: 5:15:44 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class DataReaderSun1_3_1 extends AbstractDataReaderSun implements DataReader {
+public class DataReaderSun1_3_1 extends AbstractDataReaderSun {
 
     private int count;
 

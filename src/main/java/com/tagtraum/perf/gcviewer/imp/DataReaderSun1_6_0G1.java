@@ -67,7 +67,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final String G1_ERGONOMICS = "G1Ergonomics";
     private static final String SOFT_REFERENCE = "SoftReference";
-    private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
+    private static final List<String> EXCLUDE_STRINGS = new LinkedList<>();
 
     static {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
@@ -120,8 +120,21 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     /** is true, if "[Times ..." information is present in the gc log */
     private boolean hasTimes = false;
 
+    /** support cancelling reading the log file */
+    private boolean doCancel = false;
+
     public DataReaderSun1_6_0G1(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super(gcResource, in, gcLogType);
+    }
+
+    @Override
+    public boolean hasCancelSupport() {
+        return true;
+    }
+
+    @Override
+    public void doCancel() {
+        this.doCancel = true;
     }
 
     @Override
@@ -141,7 +154,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             int lineNumber = 0;
             String beginningOfLine = null;
 
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && !doCancel) {
                 ++lineNumber;
                 parsePosition.setLineNumber(lineNumber);
                 parsePosition.setIndex(0);

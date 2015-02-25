@@ -11,5 +11,29 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public interface DataReader {
-    public GCModel read() throws IOException;
+    /**
+     * If the implementation of this interface supports cancelling reading of a {@link GCModel},
+     * this method should return true;
+     *
+     * @return <code>true</code>, if implementation supports cancelling reading a model
+     */
+    default boolean hasCancelSupport() {
+        return false;
+    }
+
+    /**
+     * If {@link #hasCancelSupport()} is <code>true</code> for this implementation, a call
+     * to this method should cancel reading the model.
+     */
+    default void doCancel() {
+        return;
+    }
+
+    /**
+     * A call to this method should read a {@link GCModel}.
+     *
+     * @return GCModel representing a gc log file
+     * @throws IOException thrown, when an exception reading the file occurred
+     */
+    GCModel read() throws IOException;
 }
