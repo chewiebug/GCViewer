@@ -1,19 +1,17 @@
 package com.tagtraum.perf.gcviewer.model;
 
 /**
- *
+ * ConcurrentGCEvent.
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * Date: Jun 1, 2005
- * Time: 11:55:26 AM
- *
  */
 public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
 
     private double duration;
-    
+
     /**
-     * Time this step in the concurrent GC mechanism took.<p>
-     * <xmp>[CMS-concurrent-sweep: 0.005/<em>0.015</em> secs]</xmp>
+     * Time this step in the concurrent GC mechanism took.
+     * <p>
+     * {@literal [CMS-concurrent-sweep: 0.005/<em>0.015</em> secs]}
      * <p>
      * So in this example the time that was exclusively spent on
      * the step would be 0.005secs of an overall duration of 0.015secs.
@@ -27,8 +25,9 @@ public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
     }
 
     /**
+     * Set duration.
      * @see #getDuration()
-     * @param duration
+     * @param duration time spent in gc mechanism
      */
     public void setDuration(double duration) {
         this.duration = duration;

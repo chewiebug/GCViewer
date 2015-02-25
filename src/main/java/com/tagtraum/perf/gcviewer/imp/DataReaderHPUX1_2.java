@@ -16,9 +16,6 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * DataReader for HP-UX 1.2/1.3/1.4.0
- * <p/>
- * Date: Oct 11, 2005
- * Time: 10:57:39 AM
  *
  * @see <a href="http://www.hp.com/products1/unix/java/infolibrary/prog_guide/xverbosegc.html">http://www.hp.com/products1/unix/java/infolibrary/prog_guide/xverbosegc.html</a>
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>

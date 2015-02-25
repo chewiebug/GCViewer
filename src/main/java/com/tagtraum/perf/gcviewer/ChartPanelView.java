@@ -36,15 +36,13 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
  * for layouting.
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
- * <p>Date: May 5, 2005<br/>
- * Time: 2:14:36 PM</p>
  */
 public class ChartPanelView {
 
     public static final String EVENT_MINIMIZED = "minimized";
-    
+
     private GCPreferences preferences;
-    
+
     private ModelChartImpl modelChart;
     private ModelPanel modelPanel;
     private ModelDetailsPanel modelDetailsPanel;
@@ -57,27 +55,27 @@ public class ChartPanelView {
     private GCDocument gcDocument;
     private TextAreaLogHandler textAreaLogHandler;
     private DataReaderFacade dataReaderFacade;
-    
+
     public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {
         this.gcDocument = gcDocument;
         this.preferences = gcDocument.getPreferences();
         this.modelChart = new ModelChartImpl();
         this.modelPanel = new ModelPanel();
         this.modelDetailsPanel = new ModelDetailsPanel();
-        
-        JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel, 
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+
+        JScrollPane modelDetailsScrollPane = new JScrollPane(modelDetailsPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        
+
         JScrollBar hScrollBar = modelDetailsScrollPane.getHorizontalScrollBar();
         hScrollBar.setUnitIncrement(10);
         JScrollBar vScrollBar = modelDetailsScrollPane.getVerticalScrollBar();
         vScrollBar.setUnitIncrement(10);
-        
+
         this.modelChartAndDetailsPanel = new JTabbedPane();
         this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_chart"), modelChart);
         this.modelChartAndDetailsPanel.addTab(LocalisationHelper.getString("data_panel_tab_details"), modelDetailsScrollPane);
-        
+
         this.viewBar = new ViewBar(this);
         this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
         this.textAreaLogHandler = new TextAreaLogHandler();
@@ -91,7 +89,7 @@ public class ChartPanelView {
     /**
      * Reloads the model displayed in this chart panel if it has changed. Using the parameter
      * the parser error dialog can be suppressed.
-     * 
+     *
      * @param showParserErrors if <code>true</code> parser errors will be shown
      * @return <code>true</code>, if the file has been reloaded
      * @throws DataReaderException if something went wrong reading the file
@@ -146,7 +144,7 @@ public class ChartPanelView {
     public JTabbedPane getModelChartAndDetails() {
         return modelChartAndDetailsPanel;
     }
-    
+
     public ModelChart getModelChart() {
         return modelChart;
     }

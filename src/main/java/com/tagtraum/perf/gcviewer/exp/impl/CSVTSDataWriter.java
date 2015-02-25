@@ -9,9 +9,10 @@ import java.io.OutputStream;
 import java.util.Iterator;
 
 /**
+ * Export GC history with comma separated values.
+ * <p>
+ * It uses the {@literal "Timestamp(unix/#),Used(K),Total(K),Pause(sec),GC-Type"} format.
  *
- * Date: Feb 1, 2002
- * Time: 10:07:52 AM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class CSVTSDataWriter extends AbstractDataWriter {
@@ -29,7 +30,7 @@ public class CSVTSDataWriter extends AbstractDataWriter {
      */
     public void write(GCModel model) throws IOException {
         writeHeader();
-        
+
         Iterator<GCEvent> i = model.getGCEvents();
         while (i.hasNext()) {
             GCEvent event = i.next();
@@ -45,7 +46,7 @@ public class CSVTSDataWriter extends AbstractDataWriter {
                 out.print(event.getTimestamp());
             }
             out.print(',');
-            out.print(event.getPreUsed()); // pre
+            out.print(event.getPreUsed());
             out.print(',');
             out.print(event.getTotal());
             out.print(',');

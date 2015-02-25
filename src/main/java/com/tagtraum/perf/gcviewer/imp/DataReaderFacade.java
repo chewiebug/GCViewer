@@ -28,10 +28,9 @@ import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file
- * including standard error handling. 
- * 
+ * including standard error handling.
+ *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>created on: 24.11.2012</p>
  */
 public class DataReaderFacade {
 
@@ -40,7 +39,7 @@ public class DataReaderFacade {
 
     /**
      * Loads a model from a given <code>pathToData</code> logging all exceptions that occur.
-     * 
+     *
      * @param fileOrUrl path to a file or URL
      * @param showErrorDialog <code>true</code> if a window with an error description should be shown
      * if one occurred
@@ -48,13 +47,13 @@ public class DataReaderFacade {
      * @return instance of GCModel containing all information that was parsed
      * @throws DataReaderException if any exception occurred, it is logged and added as the cause
      * to this exception
-     * @see {@link #loadModel(URL, boolean, Component)}
+     * @see #loadModel(URL, boolean, Component)
      */
     public GCModel loadModel(String fileOrUrl, boolean showErrorDialog, Component parent) throws DataReaderException {
         if (fileOrUrl == null) {
             throw new NullPointerException("fileOrUrl must never be null");
         }
-        
+
         try {
             URL url = null;
             if (fileOrUrl.startsWith("http")) {
@@ -63,17 +62,17 @@ public class DataReaderFacade {
             else {
                 url = new File(fileOrUrl).toURI().toURL();
             }
-            
+
             return loadModel(url, showErrorDialog, parent);
         }
         catch (MalformedURLException e) {
             throw new DataReaderException("could not load from '" + fileOrUrl + "'", e);
         }
     }
-    
+
     /**
      * Loads a model from a given <code>url</code> logging all exceptions that occur.
-     * 
+     *
      * @param url where to look for the data to be interpreted
      * @param showErrorDialog <code>true</code> if a window with an error description should be shown
      * if one occurred
@@ -92,12 +91,12 @@ public class DataReaderFacade {
             LOGGER.info("GCViewer version " + BuildInfoReader.getVersion() + " (" + BuildInfoReader.getBuildDate() + ")");
             model = readModel(url);
             model.setURL(url);
-        } 
+        }
         catch (RuntimeException | IOException e) {
             LOGGER.severe(LocalisationHelper.getString("fileopen_dialog_read_file_failed")
                     + "\n" + e.toString() + " " + e.getLocalizedMessage());
             dataReaderException.initCause(e);
-        } 
+        }
         finally {
             // remove special handler after we are done with reading.
             PARSER_LOGGER.removeHandler(textAreaLogHandler);
@@ -106,14 +105,14 @@ public class DataReaderFacade {
         if (textAreaLogHandler.hasErrors() && showErrorDialog) {
             showErrorDialog(url, textAreaLogHandler, parent);
         }
-        
+
         if (dataReaderException.getCause() != null) {
             throw dataReaderException;
         }
-        
+
         return model;
     }
-    
+
     /**
      * Open and parse data designated by <code>url</code>.
      * @param url where to find data to be parsed
@@ -122,10 +121,10 @@ public class DataReaderFacade {
      */
     private GCModel readModel(URL url) throws IOException {
         DataReaderFactory factory = new DataReaderFactory();
-    	final URLConnection conn = url.openConnection();    	
-    	final InputStream in = conn instanceof HttpURLConnection
-    							? HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP)
-    							: conn.getInputStream();
+        final URLConnection conn = url.openConnection();
+        final InputStream in = conn instanceof HttpURLConnection
+                        ? HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP)
+                        : conn.getInputStream();
         final DataReader reader = factory.getDataReader(in);
         final GCModel model = reader.read();
         return model;

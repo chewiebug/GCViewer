@@ -5,9 +5,6 @@ import java.util.*;
 
 /**
  * RecentFilesMenu.
- * <p/>
- * Date: Sep 25, 2005
- * Time: 10:54:45 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
@@ -29,7 +26,7 @@ public class RecentURLsModel {
     }
 
     protected void fireAddEvent(int position, URLSet urlSet) {
-        RecentURLEvent event = new RecentURLEvent(this, position, urlSet); 
+        RecentURLEvent event = new RecentURLEvent(this, position, urlSet);
         for (RecentURLsListener listener : listeners) {
             listener.add(event);
         }
@@ -99,7 +96,7 @@ public class RecentURLsModel {
                 }
             }
             Arrays.sort(fileStrings);
-            
+
             return fileStrings;
         }
 
@@ -115,18 +112,18 @@ public class RecentURLsModel {
             if (!(obj instanceof URLSet) || obj == null) {
                 return false;
             }
-            
+
             URLSet that = (URLSet)obj;
             if (that.urlStrings.length != this.urlStrings.length) {
                 return false;
             }
-            
+
             for (int i=0; i<that.urlStrings.length; i++) {
                 if (!that.urlStrings[i].equals(this.urlStrings[i])) {
                     return false;
                 }
             }
-            
+
             return true;
         }
 

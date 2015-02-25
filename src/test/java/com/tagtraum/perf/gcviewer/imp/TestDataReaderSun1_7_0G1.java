@@ -594,7 +594,37 @@ public class TestDataReaderSun1_7_0G1 {
         
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
-    
+
+    @Test
+    public void printGCApplicationStoppedTimeTenuringDistErgonomicsComma() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0G1_AppStopped_TenuringDist_Ergonomics_comma.txt");
+        DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(3));
+
+        // standalone "application stopped"
+        assertThat("type name (0)", model.get(0).getTypeAsString(),
+                equalTo("Total time for which application threads were stopped"));
+        assertThat("GC pause (0)", model.get(0).getPause(), closeTo(0.0003060, 0.00000001));
+
+        // standard event
+        assertThat("type name (0)", model.get(1).getTypeAsString(), equalTo("GC pause (G1 Evacuation Pause) (young)"));
+        assertThat("GC pause (0)", model.get(1).getPause(), closeTo(0.0282200, 0.00000001));
+
+        // standalone "application stopped", without immediate GC event before
+        assertThat("type name (2)", model.get(2).getTypeAsString(), equalTo(
+                "Total time for which application threads were stopped"));
+        assertThat("GC pause (2)", model.get(2).getPause(), closeTo(0.0292120 - 0.0282200, 0.00000001));
+
+        assertThat("number of parse problems", handler.getCount(), is(0));
+    }
+
     @Test
     public void printAdaptiveSizePolicyFullGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();

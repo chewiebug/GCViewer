@@ -8,9 +8,6 @@ import java.io.PrintWriter;
 
 /**
  * TextAreaFormatter.
- * <p/>
- * Date: Oct 3, 2005
- * Time: 4:50:41 PM
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
@@ -29,13 +26,13 @@ public class TextAreaFormatter extends Formatter {
         if (record.getThrown() != null) {
             try (StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw)) {
-                
+
                 record.getThrown().printStackTrace(pw);
                 sb.append(sw.toString());
-            } 
+            }
             catch (IOException e) {
                 // ignore
-            } 
+            }
         }
         return sb.toString();
     }

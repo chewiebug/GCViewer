@@ -2,12 +2,11 @@ package com.tagtraum.perf.gcviewer.model;
 
 /**
  * Stop the world events that are not GCEvents, but some other vm operations.
- * 
- * @see http://stackoverflow.com/questions/2850514/meaning-of-message-operations-coalesced-during-safepoint
- * @see https://blogs.oracle.com/jonthecollector/entry/the_unspoken_gc_times
- * 
+ *
+ * @see <a href="http://stackoverflow.com/questions/2850514/meaning-of-message-operations-coalesced-during-safepoint">meaning-of-message-operations-coalesced-during-safepoint</a>
+ * @see <a href="https://blogs.oracle.com/jonthecollector/entry/the_unspoken_gc_times">the_unspoken_gc_times</a>
+ *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>created on: 27.04.2014</p>
  */
 public class VmOperationEvent extends AbstractGCEvent<VmOperationEvent> {
 
