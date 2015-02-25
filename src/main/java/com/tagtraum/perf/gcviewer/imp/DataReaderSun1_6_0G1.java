@@ -100,7 +100,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     // or "...)<timestamp> (initial-mark)..." (where only the timestamp belongs to a concurrent event)
     private static final Pattern PATTERN_LINES_MIXED = Pattern.compile("(.*\\)|.*Full GC)([0-9.]+.*)");
 
-    private static final Pattern PATTERN_G1_ERGONOMICS = Pattern.compile("(.*)\\W\\d+\\.\\d{3}\\W{2}\\[G1Ergonomics .+\\].*");
+    private static final Pattern PATTERN_G1_ERGONOMICS = Pattern.compile("(.*)\\W\\d+[\\.,]\\d{3}\\W{2}\\[G1Ergonomics .+\\].*");
 
     private static final String HEAP_SIZING_START = "Heap";
 

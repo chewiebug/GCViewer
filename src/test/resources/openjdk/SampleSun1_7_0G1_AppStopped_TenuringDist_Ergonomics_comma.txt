@@ -1,0 +1,44 @@
+2015-02-20T14:50:39.533+0100: 16576,607: Total time for which application threads were stopped: 0,0003060 seconds
+2015-02-20T14:50:41.432+0100: 16578,506: [GC pause (G1 Evacuation Pause) (young)
+Desired survivor size 8912896 bytes, new threshold 15 (max 15)
+- age   1:     481952 bytes,     481952 total
+- age   2:     346184 bytes,     828136 total
+- age   3:       1344 bytes,     829480 total
+- age   4:       1240 bytes,     830720 total
+- age   5:      10600 bytes,     841320 total
+- age   6:        152 bytes,     841472 total
+- age   7:       1984 bytes,     843456 total
+- age   8:    1621984 bytes,    2465440 total
+- age   9:       1456 bytes,    2466896 total
+- age  10:       5744 bytes,    2472640 total
+- age  11:       8272 bytes,    2480912 total
+- age  12:      16520 bytes,    2497432 total
+- age  13:      17960 bytes,    2515392 total
+- age  14:    6097488 bytes,    8612880 total
+ 16578,506: [G1Ergonomics (CSet Construction) start choosing CSet, _pending_cards: 1887, predicted base time: 16,71 ms, remaining time: 33,29 ms, target pause time: 50,00 ms]
+ 16578,506: [G1Ergonomics (CSet Construction) add young regions to CSet, eden: 124 regions, survivors: 12 regions, predicted young region time: 10,50 ms]
+ 16578,506: [G1Ergonomics (CSet Construction) finish choosing CSet, eden: 124 regions, survivors: 12 regions, old: 0 regions, predicted pause time: 27,21 ms, target pause time: 50,00 ms]
+, 0,0282200 secs]
+   [Parallel Time: 24,5 ms, GC Workers: 4]
+      [GC Worker Start (ms): Min: 16578506,5, Avg: 16578506,6, Max: 16578506,7, Diff: 0,2]
+      [Ext Root Scanning (ms): Min: 11,0, Avg: 11,8, Max: 12,4, Diff: 1,4, Sum: 47,1]
+      [Update RS (ms): Min: 1,2, Avg: 1,7, Max: 1,9, Diff: 0,7, Sum: 6,8]
+         [Processed Buffers: Min: 1, Avg: 4,2, Max: 12, Diff: 11, Sum: 17]
+      [Scan RS (ms): Min: 0,0, Avg: 0,1, Max: 0,2, Diff: 0,2, Sum: 0,4]
+      [Code Root Scanning (ms): Min: 0,0, Avg: 0,1, Max: 0,3, Diff: 0,3, Sum: 0,4]
+      [Object Copy (ms): Min: 10,0, Avg: 10,5, Max: 11,0, Diff: 1,0, Sum: 42,1]
+      [Termination (ms): Min: 0,0, Avg: 0,0, Max: 0,0, Diff: 0,0, Sum: 0,0]
+      [GC Worker Other (ms): Min: 0,0, Avg: 0,1, Max: 0,1, Diff: 0,0, Sum: 0,2]
+      [GC Worker Total (ms): Min: 24,1, Avg: 24,3, Max: 24,4, Diff: 0,3, Sum: 97,1]
+      [GC Worker End (ms): Min: 16578530,9, Avg: 16578530,9, Max: 16578530,9, Diff: 0,0]
+   [Code Root Fixup: 0,3 ms]
+   [Code Root Migration: 0,6 ms]
+   [Clear CT: 0,5 ms]
+   [Other: 2,3 ms]
+      [Choose CSet: 0,0 ms]
+      [Ref Proc: 1,6 ms]
+      [Ref Enq: 0,0 ms]
+      [Free CSet: 0,4 ms]
+   [Eden: 124,0M(124,0M)->0,0B(126,0M) Survivors: 12,0M->11,0M Heap: 214,9M(256,0M)->90,4M(256,0M)]
+ [Times: user=0,10 sys=0,00, real=0,03 secs]
+2015-02-20T14:50:41.461+0100: 16578,535: Total time for which application threads were stopped: 0,0292120 seconds
