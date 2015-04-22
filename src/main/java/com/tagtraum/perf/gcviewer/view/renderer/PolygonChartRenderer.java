@@ -45,7 +45,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
     public void resetPolygon() {
         polygon = null;
     }
-    
+
     /**
      * @see com.tagtraum.perf.gcviewer.view.ChartRenderer#paintComponent(java.awt.Graphics2D)
      */
@@ -77,7 +77,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
     /**
      * Updates the <code>clippedPolygon</code> instance in this class to contain only the points
      * needed to fill the current clipped area.
-     * 
+     *
      * @param polygon full polygon with all points of the gc log file.
      * @param clip size of the current clipping area
      * @return the updated <code>clippedPolygon</code> with only the points relevant to draw
@@ -86,29 +86,29 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
     private Polygon initClippedPolygon(Polygon polygon, Shape clip) {
         int xMin = (int) clip.getBounds2D().getMinX();
         int xMax = (int) Math.ceil(clip.getBounds2D().getMaxX());
-        
+
         // only clip if there are enough points in the polygon
         if (polygon.npoints > 1000 && (xMin > polygon.xpoints[0] || xMax < polygon.xpoints[polygon.npoints-1])) {
             InsertionBoundary insertionPoint = findInsertionBoundary(polygon, xMin, xMax);
-            
+
             int[] xpoints = new int[insertionPoint.getDistance() + 2];
             int[] ypoints = new int[insertionPoint.getDistance() + 2];
-            
-            System.arraycopy(polygon.xpoints, 
+
+            System.arraycopy(polygon.xpoints,
                     insertionPoint.getStartX(),
                     xpoints,
                     1,
                     insertionPoint.getDistance() + 1);
-            
-            System.arraycopy(polygon.ypoints, 
+
+            System.arraycopy(polygon.ypoints,
                     insertionPoint.getStartX(),
                     ypoints,
                     1,
                     insertionPoint.getDistance() + 1);
-            
+
             xpoints[0] = xpoints[1]-1;
             if (drawPolygon) {
-                // for polygons the last point needs to be in the bottom of the chart 
+                // for polygons the last point needs to be in the bottom of the chart
                 // (otherwise filling will not be correct)...
                 ypoints[0] = (int) Math.ceil(clip.getBounds2D().getMaxY());
             }
@@ -116,7 +116,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                 // ...for lines it must not (otherwise vertical lines will appear where they shouldn't)
                 ypoints[0] = ypoints[1];
             }
-            
+
             clippedPolygon.xpoints = xpoints;
             clippedPolygon.ypoints = ypoints;
             clippedPolygon.npoints = insertionPoint.getDistance() + 2;
@@ -127,21 +127,21 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
             clippedPolygon.ypoints = polygon.ypoints;
             clippedPolygon.npoints = polygon.npoints;
         }
-        
+
         clippedPolygon.invalidate();
-        
+
         return clippedPolygon;
     }
 
     /**
-     * Finds boundaries in <code>xpoints</code> of <code>polygon</code> so that <code>startX</code> 
-     * is smaller or equal to <code>xMin</code> and <code>endX</code> is greater or equal to 
+     * Finds boundaries in <code>xpoints</code> of <code>polygon</code> so that <code>startX</code>
+     * is smaller or equal to <code>xMin</code> and <code>endX</code> is greater or equal to
      * <code>xMax</code>;
-     * 
+     *
      * @param polygon polygon where the boundaries have to be found
      * @param xMin min value of x
      * @param xMax max value of x
-     * @return InsertionBoundary containing startX as index of first element in xpoints being 
+     * @return InsertionBoundary containing startX as index of first element in xpoints being
      * smaller than xMin and endX as index of first element in xpoints being greater than xMax.
      */
     private InsertionBoundary findInsertionBoundary(Polygon polygon, int xMin, int xMax) {
@@ -162,10 +162,10 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                 break;
             }
         }
-        
+
         return insertionBoundary;
     }
-    
+
     public abstract Polygon computePolygon(ModelChart modelChart, GCModel model);
 
     protected Paint createPaint(Polygon polygon) {
@@ -199,13 +199,13 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
 
     /**
      * Returns <code>true</code> if <code>event</code> is of a type that contains memory information.
-     * 
+     *
      * @param event event to be analysed
      * @return <code>true</code> if <code>event</code> contains memory information
      */
     protected boolean hasMemoryInformation(GCEvent event) {
         return event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY)
-                || event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE); 
+                || event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE);
     }
 
     /**
@@ -217,7 +217,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         private int yOffset;
         private Point lastPointOfOptimisation = new Point();
         private boolean lastPointWasOptimised = false;
-        
+
         public ScaledPolygon(double xScaleFactor, double yScaleFactor, int yOffset) {
             this.xScaleFactor = xScaleFactor;
             this.yScaleFactor = yScaleFactor;
@@ -227,7 +227,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         /**
          * Adds Point to the polygon optimising the polygon so as not to add points that can't
          * be seen in the graph because they are on the same pixel after scaling.
-         * 
+         *
          * @param x x-value
          * @param y y-value
          */
@@ -235,11 +235,11 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
             int scaledY = getScaledYValue(y);
             int scaledX = getScaledXValue(x);
             // optimize the polygon as we add points.
-            if (!lastPointWasOptimised 
-                    && npoints>2 
-                    && ypoints[npoints-2] == scaledY 
+            if (!lastPointWasOptimised
+                    && npoints>2
+                    && ypoints[npoints-2] == scaledY
                     && ypoints[npoints-1] == ypoints[npoints-2]) {
-                
+
                 xpoints[npoints-1] = scaledX;
             }
             else if (npoints>2 && xpoints[npoints-2] == scaledX && xpoints[npoints-1] == xpoints[npoints-2]) {
@@ -249,8 +249,8 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                     addPoint(xpoints[npoints-1], ypoints[npoints-1]);
                     ypoints[npoints-2] = ypoints[npoints-3];
                 }
-                
-                // optimise the subsequent points to make sure the resulting vertical line is 
+
+                // optimise the subsequent points to make sure the resulting vertical line is
                 // as long as the greatest distance between any two points of the sequence
                 if (ypoints[npoints-2] < ypoints[npoints-1]) {
                     ypoints[npoints-2] = Math.min(ypoints[npoints-2], scaledY);
@@ -277,7 +277,7 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
 
         /**
          * Adds the given point without optimisation.
-         * 
+         *
          * @param x x-Value
          * @param y y-Value
          */
@@ -292,34 +292,34 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         private int getScaledYValue(double y) {
             return yOffset - (int)(yScaleFactor * y);
         }
-        
+
     }
 
     /**
      * InsertionBoundary holds the boundaries (index in polygon.xpoints) in a polygon array.
      * This class makes sure that the boundary indexes are allways within the size of the
      * polygon arrays size.
-     * 
+     *
      * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
      * <p>created on: 04.06.2012</p>
      */
     private static class InsertionBoundary {
         private int startX;
         private int endX;
-        
+
         /** max value that insertion point may have */
         private int maxX;
-        
+
         public InsertionBoundary(int arrayLength) {
             super();
-            
+
             if (arrayLength == 0) {
                 throw new IllegalArgumentException("arrayLength must be > 0");
             }
-            
+
             this.maxX = arrayLength-1;
         }
-        
+
         /**
          * Decreases start index by one
          * @return <code>true</code> if current start index was &gt;0 before, <code>false</code> otherwise
@@ -329,10 +329,10 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                 --startX;
                 return true;
             }
-            
+
             return false;
         }
-        
+
         /**
          * Increases end index by one
          * @return <code>true</code> if current end index was &lt; max value before, <code>false</code> otherwise
@@ -342,10 +342,10 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
                 ++endX;
                 return true;
             }
-            
+
             return false;
         }
-        
+
         public int getDistance() {
             return endX - startX;
         }
@@ -363,6 +363,9 @@ public abstract class PolygonChartRenderer extends ChartRenderer {
         }
 
         public void setEndX(int endX) {
+            if (endX < 0) {
+                endX = 0;
+            }
             this.endX = endX > maxX ? maxX : endX;
         }
 

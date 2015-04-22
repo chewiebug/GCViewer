@@ -89,9 +89,11 @@ public class ViewMenuController implements ActionListener, PropertyChangeListene
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (PropertyChangeEventConsts.MODELCHART_TIMESTAMP_RULER_FORMAT_CHANGED.equals(evt.getPropertyName())) {
+            if (gui.getSelectedGCDocument() != null) {
             gui.getSelectedGCDocument().getModelChart().setShowDateStamp((Boolean)evt.getNewValue());
             ((GCViewerGuiMenuBar) gui.getJMenuBar()).getViewMenuItems()
                 .get(GCPreferences.SHOW_DATE_STAMP).setSelected((Boolean)evt.getNewValue());
         }
     }
+}
 }

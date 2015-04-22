@@ -199,14 +199,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
     // -XX:+CMSScavengeBeforeRemark JDK 1.5
     private static final String SCAVENGE_BEFORE_REMARK = Type.SCAVENGE_BEFORE_REMARK.getName();
-    
+
     public DataReaderSun1_6_0(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super(gcResource, in, gcLogType);
     }
 
     public GCModel read() throws IOException {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x / 1.8.x format...");
-        
+
         try (BufferedReader in = this.in) {
             GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
@@ -225,7 +225,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             boolean isInFlsStatisticsBlock = false;
             ParseInformation parsePosition = new ParseInformation(0);
 
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 parsePosition.setIndex(0);
                 ++lineNumber;
                 parsePosition.setLineNumber(lineNumber);
@@ -412,6 +412,10 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         finally {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
+    }
+
+    private boolean shouldContinue() {
+        return !gcResource.isReadCancelled();
     }
 
     private void handleMixedLine(GCModel model,

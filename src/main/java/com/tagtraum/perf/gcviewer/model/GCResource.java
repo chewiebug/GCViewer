@@ -18,33 +18,34 @@ import javax.swing.event.SwingPropertyChangeSupport;
  */
 public class GCResource {
     public static final String PROPERTY_MODEL = "model";
-    private static final AtomicInteger COUNT = new AtomicInteger(0); 
+    private static final AtomicInteger COUNT = new AtomicInteger(0);
 
-	private final String resourceName;
+	private String resourceName;
 	private GCModel model;
 	private SwingPropertyChangeSupport propertyChangeSupport;
 	private Logger logger;
-    private boolean isReload; 
-	
+    private boolean isReload;
+    private boolean isReadCancelled;
+
 	public GCResource(String resourceName) {
 		super();
-		
+
 		if (resourceName == null) {
 			throw new IllegalArgumentException("resourceName cannot be null");
 		}
-		
+
 		this.resourceName = resourceName;
 		this.propertyChangeSupport = new SwingPropertyChangeSupport(this);
 		this.model = new GCModel();
 
 	    logger = Logger.getLogger("GCResource".concat(Integer.toString(COUNT.incrementAndGet())));
     }
-	
+
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 	    this.propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 
-	
+
 	@Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -58,7 +59,7 @@ public class GCResource {
             if (other.resourceName != null) {
                 return false;
             }
-        } 
+        }
         else if (!resourceName.equals(other.resourceName)) {
             return false;
         }
@@ -68,15 +69,15 @@ public class GCResource {
     public Logger getLogger() {
         return logger;
     }
-    
+
     public GCModel getModel() {
         return model;
     }
-    
+
     public String getResourceName() {
 		return resourceName;
 	}
-	
+
     public URL getResourceNameAsUrl() throws MalformedURLException {
         URL url = null;
         if (getResourceName().startsWith("http") || getResourceName().startsWith("file")) {
@@ -85,10 +86,10 @@ public class GCResource {
         else {
             url = new File(getResourceName()).toURI().toURL();
         }
-        
+
         return url;
     }
-    
+
 	@Override
     public int hashCode() {
         final int prime = 31;
@@ -105,19 +106,36 @@ public class GCResource {
 	public boolean isReload() {
 	    return isReload;
 	}
-	
+
+    /**
+     * Returns <code>true</code>, if reading of this GCResource should be cancelled.
+     * @return <code>true</code>, if reading should be cancelled
+     */
+    public boolean isReadCancelled() {
+        return isReadCancelled;
+    }
+
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 	    this.propertyChangeSupport.removePropertyChangeListener(listener);
 	}
-	
+
 	/**
 	 * if this resource is being reloaded, set this property to <code>true</code>.
 	 * @param isReload <code>true</code>, if this resource is being reloaded
 	 */
 	public void setIsReload(boolean isReload) {
 	    this.isReload = isReload;
+        setIsReadCancelled(false);
 	}
-	
+
+    /**
+     * Indicate, that reading of this GCResource should be cancelled.
+     * @param isReadCancelled <code>true</code>, if read should be cancelled
+     */
+    public void setIsReadCancelled(boolean isReadCancelled) {
+        this.isReadCancelled = isReadCancelled;
+	}
+
 	public void setModel(GCModel model) {
 	    GCModel oldModel = this.model;
 	    this.model = model;
