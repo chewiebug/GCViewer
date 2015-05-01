@@ -1,19 +1,22 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.model.GCModel;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
+import javax.swing.JScrollPane;
+
+import com.tagtraum.perf.gcviewer.model.GCModel;
 
 public class SimpleChartRenderer {
     private static final Logger LOGGER = Logger.getLogger(SimpleChartRenderer.class.getName());
 
-    public void render(GCModel model, String chartFilePath) throws IOException {
+    public void render(GCModel model, FileOutputStream outputStream) throws IOException {
         GCPreferences gcPreferences = new GCPreferences();
         gcPreferences.load();
 
@@ -39,6 +42,7 @@ public class SimpleChartRenderer {
 
         pane.paint(graphics);
 
-        ImageIO.write(image, "png", new File(chartFilePath));
+        ImageIO.write(image, "png", outputStream);
+        outputStream.close();
     }
 }
