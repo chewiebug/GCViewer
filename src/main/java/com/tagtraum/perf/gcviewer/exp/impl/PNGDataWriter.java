@@ -9,7 +9,7 @@ import com.tagtraum.perf.gcviewer.exp.AbstractDataWriter;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
- * Exports current graph to PNG image format.
+ * PNG data writter
  * 
  * @author Angel Olle Blazquez
  *
