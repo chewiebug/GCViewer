@@ -139,21 +139,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     /** is true, if "[Times ..." information is present in the gc log */
     private boolean hasTimes = false;
 
-    /** support cancelling reading the log file */
-    private boolean doCancel = false;
-
     public DataReaderSun1_6_0G1(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super(gcResource, in, gcLogType);
-    }
-
-    @Override
-    public boolean hasCancelSupport() {
-        return true;
-    }
-
-    @Override
-    public void doCancel() {
-        this.doCancel = true;
     }
 
     @Override
@@ -173,7 +160,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             int lineNumber = 0;
             String beginningOfLine = null;
 
-            while ((line = in.readLine()) != null && !doCancel) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 ++lineNumber;
                 parsePosition.setLineNumber(lineNumber);
                 parsePosition.setIndex(0);
@@ -302,7 +289,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         GCEvent fullGcEvent = (GCEvent) parseLine(line, parsePosition);
                         if (!in.markSupported()) {
                             getLogger().warning("input stream does not support marking!");
-                        } 
+                        }
                         else {
                             in.mark(200);
                             try {
@@ -346,6 +333,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 getLogger().info("Done reading.");
             }
         }
+    }
+
+    private boolean shouldContinue() {
+        return !gcResource.isReadCancelled();
     }
 
     private boolean hasIncompleteConcurrentEvent(String line, ParseInformation paresPosition) {
@@ -618,7 +609,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
         if (!in.markSupported()) {
             getLogger().warning("input stream does not support marking!");
-        } 
+        }
         else {
             in.mark(200);
         }
