@@ -48,6 +48,7 @@ public class Export extends AbstractAction {
         saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN));
         saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE));
         saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_summarylog"), DataWriterType.SUMMARY));
+        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".png", LocalisationHelper.getString("fileexport_dialog_png"), DataWriterType.PNG));
         }
 
     public void actionPerformed(final ActionEvent e) {

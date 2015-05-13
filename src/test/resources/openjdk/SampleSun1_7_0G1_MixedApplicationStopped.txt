@@ -1,0 +1,40 @@
+ 6616,791: [G1Ergonomics (Concurrent Cycles) initiate concurrent cycle, reason: concurrent cycle initiation requested]
+2015-02-25T12:47:07.930+0100: 6616,791: [GC pause (G1 Evacuation Pause) (young) (initial-mark)
+Desired survivor size 3670016 bytes, new threshold 4 (max 15)
+- age   1:    1159392 bytes,    1159392 total
+- age   2:    1011800 bytes,    2171192 total
+- age   3:    1055680 bytes,    3226872 total
+- age   4:    1107944 bytes,    4334816 total
+ 6616,791: [G1Ergonomics (CSet Construction) start choosing CSet, _pending_cards: 4276, predicted base time: 61,78 ms, remaining time: 0,00 ms, target pause time: 50,00 ms]
+ 6616,791: [G1Ergonomics (CSet Construction) add young regions to CSet, eden: 45 regions, survivors: 6 regions, predicted young region time: 13,02 ms]
+ 6616,791: [G1Ergonomics (CSet Construction) finish choosing CSet, eden: 45 regions, survivors: 6 regions, old: 0 regions, predicted pause time: 74,80 ms, target pause time: 50,00 ms]
+ 6616,888: [G1Ergonomics (Heap Sizing) attempt heap expansion, reason: recent GC overhead higher than threshold after GC, recent GC overhead: 12,39 %, threshold: 10,00 %, uncommitted: 0 bytes, calculated expansion amount: 0 bytes (20,00 %)]
+, 0,0970100 secs]
+   [Parallel Time: 93,2 ms, GC Workers: 4]
+      [GC Worker Start (ms): Min: 6616791,3, Avg: 6616791,4, Max: 6616791,5, Diff: 0,2]
+      [Ext Root Scanning (ms): Min: 35,3, Avg: 56,0, Max: 72,0, Diff: 36,7, Sum: 224,0]
+      [Code Root Marking (ms): Min: 0,0, Avg: 7,8, Max: 17,9, Diff: 17,8, Sum: 31,2]
+      [Update RS (ms): Min: 0,0, Avg: 3,7, Max: 5,1, Diff: 5,1, Sum: 14,6]
+         [Processed Buffers: Min: 0, Avg: 11,0, Max: 21, Diff: 21, Sum: 44]
+      [Scan RS (ms): Min: 0,0, Avg: 0,0, Max: 0,1, Diff: 0,1, Sum: 0,1]
+      [Code Root Scanning (ms): Min: 0,0, Avg: 0,0, Max: 0,0, Diff: 0,0, Sum: 0,0]
+      [Object Copy (ms): Min: 20,7, Avg: 25,2, Max: 34,9, Diff: 14,2, Sum: 100,7]
+      [Termination (ms): Min: 0,0, Avg: 0,0, Max: 0,0, Diff: 0,0, Sum: 0,0]
+      [GC Worker Other (ms): Min: 0,1, Avg: 0,2, Max: 0,2, Diff: 0,1, Sum: 0,6]
+      [GC Worker Total (ms): Min: 92,8, Avg: 92,9, Max: 93,0, Diff: 0,2, Sum: 371,5]
+      [GC Worker End (ms): Min: 6616884,3, Avg: 6616884,3, Max: 6616884,3, Diff: 0,1]
+   [Code Root Fixup: 0,3 ms]
+   [Code Root Migration: 0,0 ms]
+   [Clear CT: 0,5 ms]
+   [Other: 2,9 ms]
+      [Choose CSet: 0,0 ms]
+      [Ref Proc: 1,9 ms]
+      [Ref Enq: 0,0 ms]
+      [Free CSet: 0,2 ms]
+   [Eden: 45,0M(45,0M)->0,0B(45,0M) Survivors: 6144,0K->6144,0K Heap: 511,2M(1024,0M)->467,7M(1024,0M)]
+ [Times: user=0,38 sys=0,00, real=0,09 secs]
+2015-02-25T12:47:08.028+0100: 2015-02-25T12:47:08.028+0100: 6616,888: Total time for which application threads were stopped: 0,1003470 seconds
+6616,888: [GC concurrent-root-region-scan-start]
+2015-02-25T12:47:08.040+0100: 6616,901: [GC concurrent-root-region-scan-end, 0,0123120 secs]
+2015-02-25T12:47:08.040+0100: 6616,901: [GC concurrent-mark-start]
+2015-02-25T12:47:08.047+0100: 6616,908: Total time for which application threads were stopped: 0,0015460 seconds

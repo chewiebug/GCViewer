@@ -468,10 +468,17 @@ public class GCModel implements Serializable {
 
                 // only count overhead of vmOpEvent, not whole pause,
                 // because it includes the previous stop the world event
-                vmOpEvent.setPause(vmOpEvent.getPause() - previousEvent.getPause());
-                adjustTimeStamp(previousEvent, vmOpEvent);
-
-                assert vmOpEvent.getPause() > 0 : "vmOpEvent at " + vmOpEvent.getTimestamp() + " should not have negative pause";
+                double adjustedPause = vmOpEvent.getPause() - previousEvent.getPause();
+                if (adjustedPause > 0) {
+                    vmOpEvent.setPause(adjustedPause);
+                    adjustTimeStamp(previousEvent, vmOpEvent);
+                }
+                else {
+                    // this happens if the first VM_OPERATION event after a GCEvent could not be read (mixed with concurrent event)
+                    // and the next is used to calculate the overhead
+                    LOG.fine("vmOpEvent at " + vmOpEvent.getTimestamp()
+                            + " should not have negative pause -> no adjustment made");
+                }
             }
         }
     }

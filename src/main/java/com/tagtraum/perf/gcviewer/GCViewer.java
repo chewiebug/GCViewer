@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
@@ -86,7 +87,7 @@ public class GCViewer {
 
     private void renderChart(GCModel model, String chartFilePath) throws IOException {
         SimpleChartRenderer renderer = new SimpleChartRenderer();
-        renderer.render(model, chartFilePath);
+        renderer.render(model, new FileOutputStream(new File(chartFilePath)));
     }
 
 	private static void usage() {

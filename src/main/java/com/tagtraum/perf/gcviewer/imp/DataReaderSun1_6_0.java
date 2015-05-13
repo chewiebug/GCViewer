@@ -72,6 +72,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final String CMS_LARGE_BLOCK = "CMS: Large "; // -XX:+PrintFLSStatistics=1
     private static final String SIZE = "size["; // -XX:+PrintFLSStatistics=1
     private static final String TIMES = " [Times";
+    private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
 
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
 
@@ -106,6 +107,9 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(" free"); // -XX:+PrintFLSStatistics=2
         EXCLUDE_STRINGS.add(SIZE); // -XX:+PrintFLSStatistics=2
         EXCLUDE_STRINGS.add("demand"); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS.add(ADAPTIVE_PATTERN); // -XX:+PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -146,13 +150,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         HEAP_STRINGS.add("}");
     }
 
-    private static final List<String> ADAPTIVE_SIZE_POLICY_STRINGS = new LinkedList<String>();
-    static {
-        ADAPTIVE_SIZE_POLICY_STRINGS.add("PSAdaptiveSize");
-        ADAPTIVE_SIZE_POLICY_STRINGS.add("AdaptiveSize");
-        ADAPTIVE_SIZE_POLICY_STRINGS.add("avg_survived_padded_avg");
-    }
-
     // 1_6_0_u24 mixes lines, when outputing a "promotion failed" which leads to a "concurrent mode failure"
     // pattern looks always like "...[CMS<datestamp>..." or "...[CMS<timestamp>..."
     // the next line starts with " (concurrent mode failure)" which in earlier releases followed "CMS" immediately
@@ -172,7 +169,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
     private static final String ADAPTIVE_SIZE_POLICY_PATTERN_STRING = "(.*GC \\([a-zA-Z ]*\\)|.*GC)(?:[0-9.:]*.*)[ ]?AdaptiveSize.*";
     private static final Pattern adaptiveSizePolicyPattern = Pattern.compile(ADAPTIVE_SIZE_POLICY_PATTERN_STRING);
-    private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
 
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
     // outputs the following line:
@@ -355,7 +351,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                                 continue;
                             }
                             beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
-                            lineNumber = skipLines(in, parsePosition, lineNumber, ADAPTIVE_SIZE_POLICY_STRINGS);
                         }
                         continue;
                     }

@@ -11,7 +11,7 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * Factory for all available {@link DataWriter} implementations.
- * 
+ *
  * <p>Date: Feb 1, 2002
  * <p>Time: 10:34:39 AM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -21,7 +21,7 @@ public class DataWriterFactory {
     /**
      * Standard factory method to retrieve one of the <code>DataWriter</code> implementations.
      * If a DataWriter implementation needs additional configuration, use the other method.
-     * 
+     *
      * @param file file, where to write output to
      * @param type type of DataWriter
      * @return instance of DataWriter according to <code>type</code> parameter
@@ -36,7 +36,7 @@ public class DataWriterFactory {
      * Factory method to retrieve one of the <code>DataWriter</code> implementations including
      * the option to add a map of configuration objects. The map will be passed to the DataWriter,
      * which can use its contents.
-     * 
+     *
      * @param file file, where to write output to
      * @param type type of DataWriter
      * @param configuration Map containing additional configuration objects that will be passed
@@ -46,15 +46,15 @@ public class DataWriterFactory {
      * @throws IOException unknown DataWriter or problem creating file
      */
     public static DataWriter getDataWriter(File file, DataWriterType type, Map<String, Object> configuration) throws IOException {
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            switch (type) {
-                case PLAIN   : return new PlainDataWriter(outputStream); 
-                case CSV     : return new CSVDataWriter(outputStream);
-                case CSV_TS  : return new CSVTSDataWriter(outputStream);
-                case SIMPLE  : return new SimpleGcWriter(outputStream);
-                case SUMMARY : return new SummaryDataWriter(outputStream, configuration); 
-                default : throw new IOException(LocalisationHelper.getString("datawriterfactory_instantiation_failed") + " " + file);
-            }
+        FileOutputStream outputStream = new FileOutputStream(file);
+        switch (type) {
+            case PLAIN   : return new PlainDataWriter(outputStream);
+            case CSV     : return new CSVDataWriter(outputStream);
+            case CSV_TS  : return new CSVTSDataWriter(outputStream);
+            case SIMPLE  : return new SimpleGcWriter(outputStream);
+            case SUMMARY : return new SummaryDataWriter(outputStream, configuration);
+            case PNG     : return new PNGDataWriter(outputStream);
+            default : throw new IOException(LocalisationHelper.getString("datawriterfactory_instantiation_failed") + " " + file);
         }
     }
 

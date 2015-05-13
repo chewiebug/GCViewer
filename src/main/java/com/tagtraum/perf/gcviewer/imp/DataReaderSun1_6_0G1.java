@@ -75,6 +75,26 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(SURVIVOR_AGE);
         EXCLUDE_STRINGS.add(MARK_STACK_IS_FULL);
         EXCLUDE_STRINGS.add(SETTING_ABORT_IN);
+        EXCLUDE_STRINGS.add("   [Root Region"); // all the details of a G1 event -> filter away, if parsing of introduction was not possible
+        EXCLUDE_STRINGS.add("   [Parallel Time");
+        EXCLUDE_STRINGS.add("      [GC Worker Start");
+        EXCLUDE_STRINGS.add("      [Ext Root Scanning");
+        EXCLUDE_STRINGS.add("      [SATB Filtering");
+        EXCLUDE_STRINGS.add("      [Update RS");
+        EXCLUDE_STRINGS.add("         [Processed Buffers");
+        EXCLUDE_STRINGS.add("      [Scan RS");
+        EXCLUDE_STRINGS.add("      [Code Root Scanning");
+        EXCLUDE_STRINGS.add("      [Object Copy");
+        EXCLUDE_STRINGS.add("      [Termination");
+        EXCLUDE_STRINGS.add("      [GC Worker");
+        EXCLUDE_STRINGS.add("   [Code Root");
+        EXCLUDE_STRINGS.add("   [Clear");
+        EXCLUDE_STRINGS.add("   [Other:");
+        EXCLUDE_STRINGS.add("      [Choose CSet");
+        EXCLUDE_STRINGS.add("      [Ref ");
+        EXCLUDE_STRINGS.add("      [Redirty Cards");
+        EXCLUDE_STRINGS.add("      [Humongous Reclaim");
+        EXCLUDE_STRINGS.add("      [Free CSet");
     }
 
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
