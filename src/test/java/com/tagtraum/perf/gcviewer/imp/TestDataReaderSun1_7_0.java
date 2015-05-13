@@ -9,7 +9,6 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -449,6 +448,22 @@ public class TestDataReaderSun1_7_0 {
 
         assertThat("GC count", model.size(), is(7));
         assertThat("pause", model.get(4).getPause(), closeTo(129.9468220, 0.00000001));
+        assertThat("warning count", handler.getCount(), is(0));
+    }
+
+    @Test
+    public void psAdaptiveSizePolicyTenuringDistributionApplicationStopped() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0PS_Adaptive_Tenuring_AppStopped.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("GC count", model.size(), is(3));
+        assertThat("pause", model.get(1).getPause(), closeTo(0.0082230, 0.00000001));
         assertThat("warning count", handler.getCount(), is(0));
     }
 }

@@ -1,0 +1,9 @@
+2015-03-04T09:13:53.189+0100: 55041,359: Total time for which application threads were stopped: 0,0000970 seconds
+2015-03-04T09:13:59.445+0100: 55047,616: [GC (Allocation Failure)AdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 1246904  promoted: 139280  overflow: falseAdaptiveSizeStart: 55047,624 collection: 21
+  avg_survived_padded_avg: 75561280,000000  avg_promoted_padded_avg: 10916049,000000  avg_pretenured_padded_avg: 0,000000  tenuring_thresh: 1  target_size: 76021760
+Desired survivor size 76021760 bytes, new threshold 1 (max 15)
+PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0,000128 major_cost: 0,000000 mutator_cost: 0,999872 throughput_goal: 0,990000 live_space: 336711648 free_space: 1061158912 old_promo_size: 537919488 old_eden_size: 523239424 desired_promo_size: 537919488 desired_eden_size: 538968064
+AdaptiveSizePolicy::survivor space sizes: collection: 21 (79691776, 83886080) -> (79691776, 76021760)
+AdaptiveSizeStop: collection: 21
+ [PSYoungGen: 540800K->1217K(617472K)] 592910K->53464K(2015744K), 0,0082230 secs] [Times: user=0,02 sys=0,00, real=0,01 secs]
+2015-03-04T09:13:59.454+0100: 55047,624: Total time for which application threads were stopped: 0,0091380 seconds

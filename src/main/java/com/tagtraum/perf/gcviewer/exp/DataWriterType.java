@@ -11,5 +11,6 @@ public enum DataWriterType {
     CSV,
     CSV_TS,
     SIMPLE,
-    SUMMARY;
+    SUMMARY,
+    PNG;
 }

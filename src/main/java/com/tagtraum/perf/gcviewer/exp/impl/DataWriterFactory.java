@@ -53,6 +53,7 @@ public class DataWriterFactory {
             case CSV_TS  : return new CSVTSDataWriter(outputStream);
             case SIMPLE  : return new SimpleGcWriter(outputStream);
             case SUMMARY : return new SummaryDataWriter(outputStream, configuration); 
+            case PNG	 : return new PNGDataWriter(outputStream);
             default : throw new IOException(LocalisationHelper.getString("datawriterfactory_instantiation_failed") + " " + file);
         }
     }
