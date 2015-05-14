@@ -297,28 +297,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
 
-                    if (isCmsScavengeBeforeRemark(line)) {
-                        // This is the case, when option -XX:+CMSScavengeBeforeRemark is used.
-                        // we have two events in the first line -> split it
-                        // if this option is combined with -XX:+PrintTenuringDistribution, the
-                        // first event is also distributed over more than one line
-                        int startOf2ndEvent = line.indexOf("]", line.indexOf(EVENT_YG_OCCUPANCY)) + 1;
-                        beginningOfLine.addFirst(line.substring(0, startOf2ndEvent));
-                        if (!isPrintTenuringDistribution(line)) {
-                            if (line.indexOf(SCAVENGE_BEFORE_REMARK) >= 0) {
-                                // jdk1.5 scavenge before remark: just after another separate event occurs
-                                startOf2ndEvent = line.indexOf(SCAVENGE_BEFORE_REMARK) + SCAVENGE_BEFORE_REMARK.length();
-                            }
-                            model.add(parseLine(line.substring(startOf2ndEvent), parsePosition));
-                            parsePosition.setIndex(0);
-                        }
-                        else {
-                            beginningOfLine.addFirst(line.substring(startOf2ndEvent));
-                        }
-
-                        lastLineWasScavengeBeforeRemark = true;
-                        continue;
-                    }
                     int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassIndex > 0) {
                         beginningOfLine.addFirst(line.substring(0, unloadingClassIndex));
@@ -356,6 +334,18 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         }
                         continue;
                     }
+                    else if (line.indexOf(HEAP_SIZING_START) >= 0) {
+                        // if -XX:+ScavengeBeforeRemark and -XX:+PrintHeapAtGC are combined, the following lines are common
+                        // 2015-05-14T18:55:12.588+0200: 1.157: [GC (CMS Final Remark) [YG occupancy: 10451 K (47936 K)]{Heap before GC invocations=22 (full 13):
+                        if (line.contains("]{" + HEAP_SIZING_START)) {
+                            beginningOfLine.add(line.substring(0, line.indexOf("{" + HEAP_SIZING_START)));
+                            lastLineWasScavengeBeforeRemark = true;
+                        }
+
+                        // the next few lines will be the sizing of the heap
+                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
+                        continue;
+                    }
                     else if (beginningOfLine.size() > 0) {
                         // -XX:+CMSScavengeBeforeRemark combined with -XX:+PrintTenuringDistribution
                         // is the only case where beginningOfLine.size() > 1
@@ -376,9 +366,26 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             line = beginningOfLine.removeFirst() + line;
                         }
                     }
-                    else if (line.indexOf(HEAP_SIZING_START) >= 0) {
-                        // the next few lines will be the sizing of the heap
-                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
+                    if (isCmsScavengeBeforeRemark(line)) {
+                        // This is the case, when option -XX:+CMSScavengeBeforeRemark is used.
+                        // we have two events in the first line -> split it
+                        // if this option is combined with -XX:+PrintTenuringDistribution, the
+                        // first event is also distributed over more than one line
+                        int startOf2ndEvent = line.indexOf("]", line.indexOf(EVENT_YG_OCCUPANCY)) + 1;
+                        beginningOfLine.addFirst(line.substring(0, startOf2ndEvent));
+                        if (!isPrintTenuringDistribution(line)) {
+                            if (line.indexOf(SCAVENGE_BEFORE_REMARK) >= 0) {
+                                // jdk1.5 scavenge before remark: just after another separate event occurs
+                                startOf2ndEvent = line.indexOf(SCAVENGE_BEFORE_REMARK) + SCAVENGE_BEFORE_REMARK.length();
+                            }
+                            model.add(parseLine(line.substring(startOf2ndEvent), parsePosition));
+                            parsePosition.setIndex(0);
+                        }
+                        else {
+                            beginningOfLine.addFirst(line.substring(startOf2ndEvent));
+                        }
+
+                        lastLineWasScavengeBeforeRemark = true;
                         continue;
                     }
 
