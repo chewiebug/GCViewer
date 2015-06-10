@@ -156,7 +156,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // pattern looks always like "...[CMS<datestamp>..." or "...[CMS<timestamp>..."
     // the next line starts with " (concurrent mode failure)" which in earlier releases followed "CMS" immediately
     // the same can happen with "...ParNew<timestamp|datestamp>..."
-    private static Pattern linesMixedPattern = Pattern.compile("(.*\\[(CMS|ParNew|DefNew|ASCMS|ASParNew))([0-9]+[-.].*)");
+    private static Pattern linesMixedPattern = Pattern.compile("(.*\\[(CMS|ParNew|DefNew|ASCMS|ASParNew))([0-9]+[-.,].*)");
     // Matcher group of start of line
     private static final int LINES_MIXED_STARTOFLINE_GROUP = 1;
     // Matcher group of end of line
@@ -169,7 +169,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // AdaptiveSizeStop: collection: 1
     //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
-    private static final String ADAPTIVE_SIZE_POLICY_PATTERN_STRING = "(.*GC \\([a-zA-Z ]*\\)|.*GC)(?:[0-9.:]*.*)[ ]?AdaptiveSize.*";
+    private static final String ADAPTIVE_SIZE_POLICY_PATTERN_STRING = "(.*GC \\([a-zA-Z ]*\\)|.*GC)(?:[0-9.,:]*.*)[ ]?AdaptiveSize.*";
     private static final Pattern adaptiveSizePolicyPattern = Pattern.compile(ADAPTIVE_SIZE_POLICY_PATTERN_STRING);
 
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
