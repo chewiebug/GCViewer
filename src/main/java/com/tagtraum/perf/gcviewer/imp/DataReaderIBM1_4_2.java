@@ -47,7 +47,7 @@ public class DataReaderIBM1_4_2 extends AbstractDataReader {
             GCEvent event = null;
             long basetime = 0;
             cycleStartGCFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 final String trimmedLine = line.trim();
                 if (!"".equals(trimmedLine) && !trimmedLine.startsWith("<GC: ") && !trimmedLine.startsWith("<")) {
                     if (getLogger().isLoggable(Level.INFO)) getLogger().info("Malformed line (" + in.getLineNumber() + "): " + line);
@@ -117,12 +117,12 @@ public class DataReaderIBM1_4_2 extends AbstractDataReader {
             }
             //System.err.println(model);
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {
                     in.close();
-                } 
+                }
                 catch (IOException ioe) {
                 }
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
@@ -134,7 +134,7 @@ public class DataReaderIBM1_4_2 extends AbstractDataReader {
             final int idx = line.indexOf("GC cycle started ");
             final Date date = cycleStartGCFormat.parse(line.substring(idx + "GC cycle started ".length()));
             return date.getTime();
-        } 
+        }
         catch (java.text.ParseException e) {
             throw new ParseException(e.toString());
         }

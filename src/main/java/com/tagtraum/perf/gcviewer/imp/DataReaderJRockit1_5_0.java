@@ -36,7 +36,7 @@ public class DataReaderJRockit1_5_0 extends AbstractDataReader {
             GCEvent event = null;
             int nurserySize = -1;
             int startTimeIndex = 0;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 final int memoryIndex = line.indexOf(MEMORY_MARKER);
                 if (memoryIndex == -1) {
                     if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Ignoring line " + in.getLineNumber() + ". Missing \"[memory ]\" marker: " + line);
@@ -45,7 +45,7 @@ public class DataReaderJRockit1_5_0 extends AbstractDataReader {
                 if (line.endsWith(MEMORY_MARKER)) {
                     continue;
                 }
-                
+
                 if (startTimeIndex == 0) {
                     // Not yet initialized. We will initialize position based on this [memory ] log
                     startTimeIndex = memoryIndex + MEMORY_MARKER.length() + 1;
@@ -57,7 +57,7 @@ public class DataReaderJRockit1_5_0 extends AbstractDataReader {
                     if (verboseTimestampIndex > startTimeIndex) {
                         if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Log entries have verbose timestamp");
                         startTimeIndex = verboseTimestampIndex + 2; // skip "] "
-                    }                    
+                    }
                 }
 
                 // print some special statements to the log.
@@ -86,7 +86,7 @@ public class DataReaderJRockit1_5_0 extends AbstractDataReader {
                     //Log as SEVERE for user, but ignore for parsing
                     if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("GC log contains OutOfMemory error: " + line.substring(startTimeIndex));
                     continue;
-                }                
+                }
                 else if (line.toLowerCase().indexOf("heap size:") != -1) {
                     if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startTimeIndex));
                     final int nurserySizeStart = line.indexOf(NURSERY_SIZE);
@@ -100,7 +100,7 @@ public class DataReaderJRockit1_5_0 extends AbstractDataReader {
                     // ignore
                     if (getLogger().isLoggable(Level.FINE)) getLogger().fine(line.substring(startTimeIndex));
                     continue;
-                } 
+                }
                 else if (line.indexOf("K->K") != -1){
                     // Ignore lines like this:
                     // -: GC K->K (K), ms
@@ -114,8 +114,8 @@ public class DataReaderJRockit1_5_0 extends AbstractDataReader {
                     // Example: Thu Feb 21 15:09:22 2013][09368] Memory usage report
                     if (getLogger().isLoggable(Level.FINE)) getLogger().fine(line.substring(startTimeIndex));
                     continue;
-                }                
-         
+                }
+
                 final int colon = line.indexOf(':', startTimeIndex);
                 if (colon == -1) {
                     if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("Malformed line (" + in.getLineNumber() + "). Missing colon after start time: " + line);
@@ -183,12 +183,12 @@ public class DataReaderJRockit1_5_0 extends AbstractDataReader {
                 }
             }
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {
                     in.close();
-                } 
+                }
                 catch (IOException ioe) {
                 }
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading done.");

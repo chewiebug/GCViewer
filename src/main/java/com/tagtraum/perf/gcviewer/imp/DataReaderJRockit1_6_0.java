@@ -35,14 +35,14 @@ public class DataReaderJRockit1_6_0 extends AbstractDataReader {
             String line = null;
             GCEvent event = null;
             int nurserySize = -1;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 // Sample JRockit log entry types to be parsed:
                 //
                 // [INFO ][memory ] GC mode: Garbage collection optimized for throughput, strategy: Generational Parallel Mark & Sweep
                 // [INFO ][memory ] Heap size: 8388608KB, maximal heap size: 8388608KB, nursery size: 4194304KB
                 // [INFO ][memory ] <start>-<end>: <type>..
                 // [INFO ][memory ] [OC#2] 34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.
-                
+
                 final int memoryIndex = line.indexOf(MEMORY_MARKER);
                 if (memoryIndex == -1) {
                     if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Ignoring line " + in.getLineNumber() + ". Missing \"[memory ]\" marker: " + line);
@@ -51,7 +51,7 @@ public class DataReaderJRockit1_6_0 extends AbstractDataReader {
                 if (line.endsWith(MEMORY_MARKER)) {
                     continue;
                 }
-                final int startLog = memoryIndex + MEMORY_MARKER.length();                
+                final int startLog = memoryIndex + MEMORY_MARKER.length();
                 // Skip "[INFO ][memory ] "
 
                 // print some special JRockit summary statements to the log.
@@ -63,7 +63,7 @@ public class DataReaderJRockit1_6_0 extends AbstractDataReader {
                     if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startLog));
                     continue;
                 }
-                else if (line.indexOf("Prefetch distance") != -1) {                    
+                else if (line.indexOf("Prefetch distance") != -1) {
                     if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startLog));
                     continue;
                 }
@@ -78,12 +78,12 @@ public class DataReaderJRockit1_6_0 extends AbstractDataReader {
                 else if (line.indexOf("OutOfMemory") != -1) {
                     if (getLogger().isLoggable(Level.INFO)) getLogger().warning("GC log contains OutOfMemory error: " + line.substring(startLog));
                     continue;
-                }                
+                }
                 else if (line.substring(startLog).startsWith("<")) {
                     // ignore
                     if (getLogger().isLoggable(Level.FINE)) getLogger().fine(line.substring(startLog));
                     continue;
-                }                
+                }
                 else if (line.toLowerCase().indexOf("heap size:") != -1) {
                     if (getLogger().isLoggable(Level.INFO)) getLogger().info(line.substring(startLog));
                     final int nurserySizeStart = line.indexOf(NURSERY_SIZE);
@@ -98,24 +98,24 @@ public class DataReaderJRockit1_6_0 extends AbstractDataReader {
                     if (getLogger().isLoggable(Level.FINE)) getLogger().fine(line.substring(startLog));
                     continue;
                 }
-                        
+
                 // Assume this is an actual GC log of interest. Look for time string, skip ahead of [OC#2]
                 // [memory ] [OC#2] 34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.
                 //   OR if timestamp logging enabled...
-                // [memory ][Sat Oct 27 20:04:38 2012][23355] [OC#2] 
-                int startGCStats = line.indexOf("C#"); // skip to OC# or YC# 
-                // Example: 
-                final int startTimeIndex = line.indexOf(']', startGCStats) + 1; // go to end of "[OC#2]" in above example                                 
-                
+                // [memory ][Sat Oct 27 20:04:38 2012][23355] [OC#2]
+                int startGCStats = line.indexOf("C#"); // skip to OC# or YC#
+                // Example:
+                final int startTimeIndex = line.indexOf(']', startGCStats) + 1; // go to end of "[OC#2]" in above example
+
                 final int colon = line.indexOf(':', startTimeIndex);
                 if (colon == -1) {
                     if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("Malformed line (" + in.getLineNumber() + "). Missing colon after start time: " + line);
                     continue;
                 }
-                
+
                 event = new GCEvent();
-                
-                //34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.                
+
+                //34.287-34.351: OC 460781KB->214044KB (524288KB), 0.064 s, sum of pauses 5.580 ms, longest pause 4.693 ms.
 
                 // set timestamp
                 final String timestampString = line.substring(startTimeIndex, colon);
@@ -178,12 +178,12 @@ public class DataReaderJRockit1_6_0 extends AbstractDataReader {
                 }
             }
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {
                     in.close();
-                } 
+                }
                 catch (IOException ioe) {
                 }
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading done.");

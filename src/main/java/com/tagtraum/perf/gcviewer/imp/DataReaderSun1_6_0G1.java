@@ -335,10 +335,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         }
     }
 
-    private boolean shouldContinue() {
-        return !gcResource.isReadCancelled();
-    }
-
     private boolean hasIncompleteConcurrentEvent(String line, ParseInformation paresPosition) {
         return !nextIsTimestamp(line, paresPosition)
                 && !nextIsDatestamp(line, paresPosition)

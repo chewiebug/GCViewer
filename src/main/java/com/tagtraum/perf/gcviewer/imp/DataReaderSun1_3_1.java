@@ -38,16 +38,16 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun {
             List<StringBuilder> lineStack = new ArrayList<StringBuilder>();
             int i;
             StringBuilder line = null;
-            while ((i = in.read()) != -1) {
+            while ((i = in.read()) != -1 && shouldContinue()) {
                 char c = (char) i;
                 if (c == '[') {
                     if (line != null) lineStack.add(line); // push
                     line = new StringBuilder(64);
-                } 
+                }
                 else if (c == ']') {
                     try {
                         model.add(parseLine(line.toString(), null));
-                    } 
+                    }
                     catch (ParseException e) {
                         if (getLogger().isLoggable(Level.WARNING)) getLogger().log(Level.WARNING, e.getMessage(), e);
                         e.printStackTrace();
@@ -55,13 +55,13 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun {
                     if (!lineStack.isEmpty()) {
                         line = lineStack.remove(lineStack.size() - 1); // pop
                     }
-                } 
+                }
                 else {
                     if (line != null) line.append(c);
                 }
             }
             return model;
-        } 
+        }
         finally {
             if (in != null) try {
                 in.close();
@@ -81,7 +81,7 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun {
             String token = st.nextToken();
             if (token.equals("Full") && st.nextToken().equals("GC")) {
                 event.setType(AbstractGCEvent.Type.FULL_GC);
-            } 
+            }
             else if (token.equals("Inc") && st.nextToken().equals("GC")) {
                 event.setType(AbstractGCEvent.Type.INC_GC);
             }
@@ -96,7 +96,7 @@ public class DataReaderSun1_3_1 extends AbstractDataReaderSun {
             //System.out.println("Parsed: " + event);
             //System.out.println("Real  : [" + line + "]");
             return event;
-        } 
+        }
         catch (RuntimeException rte) {
             final ParseException parseException = new ParseException("Error parsing entry: " + line + ", " + rte.toString());
             parseException.initCause(rte);

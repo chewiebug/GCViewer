@@ -33,7 +33,7 @@ public class DataReaderIBM1_3_0 extends AbstractDataReader {
             String line = null;
             AbstractGCEvent<GCEvent> lastEvent = new GCEvent();
             GCEvent event = null;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 String trimmedLine = line.trim();
                 if ((!trimmedLine.equals("")) && (!trimmedLine.startsWith("<GC: ")) && (!(trimmedLine.startsWith("<") && trimmedLine.endsWith(">")))) {
                     if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("Malformed line (" + in.getLineNumber() + "): " + line);
@@ -79,7 +79,7 @@ public class DataReaderIBM1_3_0 extends AbstractDataReader {
                 }
             }
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {

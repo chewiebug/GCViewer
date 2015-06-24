@@ -34,7 +34,7 @@ public class DataReaderJRockit1_4_2 extends AbstractDataReader {
             String line = null;
             GCEvent event = null;
             int nurserySize = -1;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 final int memoryIndex = line.indexOf(MEMORY_MARKER);
                 if (memoryIndex == -1) {
                     if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Ignoring line " + in.getLineNumber() + ". Missing \"[memory ]\" marker: " + line);
@@ -142,7 +142,7 @@ public class DataReaderJRockit1_4_2 extends AbstractDataReader {
                 }
             }
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {

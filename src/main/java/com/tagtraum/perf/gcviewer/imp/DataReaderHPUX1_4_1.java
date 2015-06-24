@@ -38,7 +38,7 @@ public class DataReaderHPUX1_4_1 extends AbstractDataReader {
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line = null;
             GCEvent event = null;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 final StringTokenizer st = new StringTokenizer(line, " ");
                 if (st.countTokens() != 22) {
                     if (getLogger().isLoggable(Level.WARNING)) {
@@ -202,12 +202,12 @@ public class DataReaderHPUX1_4_1 extends AbstractDataReader {
                 model.add(event);
             }
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {
                     in.close();
-                } 
+                }
                 catch (IOException ioe) {
                 }
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading done.");

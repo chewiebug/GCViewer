@@ -32,7 +32,7 @@ public class DataReaderHPUX1_2 extends AbstractDataReader {
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             String line = null;
             GCEvent event = null;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 StringTokenizer st = new StringTokenizer(line, " ");
                 if (st.countTokens() != 20) {
                     if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("Malformed line (" + in.getLineNumber() + "). Wrong number of tokens ("+st.countTokens()+"): " + line);
@@ -146,12 +146,12 @@ public class DataReaderHPUX1_2 extends AbstractDataReader {
                 model.add(event);
             }
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {
                     in.close();
-                } 
+                }
                 catch (IOException ioe) {
                 }
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading done.");

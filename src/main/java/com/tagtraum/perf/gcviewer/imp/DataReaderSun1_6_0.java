@@ -414,10 +414,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
     }
 
-    private boolean shouldContinue() {
-        return !gcResource.isReadCancelled();
-    }
-
     private void handleMixedLine(GCModel model,
                                  Matcher mixedLineMatcher,
                                  Deque<String> beginningOfLine,

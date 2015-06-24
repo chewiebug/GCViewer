@@ -32,7 +32,7 @@ public class DataReaderSun1_2_2 extends AbstractDataReader {
             boolean timeline = false;
             AbstractGCEvent<GCEvent> lastEvent = new GCEvent();
             GCEvent event = null;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 if (!timeline) {
                     if (line.endsWith("milliseconds since last GC>")) {
                         timeline = true;
@@ -40,7 +40,7 @@ public class DataReaderSun1_2_2 extends AbstractDataReader {
                         event = new GCEvent();
                         event.setTimestamp(lastEvent.getTimestamp() + (time/1000.0d));
                     }
-                } 
+                }
                 else {
                     timeline = false;
                     // we have a time, so now we expect a either expansion or freed objects
@@ -58,7 +58,7 @@ public class DataReaderSun1_2_2 extends AbstractDataReader {
                         event.setPause(0);
                         model.add(event);
                         lastEvent = event;
-                    } 
+                    }
                     else if (line.indexOf(" freed ") != -1 && line.indexOf(" objects, ") != -1) {
                         // freed objects
                         int startIndex = line.indexOf(',') + 2;
@@ -93,7 +93,7 @@ public class DataReaderSun1_2_2 extends AbstractDataReader {
                         model.add(event);
                         lastEvent = event;
                         */
-                    } 
+                    }
                     else {
                         // hm. what now...?
                     }
@@ -101,12 +101,12 @@ public class DataReaderSun1_2_2 extends AbstractDataReader {
             }
 
             return model;
-        } 
+        }
         finally {
             if (in != null)
                 try {
                     in.close();
-                } 
+                }
                 catch (IOException ioe) {
                 }
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
