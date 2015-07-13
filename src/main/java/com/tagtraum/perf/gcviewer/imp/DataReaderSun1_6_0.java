@@ -528,7 +528,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         return line.endsWith("[DefNew") // serial young (CMS, Serial GC)
                 || line.endsWith("[ParNew") // parallel young (CMS, parallel GC)
                 || line.endsWith(" (promotion failed)") // CMS (if -XX:+PrintPromotionFailure is active, additional text between "ParNew" + "(promotion failed)" is introduced...)
-                || line.endsWith("[GC"); // PSYoungGen (parallel sweep)
+                || line.endsWith("[GC") // PSYoungGen (parallel sweep)
+                || (line.contains("[GC ") && line.endsWith(") ")); // parallel GC (-XX:+PrintGCCause); ends actually with "[GC (Allocation Failure) ", but text in paranthesis can vary
     }
 
     private boolean isCmsScavengeBeforeRemark(String line) {

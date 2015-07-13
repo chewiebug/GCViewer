@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -79,4 +80,23 @@ public class TestDataReaderSun1_8_0 {
 
         assertEquals("number of errors", 0, handler.getCount());
     }
+
+    @Test
+    public void parallelPrintTenuringGcCause() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_8_0Parallel_Tenuring_PrintGCCause.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(5));
+        assertThat("gc name", model.get(0).getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
+        assertThat("pause", model.get(0).getPause(), closeTo(0.0199218, 0.000000001));
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+
 }

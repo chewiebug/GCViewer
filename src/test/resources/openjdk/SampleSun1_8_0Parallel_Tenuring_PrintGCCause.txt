@@ -1,0 +1,15 @@
+2015-07-13T20:53:00.436+0200: 0.260: [GC (Allocation Failure) 
+Desired survivor size 4194304 bytes, new threshold 7 (max 15)
+[PSYoungGen: 24571K->4081K(28672K)] 24571K->22186K(94208K), 0.0199218 secs] [Times: user=0.02 sys=0.02, real=0.02 secs]
+2015-07-03T06:58:33.016+0000: 75416.800: [GC (GCLocker Initiated GC) 
+Desired survivor size 32505856 bytes, new threshold 15 (max 15)
+[PSYoungGen: 616448K->6515K(650240K)] 1041014K->431081K(1705472K), 0.0239463 secs] [Times: user=0.09 sys=0.00, real=0.03 secs] 
+2015-07-03T09:35:15.452+0000: 84819.235: [GC (Last ditch collection) 
+Desired survivor size 3670016 bytes, new threshold 15 (max 15)
+[PSYoungGen: 0K->0K(678400K)] 575536K->575536K(2076672K), 0.0193629 secs] [Times: user=0.06 sys=0.01, real=0.01 secs] 
+2015-07-02T10:02:03.190+0000: 26.974: [GC (Metadata GC Threshold) 
+Desired survivor size 106954752 bytes, new threshold 5 (max 15)
+[PSYoungGen: 426925K->65169K(594432K)] 505286K->143610K(1293824K), 0.0527981 secs] [Times: user=0.21 sys=0.04, real=0.06 secs] 
+2015-07-02T10:02:13.093+0000: 36.876: [GC (System.gc()) 
+Desired survivor size 110624768 bytes, new threshold 4 (max 15)
+[PSYoungGen: 188584K->5957K(495104K)] 251278K->68659K(1194496K), 0.0066406 secs] [Times: user=0.02 sys=0.00, real=0.01 secs] 
