@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,6 +18,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.math.DoubleDataPercentile;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
@@ -334,6 +334,12 @@ public class ModelDetailsPanel extends JPanel {
             columnNames.add(LocalisationHelper.getString("data_panel_details_max"));
             columnNames.add(LocalisationHelper.getString("data_panel_details_avg"));
             columnNames.add(LocalisationHelper.getString("data_panel_details_stddev"));
+            columnNames.add("median");
+            columnNames.add("75th");
+            columnNames.add("95th");
+            columnNames.add("99th");
+            columnNames.add("99.5th");
+            columnNames.add("99.9th");
             columnNames.add(LocalisationHelper.getString("data_panel_details_sum"));
             columnNames.add(LocalisationHelper.getString("data_panel_details_sum_percent"));
 
@@ -391,6 +397,12 @@ public class ModelDetailsPanel extends JPanel {
                 entryList.add(pauseFormatter.format(entry.getValue().getMax()));
                 entryList.add(pauseFormatter.format(entry.getValue().average()));
                 entryList.add(pauseFormatter.format(entry.getValue().standardDeviation()));
+                entryList.add(pauseFormatter.format(((DoubleDataPercentile)entry.getValue()).getPercentile(50)));
+                entryList.add(pauseFormatter.format(((DoubleDataPercentile)entry.getValue()).getPercentile(75)));
+                entryList.add(pauseFormatter.format(((DoubleDataPercentile)entry.getValue()).getPercentile(95)));
+                entryList.add(pauseFormatter.format(((DoubleDataPercentile)entry.getValue()).getPercentile(99)));
+                entryList.add(pauseFormatter.format(((DoubleDataPercentile)entry.getValue()).getPercentile(99.5)));
+                entryList.add(pauseFormatter.format(((DoubleDataPercentile)entry.getValue()).getPercentile(99.9)));
                 entryList.add(pauseFormatter.format(entry.getValue().getSum()));
                 entryList.add(percentFormatter.format(entry.getValue().getSum() / totalSum * 100));
 
@@ -402,6 +414,12 @@ public class ModelDetailsPanel extends JPanel {
             List<String> totalList = new ArrayList<String>();
             totalList.add(LocalisationHelper.getString("data_panel_details_total"));
             totalList.add(totalNumber + "");
+            totalList.add("");
+            totalList.add("");
+            totalList.add("");
+            totalList.add("");
+            totalList.add("");
+            totalList.add("");
             totalList.add("");
             totalList.add("");
             totalList.add("");

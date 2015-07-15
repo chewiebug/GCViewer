@@ -113,6 +113,9 @@ So for every line the text is extracted (not always every part of it). This allo
 a user which is familiar with the text log files to find out more details about
 the events that occurred.
 
+### median, 75th...
+These columns show the median, 75th percentile etc.
+
 ### Gc pauses
 This are shows all stop-the-world pauses, that are not full gc pauses.
 
