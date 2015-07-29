@@ -112,6 +112,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(ADAPTIVE_PATTERN); // -XX:+PrintAdaptiveSizePolicy
         EXCLUDE_STRINGS.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
         EXCLUDE_STRINGS.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";

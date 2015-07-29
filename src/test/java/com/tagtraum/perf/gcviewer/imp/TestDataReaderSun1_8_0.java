@@ -99,4 +99,19 @@ public class TestDataReaderSun1_8_0 {
         assertEquals("number of errors", 0, handler.getCount());
     }
 
+    @Test
+    public void parallelApple() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_8_0Parallel_Apple.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(6));
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
 }

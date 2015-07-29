@@ -97,6 +97,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("      [Redirty Cards");
         EXCLUDE_STRINGS.add("      [Humongous Reclaim");
         EXCLUDE_STRINGS.add("      [Free CSet");
+        EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
     }
 
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
