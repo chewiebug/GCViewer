@@ -316,7 +316,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.0.201403182114</version>
+                    <version>0.7.5.201505241946</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
