@@ -1,0 +1,19 @@
+2015-05-14T18:55:12.588+0200: 1.157: [GC (CMS Final Remark) [YG occupancy: 10451 K (47936 K)]{Heap before GC invocations=22 (full 13):
+ par new generation   total 47936K, used 10451K [0x00000000f6400000, 0x00000000f9800000, 0x00000000f9800000)
+  eden space 42624K,  12% used [0x00000000f6400000, 0x00000000f690c520, 0x00000000f8da0000)
+  from space 5312K,  99% used [0x00000000f92d0000, 0x00000000f97f8a50, 0x00000000f9800000)
+  to   space 5312K,   0% used [0x00000000f8da0000, 0x00000000f8da0000, 0x00000000f92d0000)
+ concurrent mark-sweep generation total 106496K, used 100839K [0x00000000f9800000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2476K, capacity 4490K, committed 4864K, reserved 1056768K
+  class space    used 271K, capacity 386K, committed 512K, reserved 1048576K
+2015-05-14T18:55:12.588+0200: 1.158: [GC (CMS Final Remark) 1.158: [ParNew: 10451K->10451K(47936K), 0.0000303 secs] 111291K->111291K(154432K), 0.0000778 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+Heap after GC invocations=23 (full 13):
+ par new generation   total 47936K, used 10451K [0x00000000f6400000, 0x00000000f9800000, 0x00000000f9800000)
+  eden space 42624K,  12% used [0x00000000f6400000, 0x00000000f690c520, 0x00000000f8da0000)
+  from space 5312K,  99% used [0x00000000f92d0000, 0x00000000f97f8a50, 0x00000000f9800000)
+  to   space 5312K,   0% used [0x00000000f8da0000, 0x00000000f8da0000, 0x00000000f92d0000)
+ concurrent mark-sweep generation total 106496K, used 100839K [0x00000000f9800000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2476K, capacity 4490K, committed 4864K, reserved 1056768K
+  class space    used 271K, capacity 386K, committed 512K, reserved 1048576K
+}
+1.158: [Rescan (parallel) , 0.0002732 secs]1.158: [weak refs processing, 0.0000176 secs]1.158: [class unloading, 0.0005055 secs]1.159: [scrub symbol table, 0.0006476 secs]1.159: [scrub string table, 0.0001462 secs][1 CMS-remark: 100839K(106496K)] 111291K(154432K), 0.0019970 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]

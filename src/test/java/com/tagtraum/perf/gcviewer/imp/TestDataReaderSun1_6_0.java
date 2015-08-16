@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -26,7 +27,7 @@ public class TestDataReaderSun1_6_0 {
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
     }
-    
+
     @Test
     public void testPrintGCDateStamps() throws Exception {
 		ByteArrayInputStream in = new ByteArrayInputStream(
@@ -66,7 +67,7 @@ public class TestDataReaderSun1_6_0 {
 
         assertEquals("gc type", "GC; ParNew (promotion failed); CMS; CMS Perm", model.getFullGCEvents().next().getTypeAsString());
     }
-     
+
 
     @Test
 	public void testCMSConcurrentModeFailureDate() throws Exception {
@@ -287,7 +288,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("full gc pause", 0.0, model.getFullGCPause().getSum(), 0.01);
 
     }
-    
+
     @Test
     public void testCmsInitiatingOccupancyFraction() throws Exception {
 
@@ -301,7 +302,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("iof", 0.5022532145182292, model.getCmsInitiatingOccupancyFraction().average(), 0.0000001);
 
     }
-    
+
     @Test
     public void testMixedLineWithEmptyLine() throws Exception {
 
@@ -337,7 +338,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("promotion", 0, model.getPromotion().getMax());
 
     }
-                                                              
+
     @Test
     public void testPrintTenuringDistributionPromotionFailed() throws Exception {
 
@@ -373,7 +374,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("event pause", 31.6248756, model.getFullGCPause().getMax(), 0.0000001);
 
     }
-    
+
     @Test
     public void testLineMixesPrintTenuringDistribution() throws Exception {
 
@@ -422,11 +423,11 @@ public class TestDataReaderSun1_6_0 {
 
         assertEquals("promotion avg", 16998.3846, model.getPromotion().average(), 0.0001);
         assertEquals("promotion total", 220979, model.getPromotion().getSum());
-        
+
         assertThat("count tenured heap after full gc", model.getFootprintAfterFullGC().getN(), is(2));
         assertThat("max tenured heap after full gc", model.getFootprintAfterFullGC().getMax(), is(31297));
     }
-    
+
     @Test
     public void testPrintCmsStatistics() throws Exception {
         // will not be able to extract sense from this line, but must not loop
@@ -438,7 +439,7 @@ public class TestDataReaderSun1_6_0 {
 
         assertEquals("GC count", 0, model.size());
     }
-    
+
     @Test
     public void testPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -455,13 +456,13 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("number of errors", 0, handler.getCount());
 
     }
-     
+
     @Test
     public void testAdaptiveSizePolicy() throws Exception {
-        // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1 
+        // 0.175: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2721008  promoted: 13580768  overflow: trueAdaptiveSizeStart: 0.186 collection: 1
         // PSAdaptiveSizePolicy::compute_generation_free_space: costs minor_time: 0.059538 major_cost: 0.000000 mutator_cost: 0.940462 throughput_goal: 0.990000 live_space: 273821824 free_space: 33685504 old_promo_size: 16842752 old_eden_size: 16842752 desired_promo_size: 16842752 desired_eden_size: 33685504
-        // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512) 
-        // AdaptiveSizeStop: collection: 1 
+        // AdaptiveSizePolicy::survivor space sizes: collection: 1 (2752512, 2752512) -> (2752512, 2752512)
+        // AdaptiveSizeStop: collection: 1
         //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
 
         String fileName = "SampleSun1_6_0AdaptiveSizePolicy.txt";
@@ -472,11 +473,11 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 10, model.size());
         assertEquals("GC pause", 0.0224480, model.getGCPause().getMax(), 0.00000001);
         assertEquals("Full GC pause", 0.0204436, model.getFullGCPause().getMax(), 0.00000001);
-        
+
         assertThat("count tenured size after full gc", model.getFootprintAfterFullGC().getN(), is(4));
         assertThat("max tenured size after full gc", model.getFootprintAfterFullGC().getMax(), is(64781));
     }
-    
+
     @Test
     public void testAdaptiveSizePolicyFullSystemGc() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
@@ -491,13 +492,13 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 1, model.size());
         assertEquals("Full GC pause", 0.0070749, model.getFullGCPause().getMax(), 0.00000001);
     }
-    
+
     @Test
     public void testPrintWithoutUseAdaptiveSizePolicy() throws Exception {
         // issue #36
         // -XX:+PrintAdaptiveSizePolicy
         // -XX:-UseAdaptiveSizePolicy
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2012-09-27T17:03:28.712+0200: 0.222: [GCAdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720992  promoted: 13613552  overflow: true [PSYoungGen: 16420K->2657K(19136K)] 16420K->15951K(62848K), 0.0132830 secs] [Times: user=0.00 sys=0.03, real=0.02 secs] "
                         .getBytes());
@@ -508,7 +509,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 1, model.size());
         assertEquals("GC pause", 0.0132830, model.getGCPause().getMax(), 0.00000001);
     }
-    
+
     @Test
     public void testCMSScavengeBeforeRemarkTimeStamp() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
@@ -540,7 +541,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("1st event pause", 0.0005809, ((GCEvent)model.get(0)).getPause(), 0.00000001);
         assertEquals("2nd event pause", 0.0013506-0.0005809, ((GCEvent)model.get(1)).getPause(), 0.00000001);
     }
-    
+
     @Test
     public void testCMSScavengeBeforeRemarkWithPrintTenuringDistribution() throws Exception {
         ByteArrayInputStream input = new ByteArrayInputStream(
@@ -559,7 +560,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("2nd event", "GC; CMS-remark", gcModel.get(1).getTypeAsString());
         assertEquals("2nd event pause", 0.0013199 - 0.0006030, ((GCEvent)gcModel.get(1)).getPause(), 0.00000001);
     }
-     
+
     @Test
     public void testPSWithoutPrintTimeStamp() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
@@ -593,7 +594,7 @@ public class TestDataReaderSun1_6_0 {
     @Test
     public void testCMSWithoutPrintTimeStampConcurrentModeFailure() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-04-03T20:36:35.284+0200: [GC [ParNew: 19081K->19081K(19136K), 0.0000205 secs][CMS2012-04-03T20:36:35.285+0200: [CMS-concurrent-abortable-preclean: 0.005/0.150 secs] [Times: user=0.14 sys=0.14, real=0.15 secs]" 
+                ("2012-04-03T20:36:35.284+0200: [GC [ParNew: 19081K->19081K(19136K), 0.0000205 secs][CMS2012-04-03T20:36:35.285+0200: [CMS-concurrent-abortable-preclean: 0.005/0.150 secs] [Times: user=0.14 sys=0.14, real=0.15 secs]"
                  + "\n (concurrent mode failure): 98182K->3832K(98624K), 0.0195864 secs] 117264K->3832K(117760K), [CMS Perm : 2614K->2613K(21248K)], 0.0199322 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]")
                        .getBytes());
         DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
@@ -603,14 +604,14 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("heap", 117760, model.getHeapAllocatedSizes().getMax());
         assertEquals("pause", 0.0199322, model.getFullGCPause().getMax(), 0.00000001);
     }
-    
+
     /**
      * Tests -XX:+PrintTenuringDistribution with -XX:+UseParallelGC
      */
     @Test
     public void testPSPrintTenuringDistribution() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-04-10T20:58:43.009+0200: 0.690: [GC" 
+                ("2012-04-10T20:58:43.009+0200: 0.690: [GC"
                  + "\nDesired survivor size 89456640 bytes, new threshold 7 (max 15)"
                  + "\n [PSYoungGen: 524288K->35633K(611648K)] 524288K->35633K(2009792K), 0.0240717 secs] [Times: user=0.01 sys=0.03, real=0.02 secs]")
                        .getBytes());
@@ -640,7 +641,7 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("number of errors", 0, handler.getCount());
 
     }
-     
+
     @Test
     public void testCMSAdaptiveSizePolicyPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -649,7 +650,7 @@ public class TestDataReaderSun1_6_0 {
         gcResource.getLogger().addHandler(handler);
         
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-04-18T14:48:31.855+0200: 29.592: [GC 29.592: [ASParNew: 52825K->6499K(59008K), 0.0268761 secs] 120805K->120749K(517760K), 0.0269605 secs] [Times: user=0.05 sys=0.00, real=0.03 secs]" 
+                ("2012-04-18T14:48:31.855+0200: 29.592: [GC 29.592: [ASParNew: 52825K->6499K(59008K), 0.0268761 secs] 120805K->120749K(517760K), 0.0269605 secs] [Times: user=0.05 sys=0.00, real=0.03 secs]"
                  + "\nHeap"
                  + "\nadaptive size par new generation total 59008K, used 15368K [0x00000000d8000000, 0x00000000dc000000, 0x00000000dc000000)"
                  + "\n eden space 52480K,  16% used [0x00000000d8000000, 0x00000000d88a95a0, 0x00000000db340000)"
@@ -665,11 +666,11 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC pause", 0.0269605, model.getGCPause().getMin(), 0.000000001);
         assertEquals("number of errors", 0, handler.getCount());
     }
-    
+
     @Test
     public void testPrintCmsStatisticsConcurrentMark() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-10-20T18:04:57.850+0200: 1.327: [CMS-concurrent-mark: 0.011/0.011 secs] (CMS-concurrent-mark yielded 0 times)" 
+                ("2012-10-20T18:04:57.850+0200: 1.327: [CMS-concurrent-mark: 0.011/0.011 secs] (CMS-concurrent-mark yielded 0 times)"
                  + "\n [Times: user=0.03 sys=0.00, real=0.01 secs]")
                        .getBytes());
         
@@ -683,7 +684,7 @@ public class TestDataReaderSun1_6_0 {
     @Test
     public void testPrintCmsStatisticsConcurrentPreclean() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-10-20T18:04:57.850+0200: 1.329: [CMS-concurrent-preclean: 0.002/0.002 secs] (CMS-concurrent-preclean yielded 0 times)" 
+                ("2012-10-20T18:04:57.850+0200: 1.329: [CMS-concurrent-preclean: 0.002/0.002 secs] (CMS-concurrent-preclean yielded 0 times)"
                  + "\n [Times: user=0.00 sys=0.00, real=0.00 secs]")
                        .getBytes());
         
@@ -697,7 +698,7 @@ public class TestDataReaderSun1_6_0 {
     @Test
     public void testPrintCmsStatisticsConcurrentModeFailure() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-10-20T18:04:58.147+0200: 1.621: [GC 1.621: [ParNew: 78631K->78631K(78656K), 0.0000164 secs]1.621: [CMS [9 iterations, 5 waits, 5367 cards)] 2012-10-20T18:04:58.147+0200: 1.621: [CMS-concurrent-abortable-preclean: 0.020/0.292 secs] (CMS-concurrent-abortable-preclean yielded 0 times)" 
+                ("2012-10-20T18:04:58.147+0200: 1.621: [GC 1.621: [ParNew: 78631K->78631K(78656K), 0.0000164 secs]1.621: [CMS [9 iterations, 5 waits, 5367 cards)] 2012-10-20T18:04:58.147+0200: 1.621: [CMS-concurrent-abortable-preclean: 0.020/0.292 secs] (CMS-concurrent-abortable-preclean yielded 0 times)"
                  + "\n [Times: user=0.30 sys=0.23, real=0.30 secs]"
                  + "\n (concurrent mode failure): 402265K->61915K(436928K), 0.0394420 secs] 480896K->61915K(515584K), [CMS Perm : 2626K->2625K(65536K)], 0.0395686 secs] [Times: user=0.03 sys=0.00, real=0.03 secs]")
                        .getBytes());
@@ -713,12 +714,12 @@ public class TestDataReaderSun1_6_0 {
     @Test
     public void testPrintCmsStatisticsRemark() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-10-20T18:04:59.443+0200: 2.918: [GC[YG occupancy: 8752 K (78656 K)]2.918: [Rescan (parallel)  (Survivor:1chunks) Finished young gen rescan work in 2th thread: 0.000 sec" 
+                ("2012-10-20T18:04:59.443+0200: 2.918: [GC[YG occupancy: 8752 K (78656 K)]2.918: [Rescan (parallel)  (Survivor:1chunks) Finished young gen rescan work in 2th thread: 0.000 sec"
                  + "\nFinished young gen rescan work in 1th thread: 0.000 sec"
-                 + "\nFinished young gen rescan work in 0th thread: 0.000 sec" 
-                 + "\nFinished remaining root rescan work in 1th thread: 0.000 sec" 
-                 + "\nFinished remaining root rescan work in 2th thread: 0.000 sec" 
-                 + "\nFinished remaining root rescan work in 0th thread: 0.000 sec" 
+                 + "\nFinished young gen rescan work in 0th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 1th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 2th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 0th thread: 0.000 sec"
                  + "\nFinished dirty card rescan work in 0th thread: 0.001 sec"
                  + "\nFinished dirty card rescan work in 2th thread: 0.001 sec"
                  + "\nFinished dirty card rescan work in 1th thread: 0.001 sec"
@@ -741,7 +742,7 @@ public class TestDataReaderSun1_6_0 {
     }
 
     /**
-     * Tests the combination of -XX:PrintCmsStatistics=2 and -XX:+CMSScavengeBeforeRemark 
+     * Tests the combination of -XX:PrintCmsStatistics=2 and -XX:+CMSScavengeBeforeRemark
      */
     @Test
     public void testPrintCmsStatisticsScavengeBeforeRemark() throws Exception {
@@ -749,10 +750,10 @@ public class TestDataReaderSun1_6_0 {
                 ("2012-10-26T18:31:09.699+0200: 15.473: [GC[YG occupancy: 8752 K (78656 K)]2012-10-26T18:31:09.699+0200: 15.473: [GC 15.473: [ParNew: 8752K->64K(78656K), 0.0052352 secs] 388874K->388870K(515584K), 0.0052868 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]"
                  + "\n15.478: [Rescan (parallel)  (Survivor:0chunks) Finished young gen rescan work in 1th thread: 0.000 sec"
                  + "\nFinished young gen rescan work in 1th thread: 0.000 sec"
-                 + "\nFinished young gen rescan work in 0th thread: 0.000 sec" 
-                 + "\nFinished remaining root rescan work in 1th thread: 0.000 sec" 
-                 + "\nFinished remaining root rescan work in 2th thread: 0.000 sec" 
-                 + "\nFinished remaining root rescan work in 0th thread: 0.000 sec" 
+                 + "\nFinished young gen rescan work in 0th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 1th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 2th thread: 0.000 sec"
+                 + "\nFinished remaining root rescan work in 0th thread: 0.000 sec"
                  + "\nFinished dirty card rescan work in 0th thread: 0.001 sec"
                  + "\nFinished dirty card rescan work in 2th thread: 0.001 sec"
                  + "\nFinished dirty card rescan work in 1th thread: 0.001 sec"
@@ -773,16 +774,16 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("GC count", 2, model.size());
         GCEvent parNew = (GCEvent) model.get(0);
         GCEvent remarkEvent = (GCEvent) model.get(1);
-        
+
         assertEquals("GC pause ParNew", 0.0052868, parNew.getPause(), 0.000000001);
         assertEquals("GC pause Remark", 0.0067111 - 0.0052868, remarkEvent.getPause(), 0.000000001);
-        
+
     }
 
     @Test
     public void testPrintCmsStatisticsParNewBeforeRemark() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-10-20T18:04:59.412+0200: 2.897: [GC 2.897: [ParNew [15 iterations, 8 waits, 4115 cards)] 2012-10-20T18:04:59.443+0200: 2.917: [CMS-concurrent-abortable-preclean: 0.031/0.593 secs] (CMS-concurrent-abortable-preclean yielded 0 times)" 
+                ("2012-10-20T18:04:59.412+0200: 2.897: [GC 2.897: [ParNew [15 iterations, 8 waits, 4115 cards)] 2012-10-20T18:04:59.443+0200: 2.917: [CMS-concurrent-abortable-preclean: 0.031/0.593 secs] (CMS-concurrent-abortable-preclean yielded 0 times)"
                  + "\n [Times: user=0.66 sys=0.00, real=0.59 secs]"
                  + "\n: 78624K->8686K(78656K), 0.0203494 secs] 424271K->384820K(515584K), 0.0204543 secs] [Times: user=0.13 sys=0.00, real=0.03 secs]")
                        .getBytes());
@@ -798,7 +799,7 @@ public class TestDataReaderSun1_6_0 {
     @Test
     public void testPrintCmsStatisticsParNewBeforeRemark2() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                ("2012-10-20T18:05:00.083+0200: 3.556: [GC 3.556: [ParNew: 78624K->8688K(78656K), 0.0302267 secs] 451513K->438445K(515584K), 0.0302972 secs] [Times: user=0.13 sys=0.00, real=0.03 secs]" 
+                ("2012-10-20T18:05:00.083+0200: 3.556: [GC 3.556: [ParNew: 78624K->8688K(78656K), 0.0302267 secs] 451513K->438445K(515584K), 0.0302972 secs] [Times: user=0.13 sys=0.00, real=0.03 secs]"
                  + "\n [11 iterations, 6 waits, 7020 cards)] 2012-10-20T18:05:00.114+0200: 3.587: [CMS-concurrent-abortable-preclean: 0.024/0.391 secs] (CMS-concurrent-abortable-preclean yielded 0 times)"
                  + "\n [Times: user=0.61 sys=0.06, real=0.39 secs]")
                        .getBytes());
@@ -814,7 +815,7 @@ public class TestDataReaderSun1_6_0 {
     @Test
     public void testCommaInTimestamp() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                "12,655: [GC [PSYoungGen: 262656K->28075K(306432K)] 262656K->28075K(1006848K), 0,3541657 secs] [Times: user=0,22 sys=0,48, real=0,35 secs]" 
+                "12,655: [GC [PSYoungGen: 262656K->28075K(306432K)] 262656K->28075K(1006848K), 0,3541657 secs] [Times: user=0,22 sys=0,48, real=0,35 secs]"
                        .getBytes());
         
         DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
@@ -833,7 +834,7 @@ public class TestDataReaderSun1_6_0 {
     @Test
     public void testDerivedGenerationValues() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                "10.675: [GC [PSYoungGen: 21051K->4947K(22656K)] 23342K->7238K(67712K), 0.0191817 secs] [Times: user=0.09 sys=0.01, real=0.02 secs]" 
+                "10.675: [GC [PSYoungGen: 21051K->4947K(22656K)] 23342K->7238K(67712K), 0.0191817 secs] [Times: user=0.09 sys=0.01, real=0.02 secs]"
                        .getBytes());
         
         DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
@@ -845,35 +846,35 @@ public class TestDataReaderSun1_6_0 {
         assertEquals("tenured used", 23342-21051, model.getTenuredUsedSizes().getMin());
         assertEquals("tenured allocated", 67712-22656, model.getTenuredAllocatedSizes().getMax());
     }
-    
+
     @Test
     public void testPrintTenuringDistributionOpenJdk6() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                "3.141: [GCDesired survivor size 134217728 bytes, new threshold 7 (max 2) [PSYoungGen: 188744K->13345K(917504K)] 188744K->13345K(4063232K), 0.0285820 secs] [Times: user=0.06 sys=0.01, real=0.03 secs]" 
+                "3.141: [GCDesired survivor size 134217728 bytes, new threshold 7 (max 2) [PSYoungGen: 188744K->13345K(917504K)] 188744K->13345K(4063232K), 0.0285820 secs] [Times: user=0.06 sys=0.01, real=0.03 secs]"
                        .getBytes());
         
         DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
-        
+
         assertEquals("count", 1, model.size());
         assertEquals("main type", "GC", model.get(0).getExtendedType().getName());
         assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getExtendedType().getName());
     }
-    
+
     @Test
     public void testPromotionFailedWithReference() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
-                "2013-09-02T18:22:23.195+0000: 1837.498: [GC1837.600: [SoftReference, 0 refs, 0.0000060 secs]1837.600: [WeakReference, 374 refs, 0.0000550 secs]1837.600: [FinalReference, 347 refs, 0.0002090 secs]1837.600: [PhantomReference, 0 refs, 0.0000020 secs]1837.600: [JNI Weak Reference, 0.0000050 secs]-- [PSYoungGen: 1330796K->1330796K(1403264K)] 4172533K->4251241K(4323712K), 0.6580190 secs] [Times: user=2.35 sys=0.02, real=0.66 secs]" 
+                "2013-09-02T18:22:23.195+0000: 1837.498: [GC1837.600: [SoftReference, 0 refs, 0.0000060 secs]1837.600: [WeakReference, 374 refs, 0.0000550 secs]1837.600: [FinalReference, 347 refs, 0.0002090 secs]1837.600: [PhantomReference, 0 refs, 0.0000020 secs]1837.600: [JNI Weak Reference, 0.0000050 secs]-- [PSYoungGen: 1330796K->1330796K(1403264K)] 4172533K->4251241K(4323712K), 0.6580190 secs] [Times: user=2.35 sys=0.02, real=0.66 secs]"
                        .getBytes());
         
         DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
-        
+
         assertEquals("count", 1, model.size());
         assertEquals("main type", "GC--", model.get(0).getExtendedType().getName());
         assertEquals("detail type", "PSYoungGen", model.get(0).details().next().getExtendedType().getName());
     }
-    
+
     @Test
     public void testCmsGcLocker() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -888,13 +889,34 @@ public class TestDataReaderSun1_6_0 {
                 + "\n2270.039: [Full GC 2270.039: [CMS2281.247: [CMS-concurrent-sweep: 11.558/11.583 secs] [Times: user=13.89 sys=0.08, real=11.58 secs]"
                 + "\n (concurrent mode failure): 16190532K->14091936K(16384000K), 64.4965310 secs] 19876932K->14091936K(20070400K), [CMS Perm : 111815K->111803K(262144K)], 64.4966380 secs] [Times: user=64.41 sys=0.00, real=64.50 secs]"
                 + "\n2334.567: [GC [1 CMS-initial-mark: 14091936K(16384000K)] 14164705K(20070400K), 0.0180200 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]"
-                + "\n2334.587: [CMS-concurrent-mark-start]" 
+                + "\n2334.587: [CMS-concurrent-mark-start]"
                        ).getBytes());
         
         DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
         GCModel model = reader.read();
-        
+
         assertThat("count", model.size(), is(6));
+        assertThat("parse warning count", handler.getCount(), is(0));
+    }
+
+    @Test
+    public void cmsConcurrentModeFailureWithComma() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("163914,315: [GC 163914,316: [ParNew (promotion failed): 717051K->680031K(755008K), 2,6660558 secs]163916,982: [CMS163928,452: [CMS-concurrent-sweep: 20,622/86,301 secs] [Times: user=380,61 sys=2,63, real=86,30 secs]"
+                        + "\n (concurrent mode failure): 2874510K->2846370K(3355456K), 104,9219455 secs] 3591303K->2846370K(4110464K), [CMS Perm : 155672K->155662K(259600K)] icms_dc=13 , 107,5896657 secs] [Times: user=108,25 sys=0,10, real=107,59 secs]"
+                ).getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+
+        assertThat("count", model.size(), is(2));
+        assertThat("1st event", model.get(0).getTypeAsString(), equalTo("CMS-concurrent-sweep"));
+        assertThat("2nd event", model.get(1).getTypeAsString(), equalTo("GC; ParNew (promotion failed); CMS (concurrent mode failure); CMS Perm"));
         assertThat("parse warning count", handler.getCount(), is(0));
     }
 
