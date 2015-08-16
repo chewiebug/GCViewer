@@ -133,6 +133,8 @@ public class GCResource {
      * @param isReadCancelled <code>true</code>, if read should be cancelled
      */
     public void setIsReadCancelled(boolean isReadCancelled) {
+        // TODO i18n
+        this.getLogger().info("--> cancel requested");
         this.isReadCancelled = isReadCancelled;
 	}
 
@@ -141,6 +143,14 @@ public class GCResource {
 	    this.model = model;
 	    propertyChangeSupport.firePropertyChange(PROPERTY_MODEL, oldModel, model);
 	}
+
+    /**
+     * reset internal boolean state to default (e.g. readCancelled)
+     */
+    public void reset() {
+        this.isReadCancelled = false;
+        this.isReload = false;
+    }
 
     @Override
     public String toString() {

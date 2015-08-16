@@ -41,6 +41,8 @@ public class RecentGCResourcesMenuController implements RecentGCResourcesListene
      */
     @Override
     public void add(RecentGCResourcesEvent e) {
+        // TODO It is not a good idea to store GCResources in the recent menu -> whole model is stored in there!
+        // TODO should be only URL / string of the resource (as it was in the earlier implementation :-()
         menu.add(new JMenuItem(new OpenRecent(controller, 
                 e.getResourceNameGroup())), 
                 e.getPosition());

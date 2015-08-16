@@ -60,7 +60,7 @@ public class Watch extends AbstractAction {
             start();
         }
         else {
-            stop();
+            stop(gcViewer.getSelectedGCDocument());
         }
     }
 
@@ -68,7 +68,7 @@ public class Watch extends AbstractAction {
         GCDocument gcDocument = gcViewer.getSelectedGCDocument();
         TimerInfo timerInfo = new TimerInfo(
                 new RefreshWatchDog(controller, gcDocument),
-                new GCDocumentCloseListener());
+                new GCDocumentCloseListener(gcDocument));
 
         gcDocument.setWatched(true);
         gcDocument.addInternalFrameListener(timerInfo.closeListener);
@@ -78,13 +78,12 @@ public class Watch extends AbstractAction {
         putValue(SMALL_ICON, CLOCK_ICON);
     }
     
-    private void stop() {
-        GCDocument doc = gcViewer.getSelectedGCDocument();
-        doc.setWatched(false);
-        TimerInfo timerInfo = timerMap.get(doc);
+    private void stop(GCDocument gcDocument) {
+        gcDocument.setWatched(false);
+        TimerInfo timerInfo = timerMap.get(gcDocument);
         timerInfo.refreshWatchDog.stop();
         
-        doc.removeInternalFrameListener(timerInfo.closeListener);
+        gcDocument.removeInternalFrameListener(timerInfo.closeListener);
         
         putValue(SMALL_ICON, WATCH_ICON);
     }
@@ -107,6 +106,11 @@ public class Watch extends AbstractAction {
     }
     
     private class GCDocumentCloseListener extends InternalFrameAdapter {
+        private GCDocument gcDocument;
+
+        public GCDocumentCloseListener(GCDocument gcDocument) {
+            this.gcDocument = gcDocument;
+        }
 
         @Override
         public void internalFrameActivated(InternalFrameEvent e) {
@@ -114,8 +118,8 @@ public class Watch extends AbstractAction {
         }
 
         @Override
-        public void internalFrameClosed(InternalFrameEvent e) {
-            stop();
+        public void internalFrameClosing(InternalFrameEvent e) {
+            stop(this.gcDocument);
         }
         
         @Override

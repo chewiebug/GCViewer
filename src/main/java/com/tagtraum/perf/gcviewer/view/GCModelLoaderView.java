@@ -124,9 +124,6 @@ public class GCModelLoaderView extends JPanel implements PropertyChangeListener,
     public void actionPerformed(ActionEvent e) {
         if (CMD_CANCEL.equals(e.getActionCommand())) {
             this.gcResource.setIsReadCancelled(true);
-
-            // TODO i18n
-            this.gcResource.getLogger().info("--> cancel requested");
         }
     }
 

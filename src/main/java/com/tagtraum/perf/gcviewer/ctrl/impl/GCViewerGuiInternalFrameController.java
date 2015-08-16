@@ -58,7 +58,13 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
         // -> otherwise any settings done by the user are lost
         if (getGCViewerGui(e).getDesktopPane().getComponentCount() == 1) {
             updateMenuItemState(e);
+
+            // set same menustate, when the last is closed as is set for deactivated
+            internalFrameDeactivated(e);
         }
+
+        // if some thread is still loading, it should stop now
+        getSelectedGCDocument(e).getGCResources().stream().forEach(gcResource -> gcResource.setIsReadCancelled(true));
     }
 
     @Override

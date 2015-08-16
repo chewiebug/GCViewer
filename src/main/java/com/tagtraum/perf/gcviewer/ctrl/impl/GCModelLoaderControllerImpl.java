@@ -42,7 +42,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     
     @Override
     public void add(File[] files) {
-        List<GCResource> gcResourceList = new ArrayList<GCResource>();
+        List<GCResource> gcResourceList = new ArrayList<>();
         for (File file : files) {
             GCResource gcResource = new GCResource(file.getAbsolutePath());
             gcResourceList.add(gcResource);
@@ -61,6 +61,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     @Override
     public void add(List<GCResource> gcResourceList) {
         for (GCResource gcResource : gcResourceList) {
+            gcResource.reset();
             addGCResource(gcResource);
         }
         
@@ -143,14 +144,15 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     
     @Override
     public void open(GCResource gcResource) {
-        open(Arrays.asList(new GCResource[] { gcResource }));
+        gcResource.reset();
+        open(Arrays.asList(new GCResource[]{gcResource}));
     }
     
     @Override
     public void open(List<GCResource> gcResourceList) {
         for (int i = 0; i < gcResourceList.size(); ++i) {
-            GCResource gcResource = gcResourceList.get(i);
-            
+            GCResource gcResource = new GCResource(gcResourceList.get(i).getResourceName());
+
             if (i == 0) {
                 openGCResource(gcResource);
             }
@@ -166,6 +168,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     public GCModelLoaderGroupTracker reload(GCDocument gcDocument) {
         GCModelLoaderGroupTracker tracker = new GCModelLoaderGroupTrackerImpl();
         for (GCResource gcResource : gcDocument.getGCResources()) {
+            gcResource.reset();
             gcResource.setIsReload(true);
             GCModelLoader loader = new GCModelLoaderImpl(gcResource);
             GCDocumentController docController = getDocumentController(gcDocument);
