@@ -39,4 +39,10 @@ public interface GCModelLoaderGroupTracker extends PropertyChangeListener {
      * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener)
      */
     void removePropertyChangeListener(PropertyChangeListener listener);
+
+    /**
+     * Returns count of GCModelLoader instances in this tracker.
+     * @return count of GCModelLoader instances
+     */
+    int size();
 }

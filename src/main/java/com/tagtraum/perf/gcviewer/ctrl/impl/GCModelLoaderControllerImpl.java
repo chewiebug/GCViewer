@@ -55,7 +55,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     
     @Override
     public void add(GCResource gcResource) {
-        add(Arrays.asList(new GCResource[] { gcResource }));
+        add(Arrays.asList(new GCResource[]{gcResource}));
     }
 
     @Override
@@ -168,13 +168,15 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     public GCModelLoaderGroupTracker reload(GCDocument gcDocument) {
         GCModelLoaderGroupTracker tracker = new GCModelLoaderGroupTrackerImpl();
         for (GCResource gcResource : gcDocument.getGCResources()) {
-            gcResource.reset();
-            gcResource.setIsReload(true);
-            GCModelLoader loader = new GCModelLoaderImpl(gcResource);
-            GCDocumentController docController = getDocumentController(gcDocument);
-            docController.reloadGCResource(loader);
-            
-            tracker.addGcModelLoader(loader);
+            if (gcResource.hasUnderlyingResourceChanged()) {
+                gcResource.reset();
+                gcResource.setIsReload(true);
+                GCModelLoader loader = new GCModelLoaderImpl(gcResource);
+                GCDocumentController docController = getDocumentController(gcDocument);
+                docController.reloadGCResource(loader);
+
+                tracker.addGcModelLoader(loader);
+            }
         }
         
         tracker.execute();

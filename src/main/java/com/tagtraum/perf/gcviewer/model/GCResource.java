@@ -99,6 +99,18 @@ public class GCResource {
         return result;
     }
 
+    /**
+     * Returns true, if the underlying resource has changed.
+     * @return true, if the underlying resource has changed.
+     */
+    public boolean hasUnderlyingResourceChanged() {
+        if (this.model.getURL() == null) {
+            return true;
+        }
+
+        return this.model.isDifferent(this.model.getURL());
+    }
+
 	/**
 	 * If this resource is being reloaded, this will return <code>true</code>.
 	 * @return <code>true</code> if this resource is being reloaded.

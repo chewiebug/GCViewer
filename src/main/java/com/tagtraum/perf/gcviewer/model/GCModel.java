@@ -80,6 +80,11 @@ public class GCModel implements Serializable {
             return fileInfo.lastModified == lastModified
                             && fileInfo.length == length;
         }
+
+        @Override
+        public String toString() {
+            return FileInformation.class.toString() + "; lastModified=" + lastModified + ", length=" + length;
+        }
     }
 
     private static final Logger LOG = Logger.getLogger(GCModel.class.getName());

@@ -42,11 +42,22 @@ public class GCModelLoaderGroupTrackerImpl implements GCModelLoaderGroupTracker 
     
     @Override
     public void execute() {
-        for (GCModelLoader loader : loaderList) {
-            loader.execute();
+        if (loaderList.isEmpty()) {
+            fireStateDone();
+        }
+        else {
+            loaderList.forEach((GCModelLoader loader) -> {
+                    loader.execute();
+            });
         }
     }
-    
+
+    private void fireStateDone() {
+        propertyChangeSupport.firePropertyChange("state",
+                SwingWorker.StateValue.STARTED,
+                SwingWorker.StateValue.DONE);
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName()) 
@@ -54,9 +65,7 @@ public class GCModelLoaderGroupTrackerImpl implements GCModelLoaderGroupTracker 
             
             ++finishedCount;
             if (finishedCount == loaderList.size()) {
-                propertyChangeSupport.firePropertyChange("state", 
-                        SwingWorker.StateValue.STARTED, 
-                        SwingWorker.StateValue.DONE);
+                fireStateDone();
             }
         }
 
@@ -65,6 +74,11 @@ public class GCModelLoaderGroupTrackerImpl implements GCModelLoaderGroupTracker 
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public int size() {
+        return loaderList.size();
     }
 
 }

@@ -51,7 +51,7 @@ public class RefreshWatchDog {
         public void propertyChange(PropertyChangeEvent evt) {
             if ("state".equals(evt.getPropertyName())
                     && SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
-                
+
                 isFinished = true;
                 tracker.removePropertyChangeListener(this);
             }
@@ -61,7 +61,15 @@ public class RefreshWatchDog {
             if (isFinished) {
                 isFinished = false;
                 tracker = controller.reload(gcDocument);
-                tracker.addPropertyChangeListener(this);
+
+                // if no reload takes place, the propertyChangeEvent is fired, before the listener is attached
+                // => set finished manually to true again.
+                if (tracker.size() == 0) {
+                    isFinished = true;
+                }
+                else {
+                    tracker.addPropertyChangeListener(this);
+                }
             }
         }
 
