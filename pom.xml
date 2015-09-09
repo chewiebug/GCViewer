@@ -417,7 +417,7 @@
                             <fileset>
                                 <basedir>${pom.basedir}</basedir>
                                 <includes>
-                                    <include>README</include>
+                                    <include>README.md</include>
                                     <include>LICENSE.txt</include>
                                 </includes>
                             </fileset>
@@ -562,7 +562,7 @@
                                             <fileset dir="${project.basedir}/target">
                                                 <include name="${project.build.finalName}.${project.packaging}" />
                                                 <include name="${project.build.finalName}-dist-mac.zip" />
-                                                <include name="README" />
+                                                <include name="README.md" />
                                             </fileset>
                                         </scp>
                                     </target>

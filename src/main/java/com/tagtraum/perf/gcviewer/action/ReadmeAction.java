@@ -13,7 +13,7 @@ public class ReadmeAction extends AbstractAction {
     private TextFileViewer readmeDialog;
 
     public ReadmeAction(final Frame parent) {
-        readmeDialog = new TextFileViewer(parent, "META-INF/README");
+        readmeDialog = new TextFileViewer(parent, "META-INF/README.md");
         putValue(NAME, LocalisationHelper.getString("main_frame_menuitem_readme"));
         putValue(SHORT_DESCRIPTION, LocalisationHelper.getString("main_frame_menuitem_hint_readme"));
         putValue(MNEMONIC_KEY, new Integer(LocalisationHelper.getString("main_frame_menuitem_mnemonic_readme").charAt(0)));
