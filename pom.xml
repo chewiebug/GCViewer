@@ -562,6 +562,10 @@
                                             <fileset dir="${project.basedir}/target">
                                                 <include name="${project.build.finalName}.${project.packaging}" />
                                                 <include name="${project.build.finalName}-dist-mac.zip" />
+                                            </fileset>
+                                            <fileset dir="${project.basedir}/target/classes/META-INF">
+                                                <include name="${project.build.finalName}.${project.packaging}" />
+                                                <include name="${project.build.finalName}-dist-mac.zip" />
                                                 <include name="README.md" />
                                             </fileset>
                                         </scp>
