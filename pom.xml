@@ -64,6 +64,14 @@
             <url>https://github.com/xylu</url>
         </developer>
         <developer>
+            <name>James Livingston</name>
+            <url>https://github.com/doctau</url>
+        </developer>
+        <developer>
+            <name>Tony Mancill</name>
+            <url>https://github.com/tmancill</url>
+        </developer>
+        <developer>
             <name>Samuel Mendenhall</name>
             <url>http://engineersamuel.github.io/dbits/</url>
         </developer>
@@ -72,6 +80,10 @@
         </developer>
         <developer>
             <name>Reinhard Nägele</name>
+        </developer>
+        <developer>
+            <name>Robert Nibali</name>
+            <url>https://github.com/moreaki</url>
         </developer>
         <developer>
             <name>Àngel Ollé Blázquez</name>
@@ -88,7 +100,14 @@
             <name>Stephan Schroevers</name>
         </developer>
         <developer>
+            <name>François Secherre</name>
+        </developer>
+        <developer>
             <name>Serafín Sedano</name>
+        </developer>
+        <developer>
+            <name>Jugal Shah</name>
+            <url>https://github.com/jugalps</url>
         </developer>
         <developer>
             <name>Andrey Skripalschikov</name>

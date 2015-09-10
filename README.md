@@ -56,15 +56,21 @@ GCViewer shows a number of lines etc. in a chart (first tab). These are:
 - Total Heap:
   - Red line that shows heap size
 - Tenured Generation:
-  - Magenta area that shows the size of the tenured generation (not available without PrintGCDetails)
+  - Magenta area that shows the size of the tenured generation
+      (not available without PrintGCDetails)
 - Young Generation:
-  - Orange area that shows the size of the young generation (not available without PrintGCDetails)
+  - Orange area that shows the size of the young generation 
+      (not available without PrintGCDetails)
 - Used Heap:
   - Blue line that shows used heap size
 - Initial mark level:
-  - Yellow line that shows the heap usage at "initial-mark" event (only available when the gc algorithm uses concurrent collections, which is the case for CMS and G1)
+  - Yellow line that shows the heap usage at "initial-mark" event 
+      (only available when the gc algorithm uses concurrent 
+      collections, which is the case for CMS and G1)
 - Concurrent collections
-  - Cyan vertical line for every begin (concurrent-mark-start) and pink vertical line for every end (CMS-concurrent-reset / G1: concurrent-cleanup-end) of a concurrent collection cycle
+  - Cyan vertical line for every begin (concurrent-mark-start) 
+      and pink vertical line for every end (CMS-concurrent-reset /
+      G1: concurrent-cleanup-end) of a concurrent collection cycle
 
 In the second tab ("Event details") it shows details about the events it parsed:
 E.g. events like the following
