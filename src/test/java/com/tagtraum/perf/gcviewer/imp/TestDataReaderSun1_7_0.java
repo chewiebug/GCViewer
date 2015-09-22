@@ -286,6 +286,28 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
+    /**
+     * The only difference, between this test and {@link TestDataReaderSun1_8_0#parallelPrintTenuringGcCause()}
+     * is the missing space character in the end of the line before the TenuringDistribution information.
+     */
+    public void parallelPrintTenuringGcCause() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_7_0Parallel_Tenuring_PrintGCCause.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(2));
+        assertThat("gc name", model.get(0).getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
+        assertThat("pause", model.get(0).getPause(), closeTo(0.0278950, 0.000000001));
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+
+    @Test
     public void cmsPrintGCApplicationStopped() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
