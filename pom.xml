@@ -577,14 +577,15 @@
                                 <phase>deploy</phase>
                                 <configuration>
                                     <target>
-                                        <scp todir="${scp.username}:${scp.password}@frs.sourceforge.net:/home/frs/project/gcviewer/" trust="true" failonerror="true">
+                                        <scp  todir="${env.SCP_USERNAME}@frs.sourceforge.net:/home/frs/project/gcviewer/"
+                                              password="${env.SCP_PASSWORD}"
+                                              trust="true"
+                                              failonerror="true">
                                             <fileset dir="${project.basedir}/target">
                                                 <include name="${project.build.finalName}.${project.packaging}" />
                                                 <include name="${project.build.finalName}-dist-mac.zip" />
                                             </fileset>
                                             <fileset dir="${project.basedir}/target/classes/META-INF">
-                                                <include name="${project.build.finalName}.${project.packaging}" />
-                                                <include name="${project.build.finalName}-dist-mac.zip" />
                                                 <include name="README.md" />
                                             </fileset>
                                         </scp>
