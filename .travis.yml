@@ -1,29 +1,22 @@
 language: java
 
-# define the $TOKEN environment variable with OAuth2 Token for GitHub
-env:
-  global:
-      - secure: "L8/g6MW2BguawcrEVOZXjzSazJDu/iiZZ8KcH6EIaWyCpmS+FRZ0uw03QGVn\nrsDcbGe20cqSd+ZlWnE6VZ8MFv+q07xH2uJjzuyM1jnhm7+VpIAGVuAYFPsm\n4BgcyXS0ffx3FWtImrCRaKc9n/IV1soO9de+uoQY+YDxvOQzDY8="
+# use the container based infrastructure on travis
+sudo: false
+
+# enable cache to stop downloading all maven plugins every time
+cache:
+  directories:
+    - $HOME/.m2/repository
 
 # No need to run mvn install, so we use this step to print env details instead
 install: mvn --version
 
 # the package phase is all we need. deploy/install is skipped
-script: mvn -q clean verify
+script: mvn clean verify javadoc:javadoc
 
 jdk:
-  - openjdk7
-
-branches:
-  only:
-    - master
-    - topic-ciupload
+  - oraclejdk8
 
 notifications:
   email:
-    - bernd-2013@eckenfels.net
-
-# Use the github site plugin to push the results to the gh-pages branch
-after_success:
-  - mvn -q com.github.github:site-maven-plugin:site
-
+    - gcviewer@gmx.ch

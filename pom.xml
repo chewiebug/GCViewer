@@ -267,7 +267,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${javadoc.plugin.version}</version>
+                    <version>${maven.javadoc.plugin.version}</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -279,14 +279,14 @@
                             </manifestEntries>
                         </archive>
                         <links>
-                            <link>http://docs.oracle.com/javase/6/docs/api/</link>
+                            <link>http://docs.oracle.com/javase/8/docs/api/</link>
                         </links>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>${source.plugin.version}</version>
+                    <version>${maven.source.plugin.version}</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -331,7 +331,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>${gpg.plugin.version}</version>
+                    <version>${maven.gpg.plugin.version}</version>
                     <configuration>
                         <!-- using gpg2 this should be set to "true", because
                             the option \-\-no-use-agent was dropped -->
