@@ -8,8 +8,8 @@ cache:
   directories:
     - $HOME/.m2/repository
 
-# No need to run mvn install, so we use this step to print env details instead
-install: mvn --version
+# disable install phase, since this is not needed with maven
+install: true
 
 # the package phase is all we need. deploy/install is skipped
 script: mvn clean verify javadoc:javadoc
@@ -17,6 +17,5 @@ script: mvn clean verify javadoc:javadoc
 jdk:
   - oraclejdk8
 
-notifications:
-  email:
-    - gcviewer@gmx.ch
+# don't configure any notifications and use defaults from travis
+# see http://docs.travis-ci.com/user/notifications/ (notifications for broken builds and when status changes)
