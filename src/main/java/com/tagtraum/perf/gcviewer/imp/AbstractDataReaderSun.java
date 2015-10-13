@@ -254,6 +254,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     }
     
     protected boolean hasNextDetail(String line, ParseInformation pos) throws ParseException {
+        skipBlanksAndCommas(line, pos);
         return nextIsTimestamp(line, pos)
                 || nextIsDatestamp(line, pos)
                 || nextCharIsBracket(line, pos);

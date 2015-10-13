@@ -72,11 +72,33 @@ public class ScreenCenteredDialog extends JDialog implements ActionListener {
     
     public void setVisible(boolean visible) {
         if (visible) {
-            setLocation((int) getOwner().getLocation().getX() + (getOwner().getWidth() / 2) - (getWidth() / 2), 
-                    (int) getOwner().getLocation().getY() + (getOwner().getHeight() / 2) - (getHeight() / 2));
+            int x = (int) getOwner().getLocation().getX() + (getOwner().getWidth() / 2) - (getWidth() / 2);
+            int y = (int) getOwner().getLocation().getY() + (getOwner().getHeight() / 2) - (getHeight() / 2);
+            setLocation(adjustX(x), adjustY(y));
         }
         
         super.setVisible(visible);
+    }
+
+    private int adjustX(int x) {
+        if (x < 0) {
+            x = 0;
+        }
+        else if (x + getWidth() > Toolkit.getDefaultToolkit().getScreenSize().getWidth()) {
+            x = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - getWidth();
+        }
+        return x;
+    }
+
+    private int adjustY(int y) {
+        if (y < 0) {
+            y = 0;
+        }
+        else if (y + getHeight() > Toolkit.getDefaultToolkit().getScreenSize().getHeight()) {
+            y = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - getHeight();
+        }
+
+        return y;
     }
 
     @Override

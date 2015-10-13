@@ -204,6 +204,8 @@ public class SummaryDataWriter extends AbstractDataWriter {
                 exportValue(out, "avgFullGCPauseIsSig", isSignificant(model.getFullGCPause().average(), model.getFullGCPause().standardDeviation()));
                 exportValue(out, "avgFullGCPause", pauseFormatter.format(model.getFullGCPause().average()), "s");
                 exportValue(out, "avgFullGCPause\u03c3", pauseFormatter.format(model.getFullGCPause().standardDeviation()), "s");
+                exportValue(out, "minFullGCPause", pauseFormatter.format(model.getFullGCPause().getMin()), "s");
+                exportValue(out, "maxFullGCPause", pauseFormatter.format(model.getFullGCPause().getMax()), "s");
             }
             else {
                 exportValue(out, "avgFullGCPause", "n.a.", "s");

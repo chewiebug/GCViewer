@@ -127,4 +127,19 @@ public class TestDataReaderSun1_8_0G1 {
         assertThat("number of events", model.size(), is(1));
         assertThat("number of errors", handler.getCount(), is(2));
     }
+
+    @Test
+    public void extendedRemark() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_8_0G1extended-remark.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("number of events", model.size(), is(1));
+        assertThat("number of errors", handler.getCount(), is(0));
+        assertThat("pause duration", model.get(0).getPause(), closeTo(0.1005220, 0.00000001));
+    }
 }

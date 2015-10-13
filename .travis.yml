@@ -1,0 +1,34 @@
+# more details for build customization see http://docs.travis-ci.com/user/customizing-the-build/
+language: java
+
+# use the container based infrastructure on travis
+sudo: false
+
+# enable cache to stop downloading all maven plugins every time
+cache:
+  directories:
+    - "$HOME/.m2/repository"
+
+# do some preparations before the install phase
+before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
+
+# No need to run mvn install, so skip this step
+install: true
+
+# run branch dependent build using a separate script
+# make sure, script is executable (http://blog.lesc.se/2011/11/how-to-change-file-premissions-in-git.html)
+script: "./target/travis/gcviewer-script.sh"
+
+jdk:
+  - oraclejdk8
+
+# for configuration of maven deploy see http://knowm.org/configure-travis-ci-to-deploy-snapshots/
+env:
+  global:
+  - secure: arRS4YHFdZWyl7KmduSdzOF1JGm1qOWDLp1fwtzCkGUx58G3RrhhBIynK3TuSnnUTYsmS+DyxR/R+v3QhaEjschR4Aeolq9StJGvUBssTS+oCqcLe3qLiHyy9YClCb8xSPebYNgrxEox0MuEGG73TFRUrGLHxesBo9OfLgIiGpV+kez2cBD+iFWEfNA9oeO3x3fa7Ry/YBrRfUkA5gKR41Bw/oOf+5T0HAKMpfMMmCneu7EtA3z7cWHhEEBwydwUI+szS3ozsbyUcleLwTlwabLXEB3rF3c/rU2Zy/1CLfWzJwCmy47HfclTalj/ckNxh5pK9aQwVqFM3B8ECPBUOksYm28oREgcRFbLqrtRnrKMM5tvqHXsb3r7VyJkNzFenV8e3WES8kCL7z5yuCstac395AlLRBCWTEWbHiiKTIYfx4awY5lK2CxptCf+8mzzkfltQp6HOViLw+X9c/G4MNTUWlDeMnw3JB81Rm5qaKv4gNjq9G0cPS9rzRN6SwksIEZ2i2JmVzCOoU7tWgH6ahcBDU3jJI3bwODzkzND5j0y9jKtooYEKPAH2v5b/uB/6KIlCLa/jZQcCzuTrOlKT6/Zcxl4aDUonuJ8vUDl3gMj72iqZpNosqOWIL0YVy8wlmxCaai3MK2H1647Mw5DXWzIciSN/TLwCjF3344fxHc=
+  - secure: L2mbuVWefCqtdy9qNcVtxW5nI2/kLY6vTXasQ19mevfxCHcyN23d8zDvCU0lRT9k9k9znXrF3JppzLwW2wkZo72XADQj+hfCSCB8axu1NQPPi3IMkFe4/c/mEXRVHYvukEjTX10BmZUfjL2H2XRiLM2eOunbRxyE6DfmIz6HuW5LS3iNi9BZQce6iHm/jG0Li+SxCgqetwZ3/Gowl1vo5vfg+xVnqTalYuSfvlJAAKfZdkw47/5T0np7ooD4W0TfFohFpq2DlVK1m27qSc0tDe9CT7YkAXid7giVfe+RC5rEoJhKf87wuKC/hitUS+OJb6hJg3IVGhsiA44w57eK6g7Gm+nDrJzId8XOYugy7VaIaVMJjoqWG8AnhbFzh2/ioWq4jI7xmjzBnKSak+DpxPvEs26WEE12m3nJVQvFpvoTTusnJuS2zUYk6ZSupdv8rw3fsIKHYepNyiCHau0WGgs1kqApA6bY3V42FFakC57x5dL5RNi54MBOzS9JBoQ6BsUewtarIdxsKUawA9TKC2M1IRI2poS0Zex9BslV08KBfzSvSI1h06kRaR6S35CwqlWnVcC+ZK4l3vOtpPYOGAo8F8OLONcUYuGMMQH+Eycvnd7yyLSbDEaEkNEBYL1uBSw6ZbRQzlFIS8v2t6BDed37WWLDD+TGnODcVJ7lhG8=
+  - secure: UunPp8yEYLSgQez5CUk9qdi1QQGidDQlojrScsKtz/ixhm+dv1aqu+SeqVEVFjRvCeqghB+TGufw1mxkjNwsOL+hZDmsnfex+ZR6c1swk19BarlhKVc6+lAJ/2KsOaXjdAnS5w0Xyhqp+BMJxjYfhLaaSZj1+AUiXsG4dhRzl8jylx5caJu3jG3DN0wYVM54wHpx3Vz0Rx8oDLpr6Clh8dctvxJz88cT3OH2zDiMOfSMbrfOE4ENbRDCrX/ktQl2w6L8VBu29srIUqv862Pia9F6mjsZNuWJZu/yidnX/q+ctQawT0BQJJ1U9BhWKEKhOeS5AwSiBISxtvXU4gChSqOSrSe87Zt00ndlL+LkanSbehvGEaoRmi1AKxTh/jPvkiiiYj/yH3Rh+gLvkIxDQk0tvMvT42X1GblRS4aPAxGwYb/1Sx/3VThOpGSNRyH5xC8Ccr7AmOjcZUTUm0ZV45XX2QUiAlTJvrsbW1yvWyCdsYh36fxWgLdaokhbb4APkwDQTnQZ3zMyNSMqb4v/3gTWmZmMDtXrQ6/YHdufhuDJeCt3ibFdd5BX6GFS3zQ+GKPE4lHtexR8BnFA1hLfH0jIDnAduA5mgX4w6G/dSw7Bf7HGROwB2jBSRAVgruF3kTT3M9S+0rOgceuZTTeUvfl/KLAFeS5j2mO5qmdOPQE=
+  - secure: hfbgSnGViHzpZBIUehTm0na8CPBGXTASeOwgxzH2fiJuTQtp/hGO3bNo5zhPW+wMWj5or5EgmcTbRVQUu6zfOmaECi1Vf1Ul42qimlR8NLCBLSoPIcBgO2re/jQFZNUe6NTAoZsVAtMaBplmeOydrjFFb1NqufbSqVX2H7IrjwIFjc/E7vG+pgjBaPh6SMWrhZHUK+aID9Ssssr9KZc2lzq1rqSC1U2M/SQf9EbVEAxkyuR77aZhnkjZlUo97gmVBscStso4bUEgU54gYL0NiSiOrRhH+8N/mb/AJMyn/KGgyNJMai0wMn4WW381iVf4huG95C/RcQOYG/OEGBuR7N1yQEVhtV3SAJPBWXp3fQcL6CnWkn4N2Tc66sjbhAD06p5fSY2YWd5uGCzG9qvw3GABcHLx5q1rpBiwgHKHF+79subsYkhhUhXHSikh8ySeniXcS1LWVpUBe6Y2hDBGh2g3zru/Rkdvv7lHZgu6BNyb1tETCCU5TvpHJVd7YxoR7cGEWHQQcycmpVL6OYwhXG52nv/r2fPBICDfyzhPDyY6uei0p3/p0t3Qgby65phmaTPbqDM5FPy43iRp4zCJ5hKgmHlhXeGS7y2AavTSMk6Da4jz7bLZkIXM90MWcIh4saXU61cJKkPz2cuzovU07WaFwCo9rapbzfbuSSfrYvQ=
+
+# don't configure any notifications and use defaults from travis
+# see http://docs.travis-ci.com/user/notifications/ (notifications for broken builds and when status changes)
