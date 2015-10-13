@@ -1,0 +1,5 @@
+2015-09-18T18:18:04.343+0200: 319,347: Application time: 1,5116630 seconds
+2015-09-18T18:18:04.344+0200: 319,348: [GC (Allocation Failure)
+Desired survivor size 89128960 bytes, new threshold 1 (max 30)
+ [PSYoungGen: 372359K->5648K(437248K)] 450503K->96997K(699392K), 0,0278950 secs] [Times: user=0,14 sys=0,05, real=0,03 secs]
+2015-09-18T18:18:04.373+0200: 319,377: Total time for which application threads were stopped: 0,0298220 seconds, Stopping threads took: 0,0003530 seconds

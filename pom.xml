@@ -64,6 +64,14 @@
             <url>https://github.com/xylu</url>
         </developer>
         <developer>
+            <name>James Livingston</name>
+            <url>https://github.com/doctau</url>
+        </developer>
+        <developer>
+            <name>Tony Mancill</name>
+            <url>https://github.com/tmancill</url>
+        </developer>
+        <developer>
             <name>Samuel Mendenhall</name>
             <url>http://engineersamuel.github.io/dbits/</url>
         </developer>
@@ -72,6 +80,10 @@
         </developer>
         <developer>
             <name>Reinhard Nägele</name>
+        </developer>
+        <developer>
+            <name>Robert Nibali</name>
+            <url>https://github.com/moreaki</url>
         </developer>
         <developer>
             <name>Àngel Ollé Blázquez</name>
@@ -88,7 +100,14 @@
             <name>Stephan Schroevers</name>
         </developer>
         <developer>
+            <name>François Secherre</name>
+        </developer>
+        <developer>
             <name>Serafín Sedano</name>
+        </developer>
+        <developer>
+            <name>Jugal Shah</name>
+            <url>https://github.com/jugalps</url>
         </developer>
         <developer>
             <name>Andrey Skripalschikov</name>
@@ -111,9 +130,25 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <source.plugin.version>2.2.1</source.plugin.version>
-        <javadoc.plugin.version>2.9</javadoc.plugin.version>
-        <gpg.plugin.version>1.4</gpg.plugin.version>
+        <junit.version>4.11</junit.version>
+        <hamcrest.version>1.3</hamcrest.version>
+        <mockito.version>1.9.5</mockito.version>
+        <jdk.source.version>1.8</jdk.source.version>
+        <jdk.target.version>1.8</jdk.target.version>
+        <tools.maven.plugin.version>1.4</tools.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.7.5.201505241946</jacoco.maven.plugin.version>
+        <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
+        <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
+        <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
+        <maven.assembly.plugin.version>2.5.5</maven.assembly.plugin.version>
+        <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
+        <maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
+        <maven.buildnumber.plugin.version>1.3</maven.buildnumber.plugin.version>
+        <maven.jar.plugin.version>2.6</maven.jar.plugin.version>
+        <maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
+        <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
+        <maven.scm.plugin.version>1.9.4</maven.scm.plugin.version>
+        <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
     </properties>
 
     <scm>
@@ -127,19 +162,19 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
-            <version>1.3</version>
+            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -181,26 +216,26 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>${maven.assembly.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.7</version>
+                    <version>${maven.antrun.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
+                    <version>${maven.compiler.plugin.version}</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>${jdk.source.version}</source>
+                        <target>${jdk.target.version}</target>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>1.2</version>
+                    <version>${maven.buildnumber.plugin.version}</version>
                     <configuration>
                         <buildNumberPropertyName>revision</buildNumberPropertyName>
                         <timestampPropertyName>timestamp</timestampPropertyName>
@@ -211,7 +246,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>${maven.jar.plugin.version}</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -232,7 +267,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${javadoc.plugin.version}</version>
+                    <version>${maven.javadoc.plugin.version}</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -244,14 +279,14 @@
                             </manifestEntries>
                         </archive>
                         <links>
-                            <link>http://docs.oracle.com/javase/6/docs/api/</link>
+                            <link>http://docs.oracle.com/javase/8/docs/api/</link>
                         </links>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>${source.plugin.version}</version>
+                    <version>${maven.source.plugin.version}</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -268,7 +303,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.14</version>
+                    <version>${maven.surefire.plugin.version}</version>
                     <configuration>
                         <includes>
                             <include>com/tagtraum/perf/gcviewer/TestAll.java</include>
@@ -278,7 +313,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.1</version>
+                    <version>${maven.release.plugin.version}</version>
                     <configuration>
                         <localCheckout>true</localCheckout>
                         <pushChanges>false</pushChanges>
@@ -289,14 +324,14 @@
                         <dependency>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-scm-plugin</artifactId>
-                            <version>1.9.2</version>
+                            <version>${maven.scm.plugin.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>${gpg.plugin.version}</version>
+                    <version>${maven.gpg.plugin.version}</version>
                     <configuration>
                         <!-- using gpg2 this should be set to "true", because
                             the option \-\-no-use-agent was dropped -->
@@ -306,17 +341,17 @@
                 <plugin>
                     <groupId>org.apache.geronimo.genesis.plugins</groupId>
                     <artifactId>tools-maven-plugin</artifactId>
-                    <version>1.4</version>
+                    <version>${tools.maven.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>${maven.deploy.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.0.201403182114</version>
+                    <version>${jacoco.maven.plugin.version}</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -401,7 +436,7 @@
                             <fileset>
                                 <basedir>${pom.basedir}</basedir>
                                 <includes>
-                                    <include>README</include>
+                                    <include>README.md</include>
                                     <include>LICENSE.txt</include>
                                 </includes>
                             </fileset>
@@ -492,17 +527,17 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>${source.plugin.version}</version>
+                        <version>${maven.source.plugin.version}</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${javadoc.plugin.version}</version>
+                        <version>${maven.javadoc.plugin.version}</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${gpg.plugin.version}</version>
+                        <version>${maven.gpg.plugin.version}</version>
                     </plugin>
                 </plugins>
             </build>
@@ -542,11 +577,16 @@
                                 <phase>deploy</phase>
                                 <configuration>
                                     <target>
-                                        <scp todir="${scp.username}:${scp.password}@frs.sourceforge.net:/home/frs/project/gcviewer/" trust="true" failonerror="true">
+                                        <scp  todir="${env.SCP_USERNAME}@frs.sourceforge.net:/home/frs/project/gcviewer/"
+                                              password="${env.SCP_PASSWORD}"
+                                              trust="true"
+                                              failonerror="true">
                                             <fileset dir="${project.basedir}/target">
                                                 <include name="${project.build.finalName}.${project.packaging}" />
                                                 <include name="${project.build.finalName}-dist-mac.zip" />
-                                                <include name="README" />
+                                            </fileset>
+                                            <fileset dir="${project.basedir}/target/classes/META-INF">
+                                                <include name="README.md" />
                                             </fileset>
                                         </scp>
                                     </target>

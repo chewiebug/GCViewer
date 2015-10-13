@@ -112,6 +112,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add(ADAPTIVE_PATTERN); // -XX:+PrintAdaptiveSizePolicy
         EXCLUDE_STRINGS.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
         EXCLUDE_STRINGS.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -156,7 +157,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // pattern looks always like "...[CMS<datestamp>..." or "...[CMS<timestamp>..."
     // the next line starts with " (concurrent mode failure)" which in earlier releases followed "CMS" immediately
     // the same can happen with "...ParNew<timestamp|datestamp>..."
-    private static Pattern linesMixedPattern = Pattern.compile("(.*\\[(CMS|ParNew|DefNew|ASCMS|ASParNew))([0-9]+[-.].*)");
+    private static Pattern linesMixedPattern = Pattern.compile("(.*\\[(CMS|ParNew|DefNew|ASCMS|ASParNew))([0-9]+[-.,].*)");
     // Matcher group of start of line
     private static final int LINES_MIXED_STARTOFLINE_GROUP = 1;
     // Matcher group of end of line
@@ -169,7 +170,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // AdaptiveSizeStop: collection: 1
     //  [PSYoungGen: 16420K->2657K(19136K)] 16420K->15919K(62848K), 0.0109211 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
     // -> to parse it, the first line must be split, and the following left out until the rest of the gc information follows
-    private static final String ADAPTIVE_SIZE_POLICY_PATTERN_STRING = "(.*GC \\([a-zA-Z ]*\\)|.*GC)(?:[0-9.:]*.*)[ ]?AdaptiveSize.*";
+    private static final String ADAPTIVE_SIZE_POLICY_PATTERN_STRING = "(.*GC \\([a-zA-Z ]*\\)|.*GC)(?:[0-9.,:]*.*)[ ]?AdaptiveSize.*";
     private static final Pattern adaptiveSizePolicyPattern = Pattern.compile(ADAPTIVE_SIZE_POLICY_PATTERN_STRING);
 
     // -XX:+PrintAdaptiveSizePolicy combined with -XX:-UseAdaptiveSizePolicy (not using the policy, just printing)
@@ -297,28 +298,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
 
-                    if (isCmsScavengeBeforeRemark(line)) {
-                        // This is the case, when option -XX:+CMSScavengeBeforeRemark is used.
-                        // we have two events in the first line -> split it
-                        // if this option is combined with -XX:+PrintTenuringDistribution, the
-                        // first event is also distributed over more than one line
-                        int startOf2ndEvent = line.indexOf("]", line.indexOf(EVENT_YG_OCCUPANCY)) + 1;
-                        beginningOfLine.addFirst(line.substring(0, startOf2ndEvent));
-                        if (!isPrintTenuringDistribution(line)) {
-                            if (line.indexOf(SCAVENGE_BEFORE_REMARK) >= 0) {
-                                // jdk1.5 scavenge before remark: just after another separate event occurs
-                                startOf2ndEvent = line.indexOf(SCAVENGE_BEFORE_REMARK) + SCAVENGE_BEFORE_REMARK.length();
-                            }
-                            model.add(parseLine(line.substring(startOf2ndEvent), parsePosition));
-                            parsePosition.setIndex(0);
-                        }
-                        else {
-                            beginningOfLine.addFirst(line.substring(startOf2ndEvent));
-                        }
-
-                        lastLineWasScavengeBeforeRemark = true;
-                        continue;
-                    }
                     int unloadingClassIndex = line.indexOf(UNLOADING_CLASS);
                     if (unloadingClassIndex > 0) {
                         beginningOfLine.addFirst(line.substring(0, unloadingClassIndex));
@@ -356,6 +335,18 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         }
                         continue;
                     }
+                    else if (line.indexOf(HEAP_SIZING_START) >= 0) {
+                        // if -XX:+ScavengeBeforeRemark and -XX:+PrintHeapAtGC are combined, the following lines are common
+                        // 2015-05-14T18:55:12.588+0200: 1.157: [GC (CMS Final Remark) [YG occupancy: 10451 K (47936 K)]{Heap before GC invocations=22 (full 13):
+                        if (line.contains("]{" + HEAP_SIZING_START)) {
+                            beginningOfLine.add(line.substring(0, line.indexOf("{" + HEAP_SIZING_START)));
+                            lastLineWasScavengeBeforeRemark = true;
+                        }
+
+                        // the next few lines will be the sizing of the heap
+                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
+                        continue;
+                    }
                     else if (beginningOfLine.size() > 0) {
                         // -XX:+CMSScavengeBeforeRemark combined with -XX:+PrintTenuringDistribution
                         // is the only case where beginningOfLine.size() > 1
@@ -376,9 +367,26 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             line = beginningOfLine.removeFirst() + line;
                         }
                     }
-                    else if (line.indexOf(HEAP_SIZING_START) >= 0) {
-                        // the next few lines will be the sizing of the heap
-                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
+                    if (isCmsScavengeBeforeRemark(line)) {
+                        // This is the case, when option -XX:+CMSScavengeBeforeRemark is used.
+                        // we have two events in the first line -> split it
+                        // if this option is combined with -XX:+PrintTenuringDistribution, the
+                        // first event is also distributed over more than one line
+                        int startOf2ndEvent = line.indexOf("]", line.indexOf(EVENT_YG_OCCUPANCY)) + 1;
+                        beginningOfLine.addFirst(line.substring(0, startOf2ndEvent));
+                        if (!isPrintTenuringDistribution(line)) {
+                            if (line.indexOf(SCAVENGE_BEFORE_REMARK) >= 0) {
+                                // jdk1.5 scavenge before remark: just after another separate event occurs
+                                startOf2ndEvent = line.indexOf(SCAVENGE_BEFORE_REMARK) + SCAVENGE_BEFORE_REMARK.length();
+                            }
+                            model.add(parseLine(line.substring(startOf2ndEvent), parsePosition));
+                            parsePosition.setIndex(0);
+                        }
+                        else {
+                            beginningOfLine.addFirst(line.substring(startOf2ndEvent));
+                        }
+
+                        lastLineWasScavengeBeforeRemark = true;
                         continue;
                     }
 
@@ -521,7 +529,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         return line.endsWith("[DefNew") // serial young (CMS, Serial GC)
                 || line.endsWith("[ParNew") // parallel young (CMS, parallel GC)
                 || line.endsWith(" (promotion failed)") // CMS (if -XX:+PrintPromotionFailure is active, additional text between "ParNew" + "(promotion failed)" is introduced...)
-                || line.endsWith("[GC"); // PSYoungGen (parallel sweep)
+                || line.endsWith("[GC") // PSYoungGen (parallel sweep)
+                || (line.contains("[GC (") && (line.endsWith(") ") || line.endsWith(")"))); // parallel GC (-XX:+PrintGCCause); ends actually with "[GC (Allocation Failure) ", but text in paranthesis can vary; there may be a " " in the end
     }
 
     private boolean isCmsScavengeBeforeRemark(String line) {

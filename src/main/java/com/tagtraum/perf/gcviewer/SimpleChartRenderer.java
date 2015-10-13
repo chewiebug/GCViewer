@@ -16,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import javafx.scene.chart.Chart;
 
 public class SimpleChartRenderer {
     private static final Logger LOGGER = Logger.getLogger(SimpleChartRenderer.class.getName());

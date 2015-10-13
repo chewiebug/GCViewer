@@ -1,0 +1,51 @@
+2015-05-13T13:28:51.504-0400: 12.356: [GC [YG occupancy: 830688 K (1310720 K)]{Heap before GC invocations=1 (full 1):
+ par new generation   total 1310720K, used 830688K [0x0000000640000000, 0x00000006a0000000, 0x00000006a0000000)
+  eden space 1048576K,  76% used [0x0000000640000000, 0x000000067140a1f0, 0x0000000680000000)
+  from space 262144K,   9% used [0x0000000690000000, 0x000000069172dec0, 0x00000006a0000000)
+  to   space 262144K,   0% used [0x0000000680000000, 0x0000000680000000, 0x0000000690000000)
+ concurrent mark-sweep generation total 3670016K, used 0K [0x00000006a0000000, 0x0000000780000000, 0x00000007c0000000)
+ Metaspace       used 38929K, capacity 43528K, committed 43796K, reserved 1087488K
+  class space    used 4934K, capacity 6361K, committed 6472K, reserved 1048576K
+2015-05-13T13:28:51.504-0400: 12.357: [GC Before GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 469745664
+Max   Chunk Size: 469745664
+Number of Blocks: 1
+Av.  Block  Size: 469745664
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 0
+Max   Chunk Size: 0
+Number of Blocks: 0
+ free=469745664 frag=0.0000
+12.357: [ParNew
+Desired survivor size 134217728 bytes, new threshold 1 (max 1)
+- age   1:   19742112 bytes,   19742112 total
+: 830688K->25255K(1310720K), 0.1302057 secs] 830688K->36167K(4980736K)After GC:
+Statistics for BinaryTreeDictionary:
+------------------------------------
+Total Free Space: 468117326
+Max   Chunk Size: 468117326
+Number of Blocks: 1
+Av.  Block  Size: 468117326
+Tree      Height: 1
+Statistics for IndexedFreeLists:
+--------------------------------
+Total Free Space: 231659
+Max   Chunk Size: 254
+Number of Blocks: 3415
+Av.  Block  Size: 67
+ free=468348985 frag=0.0010
+, 0.1306264 secs] [Times: user=0.45 sys=0.02, real=0.12 secs]
+Heap after GC invocations=2 (full 1):
+ par new generation   total 1310720K, used 25255K [0x0000000640000000, 0x00000006a0000000, 0x00000006a0000000)
+  eden space 1048576K,   0% used [0x0000000640000000, 0x0000000640000000, 0x0000000680000000)
+  from space 262144K,   9% used [0x0000000680000000, 0x00000006818a9dd0, 0x0000000690000000)
+  to   space 262144K,   0% used [0x0000000690000000, 0x0000000690000000, 0x00000006a0000000)
+ concurrent mark-sweep generation total 3670016K, used 10911K [0x00000006a0000000, 0x0000000780000000, 0x00000007c0000000)
+ Metaspace       used 38929K, capacity 43528K, committed 43796K, reserved 1087488K
+  class space    used 4934K, capacity 6361K, committed 6472K, reserved 1048576K
+}
+12.487: [Rescan (parallel) , 0.0173509 secs]12.505: [weak refs processing, 0.0018299 secs]12.507: [class unloading, 0.0084064 secs]12.515: [scrub symbol table, 0.0160760 secs]12.531: [scrub string table, 0.0013724 secs][1 CMS-remark: 10911K(3670016K)] 36167K(4980736K), 0.1787717 secs] [Times: user=0.58 sys=0.02, real=0.17 secs]
