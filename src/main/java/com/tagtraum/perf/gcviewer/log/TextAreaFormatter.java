@@ -1,16 +1,16 @@
 package com.tagtraum.perf.gcviewer.log;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.PrintWriter;
 
 /**
  * Formatter for a {@link LogRecord} to be displayed in a text area.
  * 
- * <p>Date: Oct 3, 2005<br/>
- * Time: 4:50:41 PM</p>
+ * <ul><li>Date: Oct 3, 2005</li>
+ * <li>Time: 4:50:41 PM</li></ul>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */

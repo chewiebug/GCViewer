@@ -9,10 +9,9 @@ import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
 
 /**
- * Action to open an entry of the recent urls menu.
- * <p/>
- * Date: Sep 25, 2005
- * Time: 11:16:49 PM
+ * <p>Action to open an entry of the recent urls menu.</p>
+ * <ul><li>Date: Sep 25, 2005</li>
+ * <li>Time: 11:16:49 PM</li></ul>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
