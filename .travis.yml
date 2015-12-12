@@ -4,13 +4,18 @@ language: java
 # use the container based infrastructure on travis
 sudo: false
 
+jdk:
+  - oraclejdk8
+
 # enable cache to stop downloading all maven plugins every time
 cache:
   directories:
     - "$HOME/.m2/repository"
 
 # do some preparations before the install phase
-before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
+before_install:
+  - "git clone -b travis `git config --get remote.origin.url` target/travis"
+  - pip install --user codecov
 
 # No need to run mvn install, so skip this step
 install: true
@@ -19,8 +24,8 @@ install: true
 # make sure, script is executable (http://blog.lesc.se/2011/11/how-to-change-file-premissions-in-git.html)
 script: "./target/travis/gcviewer-script.sh"
 
-jdk:
-  - oraclejdk8
+after_success:
+  - codecov
 
 # for configuration of maven deploy see http://knowm.org/configure-travis-ci-to-deploy-snapshots/
 env:
