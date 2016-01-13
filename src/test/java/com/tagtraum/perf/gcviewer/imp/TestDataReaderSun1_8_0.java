@@ -114,4 +114,24 @@ public class TestDataReaderSun1_8_0 {
 
         assertEquals("number of errors", 0, handler.getCount());
     }
+
+    @Test
+    public void cmsPrintHeapBeforeFullGc() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        IMP_LOGGER.addHandler(handler);
+        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+
+        InputStream in = getInputStream("SampleSun1_8_0CMS_HeadDumpBeforeFullGc.txt");
+        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(2));
+        assertThat("gc name concurrent", model.get(0).getTypeAsString(), equalTo("CMS-concurrent-mark"));
+
+        assertThat("gc name full gc", model.get(1).getTypeAsString(), equalTo("Full GC (GCLocker Initiated GC); CMS (concurrent mode failure); Metaspace"));
+        assertThat("pause", model.get(1).getPause(), closeTo(218.6928810, 0.000000001));
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
 }

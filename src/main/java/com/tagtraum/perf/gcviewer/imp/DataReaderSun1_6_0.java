@@ -121,10 +121,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
     private static final String CMS_ABORT_PRECLEAN = " CMS: abort preclean due to time ";
 
-    private static final String HEAP_SIZING_START = "Heap";
+    private static final String HEAP = "Heap";
+    private static final String HEAP_SIZING_BEFORE = HEAP + " before";
+    private static final String HEAP_SIZING_AFTER = HEAP + " after";
 
     private static final List<String> HEAP_STRINGS = new LinkedList<String>();
     static {
+        HEAP_STRINGS.add(HEAP); // java 6 and earlier -XX:+PrintHeapAtGC
         HEAP_STRINGS.add("def new generation"); // serial young collection -XX:+UseSerialGC
         HEAP_STRINGS.add("PSYoungGen"); // parallel young collection -XX:+UseParallelGC
         HEAP_STRINGS.add("par new generation"); // parallel young (CMS / -XX:+UseParNewGC)
@@ -335,11 +338,11 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         }
                         continue;
                     }
-                    else if (line.indexOf(HEAP_SIZING_START) >= 0) {
+                    else if (isPrintHeapAtGcStarting(line)) {
                         // if -XX:+ScavengeBeforeRemark and -XX:+PrintHeapAtGC are combined, the following lines are common
                         // 2015-05-14T18:55:12.588+0200: 1.157: [GC (CMS Final Remark) [YG occupancy: 10451 K (47936 K)]{Heap before GC invocations=22 (full 13):
-                        if (line.contains("]{" + HEAP_SIZING_START)) {
-                            beginningOfLine.add(line.substring(0, line.indexOf("{" + HEAP_SIZING_START)));
+                        if (line.contains("]{" + HEAP)) {
+                            beginningOfLine.add(line.substring(0, line.indexOf("{" + HEAP)));
                             lastLineWasScavengeBeforeRemark = true;
                         }
 
@@ -422,6 +425,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         finally {
             if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
         }
+    }
+
+    private boolean isPrintHeapAtGcStarting(String line) {
+        return line.startsWith(HEAP) // jdk 6 and before
+                || line.indexOf(HEAP_SIZING_BEFORE) >= 0 // jdk 7 and after
+                || line.indexOf(HEAP_SIZING_AFTER) >= 0;
     }
 
     private void handleMixedLine(GCModel model,
