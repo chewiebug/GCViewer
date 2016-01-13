@@ -1,13 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -18,6 +15,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
@@ -54,7 +58,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     }
 
     /** the reader accessing the log file */
-    protected BufferedReader in;
+    protected LineNumberReader in;
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
 
@@ -66,7 +70,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
      */
     public AbstractDataReaderSun(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
         super();
-        this.in = new BufferedReader(new InputStreamReader(in, "ASCII"), 64 * 1024);
+        this.in = new LineNumberReader(new InputStreamReader(in, "ASCII"), 64 * 1024);
         this.gcLogType = gcLogType;
     }
 
@@ -590,12 +594,11 @@ public abstract class AbstractDataReaderSun implements DataReader {
      *
      * @param in inputStream of the current log to be read
      * @param pos current parse position
-     * @param lineNumber current line number
      * @param lineStartStrings lines starting with these strings should be ignored
      * @return line number including lines read in this method
      * @throws IOException problem with reading from the file
      */
-    protected int skipLines(BufferedReader in, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
+    protected void skipLines(LineNumberReader in, ParseInformation pos, List<String> lineStartStrings) throws IOException {
         String line = "";
 
         if (!in.markSupported()) {
@@ -607,8 +610,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
 
         boolean startsWithString = true;
         while (startsWithString && (line = in.readLine()) != null) {
-            ++lineNumber;
-            pos.setLineNumber(lineNumber);
+            pos.setLineNumber(in.getLineNumber());
             // for now just skip those lines
             startsWithString = startsWith(line, lineStartStrings, true);
             if (startsWithString) {
@@ -629,8 +631,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
                 throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
             }
         }
-
-        return --lineNumber;
     }
 
     /**

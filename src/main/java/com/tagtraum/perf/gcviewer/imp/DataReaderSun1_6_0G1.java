@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
@@ -88,6 +89,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("      [Code Root Scanning");
         EXCLUDE_STRINGS.add("      [Object Copy");
         EXCLUDE_STRINGS.add("      [Termination");
+        EXCLUDE_STRINGS.add("         [Termination Attempts");
         EXCLUDE_STRINGS.add("      [GC Worker");
         EXCLUDE_STRINGS.add("   [Code Root");
         EXCLUDE_STRINGS.add("   [Clear");
@@ -95,7 +97,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("      [Choose CSet");
         EXCLUDE_STRINGS.add("      [Ref ");
         EXCLUDE_STRINGS.add("      [Redirty Cards");
-        EXCLUDE_STRINGS.add("      [Humongous Reclaim");
+        EXCLUDE_STRINGS.add("      [Humongous");
         EXCLUDE_STRINGS.add("      [Free CSet");
         EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
     }
@@ -150,7 +152,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x / 1.7.x G1 format...");
 
-        try (BufferedReader in = this.in) {
+        try (LineNumberReader in = this.in) {
             GCModel model = new GCModel();
             // TODO what is this for?
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
@@ -160,12 +162,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             Matcher linesMixedMatcher = PATTERN_LINES_MIXED.matcher("");
             Matcher ergonomicsMatcher = PATTERN_G1_ERGONOMICS.matcher("");
             GCEvent gcEvent = null;
-            int lineNumber = 0;
             String beginningOfLine = null;
 
             while ((line = in.readLine()) != null) {
-                ++lineNumber;
-                parsePosition.setLineNumber(lineNumber);
+                parsePosition.setLineNumber(this.in.getLineNumber());
                 parsePosition.setIndex(0);
                 if ("".equals(line)) {
                     continue;
@@ -278,7 +278,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                             gcEvent.setPause(NumberParser.parseDouble(gcPauseMatcher.group(GC_PAUSE_GROUP_PAUSE)));
 
                             // now parse the details of this event
-                            lineNumber = parseDetails(in, model, parsePosition, lineNumber, gcEvent, beginningOfLine);
+                            parseDetails(in, model, parsePosition, gcEvent, beginningOfLine);
                             beginningOfLine = null;
                             continue;
                         }
@@ -313,7 +313,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     }
                     else if (line.indexOf(HEAP_SIZING_START) >= 0) {
                         // the next few lines will be the sizing of the heap
-                        lineNumber = skipLinesRespectingConcurrentEvents(in, model, parsePosition, lineNumber, HEAP_STRINGS);
+                        skipLinesRespectingConcurrentEvents(in, model, parsePosition, HEAP_STRINGS);
                         continue;
                     }
                     else if (hasIncompleteConcurrentEvent(line, parsePosition)) {
@@ -363,17 +363,14 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * @param in reader reading from log file
      * @param model current model
      * @param pos parsePosition
-     * @param lineNumber line number of last line read
      * @param event current event
      * @param beginningOfLine GC_PAUSE lines are sometimes mixed lines; the extracted parts
      * of such a line are stored inside "beginningOfLine"
-     * @return line number of last line read in this method
      * @throws IOException problem reading from file
      */
-    private int parseDetails(BufferedReader in,
+    private void parseDetails(LineNumberReader in,
             GCModel model,
             ParseInformation pos,
-            int lineNumber,
             GCEvent event,
             String beginningOfLine)
                     throws ParseException, IOException {
@@ -384,8 +381,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         boolean isInDetailedEvent = true;
         String line;
         while (isInDetailedEvent && (line = in.readLine()) != null) {
-            ++lineNumber;
-            pos.setLineNumber(lineNumber);
+            pos.setLineNumber(in.getLineNumber());
             pos.setIndex(0);
 
             if (line.length() == 0) {
@@ -435,11 +431,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // is currently the case for jdk 1.7.0_02 which changed the memory format
             // as of 1.7.0_25 for "GC cleanup" events, there seem to be rare cases, where this just happens
             // => don't log as warning; just log on debug level
-            if (LOG.isLoggable(Level.FINE)) LOG.fine("line " + lineNumber + ": no memory information found (" + event.toString() + ")");
+            if (LOG.isLoggable(Level.FINE)) LOG.fine("line " + in.getLineNumber() + ": no memory information found (" + event.toString() + ")");
         }
         model.add(event);
-
-        return lineNumber;
     }
 
     /**
@@ -596,12 +590,10 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
      * -XX:+PrintHeapAtGC or -XX:+PrintAdaptiveSizePolicy.
      *
      * @param in inputStream of the current log to be read
-     * @param lineNumber current line number
      * @param lineStartStrings lines starting with these strings should be ignored
-     * @return line number including lines read in this method
      * @throws IOException problem with reading from the file
      */
-    private int skipLinesRespectingConcurrentEvents(BufferedReader in, GCModel model, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
+    private void skipLinesRespectingConcurrentEvents(LineNumberReader in, GCModel model, ParseInformation pos, List<String> lineStartStrings) throws IOException {
         String line = "";
 
         if (!in.markSupported()) {
@@ -613,8 +605,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
         boolean startsWithString = true;
         while (startsWithString && (line = in.readLine()) != null) {
-            ++lineNumber;
-            pos.setLineNumber(lineNumber);
+            pos.setLineNumber(in.getLineNumber());
 
             if (line.indexOf(INCOMPLETE_CONCURRENT_EVENT_INDICATOR) >= 0) {
                 parseIncompleteConcurrentEvent(model, model.getLastEventAdded(), line, pos);
@@ -641,8 +632,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
             }
         }
-
-        return --lineNumber;
     }
 
 }

@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import java.util.Deque;
@@ -213,7 +214,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     public GCModel read() throws IOException {
         if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x / 1.8.x format...");
 
-        try (BufferedReader in = this.in) {
+        try (LineNumberReader in = this.in) {
             GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             Matcher mixedLineMatcher = linesMixedPattern.matcher("");
@@ -224,7 +225,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             String line;
             // beginningOfLine must be a stack because more than one beginningOfLine might be needed
             Deque<String> beginningOfLine = new LinkedList<String>();
-            int lineNumber = 0;
             boolean lastLineWasScavengeBeforeRemark = false;
             boolean lineSkippedForScavengeBeforeRemark = false;
             boolean printTenuringDistributionOn = false;
@@ -233,8 +233,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
             while ((line = in.readLine()) != null) {
                 parsePosition.setIndex(0);
-                ++lineNumber;
-                parsePosition.setLineNumber(lineNumber);
+                parsePosition.setLineNumber(in.getLineNumber());
                 if ("".equals(line)) {
                     continue;
                 }
@@ -266,7 +265,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         // -XX:PrintCmsStatistics -> filter text that the parser doesn't know
                         printCmsStatisticsIterationsMatcher.reset(line);
                         if (!printCmsStatisticsIterationsMatcher.matches()) {
-                            LOG.severe("printCmsStatisticsIterationsMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            LOG.severe("printCmsStatisticsIterationsMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                             continue;
                         }
 
@@ -286,7 +285,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     if (line.indexOf(PRINT_TENURING_DISTRIBUTION) > 0) {
                         printTenuringDistributionMatcher.reset(line);
                         if (!printTenuringDistributionMatcher.matches()) {
-                            LOG.severe("printDistributionMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            LOG.severe("printDistributionMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                             continue;
                         }
 
@@ -317,7 +316,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy
                             printAdaptiveSizePolicyMatcher.reset(line);
                             if (!printAdaptiveSizePolicyMatcher.matches()) {
-                                LOG.severe("printAdaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                LOG.severe("printAdaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                                 continue;
                             }
 
@@ -331,7 +330,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy
                             adaptiveSizePolicyMatcher.reset(line);
                             if (!adaptiveSizePolicyMatcher.matches()) {
-                                LOG.severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                LOG.severe("adaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                                 continue;
                             }
                             beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
@@ -347,7 +346,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         }
 
                         // the next few lines will be the sizing of the heap
-                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
+                        skipLines(in, parsePosition, HEAP_STRINGS);
                         continue;
                     }
                     else if (beginningOfLine.size() > 0) {
