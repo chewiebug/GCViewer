@@ -595,7 +595,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @param in inputStream of the current log to be read
      * @param pos current parse position
      * @param lineStartStrings lines starting with these strings should be ignored
-     * @return line number including lines read in this method
      * @throws IOException problem with reading from the file
      */
     protected void skipLines(LineNumberReader in, ParseInformation pos, List<String> lineStartStrings) throws IOException {

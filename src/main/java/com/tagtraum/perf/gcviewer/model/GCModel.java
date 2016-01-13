@@ -622,29 +622,28 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * Statistical data about pauses caused by full garbage collections.
+     * @return Statistical data about pauses caused by full garbage collections.
      */
     public DoubleData getFullGCPause() {
         return fullGCPause;
     }
 
     /**
-     * Statistical data about pauses caused by garbage collections (full gcs excluded).
+     * @return Statistical data about pauses caused by garbage collections (full gcs excluded).
      */
     public DoubleData getGCPause() {
         return gcPause;
     }
 
     /**
-     * Statistical data about pauses caused by vm operations other than gc pauses
-     * ("application stopped").
+     * @return Statistical data about pauses caused by vm operations other than gc pauses ("application stopped").
      */
     public DoubleData getVmOperationPause() {
         return vmOperationPause;
     }
 
     /**
-     * Interval between gc pauses (full gcs excluded).
+     * @return Interval between gc pauses (full gcs excluded).
      */
     public DoubleData getPauseInterval() {
         return pauseInterval;
@@ -661,7 +660,7 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * The increase in memory consumption after a full collection in relation to the amount that was
+     * @return The increase in memory consumption after a full collection in relation to the amount that was
      * used after the previous full collection.
      */
     public RegressionLine getRelativePostFullGCIncrease() {
@@ -669,7 +668,7 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * The increase in memory consumption after a collection in relation to the amount that was
+     * @return The increase in memory consumption after a collection in relation to the amount that was
      * used after the previous collection.
      */
     public DoubleData getRelativePostGCIncrease() {
@@ -677,7 +676,7 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * The average slope of the regression lines of the memory consumption after
+     * @return The average slope of the regression lines of the memory consumption after
      * a garbage collection in between <em>full</em> garbage collections.
      * <p>
      * The unit is kb/s.
@@ -695,35 +694,35 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * Heap memory freed by a (small) garbage collection.
+     * @return Heap memory freed by a (small) garbage collection.
      */
     public IntData getFreedMemoryByGC() {
         return freedMemoryByGC;
     }
 
     /**
-     * Heap memory freed by a <em>full</em> garbage collection.
+     * @return Heap memory freed by a <em>full</em> garbage collection.
      */
     public IntData getFreedMemoryByFullGC() {
         return freedMemoryByFullGC;
     }
 
     /**
-     * Heap memory consumption after a (small) garbage collection.
+     * @return Heap memory consumption after a (small) garbage collection.
      */
     public IntData getFootprintAfterGC() {
         return postGCUsedMemory;
     }
 
     /**
-     * Heap memory consumption after a <em>full</em> garbage collection.
+     * @return Heap memory consumption after a <em>full</em> garbage collection.
      */
     public IntData getFootprintAfterFullGC() {
         return postFullGCUsedHeap;
     }
 
     /**
-     * Pause in sec.
+     * @return Pause in sec.
      */
     public DoubleData getPause() {
         return totalPause;
@@ -746,7 +745,7 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * Throughput in percent.
+     * @return Throughput in percent.
      */
     public double getThroughput() {
         return 100
@@ -755,21 +754,21 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * max heap allocated for every event
+     * @return max heap allocated for every event
      */
     public IntData getHeapAllocatedSizes() {
         return heapAllocatedSizes;
     }
 
     /**
-     * max heap used for every event
+     * @return max heap used for every event
      */
     public IntData getHeapUsedSizes() {
         return heapUsedSizes;
     }
 
     /**
-     * perm sizes allocated for every event that contained one (only if detailed logging is active and
+     * @return perm sizes allocated for every event that contained one (only if detailed logging is active and
      * and all spaces were collected)
      */
     public IntData getPermAllocatedSizes() {
@@ -777,42 +776,42 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * perm sizes used for every event that has the information
+     * @return perm sizes used for every event that has the information
      */
     public IntData getPermUsedSizes() {
         return permUsedSizes;
     }
 
     /**
-     * tenured sizes allocated for every event that contained one (only if detailed logging is active)
+     * @return tenured sizes allocated for every event that contained one (only if detailed logging is active)
      */
     public IntData getTenuredAllocatedSizes() {
         return tenuredAllocatedSizes;
     }
 
     /**
-     * tenured sizes used for every event that contained one (only if detailed logging is active)
+     * @return tenured sizes used for every event that contained one (only if detailed logging is active)
      */
     public IntData getTenuredUsedSizes() {
         return tenuredUsedSizes;
     }
 
     /**
-     * young sizes allocated for every event that contained one (only if detailed logging is active)
+     * @return young sizes allocated for every event that contained one (only if detailed logging is active)
      */
     public IntData getYoungAllocatedSizes() {
         return youngAllocatedSizes;
     }
 
     /**
-     * young sizes used for every event that contained one (only if detailed logging is active)
+     * @return young sizes used for every event that contained one (only if detailed logging is active)
      */
     public IntData getYoungUsedSizes() {
         return youngUsedSizes;
     }
 
     /**
-     * Sizes of tenured heap (or if not available total heap) immediately after completion of
+     * @return Sizes of tenured heap (or if not available total heap) immediately after completion of
      * a concurrent cycle.
      */
     public IntData getPostConcurrentCycleTenuredUsedSizes() {
@@ -820,14 +819,14 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * Sizes of heap immediately after completion of a concurrent cycle.
+     * @return Sizes of heap immediately after completion of a concurrent cycle.
      */
     public IntData getPostConcurrentCycleHeapUsedSizes() {
         return postConcurrentCycleUsedHeapSizes;
     }
 
     /**
-     * Returns promotion information for all young collections (how much memory was promoted to
+     * @return promotion information for all young collections (how much memory was promoted to
      * tenured space per young collection?)
      */
     public IntData getPromotion() {
@@ -835,14 +834,14 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * Footprint in KB.
+     * @return Footprint in KB.
      */
     public long getFootprint() {
         return heapAllocatedSizes.getMax();
     }
 
     /**
-     * Running time in sec.
+     * @return Running time in sec.
      */
     public double getRunningTime() {
         return lastPauseTimeStamp - firstPauseTimeStamp
@@ -852,21 +851,21 @@ public class GCModel implements Serializable {
     }
 
     /**
-     * The timestamp of the first event in the log (which usually is probably never exactly 0)
+     * @return The timestamp of the first event in the log (which usually is probably never exactly 0)
      */
     public double getFirstPauseTimeStamp() {
         return firstPauseTimeStamp;
     }
 
     /**
-     * The timestamp of the last event in the log
+     * @return The timestamp of the last event in the log
      */
     public double getLastPauseTimeStamp() {
         return lastPauseTimeStamp;
     }
 
     /**
-     * Freed memory in KB.
+     * @return Freed memory in KB.
      */
     public long getFreedMemory() {
         return freedMemory;
