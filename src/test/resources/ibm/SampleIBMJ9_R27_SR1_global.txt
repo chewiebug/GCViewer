@@ -1,3 +1,4 @@
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R27_Java727_SR1_20140707_1408_B205525_CMPRSS">
 <exclusive-start id="62" timestamp="2014-09-24T15:57:39.473" intervalms="377.674">
   <response-info timems="0.055" idlems="0.027" threads="2" lastid="0000000030CD4A00" lastname="ManagedServiceFactory Update Queue" />
 </exclusive-start>
@@ -50,3 +51,4 @@
 <cycle-end id="72" type="global" contextid="64" timestamp="2014-09-24T15:57:39.548" />
 <sys-end id="73" timestamp="2014-09-24T15:57:39.548" />
 <exclusive-end id="74" timestamp="2014-09-24T15:57:39.548" durationms="75.863" />
+</verbosegc>

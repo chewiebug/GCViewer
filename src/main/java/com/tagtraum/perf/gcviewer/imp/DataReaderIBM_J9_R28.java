@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -23,23 +26,24 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
- * @author <a href="gcviewer@gmx.ch">Joerg Wuethrich</a>
- *         <p>created on 08.10.2014</p>
+ * Parser for IBM gc logs R26_Java6 + R27_Java7 + R28_Java8
  */
-public class DataReaderIBM_J9_R27 implements DataReader {
+public class DataReaderIBM_J9_R28 implements DataReader {
+    // TODO IBM_J9: support system gcs
 
+    private static final String VERBOSEGC = "verbosegc";
     private static final String INITIALIZED = "initialized";
     private static final String EXCLUSIVE_START = "exclusive-start";
     private static final String GC_START = "gc-start";
     private static final String GC_END = "gc-end";
     private static final String EXCLUSIVE_END = "exclusive-end";
 
-    private static Logger LOG = Logger.getLogger(DataReaderIBM_J9_R27.class.getName());
-    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
+    private static Logger LOG = Logger.getLogger(DataReaderIBM_J9_R28.class.getName());
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private LineNumberReader in;
 
-    public DataReaderIBM_J9_R27(InputStream in) {
+    public DataReaderIBM_J9_R28(InputStream in) {
         this.in = new LineNumberReader(new InputStreamReader(in));
     }
 
@@ -55,6 +59,9 @@ public class DataReaderIBM_J9_R27 implements DataReader {
                 if (event.isStartElement()) {
                     StartElement startElement = event.asStartElement();
                     switch (startElement.getName().getLocalPart()) {
+                        case VERBOSEGC:
+                            handleVerboseGC(startElement);
+                            break;
                         case INITIALIZED:
                             handleInitialized(eventReader);
                             break;
@@ -78,19 +85,48 @@ public class DataReaderIBM_J9_R27 implements DataReader {
             }
         }
         catch (XMLStreamException e) {
-            e.printStackTrace();
+            if (LOG.isLoggable(Level.WARNING)) LOG.warning("line " + in.getLineNumber() + ": " + e.toString());
+            if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
         }
 
         return model;
     }
 
+    private void handleVerboseGC(StartElement startElement) {
+        assert startElement.getName().getLocalPart().equals(VERBOSEGC) : "expected name of startElement: " + VERBOSEGC + ", but got " + startElement.getName();
+        LOG.info("gc log version = " + getAttributeValue(startElement, "version"));
+    }
+
+    private void handleInitialized(XMLEventReader eventReader) throws XMLStreamException {
+        String currentElementName = "";
+        while (eventReader.hasNext() && !currentElementName.equals(INITIALIZED)) {
+            XMLEvent event = eventReader.nextEvent();
+            if (event.isStartElement()) {
+                StartElement startElement = event.asStartElement();
+                if (startElement.getName().getLocalPart().equals("attribute")) {
+                    String name = getAttributeValue(startElement, "name");
+                    if (name != null && name.equals("gcPolicy")) {
+                        LOG.info("gcPolicy = " + getAttributeValue(startElement, "value"));
+                    }
+                }
+            }
+            else if (event.isEndElement()) {
+                EndElement endElement = event.asEndElement();
+                currentElementName = endElement.getName().getLocalPart();
+            }
+        }
+    }
+
     private GCEvent handleExclusiveStart(StartElement startElement) {
         GCEvent event = new GCEvent();
         try {
-            event.setDateStamp(ZonedDateTime.parse(getAttributeValue(startElement, "timestamp"), dateTimeFormatter));
+            event.setDateStamp(ZonedDateTime.of(
+                    LocalDateTime.parse(getAttributeValue(startElement, "timestamp"), dateTimeFormatter),
+                    ZoneId.systemDefault()));
         }
         catch (DateTimeParseException e) {
-            e.printStackTrace();
+            if (LOG.isLoggable(Level.WARNING)) LOG.warning("line " + in.getLineNumber() + ": " + e.toString());
+            if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
         }
         
         return event;
@@ -181,26 +217,6 @@ public class DataReaderIBM_J9_R27 implements DataReader {
         event.setPostUsed(toKiloBytes(total - NumberParser.parseInt(getAttributeValue(startEl, "free"))));
     }
 
-    private void handleInitialized(XMLEventReader eventReader) throws XMLStreamException {
-        String currentElementName = "";
-        while (eventReader.hasNext() && !currentElementName.equals(INITIALIZED)) {
-            XMLEvent event = eventReader.nextEvent();
-            if (event.isStartElement()) {
-                StartElement startElement = event.asStartElement();
-                if (startElement.getName().getLocalPart().equals("attribute")) {
-                    String name = getAttributeValue(startElement, "name");
-                    if (name != null && name.equals("gcPolicy")) {
-                        LOG.info("gcPolicy = " + getAttributeValue(startElement, "value"));
-                    }
-                }
-            }
-            else if (event.isEndElement()) {
-                EndElement endElement = event.asEndElement();
-                currentElementName = endElement.getName().getLocalPart();
-            }
-        }
-    }
-    
     private String getAttributeValue(StartElement event, String name) {
         String value = null;
         Attribute attr = event.getAttributeByName(new QName(name));

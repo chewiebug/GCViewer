@@ -131,3 +131,103 @@
 <allocation-satisfied id="11" threadId="0000000030385200" bytesRequested="208" />
 <af-end id="12" timestamp="2014-09-24T15:57:32.159" />
 <exclusive-end id="13" timestamp="2014-09-24T15:57:32.159" durationms="42.303" />
+
+<exclusive-start id="14" timestamp="2014-09-24T15:57:34.043" intervalms="1927.088">
+  <response-info timems="0.068" idlems="0.068" threads="0" lastid="0000000030385200" lastname="Start Level Event Dispatcher" />
+</exclusive-start>
+<af-start id="15" totalBytesRequested="11432" timestamp="2014-09-24T15:57:34.044" intervalms="1927.845" />
+<cycle-start id="16" type="scavenge" contextid="0" timestamp="2014-09-24T15:57:34.044" intervalms="1927.860" />
+<gc-start id="17" type="scavenge" contextid="16" timestamp="2014-09-24T15:57:34.044">
+  <mem-info id="18" free="803421456" total="1073741824" percent="74">
+    <mem type="nursery" free="0" total="268435456" percent="0">
+      <mem type="allocate" free="0" total="134217728" percent="0" />
+      <mem type="survivor" free="0" total="134217728" percent="0" />
+    </mem>
+    <mem type="tenure" free="803421456" total="805306368" percent="99">
+      <mem type="soa" free="763156752" total="765041664" percent="99" />
+      <mem type="loa" free="40264704" total="40264704" percent="100" />
+    </mem>
+    <remembered-set count="29092" />
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="109307488" >
+  <allocated-bytes non-tlh="4259504" tlh="105047984" />
+  <largest-consumer threadName="webMethods Integration Server" threadId="0000000030626F00" bytes="70170264" />
+</allocation-stats>
+<gc-op id="19" type="scavenge" timems="39.851" contextid="16" timestamp="2014-09-24T15:57:34.084">
+  <scavenger-info tenureage="10" tenuremask="7c00" tiltratio="50" />
+  <memory-copied type="nursery" objects="390045" bytes="41232416" bytesdiscarded="735144" />
+  <finalization candidates="12381" enqueued="11234" />
+  <ownableSynchronizers candidates="1213" cleared="16" />
+  <references type="soft" candidates="1672" cleared="0" enqueued="0" dynamicThreshold="32" maxThreshold="32" />
+  <references type="weak" candidates="8055" cleared="0" enqueued="0" />
+  <references type="phantom" candidates="7" cleared="0" enqueued="0" />
+</gc-op>
+<gc-end id="20" type="scavenge" contextid="16" durationms="40.061" usertimems="67.940" systemtimems="0.715" timestamp="2014-09-24T15:57:34.085">
+  <mem-info id="21" free="895557688" total="1073741824" percent="83">
+    <mem type="nursery" free="92136232" total="268435456" percent="34">
+      <mem type="allocate" free="92136232" total="134217728" percent="68" />
+      <mem type="survivor" free="0" total="134217728" percent="0" />
+    </mem>
+    <mem type="tenure" free="803421456" total="805306368" percent="99">
+      <mem type="soa" free="763156752" total="765041664" percent="99" />
+      <mem type="loa" free="40264704" total="40264704" percent="100" />
+    </mem>
+    <pending-finalizers system="11232" default="2" reference="0" classloader="0" />
+    <remembered-set count="29092" />
+  </mem-info>
+</gc-end>
+<cycle-end id="22" type="scavenge" contextid="16" timestamp="2014-09-24T15:57:34.085" />
+<allocation-satisfied id="23" threadId="0000000030385200" bytesRequested="11432" />
+<af-end id="24" timestamp="2014-09-24T15:57:34.085" />
+<exclusive-end id="25" timestamp="2014-09-24T15:57:34.085" durationms="41.268" />
+
+<exclusive-start id="26" timestamp="2014-09-24T15:57:36.098" intervalms="2054.926">
+  <response-info timems="0.067" idlems="0.047" threads="1" lastid="0000000030385200" lastname="Start Level Event Dispatcher" />
+</exclusive-start>
+<af-start id="27" totalBytesRequested="8200" timestamp="2014-09-24T15:57:36.099" intervalms="2054.918" />
+<cycle-start id="28" type="scavenge" contextid="0" timestamp="2014-09-24T15:57:36.099" intervalms="2054.917" />
+<gc-start id="29" type="scavenge" contextid="28" timestamp="2014-09-24T15:57:36.099">
+  <mem-info id="30" free="803163352" total="1073741824" percent="74">
+    <mem type="nursery" free="0" total="268435456" percent="0">
+      <mem type="allocate" free="0" total="134217728" percent="0" />
+      <mem type="survivor" free="0" total="134217728" percent="0" />
+    </mem>
+    <mem type="tenure" free="803163352" total="805306368" percent="99">
+      <mem type="soa" free="762898648" total="765041664" percent="99" />
+      <mem type="loa" free="40264704" total="40264704" percent="100" />
+    </mem>
+    <remembered-set count="32410" />
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="92327688" >
+  <allocated-bytes non-tlh="3347352" tlh="88980336" />
+  <largest-consumer threadName="Start Level Event Dispatcher" threadId="0000000030385200" bytes="86593840" />
+</allocation-stats>
+<gc-op id="31" type="scavenge" timems="33.030" contextid="28" timestamp="2014-09-24T15:57:36.132">
+  <scavenger-info tenureage="9" tenuremask="7e00" tiltratio="50" />
+  <memory-copied type="nursery" objects="390591" bytes="26859168" bytesdiscarded="986760" />
+  <finalization candidates="4758" enqueued="3658" />
+  <ownableSynchronizers candidates="89872" cleared="77456" />
+  <references type="soft" candidates="2811" cleared="0" enqueued="0" dynamicThreshold="32" maxThreshold="32" />
+  <references type="weak" candidates="8740" cleared="35" enqueued="31" />
+  <references type="phantom" candidates="7" cleared="0" enqueued="0" />
+</gc-op>
+<gc-end id="32" type="scavenge" contextid="28" durationms="33.301" usertimems="75.299" systemtimems="0.716" timestamp="2014-09-24T15:57:36.133">
+  <mem-info id="33" free="909446776" total="1073741824" percent="84">
+    <mem type="nursery" free="106283424" total="268435456" percent="39">
+      <mem type="allocate" free="106283424" total="134217728" percent="79" />
+      <mem type="survivor" free="0" total="134217728" percent="0" />
+    </mem>
+    <mem type="tenure" free="803163352" total="805306368" percent="99">
+      <mem type="soa" free="762898648" total="765041664" percent="99" />
+      <mem type="loa" free="40264704" total="40264704" percent="100" />
+    </mem>
+    <pending-finalizers system="3658" default="0" reference="31" classloader="0" />
+    <remembered-set count="21218" />
+  </mem-info>
+</gc-end>
+<cycle-end id="34" type="scavenge" contextid="28" timestamp="2014-09-24T15:57:36.133" />
+<allocation-satisfied id="35" threadId="0000000030C1F900" bytesRequested="8200" />
+<af-end id="36" timestamp="2014-09-24T15:57:36.133" />
+<exclusive-end id="37" timestamp="2014-09-24T15:57:36.133" durationms="34.961" />

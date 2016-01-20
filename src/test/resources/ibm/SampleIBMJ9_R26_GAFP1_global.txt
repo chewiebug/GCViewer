@@ -1,3 +1,5 @@
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R26_Java626_GA_FP1_20110418_1915_B80450_CMPRSS">
+
 <exclusive-start id="123" timestamp="2013-08-15T11:15:51.945" intervalms="1151.263">
   <response-info timems="0.007" idlems="0.007" threads="0" lastid="0000000041830100" lastname="main" />
 </exclusive-start>
@@ -42,3 +44,4 @@
 <cycle-end id="133" type="global" contextid="125" timestamp="2013-08-15T11:15:51.981" />
 <sys-end id="134" timestamp="2013-08-15T11:15:51.981" />
 <exclusive-end id="135" timestamp="2013-08-15T11:15:51.981" durationms="36.392" />
+</verbosegc>

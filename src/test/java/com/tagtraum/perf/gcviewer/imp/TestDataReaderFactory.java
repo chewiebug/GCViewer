@@ -25,6 +25,10 @@ public class TestDataReaderFactory {
     @Rule 
     public TestName name = new TestName();
 
+    private InputStream getInputStreamIBM(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, fileName);
+    }
+
     private InputStream getInputStreamJRockit(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
     }
@@ -79,7 +83,39 @@ public class TestDataReaderFactory {
             assertEquals("# events", 55, model.size());
         }
     }
-    
+
+    @Test
+    public void testIBMi5OS1_4_2() throws Exception {
+        try (InputStream in = getInputStreamIBM("SampleIBMi5OS1_4_2.txt")) {
+            DataReader reader = new DataReaderFactory().getDataReader(in);
+            assertDataReader(DataReaderIBMi5OS1_4_2.class, reader.getClass());
+        }
+    }
+
+    @Test
+    public void testIBMJ9_5_0() throws Exception {
+        try (InputStream in = getInputStreamIBM("SampleIBMJ9_5_0af-global-200811_07.txt")) {
+            DataReader reader = new DataReaderFactory().getDataReader(in);
+            assertDataReader(DataReaderIBM_J9_5_0.class, reader.getClass());
+        }
+    }
+
+    @Test
+    public void testIBMJ9_R26() throws Exception {
+        try (InputStream in = getInputStreamIBM("SampleIBMJ9_R26_GAFP1_full_header.txt")) {
+            DataReader reader = new DataReaderFactory().getDataReader(in);
+            assertDataReader(DataReaderIBM_J9_R28.class, reader.getClass());
+        }
+    }
+
+    @Test
+    public void testIBMJ9_R27() throws Exception {
+        try (InputStream in = getInputStreamIBM("SampleIBMJ9_R27_SR1_full_header.txt")) {
+            DataReader reader = new DataReaderFactory().getDataReader(in);
+            assertDataReader(DataReaderIBM_J9_R28.class, reader.getClass());
+        }
+    }
+
     @Test
     public void testJRockit1_4GcReportGenCon() throws Exception { 
         try (InputStream in = getInputStreamJRockit("SampleJRockit1_4_2ts-gcreport-gencon.txt")) {

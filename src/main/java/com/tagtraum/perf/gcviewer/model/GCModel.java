@@ -343,6 +343,8 @@ public class GCModel implements Serializable {
     }
 
     public void add(AbstractGCEvent<?> abstractEvent) {
+        makeSureHasTimeStamp(abstractEvent);
+
         allEvents.add(abstractEvent);
 
         if (abstractEvent.isStopTheWorld()) {
@@ -440,6 +442,13 @@ public class GCModel implements Serializable {
             // add to total pause here, because then adjusted VmOperationEvents are added correctly
             // as well
             totalPause.add(abstractEvent.getPause());
+        }
+    }
+
+    private void makeSureHasTimeStamp(AbstractGCEvent<?> abstractEvent) {
+        if (size() >= 1 && abstractEvent.getTimestamp() < 0.000001 && abstractEvent.getDatestamp() != null) {
+            // looks like there is no timestamp set -> set one, because a lot depends on the timestamps
+            abstractEvent.setTimestamp(ChronoUnit.MILLIS.between(getFirstDateStamp(), abstractEvent.getDatestamp()) / 1000.0);
         }
     }
 

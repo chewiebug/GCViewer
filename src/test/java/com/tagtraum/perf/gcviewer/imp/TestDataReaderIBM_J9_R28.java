@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author <a href="gcviewer@gmx.ch">Joerg Wuethrich</a>
  *         <p>created on 08.10.2014</p>
  */
-public class TestDataReaderIBM_J9_R27 {
+public class TestDataReaderIBM_J9_R28 {
     private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
     private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
@@ -28,32 +28,31 @@ public class TestDataReaderIBM_J9_R27 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
-        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, "SampleIBMJ9_R27_SR1_full_header.txt");
+        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, "SampleIBMJ9_R28_full_header.txt");
         DataReader reader = new DataReaderIBM_J9_R28(in);
         GCModel model = reader.read();
         
-        assertThat("model size", model.size(), is(3));
+        assertThat("model size", model.size(), is(2));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("pause", event.getPause(), closeTo(0.042303, 0.0000001));
+        assertThat("pause", event.getPause(), closeTo(0.025388, 0.0000001));
 
-        assertThat("total before", event.getTotal(), is(toKiloBytes(1073741824)));
-        assertThat("free before", event.getPreUsed(), is(toKiloBytes(1073741824 - 804158480)));
-        assertThat("free after", event.getPostUsed(), is(toKiloBytes(1073741824 - 912835672)));
+        assertThat("total before", event.getTotal(), is(toKiloBytes(536870912)));
+        assertThat("free before", event.getPreUsed(), is(toKiloBytes(536870912 - 401882552)));
+        assertThat("free after", event.getPostUsed(), is(toKiloBytes(536870912 - 457545744)));
 
-        assertThat("total young before", event.getYoung().getTotal(), is(toKiloBytes(268435456)));
-        assertThat("young before", event.getYoung().getPreUsed(), is(toKiloBytes(268435456)));
-        assertThat("young after", event.getYoung().getPostUsed(), is(toKiloBytes(268435456 - 108677192)));
+        assertThat("total young before", event.getYoung().getTotal(), is(toKiloBytes(134217728)));
+        assertThat("young before", event.getYoung().getPreUsed(), is(toKiloBytes(134217728)));
+        assertThat("young after", event.getYoung().getPostUsed(), is(toKiloBytes(134217728 - 55663192)));
 
-        assertThat("total tenured before", event.getTenured().getTotal(), is(toKiloBytes(805306368)));
-        assertThat("tenured before", event.getTenured().getPreUsed(), is(toKiloBytes(805306368 - 804158480)));
-        assertThat("tenured after", event.getTenured().getPostUsed(), is(toKiloBytes(805306368 - 804158480)));
+        assertThat("total tenured before", event.getTenured().getTotal(), is(toKiloBytes(402653184)));
+        assertThat("tenured before", event.getTenured().getPreUsed(), is(toKiloBytes(402653184 - 401882552)));
+        assertThat("tenured after", event.getTenured().getPostUsed(), is(toKiloBytes(402653184 - 401882552)));
 
         assertThat("timestamp 1", event.getTimestamp(), closeTo(0.0, 0.0001));
-        assertThat("timestamp 2", model.get(1).getTimestamp(), closeTo(1.927, 0.0001));
-        assertThat("timestamp 3", model.get(2).getTimestamp(), closeTo(3.982, 0.0001));
+        assertThat("timestamp 2", model.get(1).getTimestamp(), closeTo(1.272, 0.0001));
 
-        assertThat("number of errors", handler.getCount(), is(1));
+        assertThat("number of errors", handler.getCount(), is(0));
     }
 
     @Test
@@ -63,14 +62,14 @@ public class TestDataReaderIBM_J9_R27 {
         IMP_LOGGER.addHandler(handler);
         DATA_READER_FACTORY_LOGGER.addHandler(handler);
 
-        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, "SampleIBMJ9_R27_SR1_global.txt");
+        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, "SampleIBMJ9_R28_global.txt");
         DataReader reader = new DataReaderIBM_J9_R28(in);
         GCModel model = reader.read();
 
         assertThat("model size", model.size(), is(1));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("pause", event.getPause(), closeTo(0.075863, 0.0000001));
+        assertThat("pause", event.getPause(), closeTo(0.097756, 0.0000001));
 
         assertThat("number of errors", handler.getCount(), is(0));
     }
