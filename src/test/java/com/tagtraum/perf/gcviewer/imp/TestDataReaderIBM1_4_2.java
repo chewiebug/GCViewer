@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -20,6 +21,7 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
+@Ignore
 public class TestDataReaderIBM1_4_2 {
 
     @Test

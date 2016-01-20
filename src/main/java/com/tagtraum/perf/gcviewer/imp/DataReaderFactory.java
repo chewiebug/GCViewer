@@ -171,6 +171,9 @@ public class DataReaderFactory {
         } else if (s.indexOf("<GC: ") == 0 && s.indexOf('>') != -1 && new StringTokenizer(s.substring(0, s.indexOf('>')+1), " ").countTokens() == 22) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: HP-UX 1.4.1/1.4.2");
             return new DataReaderHPUX1_4_1(in);
+        } else if (s.contains("<verbosegc") && (s.contains("version=\"R26_Java6") || s.contains("version=\"R27_Java7") || s.contains("version=\"R28_Java8"))) {
+            if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM J9 R26 / R27 / R28");
+            return new DataReaderIBM_J9_R28(in);
         } else if (s.indexOf("<verbosegc version=\"") != -1) {
             if (LOG.isLoggable(Level.INFO)) LOG.info("File format: IBM J9 5.0");
             return new DataReaderIBM_J9_5_0(in);
