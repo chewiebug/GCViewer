@@ -10,7 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.MessageFormat;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -138,7 +137,7 @@ public class DataReaderFacade {
      */
     private void showErrorDialog(final URL url, TextAreaLogHandler textAreaLogHandler, final Component parent) {
         final JPanel panel = new JPanel(new BorderLayout());
-        final JLabel messageLabel = new JLabel(new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_message")).format(new Object[]{textAreaLogHandler.getErrorCount(), url}));
+        final JLabel messageLabel = new JLabel(LocalisationHelper.getString("datareader_parseerror_dialog_message", textAreaLogHandler.getErrorCount(), url));
         messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         panel.add(messageLabel, BorderLayout.NORTH);
         final JScrollPane textAreaScrollPane = new JScrollPane(textAreaLogHandler.getTextArea());
@@ -146,7 +145,7 @@ public class DataReaderFacade {
         panel.add(textAreaScrollPane, BorderLayout.CENTER);
         SwingUtilities.invokeLater(new Runnable(){
             public void run() {
-                JOptionPane.showMessageDialog(parent, panel, new MessageFormat(LocalisationHelper.getString("datareader_parseerror_dialog_title")).format(new Object[]{url}), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(parent, panel, LocalisationHelper.getString("datareader_parseerror_dialog_title", url), JOptionPane.ERROR_MESSAGE);
             }
         });
     }
