@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,7 +22,6 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
-
 /**
  * The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
  * <p>
@@ -36,7 +35,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static final int LENGTH_OF_DATESTAMP = 29;
-    
+
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
 
     private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
@@ -54,7 +53,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_MEMORY);
         LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
     }
-    
+
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
 
@@ -252,7 +251,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
         return pause;
     }
-    
+
     protected boolean hasNextDetail(String line, ParseInformation pos) throws ParseException {
         skipBlanksAndCommas(line, pos);
         return nextIsTimestamp(line, pos)
@@ -441,7 +440,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     }
 
     protected abstract AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException;
-        
+
     /**
      * Tests if <code>line</code> starts with one of the strings in <code>lineStartStrings</code>.
      * If <code>trimLine</code> is <code>true</code>, then <code>line</code> is trimmed first.
@@ -589,25 +588,22 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      *
      * @param in inputStream of the current log to be read
      * @param pos current parse position
-     * @param lineNumber current line number
      * @param lineStartStrings lines starting with these strings should be ignored
-     * @return line number including lines read in this method
      * @throws IOException problem with reading from the file
      */
-    protected int skipLines(BufferedReader in, ParseInformation pos, int lineNumber, List<String> lineStartStrings) throws IOException {
+    protected void skipLines(LineNumberReader in, ParseInformation pos, List<String> lineStartStrings) throws IOException {
         String line = "";
 
         if (!in.markSupported()) {
             getLogger().warning("input stream does not support marking!");
-        } 
+        }
         else {
             in.mark(200);
         }
 
         boolean startsWithString = true;
         while (startsWithString && (line = in.readLine()) != null) {
-            ++lineNumber;
-            pos.setLineNumber(lineNumber);
+            pos.setLineNumber(in.getLineNumber());
             // for now just skip those lines
             startsWithString = startsWith(line, lineStartStrings, true);
             if (startsWithString) {
@@ -628,8 +624,6 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
                 throw new ParseException("problem resetting stream (" + e.toString() + ")", line, pos);
             }
         }
-
-        return --lineNumber;
     }
 
     /**
@@ -641,7 +635,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      */
     private void skipUntilEndOfDetail(final String line, final ParseInformation pos, Exception e) {
         skipUntilEndOfDetail(line, pos, 1);
-        
+
         if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Skipping detail event because of " + e);
     }
 
@@ -675,7 +669,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
             skipUntilEndOfDetail(line, pos, levelOfDetailEvent);
         }
     }
-    
+
     private int skipUntilNextDigit(String line, ParseInformation pos) throws ParseException {
         int begin = pos.getIndex();
         while (!Character.isDigit(line.charAt(begin)) && begin < line.length()) {

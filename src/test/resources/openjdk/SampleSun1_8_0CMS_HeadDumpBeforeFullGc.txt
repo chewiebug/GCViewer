@@ -1,0 +1,2 @@
+2016-01-11T05:13:23.505-0800: 221063.690: [Full GC (GCLocker Initiated GC) 221063.690: [Heap Dump (before full gc): , 177.2978460 secs]221240.988: [CMS2016-01-11T05:16:23.938-0800: 221244.123: [CMS-concurrent-mark: 10.648/192.322 secs] [Times: user=387.39 sys=31.96, real=192.32 secs]
+ (concurrent mode failure): 12450330K->1828689K(12582912K), 17.6949841 secs]221258.683: [Heap Dump (after full gc): , 23.6992554 secs] 16083687K->1828689K(16357824K), [Metaspace: 52813K->52813K(1099776K)], 218.6928810 secs] [Times: user=178.09 sys=26.88, real=218.69 secs]

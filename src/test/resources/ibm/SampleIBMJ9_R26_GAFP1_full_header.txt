@@ -1,0 +1,134 @@
+<?xml version="1.0" ?>
+
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R26_Java626_GA_FP1_20110418_1915_B80450_CMPRSS">
+
+<initialized id="1" timestamp="2013-08-15T11:15:44.479">
+  <attribute name="gcPolicy" value="-Xgcpolicy:gencon" />
+  <attribute name="maxHeapSize" value="0x40000000" />
+  <attribute name="initialHeapSize" value="0x20000000" />
+  <attribute name="compressedRefs" value="true" />
+  <attribute name="compressedRefsDisplacement" value="0x0" />
+  <attribute name="compressedRefsShift" value="0x0" />
+  <attribute name="pageSize" value="0x1000" />
+  <attribute name="requestedPageSize" value="0x1000" />
+  <attribute name="gcthreads" value="2" />
+  <system>
+    <attribute name="physicalMemory" value="16683077632" />
+    <attribute name="numCPUs" value="2" />
+    <attribute name="architecture" value="amd64" />
+    <attribute name="os" value="Linux" />
+    <attribute name="osVersion" value="2.6.32-220.el6.x86_64" />
+  </system>
+  <vmargs>
+    <vmarg name="-Xoptionsfile=/home/GDC_benchmark/IBM/WAS8/java/jre/lib/amd64/compressedrefs/options.default" />
+    <vmarg name="-Xlockword:mode=default,noLockword=java/lang/String,noLockword=java/util/MapEntry,noLockword=java/util/HashMap$Entry,noLockword..." />
+    <vmarg name="-XXgc:numaCommonThreadClass=java/lang/UNIXProcess$*" />
+    <vmarg name="-Xjcl:jclscar_26" />
+    <vmarg name="-Dcom.ibm.oti.vm.bootstrap.library.path=/home/GDC_benchmark/IBM/WAS8/java/jre/lib/amd64/compressedrefs:/home/GDC_benchmark/IBM/..." />
+    <vmarg name="-Dsun.boot.library.path=/home/GDC_benchmark/IBM/WAS8/java/jre/lib/amd64/compressedrefs:/home/GDC_benchmark/IBM/WAS8/java/jre/li..." />
+    <vmarg name="-Djava.library.path=/home/GDC_benchmark/IBM/WAS8/java/jre/lib/amd64/compressedrefs:/home/GDC_benchmark/IBM/WAS8/java/jre/lib/am..." />
+    <vmarg name="-Djava.home=/home/GDC_benchmark/IBM/WAS8/java/jre" />
+    <vmarg name="-Djava.ext.dirs=/home/GDC_benchmark/IBM/WAS8/java/jre/lib/ext" />
+    <vmarg name="-Duser.dir=/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01" />
+    <vmarg name="_j2se_j9=1119744" value="00007F08960DF1A0" />
+    <vmarg name="-Djava.runtime.version=pxa6460_26fp1-20110419_01 (FP1)" />
+    <vmarg name="-Djava.class.path=/usr/local/staf/lib/JSTAF.jar:/usr/local/staf/samples/demo/STAFDemo.jar:/home/db2inst1/sqllib/java/db2java.zi..." />
+    <vmarg name="-Declipse.security" />
+    <vmarg name="-Dwas.status.socket=55452" />
+    <vmarg name="-Dosgi.install.area=/home/GDC_benchmark/IBM/WAS8" />
+    <vmarg name="-Dosgi.configuration.area=/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01/servers/server1/configuration" />
+    <vmarg name="-Djava.awt.headless=true" />
+    <vmarg name="-Dosgi.framework.extensions=com.ibm.cds,com.ibm.ws.eclipse.adaptors" />
+    <vmarg name="-Xshareclasses:name=webspherev80_%g,groupAccess,nonFatal" />
+    <vmarg name="-Xbootclasspath/p:/home/GDC_benchmark/IBM/WAS8/java/jre/lib/ext/ibmorb.jar:/home/GDC_benchmark/IBM/WAS8/java/jre/lib/ext/ibmext..." />
+    <vmarg name="-Dorg.osgi.framework.bootdelegation=*" />
+    <vmarg name="-Djava.class.path=/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01/properties:/home/GDC_benchmark/IBM/WAS8/properties:/home/GDC_b..." />
+    <vmarg name="-Dibm.websphere.internalClassAccessMode=allow" />
+    <vmarg name="-verbose:gc" />
+    <vmarg name="-Xms512m" />
+    <vmarg name="-Xmx1024m" />
+    <vmarg name="-Xcompressedrefs" />
+    <vmarg name="-Xscmaxaot4M" />
+    <vmarg name="-Xscmx60M" />
+    <vmarg name="-Dws.ext.dirs=/home/GDC_benchmark/IBM/WAS8/java/lib:/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01/classes:/home/GDC_benchmark/..." />
+    <vmarg name="-Dderby.system.home=/home/GDC_benchmark/IBM/WAS8/derby" />
+    <vmarg name="-Dcom.ibm.itp.location=/home/GDC_benchmark/IBM/WAS8/bin" />
+    <vmarg name="-Djava.util.logging.configureByServer=true" />
+    <vmarg name="-Duser.install.root=/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01" />
+    <vmarg name="-Djava.ext.dirs=/home/GDC_benchmark/IBM/WAS8/tivoli/tam:/home/GDC_benchmark/IBM/WAS8/java/jre/lib/ext" />
+    <vmarg name="-Djavax.management.builder.initial=com.ibm.ws.management.PlatformMBeanServerBuilder" />
+    <vmarg name="-Dpython.cachedir=/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01/temp/cachedir" />
+    <vmarg name="-Dwas.install.root=/home/GDC_benchmark/IBM/WAS8" />
+    <vmarg name="-Djava.util.logging.manager=com.ibm.ws.bootstrap.WsLogManager" />
+    <vmarg name="-Dserver.root=/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01" />
+    <vmarg name="-Dcom.ibm.security.jgss.debug=off" />
+    <vmarg name="-Dcom.ibm.security.krb5.Krb5Debug=off" />
+    <vmarg name="-DTEMAGCCollector.gclog.path=None" />
+    <vmarg name="-Dam.home=/home/GDC/APD0804/dchome/7.2.0.0.6/itcamdc" />
+    <vmarg name="-Dcom.ibm.tivoli.itcam.toolkit.ai.runtimebuilder.enable.rebuild=true" />
+    <vmarg name="-agentlib:am_ibm_16=server1" />
+    <vmarg name="-verbose:gc" />
+    <vmarg name="-Dcom.ibm.tivoli.itcam.ai.runtimebuilder.inputs=/home/GDC/APD0804/dchome/7.2.0.0.6/runtime/AppSrv01.tivn32Node06Cell.tivn32Node..." />
+    <vmarg name="-Dsun.rmi.dgc.client.gcInterval=3600000" />
+    <vmarg name="-Dsun.rmi.dgc.server.gcInterval=3600000" />
+    <vmarg name="-Dsun.rmi.transport.connectionTimeout=300000" />
+    <vmarg name="-Dws.bundle.metadata=/home/GDC/APD0804/dchome/7.2.0.0.6/runtime/wsBundleMetaData" />
+    <vmarg name="-Dam.wascell=tivn32Node06Cell" />
+    <vmarg name="-Dam.wasprofile=AppSrv01" />
+    <vmarg name="-Dam.wasnode=tivn32Node06" />
+    <vmarg name="-Dam.wasserver=server1" />
+    <vmarg name="-Djava.library.path=/home/GDC_benchmark/IBM/WAS8/lib/native/linux/x86_64/:/home/GDC_benchmark/IBM/WAS8/java/jre/lib/amd64/defau..." />
+    <vmarg name="-Djava.endorsed.dirs=/home/GDC_benchmark/IBM/WAS8/endorsed_apis:/home/GDC_benchmark/IBM/WAS8/java/jre/lib/endorsed:/home/GDC_be..." />
+    <vmarg name="-Djava.security.auth.login.config=/home/GDC_benchmark/IBM/WAS8/profiles/AppSrv01/properties/wsjaas.conf" />
+    <vmarg name="-Djava.security.policy=/home/GDC/APD0804/dchome/7.2.0.0.6/itcamdc/etc/datacollector.policy" />
+    <vmarg name="-Dsun.java.command=com.ibm.wsspi.bootstrap.WSPreLauncher -nosplash -application com.ibm.ws.bootstrap.WSLauncher com.ibm.ws.runt..." />
+    <vmarg name="-Dsun.java.launcher=SUN_STANDARD" />
+    <vmarg name="-Dsun.java.launcher.pid=29642" />
+    <vmarg name="_port_library" value="00007F08960E1A00" />
+    <vmarg name="_bfu_java" value="00007F08960E34F0" />
+    <vmarg name="_org.apache.harmony.vmi.portlib" value="00007F089000CFC0" />
+  </vmargs>
+</initialized>
+
+Calculated native library name as: am_ibm_16
+<exclusive-start id="2" timestamp="2013-08-15T11:15:45.897" intervalms="1417.925">
+  <response-info timems="0.002" idlems="0.002" threads="0" lastid="0000000041830100" lastname="main" />
+</exclusive-start>
+<af-start id="3" totalBytesRequested="24" timestamp="2013-08-15T11:15:45.897" intervalms="1417.963" />
+<cycle-start id="4" type="scavenge" contextid="0" timestamp="2013-08-15T11:15:45.897" intervalms="1417.978" />
+<gc-start id="5" type="scavenge" contextid="4" timestamp="2013-08-15T11:15:45.897">
+  <mem-info id="6" free="401784824" total="469762048" percent="85">
+    <mem type="nursery" free="0" total="67108864" percent="0" />
+    <mem type="tenure" free="401784824" total="402653184" percent="99">
+      <mem type="soa" free="381652984" total="382521344" percent="99" />
+      <mem type="loa" free="20131840" total="20131840" percent="100" />
+    </mem>
+    <remembered-set count="10865" />
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="67933104" >
+  <allocated-bytes non-tlh="2343384" tlh="65589720" />
+  <largest-consumer threadName="main" threadId="0000000041830100" bytes="67778952" />
+</allocation-stats>
+<gc-op id="7" type="scavenge" timems="5.086" contextid="4" timestamp="2013-08-15T11:15:45.902">
+  <scavenger-info tenureage="10" tiltratio="50" />
+  <memory-copied type="nursery" objects="70042" bytes="3484976" bytesdiscarded="1208" />
+  <finalization candidates="325" enqueued="145" />
+  <references type="soft" candidates="1569" cleared="0" enqueued="0" dynamicThreshold="32" maxThreshold="32" />
+  <references type="weak" candidates="438" cleared="27" enqueued="0" />
+</gc-op>
+<gc-end id="8" type="scavenge" contextid="4" durationms="5.175" timestamp="2013-08-15T11:15:45.902">
+  <mem-info id="9" free="465077008" total="469762048" percent="99">
+    <mem type="nursery" free="63292184" total="67108864" percent="94" />
+    <mem type="tenure" free="401784824" total="402653184" percent="99">
+      <mem type="soa" free="381652984" total="382521344" percent="99" />
+      <mem type="loa" free="20131840" total="20131840" percent="100" />
+    </mem>
+    <pending-finalizers system="145" default="0" reference="0" classloader="0" />
+    <remembered-set count="10865" />
+  </mem-info>
+</gc-end>
+<cycle-end id="10" type="scavenge" contextid="4" timestamp="2013-08-15T11:15:45.902" />
+<allocation-satisfied id="11" threadId="0000000041830100" bytesRequested="24" />
+<af-end id="12" timestamp="2013-08-15T11:15:45.902" />
+<exclusive-end id="13" timestamp="2013-08-15T11:15:45.902" durationms="5.290" />

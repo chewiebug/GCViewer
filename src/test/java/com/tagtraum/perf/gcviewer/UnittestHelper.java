@@ -80,4 +80,13 @@ public class UnittestHelper {
         return getResource(folder, name).getFile();
     }
 
+    /**
+     * Converter from bytes to kilobytes.
+     *
+     * @param bytes value in bytes
+     * @return value in kilobytes
+     */
+    public static int toKiloBytes(long bytes) {
+        return (int)Math.rint(bytes / (double)1024);
+    }
 }

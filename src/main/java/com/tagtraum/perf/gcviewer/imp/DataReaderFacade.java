@@ -27,10 +27,10 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 public class DataReaderFacade {
 
     private List<PropertyChangeListener> propertyChangeListeners = new ArrayList<PropertyChangeListener>();
-    
+
     /**
      * Add propertyChangeListener for underlying MonitoredBufferedInputStreams property "progress".
-     * 
+     *
      * @param listener component requiring to listen to progress changes
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -39,7 +39,7 @@ public class DataReaderFacade {
 
     /**
      * Loads a model from a given <code>gcResource</code> logging all exceptions that occur.
-     * 
+     *
      * @param gcResource where to find data to be parsed
      * @return instance of GCModel containing all information that was parsed
      * @throws DataReaderException if any exception occurred, it is logged and added as the cause
@@ -49,22 +49,22 @@ public class DataReaderFacade {
         if (gcResource == null) {
             throw new NullPointerException("gcResource must never be null");
         }
-        
+
         DataReaderException dataReaderException = new DataReaderException();
         GCModel model = null;
         Logger logger = gcResource.getLogger();
 
         try {
-            logger.info("GCViewer version " + BuildInfoReader.getVersion() 
+            logger.info("GCViewer version " + BuildInfoReader.getVersion()
                     + " (" + BuildInfoReader.getBuildDate() + ")");
             model = readModel(gcResource);
-        } 
+        }
         catch (RuntimeException | IOException e) {
             dataReaderException.initCause(e);
             logger.warning(LocalisationHelper.getString("fileopen_dialog_read_file_failed")
                     + "\n" + e.toString() + " " + e.getLocalizedMessage());
-        } 
-        
+        }
+
         if (dataReaderException.getCause() != null) {
             throw dataReaderException;
         }
@@ -74,7 +74,7 @@ public class DataReaderFacade {
 
     /**
      * Open and parse data designated by <code>gcResource</code>.
-     * 
+     *
      * @param gcResource where to find data to be parsed
      * @return GCModel containing events parsed from <code>gcResource</code>
      * @throws IOException problem reading the data
@@ -89,7 +89,7 @@ public class DataReaderFacade {
             URLConnection conn = url.openConnection();
             in = HttpUrlConnectionHelper.openInputStream((HttpURLConnection)conn, HttpUrlConnectionHelper.GZIP, cl);
             contentLength = cl.get();
-        } 
+        }
         else {
             in = url.openStream();
             if (url.getProtocol().startsWith("file")) {
@@ -105,11 +105,11 @@ public class DataReaderFacade {
                 ((MonitoredBufferedInputStream)in).addPropertyChangeListener(listener);
             }
         }
-        
+
         DataReader reader = factory.getDataReader(gcResource, in);
         GCModel model = reader.read();
         model.setURL(url);
-        
+
         return model;
     }
 

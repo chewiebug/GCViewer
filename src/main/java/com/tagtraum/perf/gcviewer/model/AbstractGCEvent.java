@@ -510,6 +510,13 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        
+        // IBM Types
+        // TODO: are scavenge always young only??
+        public static final Type IBM_SCAVENGE = new Type("scavenge", Generation.YOUNG, Concurrency.SERIAL);
+        public static final Type IBM_GLOBAL = new Type("global", Generation.ALL, Concurrency.SERIAL);
+        public static final Type IBM_NURSERY = new Type("nursery", Generation.YOUNG);
+        public static final Type IBM_TENURE = new Type("tenure", Generation.TENURED);
     }
 
     public static enum GcPattern {

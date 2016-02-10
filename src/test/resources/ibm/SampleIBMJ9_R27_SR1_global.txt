@@ -1,0 +1,54 @@
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R27_Java727_SR1_20140707_1408_B205525_CMPRSS">
+<exclusive-start id="62" timestamp="2014-09-24T15:57:39.473" intervalms="377.674">
+  <response-info timems="0.055" idlems="0.027" threads="2" lastid="0000000030CD4A00" lastname="ManagedServiceFactory Update Queue" />
+</exclusive-start>
+<sys-start reason="explicit" id="63" timestamp="2014-09-24T15:57:39.473" intervalms="11254.926" />
+<cycle-start id="64" type="global" contextid="0" timestamp="2014-09-24T15:57:39.473" intervalms="11254.988" />
+<gc-start id="65" type="global" contextid="64" timestamp="2014-09-24T15:57:39.473">
+  <mem-info id="66" free="864850536" total="1073741824" percent="80">
+    <mem type="nursery" free="62575576" total="268435456" percent="23">
+      <mem type="allocate" free="62575576" total="134217728" percent="46" />
+      <mem type="survivor" free="0" total="134217728" percent="0" />
+    </mem>
+    <mem type="tenure" free="802274960" total="805306368" percent="99">
+      <mem type="soa" free="762010256" total="765041664" percent="99" />
+      <mem type="loa" free="40264704" total="40264704" percent="100" />
+    </mem>
+    <remembered-set count="24439" />
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="27915808" >
+  <allocated-bytes non-tlh="291848" tlh="27623960" />
+  <largest-consumer threadName="Start Level Event Dispatcher" threadId="0000000030385200" bytes="19825600" />
+</allocation-stats>
+<gc-op id="67" type="mark" timems="70.186" contextid="64" timestamp="2014-09-24T15:57:39.543">
+  <trace-info objectcount="585197" scancount="509299" scanbytes="15435896" />
+  <finalization candidates="2491" enqueued="1066" />
+  <ownableSynchronizers candidates="70884" cleared="43142" />
+  <references type="soft" candidates="5769" cleared="0" enqueued="0" dynamicThreshold="32" maxThreshold="32" />
+  <references type="weak" candidates="9617" cleared="30" enqueued="28" />
+  <references type="phantom" candidates="8" cleared="0" enqueued="0" />
+  <stringconstants candidates="30547" cleared="3843"  />
+</gc-op>
+<gc-op id="68" type="classunload" timems="0.019" contextid="64" timestamp="2014-09-24T15:57:39.543">
+  <classunload-info classloadercandidates="261" classloadersunloaded="0" classesunloaded="0" quiescems="0.000" setupms="0.018" scanms="0.000" postms="0.000" />
+</gc-op>
+<gc-op id="69" type="sweep" timems="4.844" contextid="64" timestamp="2014-09-24T15:57:39.548" />
+<gc-end id="70" type="global" contextid="64" durationms="75.480" usertimems="149.923" systemtimems="1.551" timestamp="2014-09-24T15:57:39.548">
+  <mem-info id="71" free="905360848" total="1073741824" percent="84">
+    <mem type="nursery" free="103036080" total="268435456" percent="38">
+      <mem type="allocate" free="103036080" total="134217728" percent="76" />
+      <mem type="survivor" free="0" total="134217728" percent="0" />
+    </mem>
+    <mem type="tenure" free="802324768" total="805306368" percent="99">
+      <mem type="soa" free="762060064" total="765041664" percent="99" />
+      <mem type="loa" free="40264704" total="40264704" percent="100" />
+    </mem>
+    <pending-finalizers system="1050" default="16" reference="28" classloader="0" />
+    <remembered-set count="21585" />
+  </mem-info>
+</gc-end>
+<cycle-end id="72" type="global" contextid="64" timestamp="2014-09-24T15:57:39.548" />
+<sys-end id="73" timestamp="2014-09-24T15:57:39.548" />
+<exclusive-end id="74" timestamp="2014-09-24T15:57:39.548" durationms="75.863" />
+</verbosegc>

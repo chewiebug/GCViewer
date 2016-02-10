@@ -113,6 +113,14 @@
             <name>Andrey Skripalschikov</name>
         </developer>
         <developer>
+            <name>Kamil Szymanski</name>
+            <url>https://github.com/kamilszymanski</url>
+        </developer>
+        <developer>
+            <name>Pierre Viret</name>
+            <url>https://github.com/pierre-viret</url>
+        </developer>
+        <developer>
             <name>Yin Xunjun</name>
         </developer>
         <developer>
@@ -304,11 +312,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven.surefire.plugin.version}</version>
-                    <configuration>
-                        <includes>
-                            <include>com/tagtraum/perf/gcviewer/TestAll.java</include>
-                        </includes>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

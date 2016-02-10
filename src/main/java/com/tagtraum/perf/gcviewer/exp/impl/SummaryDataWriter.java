@@ -47,14 +47,13 @@ public class SummaryDataWriter extends AbstractDataWriter {
 
     /**
      * Constructor for SummaryDatWriter with additional <code>configuration</code> parameter.
-     * Expected contents of the parameter:
+     *
+     * @param out OutputStream, where the output should be written to
+     * @param configuration Configuration for this SummaryDataWriter; expected contents of the parameter:
      * <ul>
      * <li>String: <code>ISummaryExportFormatter.NAME</code></li>
      * <li>Object: instance of class implementing ISummaryExportFormatter
      * </ul>
-     *
-     * @param out
-     * @param configuration
      */
     public SummaryDataWriter(OutputStream out, Map<String, Object> configuration) {
         super(out, configuration);

@@ -1,0 +1,186 @@
+<?xml version="1.0" ?>
+
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R28_Java8_GA_20150116_2030_B231420_CMPRSS">
+
+<initialized id="1" timestamp="2015-12-31T15:22:43.002">
+  <attribute name="gcPolicy" value="-Xgcpolicy:gencon" />
+  <attribute name="maxHeapSize" value="0x20000000" />
+  <attribute name="initialHeapSize" value="0x20000000" />
+  <attribute name="compressedRefs" value="true" />
+  <attribute name="compressedRefsDisplacement" value="0x0" />
+  <attribute name="compressedRefsShift" value="0x0" />
+  <attribute name="pageSize" value="0x1000" />
+  <attribute name="pageType" value="not used" />
+  <attribute name="requestedPageSize" value="0x1000" />
+  <attribute name="requestedPageType" value="not used" />
+  <attribute name="gcthreads" value="16" />
+  <attribute name="numaNodes" value="0" />
+  <system>
+    <attribute name="physicalMemory" value="17179869184" />
+    <attribute name="numCPUs" value="16" />
+    <attribute name="architecture" value="ppc64" />
+    <attribute name="os" value="AIX" />
+    <attribute name="osVersion" value="6.1" />
+  </system>
+  <vmargs>
+    <vmarg name="-Xoptionsfile=/softs/java/jdk8.70/jre/lib/ppc64/compressedrefs/options.default" />
+    <vmarg name="-Xlockword:mode=default,noLockword=java/lang/String,noLockword=java/util/MapEntry,noLockword=java/util/HashMap$Entry,noLockword..." />
+    <vmarg name="-Xjcl:jclse7b_28" />
+    <vmarg name="-Dcom.ibm.oti.vm.bootstrap.library.path=/softs/java/jdk8.70/jre/lib/ppc64/compressedrefs:/softs/java/jdk8.70/jre/lib/ppc64" />
+    <vmarg name="-Dsun.boot.library.path=/softs/java/jdk8.70/jre/lib/ppc64/compressedrefs:/softs/java/jdk8.70/jre/lib/ppc64" />
+    <vmarg name="-Djava.library.path=/softs/java/jdk8.70/jre/lib/ppc64/compressedrefs:/softs/java/jdk8.70/jre/lib/ppc64:/softs/java/jdk8.70/jre/..." />
+    <vmarg name="-Djava.home=/softs/java/jdk8.70/jre" />
+    <vmarg name="-Djava.ext.dirs=/softs/java/jdk8.70/jre/lib/ext" />
+    <vmarg name="-Duser.dir=/softs/1_mco/1_ines/wm99/is56100/IntegrationServer/instances/prj56100" />
+    <vmarg name="-Djava.runtime.version=pap6480-20150129_02" />
+    <vmarg name="-Djava.class.path=." />
+    <vmarg name="-Dosgi.install.area=/softs/1_mco/1_ines/wm99/is56100/profiles/IS_prj56100" />
+    <vmarg name="-Declipse.ignoreApp=true" />
+    <vmarg name="-Dosgi.noShutdown=true" />
+    <vmarg name="-Xbootclasspath/a:/softs/1_mco/1_ines/wm99/is56100/common/runtime/agent/repository/plugins/com.softwareag.platform.jaas.proxy_9..." />
+    <vmarg name="-Djava.io.tmpdir=/softs/1_mco/1_ines/wm99/is56100/profiles/IS_prj56100/workspace/temp" />
+    <vmarg name="-server" />
+    <vmarg name="-Dorg.apache.xml.dtm.DTMManager=org.apache.xml.dtm.ref.DTMManagerDefault" />
+    <vmarg name="-Djavax.xml.xpath.XPathFactory:http://java.sun.com/jaxp/xpath/dom=com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl" />
+    <vmarg name="-Dcom.webmethods.sc.auditing.Use80TableFormat=true" />
+    <vmarg name="-Dsun.lang.ClassLoader.allowArraySyntax=true" />
+    <vmarg name="-DWM_HOME=/softs/1_mco/1_ines/wm99/is56100/IntegrationServer/instances/../.." />
+    <vmarg name="-Dwatt.server.prepend.classes=/softs/1_mco/1_ines/wm99/is56100/IntegrationServer/instances/../../common/lib/wm-converters.jar" />
+    <vmarg name="-Dwatt.server.append.classes" />
+    <vmarg name="-Xbootclasspath/p:/softs/1_mco/1_ines/wm99/is56100/IntegrationServer/instances/../../common/lib/ext/serializer.jar:/softs/1_mco..." />
+    <vmarg name="-XX:SurvivorRatio=8" />
+    <vmarg name="-XX:NewRatio=4" />
+    <vmarg name="-XX:+HeapDumpOnOutOfMemoryError" />
+    <vmarg name="-XX:-UseAdaptiveSizePolicy" />
+    <vmarg name="-XX:+UseThreadPriorities" />
+    <vmarg name="-verbose:gc" />
+    <vmarg name="-XX:+PrintGC" />
+    <vmarg name="-XX:+PrintGCDetails" />
+    <vmarg name="-XX:+PrintGCTimeStamps" />
+    <vmarg name="-Xverbosegclog:/logs/1_mco/1_ines/wm99/is56100/IntegrationServer/instances/prj56100/logs/GC_IS_PRJ_56100_%y%m%d_%H%M%S.log" />
+    <vmarg name="-Xms512m" />
+    <vmarg name="-Xmx512m" />
+    <vmarg name="-Djava.library.path=/softs/1_mco/1_ines/wm99/is56100/IntegrationServer/instances/../../common/lib/tw-3.5.25:/softs/1_mco/1_ines..." />
+    <vmarg name="-Djava.class.path=/softs/1_mco/1_ines/wm99/is56100/IntegrationServer/instances/../../common/lib/tw-3.5.25/wrapper.jar:/softs/1_..." />
+    <vmarg name="-Dwrapper.key=hma3hQVmiO6eXlFU_jYgthAda0qmCWq3" />
+    <vmarg name="-Dwrapper.port=32015" />
+    <vmarg name="-Dwrapper.jvm.port.min=31000" />
+    <vmarg name="-Dwrapper.jvm.port.max=31999" />
+    <vmarg name="-Dwrapper.disable_console_input=TRUE" />
+    <vmarg name="-Dwrapper.pid=15794388" />
+    <vmarg name="-Dwrapper.version=3.5.25-st" />
+    <vmarg name="-Dwrapper.native_library=wrapper" />
+    <vmarg name="-Dwrapper.arch=ppc" />
+    <vmarg name="-Dwrapper.ignore_signals=TRUE" />
+    <vmarg name="-Dwrapper.service=TRUE" />
+    <vmarg name="-Dwrapper.cpu.timeout=10" />
+    <vmarg name="-Dwrapper.jvmid=1" />
+    <vmarg name="-Dwrapper.lang.domain=wrapper" />
+    <vmarg name="-Dwrapper.lang.folder=../lang" />
+    <vmarg name="-Dsun.java.command=org.tanukisoftware.wrapper.WrapperStartStopApp org.eclipse.equinox.launcher.Main 4 -configuration /softs/1_m..." />
+    <vmarg name="-Dsun.java.launcher=SUN_STANDARD" />
+    <vmarg name="_org.apache.harmony.vmi.portlib" value="000001001017A430" />
+  </vmargs>
+</initialized>
+
+<exclusive-start id="2" timestamp="2015-12-31T15:22:46.957" intervalms="3955.367">
+  <response-info timems="0.030" idlems="0.030" threads="0" lastid="00000000303A2A00" lastname="Start Level Event Dispatcher" />
+</exclusive-start>
+<af-start id="3" totalBytesRequested="16392" timestamp="2015-12-31T15:22:46.957" intervalms="3955.490" />
+<cycle-start id="4" type="scavenge" contextid="0" timestamp="2015-12-31T15:22:46.957" intervalms="3955.562" />
+<gc-start id="5" type="scavenge" contextid="4" timestamp="2015-12-31T15:22:46.957">
+  <mem-info id="6" free="401882552" total="536870912" percent="74">
+    <mem type="nursery" free="0" total="134217728" percent="0">
+      <mem type="allocate" free="0" total="67108864" percent="0" />
+      <mem type="survivor" free="0" total="67108864" percent="0" />
+    </mem>
+    <mem type="tenure" free="401882552" total="402653184" percent="99">
+      <mem type="soa" free="381750712" total="382521344" percent="99" />
+      <mem type="loa" free="20131840" total="20131840" percent="100" />
+    </mem>
+    <remembered-set count="11317" />
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="67266664" >
+  <allocated-bytes non-tlh="2423016" tlh="64843648" />
+  <largest-consumer threadName="Start Level Event Dispatcher" threadId="00000000303A2A00" bytes="32985584" />
+</allocation-stats>
+<gc-op id="7" type="scavenge" timems="24.782" contextid="4" timestamp="2015-12-31T15:22:46.982">
+  <scavenger-info tenureage="10" tenuremask="7c00" tiltratio="50" />
+  <memory-copied type="nursery" objects="182521" bytes="10683184" bytesdiscarded="683152" />
+  <finalization candidates="1718" enqueued="1577" />
+  <ownableSynchronizers candidates="30" cleared="0" />
+  <references type="soft" candidates="825" cleared="0" enqueued="0" dynamicThreshold="32" maxThreshold="32" />
+  <references type="weak" candidates="9944" cleared="1762" enqueued="1619" />
+  <references type="phantom" candidates="6" cleared="0" enqueued="0" />
+</gc-op>
+<gc-end id="8" type="scavenge" contextid="4" durationms="25.007" usertimems="28.731" systemtimems="0.155" timestamp="2015-12-31T15:22:46.982">
+  <mem-info id="9" free="457545744" total="536870912" percent="85">
+    <mem type="nursery" free="55663192" total="134217728" percent="41">
+      <mem type="allocate" free="55663192" total="67108864" percent="82" />
+      <mem type="survivor" free="0" total="67108864" percent="0" />
+    </mem>
+    <mem type="tenure" free="401882552" total="402653184" percent="99">
+      <mem type="soa" free="381750712" total="382521344" percent="99" />
+      <mem type="loa" free="20131840" total="20131840" percent="100" />
+    </mem>
+    <pending-finalizers system="1576" default="1" reference="1619" classloader="0" />
+    <remembered-set count="11317" />
+  </mem-info>
+</gc-end>
+<cycle-end id="10" type="scavenge" contextid="4" timestamp="2015-12-31T15:22:46.982" />
+<allocation-satisfied id="11" threadId="00000000303A2A00" bytesRequested="16392" />
+<af-end id="12" timestamp="2015-12-31T15:22:46.982" />
+<exclusive-end id="13" timestamp="2015-12-31T15:22:46.982" durationms="25.388" />
+
+<exclusive-start id="14" timestamp="2015-12-31T15:22:48.229" intervalms="1272.346">
+  <response-info timems="0.043" idlems="0.043" threads="0" lastid="0000000030664600" lastname="webMethods Integration Server" />
+</exclusive-start>
+<af-start id="15" totalBytesRequested="4528" timestamp="2015-12-31T15:22:48.229" intervalms="1272.366" />
+<cycle-start id="16" type="scavenge" contextid="0" timestamp="2015-12-31T15:22:48.230" intervalms="1272.372" />
+<gc-start id="17" type="scavenge" contextid="16" timestamp="2015-12-31T15:22:48.230">
+  <mem-info id="18" free="401690672" total="536870912" percent="74">
+    <mem type="nursery" free="0" total="134217728" percent="0">
+      <mem type="allocate" free="0" total="67108864" percent="0" />
+      <mem type="survivor" free="0" total="67108864" percent="0" />
+    </mem>
+    <mem type="tenure" free="401690672" total="402653184" percent="99">
+      <mem type="soa" free="381558832" total="382521344" percent="99" />
+      <mem type="loa" free="20131840" total="20131840" percent="100" />
+    </mem>
+    <remembered-set count="13843" />
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="55001632" >
+  <allocated-bytes non-tlh="2550104" tlh="52451528" />
+  <largest-consumer threadName="Start Level Event Dispatcher" threadId="00000000303A2A00" bytes="32294664" />
+</allocation-stats>
+<gc-op id="19" type="scavenge" timems="21.203" contextid="16" timestamp="2015-12-31T15:22:48.251">
+  <scavenger-info tenureage="10" tenuremask="7c00" tiltratio="50" />
+  <memory-copied type="nursery" objects="208476" bytes="12738720" bytesdiscarded="720584" />
+  <finalization candidates="2849" enqueued="1911" />
+  <ownableSynchronizers candidates="39" cleared="0" />
+  <references type="soft" candidates="1053" cleared="0" enqueued="0" dynamicThreshold="32" maxThreshold="32" />
+  <references type="weak" candidates="9120" cleared="594" enqueued="588" />
+  <references type="phantom" candidates="7" cleared="0" enqueued="0" />
+</gc-op>
+<gc-end id="20" type="scavenge" contextid="16" durationms="21.365" usertimems="29.331" systemtimems="0.362" timestamp="2015-12-31T15:22:48.251">
+  <mem-info id="21" free="455264856" total="536870912" percent="84">
+    <mem type="nursery" free="53574184" total="134217728" percent="39">
+      <mem type="allocate" free="53574184" total="67108864" percent="79" />
+      <mem type="survivor" free="0" total="67108864" percent="0" />
+    </mem>
+    <mem type="tenure" free="401690672" total="402653184" percent="99">
+      <mem type="soa" free="381558832" total="382521344" percent="99" />
+      <mem type="loa" free="20131840" total="20131840" percent="100" />
+    </mem>
+    <pending-finalizers system="1911" default="0" reference="588" classloader="0" />
+    <remembered-set count="13843" />
+  </mem-info>
+</gc-end>
+<cycle-end id="22" type="scavenge" contextid="16" timestamp="2015-12-31T15:22:48.251" />
+<allocation-satisfied id="23" threadId="0000000030664600" bytesRequested="4528" />
+<af-end id="24" timestamp="2015-12-31T15:22:48.251" />
+<exclusive-end id="25" timestamp="2015-12-31T15:22:48.251" durationms="21.708" />
+
+</verbosegc>

@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import java.util.Deque;
@@ -119,10 +120,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
     private static final String CMS_ABORT_PRECLEAN = " CMS: abort preclean due to time ";
 
-    private static final String HEAP_SIZING_START = "Heap";
+    private static final String HEAP = "Heap";
+    private static final String HEAP_SIZING_BEFORE = HEAP + " before";
+    private static final String HEAP_SIZING_AFTER = HEAP + " after";
 
     private static final List<String> HEAP_STRINGS = new LinkedList<String>();
     static {
+        HEAP_STRINGS.add(HEAP); // java 6 and earlier -XX:+PrintHeapAtGC
         HEAP_STRINGS.add("def new generation"); // serial young collection -XX:+UseSerialGC
         HEAP_STRINGS.add("PSYoungGen"); // parallel young collection -XX:+UseParallelGC
         HEAP_STRINGS.add("par new generation"); // parallel young (CMS / -XX:+UseParNewGC)
@@ -208,7 +212,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     public GCModel read() throws IOException {
         if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x / 1.8.x format...");
 
-        try (BufferedReader in = this.in) {
+        try (LineNumberReader in = this.in) {
             GCModel model = new GCModel();
             model.setFormat(GCModel.Format.SUN_X_LOG_GC);
             Matcher mixedLineMatcher = linesMixedPattern.matcher("");
@@ -219,7 +223,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             String line;
             // beginningOfLine must be a stack because more than one beginningOfLine might be needed
             Deque<String> beginningOfLine = new LinkedList<String>();
-            int lineNumber = 0;
             boolean lastLineWasScavengeBeforeRemark = false;
             boolean lineSkippedForScavengeBeforeRemark = false;
             boolean printTenuringDistributionOn = false;
@@ -228,8 +231,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
             while ((line = in.readLine()) != null && shouldContinue()) {
                 parsePosition.setIndex(0);
-                ++lineNumber;
-                parsePosition.setLineNumber(lineNumber);
+                parsePosition.setLineNumber(in.getLineNumber());
                 if ("".equals(line)) {
                     continue;
                 }
@@ -261,7 +263,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         // -XX:PrintCmsStatistics -> filter text that the parser doesn't know
                         printCmsStatisticsIterationsMatcher.reset(line);
                         if (!printCmsStatisticsIterationsMatcher.matches()) {
-                            getLogger().severe("printCmsStatisticsIterationsMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            getLogger().severe("printCmsStatisticsIterationsMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                             continue;
                         }
 
@@ -281,7 +283,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     if (line.indexOf(PRINT_TENURING_DISTRIBUTION) > 0) {
                         printTenuringDistributionMatcher.reset(line);
                         if (!printTenuringDistributionMatcher.matches()) {
-                            getLogger().severe("printDistributionMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                            getLogger().severe("printDistributionMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                             continue;
                         }
 
@@ -312,7 +314,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy
                             printAdaptiveSizePolicyMatcher.reset(line);
                             if (!printAdaptiveSizePolicyMatcher.matches()) {
-                                getLogger().severe("printAdaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                getLogger().severe("printAdaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                                 continue;
                             }
 
@@ -326,23 +328,23 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy
                             adaptiveSizePolicyMatcher.reset(line);
                             if (!adaptiveSizePolicyMatcher.matches()) {
-                                getLogger().severe("adaptiveSizePolicyMatcher did not match for line " + lineNumber + ": '" + line + "'");
+                                getLogger().severe("adaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                                 continue;
                             }
                             beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
                         }
                         continue;
                     }
-                    else if (line.indexOf(HEAP_SIZING_START) >= 0) {
+                    else if (isPrintHeapAtGcStarting(line)) {
                         // if -XX:+ScavengeBeforeRemark and -XX:+PrintHeapAtGC are combined, the following lines are common
                         // 2015-05-14T18:55:12.588+0200: 1.157: [GC (CMS Final Remark) [YG occupancy: 10451 K (47936 K)]{Heap before GC invocations=22 (full 13):
-                        if (line.contains("]{" + HEAP_SIZING_START)) {
-                            beginningOfLine.add(line.substring(0, line.indexOf("{" + HEAP_SIZING_START)));
+                        if (line.contains("]{" + HEAP)) {
+                            beginningOfLine.add(line.substring(0, line.indexOf("{" + HEAP)));
                             lastLineWasScavengeBeforeRemark = true;
                         }
 
                         // the next few lines will be the sizing of the heap
-                        lineNumber = skipLines(in, parsePosition, lineNumber, HEAP_STRINGS);
+                        skipLines(in, parsePosition, HEAP_STRINGS);
                         continue;
                     }
                     else if (beginningOfLine.size() > 0) {
@@ -420,6 +422,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         finally {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
+    }
+
+    private boolean isPrintHeapAtGcStarting(String line) {
+        return line.startsWith(HEAP) // jdk 6 and before
+                || line.indexOf(HEAP_SIZING_BEFORE) >= 0 // jdk 7 and after
+                || line.indexOf(HEAP_SIZING_AFTER) >= 0;
     }
 
     private void handleMixedLine(GCModel model,
