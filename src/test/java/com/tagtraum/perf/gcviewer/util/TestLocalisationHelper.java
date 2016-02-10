@@ -3,6 +3,8 @@ package com.tagtraum.perf.gcviewer.util;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import org.junit.Test;
 
 /**
@@ -23,6 +25,7 @@ public class TestLocalisationHelper {
     
     @Test
     public void getStringWithParams() {
+        Locale.setDefault(Locale.FRENCH);
         String stringWithoutPlaceholders = LocalisationHelper.getString("datareader_parseerror_dialog_message", "#1", "#2");
         
         assertFalse("{0} should not be present in string", stringWithoutPlaceholders.indexOf("{0}") >= 0);
