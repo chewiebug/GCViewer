@@ -151,7 +151,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
      * Returns the preferred size to set a component at in order to render
      * an html string.  You can specify the size of one dimension.
      *
-     * @see http://blog.nobel-joergensen.com/2009/01/18/changing-preferred-size-of-a-html-jlabel/
+     * @see <a href="http://blog.nobel-joergensen.com/2009/01/18/changing-preferred-size-of-a-html-jlabel/">reference for this implementation</a>
      */
     private Dimension calculatePreferredSize(JLabel labelWithHtmlText, boolean width, int preferredSize) {
 
