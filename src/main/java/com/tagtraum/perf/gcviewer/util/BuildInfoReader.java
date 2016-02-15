@@ -40,6 +40,13 @@ public class BuildInfoReader {
         return propertyValue;
     }
 
+    /**
+     * Returns Manifest-Attributes for MANIFEST.MF, if running for a .jar file
+     *
+     * @return Manifest Attributes (may be empty but never null)
+     * @throws IOException If something went wrong finding the MANIFEST file
+     * @see <a href="http://stackoverflow.com/a/1273432">stackoverflow article</a>
+     */
     private static Attributes getAttributes() throws IOException {
         Class clazz = BuildInfoReader.class;
         String className = clazz.getSimpleName() + ".class";
@@ -49,8 +56,7 @@ public class BuildInfoReader {
             return new Attributes(0);
         }
         String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + FILE_NAME;
-        Manifest manifest = null;
-        manifest = new Manifest(new URL(manifestPath).openStream());
+        Manifest manifest = new Manifest(new URL(manifestPath).openStream());
         return manifest.getMainAttributes();
     }
 
