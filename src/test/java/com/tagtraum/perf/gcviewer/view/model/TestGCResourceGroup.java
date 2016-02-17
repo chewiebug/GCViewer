@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
@@ -58,7 +59,8 @@ public class TestGCResourceGroup {
 
     @Test
     public void getGroupStringShort1Element() {
-        GCResourceGroup gcResourceGroup = new GCResourceGroup("d:/temp/test/gc-log-file.log");
-        Assert.assertThat(gcResourceGroup.getGroupStringShort(), equalTo("file:/d:/temp/test/gc-log-file.log"));
+        GCResourceGroup gcResourceGroup = new GCResourceGroup("c:/temp/test/gc-log-file.log");
+        Assert.assertThat("should start with", gcResourceGroup.getGroupStringShort(), startsWith("file:/"));
+        Assert.assertThat("should end with", gcResourceGroup.getGroupStringShort(), endsWith("/temp/test/gc-log-file.log"));
     }
 }
