@@ -179,7 +179,7 @@ public class GCResource {
 
     @Override
     public String toString() {
-        return "GCResource [resourceName=" + resourceName + ", isReload=" + isReload
+        return "GCResource [resourceNameAsUrlString=" + getResourceNameAsUrlString() + ", isReload=" + isReload
                 + ", logger=" + logger + ", model=" + model + "]";
     }
 

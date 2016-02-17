@@ -100,4 +100,11 @@ public class RecentGCResourcesModel {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "RecentGCResourcesModel{" +
+                "resourceNameGroupList=" + resourceNameGroupList +
+                '}';
+    }
+
 }
