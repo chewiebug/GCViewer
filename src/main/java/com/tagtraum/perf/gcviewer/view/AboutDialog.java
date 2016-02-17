@@ -27,7 +27,7 @@ import com.tagtraum.perf.gcviewer.view.util.UrlDisplayHelper;
 
 /**
  * About dialog showing version and contributors information.
- * 
+ *
  * @author Hendrik Schreiber
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
@@ -35,7 +35,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
 
     private static final String GCVIEWER_HOMEPAGE = "https://github.com/chewiebug/gcviewer/wiki";
     private static final String ACTION_HOMEPAGE = "homepage";
-    
+
     private static final String[] CONTRIBUTORS = {
         "Hans Bausewein",
         "Peter Bilstein",
@@ -45,6 +45,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Bernd Eckenfels",
         "Ryan Gardner",
         "Neil Gentleman",
+        "Chris Grindstaff",
         "Michi Gysel",
         "Johan Kaving",
         "Maciej Kwiecien",
@@ -79,16 +80,16 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         versionPanel.setLayout(new GridBagLayout());
 
-        JLabel copyright = new JLabel("\u00A9" + " 2011-2015: Joerg Wuethrich and contributors", JLabel.CENTER);
+        JLabel copyright = new JLabel("\u00A9" + " 2011-2016: Joerg Wuethrich and contributors", JLabel.CENTER);
 
         JLabel contributorsLabel = new JLabel("contributors (alphabetically ordered):", JLabel.CENTER);
         contributorsLabel.setForeground(Color.GRAY);
         JLabel contributors = new JLabel(formatContributors(CONTRIBUTORS), JLabel.CENTER);
         contributors.setPreferredSize(calculatePreferredSize(contributors, true, logoIcon.getIconWidth()));
-        
+
         JLabel version = new JLabel("<html><font color=\"gray\">version:</font> " + BuildInfoReader.getVersion() + "</html>", JLabel.CENTER);
         JLabel buildDate = new JLabel("<html><font color=\"gray\">build date:</font> " + BuildInfoReader.getBuildDate() + "</html>", JLabel.CENTER);
-        
+
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = GridBagConstraints.NORTH;
         gridBagConstraints.fill = GridBagConstraints.VERTICAL;
@@ -112,7 +113,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
 
         gridBagConstraints.gridy = 4;
         versionPanel.add(buildDate, gridBagConstraints);
-        
+
         Panel buttonPanel = new Panel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         if (UrlDisplayHelper.displayUrlIsSupported()) {
@@ -139,30 +140,30 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         for (String contributor : contributors) {
             sb.append(contributor).append(" | ");
         }
-        
+
         sb.delete(sb.length() - 3, sb.length());
-        
+
         sb.append("</center></html>");
-        
+
         return sb.toString();
     }
-    
+
     /**
      * Returns the preferred size to set a component at in order to render
      * an html string.  You can specify the size of one dimension.
-     * 
-     * @see http://blog.nobel-joergensen.com/2009/01/18/changing-preferred-size-of-a-html-jlabel/
+     *
+     * @see <a href="http://blog.nobel-joergensen.com/2009/01/18/changing-preferred-size-of-a-html-jlabel/">reference for this implementation</a>
      */
     private Dimension calculatePreferredSize(JLabel labelWithHtmlText, boolean width, int preferredSize) {
- 
+
         View view = (View) labelWithHtmlText.getClientProperty(BasicHTML.propertyKey);
- 
-        view.setSize(width ? preferredSize : 0, 
+
+        view.setSize(width ? preferredSize : 0,
                      width ? 0 : preferredSize);
- 
+
         float w = view.getPreferredSpan(View.X_AXIS);
         float h = view.getPreferredSpan(View.Y_AXIS);
- 
+
         return new Dimension((int) Math.ceil(w),
                 (int) Math.ceil(h));
     }
