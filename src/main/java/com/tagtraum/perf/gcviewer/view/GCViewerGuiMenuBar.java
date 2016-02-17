@@ -163,6 +163,6 @@ public class GCViewerGuiMenuBar extends JMenuBar {
             }
         }
         
-        throw new IllegalStateException("JCheckBoxMenuItem with actionCommant '" + ActionCommands.WATCH + "' not found");
+        throw new IllegalStateException("JCheckBoxMenuItem with actionCommand '" + ActionCommands.WATCH + "' not found");
     }
 }

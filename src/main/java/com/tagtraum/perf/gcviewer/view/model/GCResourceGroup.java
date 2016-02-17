@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.tagtraum.perf.gcviewer.model.GCResource;
 
@@ -19,7 +20,9 @@ public class GCResourceGroup {
     private List<GCResource> gcResourceList;
 
     public GCResourceGroup(List<GCResource> gcResourceList) {
-        this.gcResourceList = gcResourceList;
+        this.gcResourceList = gcResourceList.stream()
+                .map(gcResource -> new GCResource(gcResource.getResourceName()))
+                .collect(Collectors.toList());
     }
     
     /**
@@ -104,7 +107,7 @@ public class GCResourceGroup {
             return sb.toString();
         }
         else {
-            return gcResourceList.get(0).getResourceName();
+            return gcResourceList.get(0).getResourceNameAsUrlString();
         }
     }
     

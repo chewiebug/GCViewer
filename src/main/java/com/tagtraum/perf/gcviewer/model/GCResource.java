@@ -60,7 +60,7 @@ public class GCResource {
                 return false;
             }
         }
-        else if (!resourceName.equals(other.resourceName)) {
+        else if (!getResourceNameAsUrlString().equals(other.getResourceNameAsUrlString())) {
             return false;
         }
         return true;
@@ -90,12 +90,25 @@ public class GCResource {
         return url;
     }
 
+    /**
+     * Same as {@link #getResourceNameAsUrl()}, but still returns a string, if MalFormedURLException occurred.
+     * @return same as getResourceNameAsUrl(), but without Exception
+     */
+    public String getResourceNameAsUrlString() {
+        try {
+            return getResourceNameAsUrl().toString();
+        }
+        catch (MalformedURLException e) {
+            return "malformed url: " + resourceName;
+        }
+    }
+
 	@Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
-        result = prime * result
-                + ((resourceName == null) ? 0 : resourceName.hashCode());
+        result = prime * result + ((resourceName == null) ? 0 : getResourceNameAsUrlString().hashCode());
+
         return result;
     }
 
