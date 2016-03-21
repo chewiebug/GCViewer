@@ -253,6 +253,8 @@ Pause
   - Average length of a full GC pause
 - Min / max full GC pause:
   - Shortest / longest full GC pause
+- Min / max full GC pause interval:
+  - Min / max interval between two pauses due to full collections
   
 * * *
 - Acc GC:
