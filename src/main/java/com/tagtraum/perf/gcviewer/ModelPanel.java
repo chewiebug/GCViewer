@@ -378,6 +378,7 @@ public class ModelPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_count_full_gc_pauses"));
             addEntry(LocalisationHelper.getString("data_panel_avg_fullgcpause"));
             addEntry(LocalisationHelper.getString("data_panel_min_max_full_gc_pause"));
+            addEntry(LocalisationHelper.getString("data_panel_min_max_full_gc_pause_interval"));
 
             newGroup(LocalisationHelper.getString("data_panel_group_gc_pauses"), true);
             addEntry(LocalisationHelper.getString("data_panel_acc_gcpauses"));
@@ -390,6 +391,7 @@ public class ModelPanel extends JTabbedPane {
             boolean pauseDataAvailable = model.getPause().getN() > 0;
             boolean gcDataAvailable = model.getGCPause().getN() > 0;
             boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
+            boolean fullGcPauseIntervalAvailable = model.getFullGCPauseInterval().getN() > 0;
             boolean pauseIntervalDataAvailable = model.getPauseInterval().getN() > 0; // fix for "Exception if only one GC log line in file"
             boolean vmOperationsAvailable = model.getVmOperationPause().getN() > 0;
             
@@ -437,6 +439,9 @@ public class ModelPanel extends JTabbedPane {
             updateValue(LocalisationHelper.getString("data_panel_min_max_full_gc_pause"), 
             		fullGCDataAvailable ? pauseFormatter.format(model.getFullGCPause().getMin()) + "s / " + pauseFormatter.format(model.getFullGCPause().getMax()) + "s" : "n/a", 
             		fullGCDataAvailable);
+            updateValue(LocalisationHelper.getString("data_panel_min_max_full_gc_pause_interval"),
+                    fullGcPauseIntervalAvailable ? pauseFormatter.format(model.getFullGCPauseInterval().getMin()) + "s / " + pauseFormatter.format(model.getFullGCPauseInterval().getMax()) + "s" : "n/a",
+                    fullGcPauseIntervalAvailable);
 
             updateValue(LocalisationHelper.getString("data_panel_acc_gcpauses"), 
             		gcTimeFormatter.format(model.getGCPause().getSum())+ "s (" + percentFormatter.format(model.getGCPause().getSum()*100.0/model.getPause().getSum()) + "%)", 

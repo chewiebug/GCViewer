@@ -115,6 +115,8 @@ public class GCModel implements Serializable {
     private double lastPauseTimeStamp = 0;
     private DoubleData totalPause;
     private DoubleData fullGCPause;
+    private double lastFullGcPauseTimeStamp = 0;
+    private DoubleData fullGcPauseInterval; // interval between two stop the Full GC pauses
     private DoubleData gcPause; // not full gc but stop the world pause
     private DoubleData vmOperationPause; // "application stopped"
     private double lastGcPauseTimeStamp = 0;
@@ -151,6 +153,7 @@ public class GCModel implements Serializable {
         this.postGCUsedMemory = new IntData();
         this.totalPause = new DoubleData();
         this.fullGCPause = new DoubleData();
+        this.fullGcPauseInterval = new DoubleData();
         this.gcPause = new DoubleData();
         this.vmOperationPause = new DoubleData();
         this.pauseInterval = new DoubleData();
@@ -399,6 +402,7 @@ public class GCModel implements Serializable {
                 DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
                 pauses.add(event.getPause());
 
+                updateFullGcPauseInterval(event);
                 fullGCEvents.add(event);
                 postFullGCUsedHeap.add(event.getPostUsed());
                 int freed = event.getPreUsed() - event.getPostUsed();
@@ -564,6 +568,23 @@ public class GCModel implements Serializable {
         }
     }
 
+    private void updateFullGcPauseInterval(GCEvent event) {
+        if (lastFullGcPauseTimeStamp > 0) {
+            if (!event.isConcurrencyHelper()) {
+                // JRockit sometimes has special timestamps that seem to go back in time,
+                // omit them here
+                if (event.getTimestamp() - lastFullGcPauseTimeStamp >= 0) {
+                    fullGcPauseInterval.add(event.getTimestamp() - lastFullGcPauseTimeStamp);
+                }
+                lastFullGcPauseTimeStamp = event.getTimestamp();
+            }
+        } else {
+            // interval between startup of VM and first gc event should be omitted because
+            // startup time of VM is included.
+            lastFullGcPauseTimeStamp = event.getTimestamp();
+        }
+    }
+
     private void updateInitiatingOccupancyFraction(GCEvent event) {
         GCEvent initialMarkEvent = event;
 
@@ -635,6 +656,13 @@ public class GCModel implements Serializable {
      */
     public DoubleData getFullGCPause() {
         return fullGCPause;
+    }
+
+    /**
+     * @return Statistical data about pauses interval between full garbage collections.
+     */
+    public DoubleData getFullGCPauseInterval() {
+        return fullGcPauseInterval;
     }
 
     /**
