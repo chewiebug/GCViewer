@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  *
@@ -35,7 +36,7 @@ public class TestDataReaderSun1_2_2 {
                 "<GC: freed 672 objects, 601032 bytes in 5 ms, 77% free (646040/838856)>\n" +
                 "<GC: 721 milliseconds since last GC>\n" +
                 "<GC: expanded object space by 839680 to 1678536 bytes, 74% free>\n").getBytes());
-        DataReader reader = new DataReaderSun1_2_2(in);
+        DataReader reader = new DataReaderSun1_2_2(new GCResource("byteArray"), in);
         GCModel model = reader.read();
         assertEquals(3, model.size());
         Iterator<GCEvent> i = model.getGCEvents();

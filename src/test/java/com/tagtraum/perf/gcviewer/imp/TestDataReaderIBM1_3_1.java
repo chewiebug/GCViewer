@@ -6,7 +6,9 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  *
@@ -18,8 +20,9 @@ public class TestDataReaderIBM1_3_1 {
 
     @Test
     public void testParse1() throws Exception {
-        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, "SampleIBM1_3_1.txt");
-        DataReader reader = new DataReaderIBM1_3_1(in);
+        String fileName = "SampleIBM1_3_1.txt";
+        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, fileName);
+        DataReader reader = new DataReaderIBM1_3_1(new GCResource(fileName), in);
         GCModel model = reader.read();
         
         assertEquals("number of events", 21, model.size());

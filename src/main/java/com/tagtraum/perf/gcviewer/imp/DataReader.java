@@ -11,5 +11,11 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public interface DataReader {
-    public GCModel read() throws IOException;
+    /**
+     * A call to this method should read a {@link GCModel}.
+     *
+     * @return GCModel representing a gc log file
+     * @throws IOException thrown, when an exception reading the file occurred
+     */
+    GCModel read() throws IOException;
 }

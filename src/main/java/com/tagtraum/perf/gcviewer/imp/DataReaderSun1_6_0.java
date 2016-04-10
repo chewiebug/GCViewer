@@ -10,7 +10,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +22,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
@@ -65,8 +65,6 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * @see DataReaderSun1_6_0G1
  */
 public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
-
-    private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0.class.getName());
 
     private static final String UNLOADING_CLASS = "[Unloading class ";
     private static final String APPLICATION_TIME = "Application time:";
@@ -207,12 +205,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     // -XX:+CMSScavengeBeforeRemark JDK 1.5
     private static final String SCAVENGE_BEFORE_REMARK = Type.SCAVENGE_BEFORE_REMARK.getName();
 
-    public DataReaderSun1_6_0(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-        super(in, gcLogType);
+    public DataReaderSun1_6_0(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(gcResource, in, gcLogType);
     }
 
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x / 1.8.x format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun / Oracle 1.4.x / 1.5.x / 1.6.x / 1.7.x / 1.8.x format...");
 
         try (LineNumberReader in = this.in) {
             GCModel model = new GCModel();
@@ -231,7 +229,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             boolean isInFlsStatisticsBlock = false;
             ParseInformation parsePosition = new ParseInformation(0);
 
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 parsePosition.setIndex(0);
                 parsePosition.setLineNumber(in.getLineNumber());
                 if ("".equals(line)) {
@@ -249,7 +247,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (startsWith(line, LOG_INFORMATION_STRINGS, false)) {
-                        LOG.info(line);
+                        getLogger().info(line);
                         continue;
                     }
 
@@ -265,7 +263,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         // -XX:PrintCmsStatistics -> filter text that the parser doesn't know
                         printCmsStatisticsIterationsMatcher.reset(line);
                         if (!printCmsStatisticsIterationsMatcher.matches()) {
-                            LOG.severe("printCmsStatisticsIterationsMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
+                            getLogger().severe("printCmsStatisticsIterationsMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                             continue;
                         }
 
@@ -285,7 +283,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                     if (line.indexOf(PRINT_TENURING_DISTRIBUTION) > 0) {
                         printTenuringDistributionMatcher.reset(line);
                         if (!printTenuringDistributionMatcher.matches()) {
-                            LOG.severe("printDistributionMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
+                            getLogger().severe("printDistributionMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                             continue;
                         }
 
@@ -316,7 +314,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy
                             printAdaptiveSizePolicyMatcher.reset(line);
                             if (!printAdaptiveSizePolicyMatcher.matches()) {
-                                LOG.severe("printAdaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
+                                getLogger().severe("printAdaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                                 continue;
                             }
 
@@ -330,7 +328,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                             // -XX:+PrintAdaptiveSizePolicy
                             adaptiveSizePolicyMatcher.reset(line);
                             if (!adaptiveSizePolicyMatcher.matches()) {
-                                LOG.severe("adaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
+                                getLogger().severe("adaptiveSizePolicyMatcher did not match for line " + in.getLineNumber() + ": '" + line + "'");
                                 continue;
                             }
                             beginningOfLine.addFirst(adaptiveSizePolicyMatcher.group(1));
@@ -414,15 +412,15 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                      model.add(gcEvent);
                 }
                 catch (Exception pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.warning(pe.toString());
-                    if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.getMessage(), pe);
+                    if (getLogger().isLoggable(Level.WARNING)) getLogger().warning(pe.toString());
+                    if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, pe.getMessage(), pe);
                     beginningOfLine.clear();
                 }
             }
             return model;
         }
         finally {
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
     }
 
@@ -496,7 +494,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             }
         }
         else {
-            LOG.warning("line should contain some known PrintFLSStatistics output, which it doesn't (" + line + ")");
+            getLogger().warning("line should contain some known PrintFLSStatistics output, which it doesn't (" + line + ")");
         }
 
         return isInFlsStatsBlock;
@@ -521,7 +519,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                    || ch == '.' || ch == ':' || ch == '+' || ch == '-'));
 
         if (index < 0) {
-            LOG.warning("could not find name of event before " + pos);
+            getLogger().warning("could not find name of event before " + pos);
             index = pos-1;
         }
 

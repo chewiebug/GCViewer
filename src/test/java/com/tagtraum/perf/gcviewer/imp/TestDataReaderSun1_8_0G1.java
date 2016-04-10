@@ -7,13 +7,16 @@ import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Test logs generated specifically by JDK 1.8 G1 algorithm.
@@ -22,24 +25,23 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * <p>created on: 22.07.2014</p>
  */
 public class TestDataReaderSun1_8_0G1 {
-    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
-    private DataReader getDataReader(String fileName) throws IOException {
-        return new DataReaderSun1_6_0G1(
-                UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName),
-                GcLogType.SUN1_8G1
-                );
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+
+    private DataReader getDataReader(GCResource gcResource) throws UnsupportedEncodingException, IOException {
+        return new DataReaderSun1_6_0G1(gcResource, getInputStream(gcResource.getResourceName()), GcLogType.SUN1_8G1);
     }
 
     @Test
     public void fullConcurrentCycle() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0G1_ConcurrentCycle.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        DataReader reader = getDataReader("SampleSun1_8_0G1_ConcurrentCycle.txt");
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("size", model.size(), is(10));
@@ -60,8 +62,7 @@ public class TestDataReaderSun1_8_0G1 {
     public void fullGcWithDetailedSizes() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("byteArray");
 
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2014-07-24T13:49:45.090+0400: 92457.841: [Full GC (Allocation Failure)  5811M->3097M(12G), 8.9862292 secs]"
@@ -69,7 +70,7 @@ public class TestDataReaderSun1_8_0G1 {
                         + "\n [Times: user=12.34 sys=0.22, real=8.99 secs]")
                         .getBytes());
 
-        DataReader reader = new DataReaderSun1_6_0G1(in, GcLogType.SUN1_8);
+        DataReader reader = new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_8);
         GCModel model = reader.read();
 
         GCEvent event = (GCEvent) model.get(0);
@@ -87,10 +88,10 @@ public class TestDataReaderSun1_8_0G1 {
     public void printGCCauseTenuringDistribution() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0G1PrintGCCausePrintTenuringDistribution.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        DataReader reader = getDataReader("SampleSun1_8_0G1PrintGCCausePrintTenuringDistribution.txt");
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertEquals("gc pause sum", 16.7578613, model.getPause().getSum(), 0.000000001);
@@ -102,10 +103,10 @@ public class TestDataReaderSun1_8_0G1 {
     public void printHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0G1PrintHeapAtGc.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        DataReader reader = getDataReader("SampleSun1_8_0G1PrintHeapAtGc.txt");
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertEquals("gc pause sum", 0.0055924, model.getPause().getSum(), 0.000000001);
@@ -117,10 +118,10 @@ public class TestDataReaderSun1_8_0G1 {
     public void humongousMixed() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0G1HumongousMixed.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        DataReader reader = getDataReader("SampleSun1_8_0G1HumongousMixed.txt");
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("number of events", model.size(), is(1));
@@ -131,10 +132,10 @@ public class TestDataReaderSun1_8_0G1 {
     public void extendedRemark() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0G1extended-remark.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        DataReader reader = getDataReader("SampleSun1_8_0G1extended-remark.txt");
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("number of events", model.size(), is(1));

@@ -9,7 +9,6 @@ import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +22,7 @@ import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.G1GcEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
@@ -57,8 +57,6 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     private static final String INCOMPLETE_CONCURRENT_EVENT_INDICATOR = "concurrent-";
 
-    private static final Logger LOG = Logger.getLogger(DataReaderSun1_6_0G1.class .getName());
-
     private static final String TIMES = "[Times";
 
     private static final String TIMES_ALONE = " " + TIMES;
@@ -69,7 +67,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final String G1_ERGONOMICS = "G1Ergonomics";
     private static final String SOFT_REFERENCE = "SoftReference";
-    private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
+    private static final List<String> EXCLUDE_STRINGS = new LinkedList<>();
 
     static {
         EXCLUDE_STRINGS.add(TIMES_ALONE);
@@ -144,13 +142,13 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     /** is true, if "[Times ..." information is present in the gc log */
     private boolean hasTimes = false;
 
-    public DataReaderSun1_6_0G1(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-        super(in, gcLogType);
+    public DataReaderSun1_6_0G1(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(gcResource, in, gcLogType);
     }
 
     @Override
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading Sun 1.6.x / 1.7.x G1 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.6.x / 1.7.x G1 format...");
 
         try (LineNumberReader in = this.in) {
             GCModel model = new GCModel();
@@ -179,7 +177,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         continue;
                     }
                     else if (startsWith(line, LOG_INFORMATION_STRINGS, false)) {
-                        LOG.info(line);
+                        getLogger().info(line);
                         continue;
                     }
 
@@ -291,7 +289,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                         // since jdk 1.8 full gc events in G1 have detailed heap sizing information on the next line
                         GCEvent fullGcEvent = (GCEvent) parseLine(line, parsePosition);
                         if (!in.markSupported()) {
-                            LOG.warning("input stream does not support marking!");
+                            getLogger().warning("input stream does not support marking!");
                         }
                         else {
                             in.mark(200);
@@ -324,16 +322,16 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     }
                 }
                 catch (Exception pe) {
-                    if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, pe.toString());
-                    if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, pe.toString(), pe);
+                    if (getLogger().isLoggable(Level.WARNING)) getLogger().log(Level.WARNING, pe.toString());
+                    if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, pe.toString(), pe);
                 }
                 parsePosition.setIndex(0);
             }
             return model;
         }
         finally {
-            if (LOG.isLoggable(Level.INFO)) {
-                LOG.info("Done reading.");
+            if (getLogger().isLoggable(Level.INFO)) {
+                getLogger().info("Done reading.");
             }
         }
     }
@@ -431,7 +429,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // is currently the case for jdk 1.7.0_02 which changed the memory format
             // as of 1.7.0_25 for "GC cleanup" events, there seem to be rare cases, where this just happens
             // => don't log as warning; just log on debug level
-            if (LOG.isLoggable(Level.FINE)) LOG.fine("line " + in.getLineNumber() + ": no memory information found (" + event.toString() + ")");
+            if (getLogger().isLoggable(Level.FINE)) {
+                getLogger().fine("line " + in.getLineNumber() + ": no memory information found (" + event.toString() + ")");
+            }
         }
         model.add(event);
     }
@@ -597,7 +597,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         String line = "";
 
         if (!in.markSupported()) {
-            LOG.warning("input stream does not support marking!");
+            getLogger().warning("input stream does not support marking!");
         }
         else {
             in.mark(200);

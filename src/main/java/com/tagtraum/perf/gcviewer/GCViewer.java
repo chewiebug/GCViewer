@@ -3,15 +3,19 @@ package com.tagtraum.perf.gcviewer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.tagtraum.perf.gcviewer.ctrl.impl.GCViewerGuiController;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.view.SimpleChartRenderer;
 
 /**
  * Main class of GCViewer. Parses command line parameters if there are any and either remains
@@ -23,11 +27,11 @@ public class GCViewer {
     private static final int EXIT_EXPORT_FAILED = -1;
     private static final int EXIT_ARGS_PARSE_FAILED = -2;
 
-	public static void main(final String[] args) throws IOException {
+	public static void main(final String[] args) throws InvocationTargetException, InterruptedException {
         new GCViewer().doMain(args);
     }
 
-    public void doMain(String[] args) throws IOException {
+    public void doMain(String[] args) throws InvocationTargetException, InterruptedException {
         GCViewerArgsParser argsParser = new GCViewerArgsParser();
         try {
             argsParser.parseArguments(args);
@@ -60,15 +64,15 @@ public class GCViewer {
             }
         }
         else {
-            GCViewerGui.start(argsParser.getArgumentCount() == 1 ? argsParser.getGcfile() : null);
+            new GCViewerGuiController().startGui(argsParser.getArgumentCount() == 1 ? argsParser.getGcfile() : null);
         }
     }
 
     private void export(String gcFilename, String summaryFilePath, String chartFilePath, DataWriterType type)
-            throws IOException, DataReaderException, IllegalArgumentException {
+            throws IOException, DataReaderException {
         
         DataReaderFacade dataReaderFacade = new DataReaderFacade();
-        GCModel model = dataReaderFacade.loadModel(gcFilename, false, null);
+        GCModel model = dataReaderFacade.loadModel(new GCResource(gcFilename));
 
         exportType(model, summaryFilePath, type);
         if (chartFilePath != null)

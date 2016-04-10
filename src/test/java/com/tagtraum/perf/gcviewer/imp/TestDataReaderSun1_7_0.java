@@ -12,13 +12,12 @@ import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.junit.Test;
-
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Tests for logs generated specifically by jdk 1.7.0.
@@ -28,13 +27,14 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  */
 public class TestDataReaderSun1_7_0 {
 
-    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
-
     private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+
+    private DataReader getDataReader(GCResource gcResource) throws IOException {
+        return new DataReaderSun1_6_0(gcResource, getInputStream(gcResource.getResourceName()), GcLogType.SUN1_7);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class TestDataReaderSun1_7_0 {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "111.080: [GC (Allocation Failure)111.080: [ParNew: 140365K->605K(157248K), 0.0034070 secs] 190158K->50399K(506816K), 0.0035370 secs] [Times: user=0.02 sys=0.00, real=0.00 secs]"
                        .getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -60,7 +60,7 @@ public class TestDataReaderSun1_7_0 {
                 + "\nAdaptiveSizeStop: collection: 1"
                 + "\n[PSYoungGen: 16430K->2657K(19136K)] 16430K->15759K(62848K), 0.0109373 secs] [Times: user=0.05 sys=0.02, real=0.02 secs]"
                        ).getBytes());
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
                 GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -79,7 +79,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-09-13T17:05:22.809+0200: 0.191: [GC (Allocation Failure) AdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720928  promoted: 13416848  overflow: true[PSYoungGen: 16430K->2657K(19136K)] 16430K->15759K(62848K), 0.0115757 secs] [Times: user=0.05 sys=0.06, real=0.02 secs]"
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -96,7 +96,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-09-13T17:05:22.879+0200: 0.256: [Full GC (Ergonomics) [PSYoungGen: 16438K->16424K(19136K)] [ParOldGen: 43690K->43690K(43712K)] 60128K->60114K(62848K), [Metaspace: 2595K->4490K(110592K)], 0.0087315 secs] [Times: user=0.06 sys=0.00, real=0.01 secs]"
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -109,7 +109,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-09-11T23:03:44.987+0200: 1518.733: [GC[YG occupancy: 3247177 K (4718592 K)]2013-09-11T23:03:45.231+0200: 1518.977: [Rescan (parallel) , 0.0941360 secs]2013-09-11T23:03:45.325+0200: 1519.071: [weak refs processing, 0.0006010 secs]2013-09-11T23:03:45.325+0200: 1519.071: [scrub string table, 0.0028480 secs] [1 CMS-remark: 4246484K(8388608K)] 4557930K(13107200K), 0.3410220 secs] [Times: user=2.48 sys=0.01, real=0.34 secs]"
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -123,7 +123,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-12-19T17:52:49.323+0100: [GC2013-12-19T17:52:49.323+0100: [ParNew: 4872K->480K(4928K), 0.0031563 secs] 102791K->102785K(140892K), 0.0032042 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]"
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_6);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
         assertEquals("GC count", 1, model.size());
@@ -138,11 +138,12 @@ public class TestDataReaderSun1_7_0 {
     public void parallelPrintUseAdaptiveSizeReference() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0ParallelAdaptiveSizeReference.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        final InputStream in = getInputStream("SampleSun1_7_0ParallelAdaptiveSizeReference.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        final InputStream in = getInputStream(gcResource.getResourceName());
+        final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
+
         GCModel model = reader.read();
 
         assertThat("count", model.size(), is(1));
@@ -161,7 +162,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-10-13T09:54:00.664+0200: 0.180: [GC (Allocation Failure)2013-10-13T09:54:00.680+0200: 0.191: [SoftReference, 0 refs, 0.0001032 secs]2013-10-13T09:54:00.680+0200: 0.192: [WeakReference, 5 refs, 0.0000311 secs]2013-10-13T09:54:00.680+0200: 0.192: [FinalReference, 10 refs, 0.0000389 secs]2013-10-13T09:54:00.680+0200: 0.192: [PhantomReference, 0 refs, 0.0000283 secs]2013-10-13T09:54:00.680+0200: 0.192: [JNI Weak Reference, 0.0000340 secs]AdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2589792  promoted: 13949568  overflow: true [PSYoungGen: 16865K->2529K(19456K)] 16865K->16151K(62976K), 0.0117505 secs] [Times: user=0.00 sys=0.06, real=0.02 secs]"
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(1));
@@ -178,7 +179,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-10-13T10:32:07.669+0200: 0.182: [GC (Allocation Failure)2013-10-13T10:32:07.685+0200: 0.195: [SoftReference, 0 refs, 0.0001086 secs]2013-10-13T10:32:07.685+0200: 0.195: [WeakReference, 5 refs, 0.0000311 secs]2013-10-13T10:32:07.685+0200: 0.195: [FinalReference, 10 refs, 0.0000377 secs]2013-10-13T10:32:07.685+0200: 0.195: [PhantomReference, 0 refs, 0.0000283 secs]2013-10-13T10:32:07.685+0200: 0.195: [JNI Weak Reference, 0.0000328 secs] [PSYoungGen: 16865K->2529K(19456K)] 16865K->16151K(62976K), 0.0137921 secs] [Times: user=0.03 sys=0.02, real=0.02 secs]"
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        final DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(1));
@@ -192,7 +193,7 @@ public class TestDataReaderSun1_7_0 {
                 "2013-10-13T09:52:30.164+0200: 0.189: [GC (Allocation Failure)2013-10-13T09:52:30.164+0200: 0.189: [DefNew2013-10-13T09:52:30.180+0200: 0.205: [SoftReference, 0 refs, 0.0001004 secs]2013-10-13T09:52:30.180+0200: 0.205: [WeakReference, 0 refs, 0.0000287 secs]2013-10-13T09:52:30.180+0200: 0.205: [FinalReference, 0 refs, 0.0000283 secs]2013-10-13T09:52:30.180+0200: 0.205: [PhantomReference, 0 refs, 0.0000279 secs]2013-10-13T09:52:30.180+0200: 0.205: [JNI Weak Reference, 0.0000332 secs]: 17472K->2176K(19648K), 0.0159181 secs] 17472K->16957K(63360K), 0.0161033 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]"
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = new DataReaderSun1_6_0(new GCResource("byteArray"), in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(1));
@@ -206,8 +207,8 @@ public class TestDataReaderSun1_7_0 {
     public void printCMSInitiationStatistics() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
 
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2013-11-17T15:09:50.633+0100: 0.687: [GC2013-11-17T15:09:50.633+0100: 0.687: [ParNew: 21468K->2347K(21504K), 0.0037203 secs] 72759K->58184K(140992K), 0.0038018 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]"
@@ -223,7 +224,7 @@ public class TestDataReaderSun1_7_0 {
                         + "\n2013-11-17T15:09:50.633+0100: 0.691: [GC [1 CMS-initial-mark: 55837K(119488K)] 58378K(140992K), 0.0001819 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]")
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(2));
@@ -242,11 +243,10 @@ public class TestDataReaderSun1_7_0 {
     public void printTenuringDistributionCMSInitiationStatistics() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0CMSTenuringDistributionInitiationStatistics.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        final InputStream in = getInputStream("SampleSun1_7_0CMSTenuringDistributionInitiationStatistics.txt");
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(1));
@@ -260,8 +260,8 @@ public class TestDataReaderSun1_7_0 {
     public void parallelPrintGCApplicationStoppedTime() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
 
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2014-04-08T22:04:36.018+0200: 0.254: Application time: 0.1310290 seconds"
@@ -269,7 +269,7 @@ public class TestDataReaderSun1_7_0 {
                  + "\n2014-04-08T22:04:36.030+0200: 0.266: Total time for which application threads were stopped: 0.0117633 seconds")
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(2));
@@ -293,11 +293,10 @@ public class TestDataReaderSun1_7_0 {
     public void parallelPrintTenuringGcCause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0Parallel_Tenuring_PrintGCCause.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0Parallel_Tenuring_PrintGCCause.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("gc count", model.size(), is(2));
@@ -311,11 +310,10 @@ public class TestDataReaderSun1_7_0 {
     public void cmsPrintGCApplicationStopped() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0_51_CMS_PrintApplStoppedTime.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0_51_CMS_PrintApplStoppedTime.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(14));
@@ -336,11 +334,10 @@ public class TestDataReaderSun1_7_0 {
     public void cmsPrintGCApplicationStoppedTimeTenuringDist() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0_51_CMS_PrintApplStoppedTime_TenuringDist.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0_51_CMS_PrintApplStoppedTime_TenuringDist.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(19));
@@ -369,17 +366,17 @@ public class TestDataReaderSun1_7_0 {
     public void cmsPrintGCApplicationStoppedTimeWithoutTimestampsTenuringDist() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("byteArray");
+        gcResource.getLogger().addHandler(handler);
 
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2012-04-26T23:59:50.899+0400: 33395.153: [GC 33395.153: [ParNew"
                  + "\nDesired survivor size 32768 bytes, new threshold 0 (max 0)"
                  + "\n: 130944K->0K(131008K), 0.0158820 secs] 1078066K->949934K(4194240K), 0.1120380 secs] [Times: user=0.07 sys=0.00, real=0.02 secs]"
-                 + "\nTotal time for which application threads were stopped: 0.2174010 seconds")
+                 + "\nTotal time for which application threads were stopped: 0.1250117 seconds")
                         .getBytes());
 
-        final DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(2));
@@ -400,11 +397,10 @@ public class TestDataReaderSun1_7_0 {
     public void cmsPrintFlsStatistics1() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0CmsPrintFlsStats1.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0CmsPrintFlsStats1.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(3));
@@ -420,11 +416,10 @@ public class TestDataReaderSun1_7_0 {
     public void cmsPrintFlsStatistics2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0CmsPrintFlsStats2.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0CmsPrintFlsStats2.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(5));
@@ -443,11 +438,10 @@ public class TestDataReaderSun1_7_0 {
     public void cmsPrintFlsStatistics3() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0CmsPrintFlsStats3.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0CmsPrintFlsStats3.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(4));
@@ -461,11 +455,10 @@ public class TestDataReaderSun1_7_0 {
     public void cmsPrintPromotionFailureTenuringDistribution() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0CMS_PrintTenuringDistributionPromotionFailure.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0CMS_PrintTenuringDistributionPromotionFailure.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(7));
@@ -477,11 +470,10 @@ public class TestDataReaderSun1_7_0 {
     public void psAdaptiveSizePolicyTenuringDistributionApplicationStopped() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_7_0PS_Adaptive_Tenuring_AppStopped.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_7_0PS_Adaptive_Tenuring_AppStopped.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_7);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("GC count", model.size(), is(3));

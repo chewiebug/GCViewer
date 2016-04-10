@@ -9,11 +9,12 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Test logs generated specifically by java 1.8.
@@ -22,22 +23,23 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * <p>created on: 25.09.2013</p>
  */
 public class TestDataReaderSun1_8_0 {
-    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    }
+
+    private DataReader getDataReader(GCResource gcResource) throws IOException {
+        return new DataReaderSun1_6_0(gcResource, getInputStream(gcResource.getResourceName()), GcLogType.SUN1_8);
     }
 
     @Test
     public void parallelPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
-
-        InputStream in = getInputStream("SampleSun1_8_0ParallelPrintHeapAtGC.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        GCResource gcResource = new GCResource("SampleSun1_8_0ParallelPrintHeapAtGC.txt");
+        gcResource.getLogger().addHandler(handler);
+        
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("gc pause sum", model.getPause().getSum(), closeTo(0.0103603, 0.000000001));
@@ -49,11 +51,10 @@ public class TestDataReaderSun1_8_0 {
     public void scavengeBeforeRemarkPrintHeapAtGC_YGOccupancy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0CMS_ScavengeBeforeRemark_HeapAtGc.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_8_0CMS_ScavengeBeforeRemark_HeapAtGc.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("gc count", model.size(), is(2));
@@ -67,11 +68,10 @@ public class TestDataReaderSun1_8_0 {
     public void scavengeBeforeRemark_HeapAtGC_PrintTenuringDistribution_PrintFLSStats() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0CMS_ScavengeBR_HeapAtGC_TenuringDist_PrintFLS.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_8_0CMS_ScavengeBR_HeapAtGC_TenuringDist_PrintFLS.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("gc count", model.size(), is(2));
@@ -85,11 +85,10 @@ public class TestDataReaderSun1_8_0 {
     public void parallelPrintTenuringGcCause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0Parallel_Tenuring_PrintGCCause.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_8_0Parallel_Tenuring_PrintGCCause.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("gc count", model.size(), is(5));
@@ -103,11 +102,10 @@ public class TestDataReaderSun1_8_0 {
     public void parallelApple() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0Parallel_Apple.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_8_0Parallel_Apple.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("gc count", model.size(), is(6));
@@ -119,11 +117,10 @@ public class TestDataReaderSun1_8_0 {
     public void cmsPrintHeapBeforeFullGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleSun1_8_0CMS_HeadDumpBeforeFullGc.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = getInputStream("SampleSun1_8_0CMS_HeadDumpBeforeFullGc.txt");
-        DataReader reader = new DataReaderSun1_6_0(in, GcLogType.SUN1_8);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("gc count", model.size(), is(2));

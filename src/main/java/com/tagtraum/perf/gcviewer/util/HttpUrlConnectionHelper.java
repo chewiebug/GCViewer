@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -29,7 +30,7 @@ public class HttpUrlConnectionHelper {
         super();
     }
 
-    private static InputStream checkContentDecodingForInputStream(InputStream in, final String contentEncoding) throws IOException {
+    private static InputStream checkContentDecodingForInputStream(InputStream in, String contentEncoding) throws IOException {
         if (GZIP.equals(contentEncoding)) {
             in = new GZIPInputStream(in, 4096);
         }
@@ -45,8 +46,8 @@ public class HttpUrlConnectionHelper {
      * @return Content of InputStream or null if input is null
      */
     private static String readAndCloseErrorStream(InputStream in,
-            final String contentEncoding,
-            final String contentType) {
+            String contentEncoding,
+            String contentType) {
 
         String result = null;
 
@@ -63,9 +64,9 @@ public class HttpUrlConnectionHelper {
             int charSetIdx;
             if ((contentType != null) && ((charSetIdx = contentType.indexOf(CHARSET_KEY)) > 0)) {
                 charSetIdx += CHARSET_KEY.length(); // skip
-                final int nextSemicolon = contentType.indexOf(';', charSetIdx);
-                final int endIndex = nextSemicolon < 0 ? contentType.length() : nextSemicolon;
-                final String charSetName = contentType.substring(charSetIdx, endIndex);
+                int nextSemicolon = contentType.indexOf(';', charSetIdx);
+                int endIndex = nextSemicolon < 0 ? contentType.length() : nextSemicolon;
+                String charSetName = contentType.substring(charSetIdx, endIndex);
                 try {
                     // if this fails, use the default character set.
                     charSet = Charset.forName(charSetName);
@@ -100,8 +101,9 @@ public class HttpUrlConnectionHelper {
      *  @return The input stream
      *  @throws IOException if problem occured.
      */
-    public static InputStream openInputStream(final HttpURLConnection httpConn,
-            final String acceptEncoding)
+    public static InputStream openInputStream(HttpURLConnection httpConn,
+            String acceptEncoding,
+            AtomicLong cl)
                     throws IOException {
 
         // set request properties
@@ -109,10 +111,10 @@ public class HttpUrlConnectionHelper {
         httpConn.setUseCaches(false);
         httpConn.connect();
         // from here we're reading the server's response
-        final String contentEncoding = httpConn.getContentEncoding();
-        final String contentType = httpConn.getContentType();
-        final long contentLength = httpConn.getContentLengthLong();
-        final long lastModified = httpConn.getLastModified();
+        String contentEncoding = httpConn.getContentEncoding();
+        String contentType = httpConn.getContentType();
+        long contentLength = httpConn.getContentLengthLong();
+        long lastModified = httpConn.getLastModified();
         LOGGER.log(Level.INFO, "Reading " + (contentLength < 0L
                  ? "?"
                  : Long.toString(contentLength) ) + " bytes from " + httpConn.getURL() +
@@ -121,12 +123,17 @@ public class HttpUrlConnectionHelper {
                    "; last modified = " + (lastModified <= 0L ? "-" : new Date(lastModified).toString()));
 
         final int responseCode = httpConn.getResponseCode();
-        if (responseCode/100 != 2) {
-            final String responseMessage = httpConn.getResponseMessage();
-            final String msg = "Server sent " + responseCode + ": " + responseMessage;
+        if (responseCode/100 == 2) {
+        	if (cl != null) {
+        		// abuse of AtomicLong, but I need a pointer to long (or FileInformation)
+        		cl.set(contentLength);
+        	}
+        } else {
+            String responseMessage = httpConn.getResponseMessage();
+            String msg = "Server sent " + responseCode + ": " + responseMessage;
             LOGGER.info(msg);
             // NOTE: Apache gzips the error page if client sets Accept-Encoding header
-            final String detailMsg = readAndCloseErrorStream(httpConn.getErrorStream(),
+            String detailMsg = readAndCloseErrorStream(httpConn.getErrorStream(),
                     contentEncoding,
                     contentType);
 
@@ -140,4 +147,7 @@ public class HttpUrlConnectionHelper {
         return in;
     }
 
+    public static InputStream openInputStream(HttpURLConnection httpConn, String acceptEncoding) throws IOException {
+    	return openInputStream(httpConn, acceptEncoding, null);
+    }
 }

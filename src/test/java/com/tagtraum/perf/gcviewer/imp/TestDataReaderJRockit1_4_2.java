@@ -5,12 +5,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import org.junit.Test;
 
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Date: Jan 30, 2002
@@ -23,11 +26,18 @@ public class TestDataReaderJRockit1_4_2 {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
     }
     
+    private DataReader getDataReader1_4(String fileName) throws UnsupportedEncodingException, IOException {
+        return new DataReaderJRockit1_4_2(new GCResource(fileName), getInputStream(fileName));
+    }
+    
+    private DataReader getDataReader1_5(String fileName) throws UnsupportedEncodingException, IOException {
+        return new DataReaderJRockit1_5_0(new GCResource(fileName), getInputStream(fileName));
+    }
+    
     @Test
     public void testParseGenCon() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getInputStream("SampleJRockit1_4_2gencon.txt");
-        DataReader reader = new DataReaderJRockit1_5_0(in);
+        DataReader reader = getDataReader1_5("SampleJRockit1_4_2gencon.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 123, model.size());
@@ -44,8 +54,7 @@ public class TestDataReaderJRockit1_4_2 {
     @Test
     public void testParseGenConBig() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getInputStream("SampleJRockit1_4_2gencon-big.txt");
-        DataReader reader = new DataReaderJRockit1_5_0(in);
+        DataReader reader = getDataReader1_5("SampleJRockit1_4_2gencon-big.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 32420, model.size());
@@ -62,8 +71,7 @@ public class TestDataReaderJRockit1_4_2 {
     @Test
     public void testParseParallel() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getInputStream("SampleJRockit1_4_2parallel.txt");
-        DataReader reader = new DataReaderJRockit1_5_0(in);
+        DataReader reader = getDataReader1_5("SampleJRockit1_4_2parallel.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 92, model.size());
@@ -80,8 +88,7 @@ public class TestDataReaderJRockit1_4_2 {
     @Test
     public void testParsePrioPauseTime() throws Exception {
         // TODO refactor JRockit DataReader
-        InputStream in = getInputStream("SampleJRockit1_4_2priopausetime.txt");
-        DataReader reader = new DataReaderJRockit1_5_0(in);
+        DataReader reader = getDataReader1_5("SampleJRockit1_4_2priopausetime.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 1867, model.size());
@@ -97,8 +104,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportGencon() throws Exception {
-        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-gencon.txt");
-        DataReader reader = new DataReaderJRockit1_4_2(in);
+        DataReader reader = getDataReader1_4("SampleJRockit1_4_2ts-gcreport-gencon.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 63, model.size());
@@ -114,8 +120,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportParallel() throws Exception {
-        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-parallel.txt");
-        DataReader reader = new DataReaderJRockit1_4_2(in);
+        DataReader reader = getDataReader1_4("SampleJRockit1_4_2ts-gcreport-parallel.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 31, model.size());
@@ -131,8 +136,9 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportPrioPauseTime() throws Exception {
-        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-gcpriopausetime.txt");
-        DataReader reader = new DataReaderFactory().getDataReader(in);
+        String fileName = "SampleJRockit1_4_2ts-gcreport-gcpriopausetime.txt";
+        InputStream in = getInputStream(fileName);
+        DataReader reader = new DataReaderFactory().getDataReader(new GCResource(fileName), in);
         
         assertTrue("should be DataReaderJRockit1_4_2 (but was " + reader.toString() + ")", reader instanceof DataReaderJRockit1_4_2);
 
@@ -151,8 +157,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportPrioThroughput() throws Exception {
-        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-gcpriothroughput.txt");
-        DataReader reader = new DataReaderJRockit1_4_2(in);
+        DataReader reader = getDataReader1_4("SampleJRockit1_4_2ts-gcreport-gcpriothroughput.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 70, model.size());
@@ -168,8 +173,7 @@ public class TestDataReaderJRockit1_4_2 {
 
     @Test
     public void testParseTsGCReportSinglecon() throws Exception {
-        InputStream in = getInputStream("SampleJRockit1_4_2ts-gcreport-singlecon.txt");
-        DataReader reader = new DataReaderJRockit1_4_2(in);
+        DataReader reader = getDataReader1_4("SampleJRockit1_4_2ts-gcreport-singlecon.txt");
         GCModel model = reader.read();
         
         assertEquals("count", 41, model.size());

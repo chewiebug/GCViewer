@@ -2,17 +2,16 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
@@ -22,34 +21,32 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
  * Time: 13:25:00
  * @author Ruwin Veldwijk
  */
-public class DataReaderIBMi5OS1_4_2 implements DataReader {
+public class DataReaderIBMi5OS1_4_2 extends AbstractDataReader {
 
-    private static Logger LOG = Logger.getLogger(DataReaderIBMi5OS1_4_2.class.getName());
-
-    private LineNumberReader in;
     private DateFormat cycleStartGCFormat;
 
     /**
      * Constructor for the IBM i5/OS GC reader.
      * @param in InputStream delivering the GC data
+     * @throws UnsupportedEncodingException
      */
-    public DataReaderIBMi5OS1_4_2(final InputStream in) {
-        this.in = new LineNumberReader(new InputStreamReader(in));
+    public DataReaderIBMi5OS1_4_2(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
+        super(gcResource, in);
     }
 
     /**
      * Reads the GC data lines and translates them to GCEvents which
      * are collected in the GCModel.
-     * 
+     *
      * @throws IOException When reading the inputstream fails.
      */
     public GCModel read() throws IOException {
-        if (LOG.isLoggable(Level.INFO)) LOG.info("Reading IBM i5/OS 1.4.2 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading IBM i5/OS 1.4.2 format...");
         try {
         	// Initialize model
             final GCModel model = new GCModel();
             model.setFormat(GCModel.Format.IBM_VERBOSE_GC);
-            
+
             // Initialize local variables
             int state = 0;
             String line = null;
@@ -58,16 +55,16 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
             int previousCycle = 0;
             int currentCycle = 0;
             long basetime = 0;
-            
+
             // Initialize date formatter
             cycleStartGCFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-            
+
             // Read the GC data lines
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null && shouldContinue()) {
                 final String trimmedLine = line.trim();
                 // GC Data line always start with GC
                 if (!"".equals(trimmedLine) && !trimmedLine.startsWith("GC")) {
-                    if (LOG.isLoggable(Level.INFO)) LOG.info("Malformed line (" + in.getLineNumber() + "): " + line);
+                    if (getLogger().isLoggable(Level.INFO)) getLogger().info("Malformed line (" + in.getLineNumber() + "): " + line);
                     state = 0;
                 }
                 switch (state) {
@@ -100,19 +97,23 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
                         if (line.indexOf("current heap(KB) ") != -1) {
                             event.setTotal(parseTotalAfterGC(line));
                             break;
-                        } else if (line.indexOf("collect (milliseconds) ") != -1) {
+                        }
+                        else if (line.indexOf("collect (milliseconds) ") != -1) {
 							event.setPause(parsePause(line));
 							break;
-                        } else if (line.indexOf("collected(KB) ") != -1) {
+                        }
+                        else if (line.indexOf("collected(KB) ") != -1) {
 							freed = parseFreed(line);
 							break;
-                        } else if (line.indexOf("current cycle allocation(KB) ") != -1) {
+                        }
+                        else if (line.indexOf("current cycle allocation(KB) ") != -1) {
 							previousCycle = parsePreviousCycle(line);
 							currentCycle = parseCurrentCycle(line);
 							event.setPreUsed((event.getTotal() - previousCycle - currentCycle) + freed);
 							event.setPostUsed((event.getTotal() - previousCycle - currentCycle));
 							break;
-						} else if (line.indexOf("collection ending") != -1) {
+						}
+                        else if (line.indexOf("collection ending") != -1) {
 							// End of GC event, store data in the model and reset variables
 							model.add(event);
 							event = null;
@@ -127,20 +128,22 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
                 }
             }
             return model;
-        } finally {
+        }
+        finally {
             if (in != null)
                 try {
                     in.close();
-                } catch (IOException ioe) {
                 }
-            if (LOG.isLoggable(Level.INFO)) LOG.info("Done reading.");
+                catch (IOException ioe) {
+                }
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
     }
 
     /**
-     * Parses the line which holds the GC Cycle start date/time. The 
+     * Parses the line which holds the GC Cycle start date/time. The
      * date/time is extracted and returned as a long.
-     * 
+     *
      * @param line The line which holds the date
      * @return The date represented as a long
      * @throws IOException When parsing the date fails.
@@ -150,7 +153,8 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
             final int idx = line.indexOf("collection starting ");
             final Date date = cycleStartGCFormat.parse(line.substring(idx + "collection starting ".length()));
             return date.getTime();
-        } catch (java.text.ParseException e) {
+        }
+        catch (java.text.ParseException e) {
             throw new ParseException(e.toString());
         }
     }
@@ -158,7 +162,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
     /**
      * Parses the line which holds the initial heap size. The size
      * is returned as int.
-     * 
+     *
      * @param line The line which holds the initial heap size
      * @return The initial heap size
      */
@@ -171,7 +175,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
     /**
      * Parses the line which holds the current heap size and
      * returns the heap size after GC completed.
-     * 
+     *
      * @param line The line which holds the current heap size
      * @return The heap size after GC finished
      */
@@ -183,7 +187,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
 
     /**
      * Parses the number of bytes (KB) collected in this GC event.
-     * 
+     *
      * @param line The line which holds the collected heap
      * @return The number of bytes (KB) collected in this event
      */
@@ -195,7 +199,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
 
     /**
      * Parses the number of bytes (KB) that was allocated in the cycle
-     * 
+     *
      * @param line The line which holds the current allocation in KB
      * @return The number of bytes (KB) allocated in current cycle
      */
@@ -207,7 +211,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
 
     /**
      * Parses the number of bytes (KB) that was allocated in the previous cycle
-     * 
+     *
      * @param line The line which holds the previous allocation in KB
      * @return The number of bytes (KB) allocated in the previous cycle
      */
@@ -219,7 +223,7 @@ public class DataReaderIBMi5OS1_4_2 implements DataReader {
 
     /**
      * Parses the time the GC event lasted in seconds
-     * 
+     *
      * @param line The line which holds the collect time in millis.
      * @return The number of seconds the GC event took.
      */

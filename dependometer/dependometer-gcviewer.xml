@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE project SYSTEM "Configuration.dtd"> 
+
+<!-- 
+	name 
+		the project name appears in the reports
+	numberOfCyclesFeedbackOnConsole (default = "1")
+		Every time the configured number of cycles is reached you get an extra warning in your shell
+	numberOfCycleAnalysisProgressFeedbackOnConsole (default = "1")
+		Every time the remaining number of nodes was accordingly reduced you get an extra info in your shell
+	checkLayerDependencies (default = "true")
+	checkSubsystemDependencies (default = "true")
+		"true"	all dependencies are checked against the allowed dependencies (depends-upon node)
+		"false" no dependency check
+	checkPackageDependencies (default = "true")
+		"true" 	all package dependencies are checked against the allowed dependencies (only packages are checked that have a package description)
+		"false" no dependency check
+	cumulateLayerDependencies (default = "true")
+	cumulateSubsystemDependencies (default = "true")
+	cumulatePackageDependencies (default = "true")
+	cumulateCompilationUnitDependencies (default = "true")
+	cumulateTypeDependencies (default = "true")
+		"true"	cumulate dependencies
+		"false" no cumulation
+	maxLayerCycles (default = "0")            		
+	maxSubsystemCycles (default = "0")      		
+	maxPackageCycles (default = "0")          		
+	maxCompilationUnitCycles (default = "0")  		
+	maxTypeCycles (default = "0")             		
+		Configure the cycle analysis behavior to avoid an endlessly running process. As an alternativ you can start the
+		dependometer with the command 'java -jar dependomter.jar -file <your configuration>' and terminate the analyis when
+		ever you want with 'ctrl-c' in the shell. This is possible past the point where in the shell the message 'Terminate
+		running analysis with 'ctrl-c'!' appears. Past this point you have also a valid html output. Only the cycle analyis
+		output gets updated. With a corresponding refresh in your browser you can see the updated information.   
+		"-2" 	no analysis
+		"-1" 	cycle existence check
+		"0"	like "-1" plus detailed cycle participation (which elements participate in cycles?) and levelization
+		">0"	like 0" but with the provided upper limit for detected cycles (stops if 'n' cycles are reached)
+-->
+<project 
+	name											= "GCViewer" 
+	numberOfCyclesFeedbackOnConsole 				= "1"
+	numberOfCycleAnalysisProgressFeedbackOnConsole 	= "1"
+	checkLayerDependencies							= "true"
+	checkSubsystemDependencies 						= "true"
+	checkPackageDependencies 						= "false"
+	cumulateLayerDependencies 						= "false"
+	cumulateSubsystemDependencies 					= "false"
+	cumulatePackageDependencies 					= "true"
+	cumulateCompilationUnitDependencies 			= "true"
+	cumulateTypeDependencies 						= "true"
+	maxLayerCycles             						= "5"
+	maxSubsystemCycles         						= "5"
+	maxPackageCycles           						= "5"
+	maxCompilationUnitCycles   						= "5"
+	maxTypeCycles              						= "0"
+>
+	<!-- DIRECTORIES -->
+	<input dir="../target/classes"/>
+	<input dir="../src/main/java"/>
+
+	<!-- INPUT PACKAGE FILTER -->
+	<include-package name="com.tagtraum.perf.*"/>
+
+	<!-- OUTPUT LISTENER -->	    	
+   	<listener class="com.valtech.source.dependometer.ui.console.output.HtmlWriter" args="./result/dependometer"/>
+
+	<!-- ASSERTIONS -->
+	<assertion pattern="assert"/>
+	
+	<!-- SKIP -->
+	<skip prefix="java\..*"/>
+    <skip prefix="javax\..*"/>
+    <skip prefix="org\..*"/>
+
+    <!-- REFACTORINGS -->
+    <!-- Move compilation unit(s) to another package (Simulation) - n compilationUnits may be specified using the regular expressions from the JDK 1.4 -->
+    <!-- 
+    <refactor compilationUnit="com.tagtraum.perf.gcviewer.view.model.GCPreferences.java" toPackage="com.tagtraum.perf.gcviewer"/>
+    -->
+    
+	<!-- THRESHOLDS -->
+    <lower-threshold name="Project.NumberOfProjectInternalLayers" value="1"/> <!-- Need at least one defined layer -->
+    <lower-threshold name="Project.NumberOfDefinedLayerDependencies" value="1"/>
+    <lower-threshold name="Project.NumberOfProjectInternalSubsystems" value="1"/>
+    <lower-threshold name="Project.NumberOfDefinedSubsystemDependencies" value="1"/>
+	<lower-threshold name="Project.PercentageOfPackagesWithRcNotLessThanOne" value="70"/>
+		<!-- 70 percent of the packages may have an relational cohesion not less than 1.0 -->
+	<lower-threshold name="Project.AverageNumberOfAssertionsPerProjectInternalClass" value="1"/>
+		<!-- Checks the average existance of assertion statements per project internal class -->
+	<upper-threshold name="Project.ACD" value="20"/>
+		<!-- Checks the Average component dependency -->
+    <upper-threshold name="Project.LayerCyclesExist" value="0"/>
+    <upper-threshold name="Project.SubsystemCyclesExist" value="0"/>
+	<upper-threshold name="Project.PackageCyclesExist" value="0"/>
+		<!-- Checks if cycles are present -->
+	<upper-threshold name="Project.CompilationUnitCyclesExist" value="0"/>
+		<!-- Checks if cycles are present -->
+	<upper-threshold name="Project.TypeCyclesExist" value="0"/>
+		<!-- Checks if cycles are present -->
+	<upper-threshold name="Project.MaxDepthOfInheritance" value="6"/>
+		<!-- Checks the depth of inheritance excluding java.lang.Object -->
+
+    <layer name="user-interface-layer">
+        <description>Contains all user interface related classes</description>
+        <subsystem name="commandline-ui">
+            <description>Contains the command line ui</description>
+            <include-package name="com.tagtraum.perf.gcviewer"/> 
+            <depends-upon name="user-interface-layer::controller"/>
+            <depends-upon name="user-interface-layer::exporter-interface"/>
+            <depends-upon name="user-interface-layer::exporter-implementation"/>
+            <depends-upon name="parser-layer::model"/>
+            <depends-upon name="parser-layer::parser"/>
+        </subsystem>
+        <subsystem name="controller">
+            <description>Contains all controller classes of the project</description>
+            <include-package name="com.tagtraum.perf.gcviewer.ctrl"/> 
+            <include-package name="com.tagtraum.perf.gcviewer.ctrl.action"/> 
+            <depends-upon name="user-interface-layer::gui"/>
+            <depends-upon name="user-interface-layer::exporter-interface"/>
+            <depends-upon name="user-interface-layer::exporter-implementation"/>
+            <depends-upon name="parser-layer::model"/>
+            <depends-upon name="parser-layer::parser"/>
+            <depends-upon name="utilities-layer::helper-classes"/>
+        </subsystem>
+        <subsystem name="gui">
+            <description>Provides the console based user interface</description>
+            <include-package name="com.tagtraum.perf.gcviewer.view"/> 
+            <include-package name="com.tagtraum.perf.gcviewer.view.model"/> 
+            <include-package name="com.tagtraum.perf.gcviewer.view.renderer"/> 
+            <include-package name="com.tagtraum.perf.gcviewer.view.util"/> 
+            <depends-upon name="utilities-layer::helper-classes"/>
+            <depends-upon name="parser-layer::model"/>
+        </subsystem>
+        <subsystem name="exporter-interface">
+            <description>contains all export format super classes</description>
+            <include-package name="com.tagtraum.perf.gcviewer.exp"/>
+            <depends-upon name="parser-layer::model"/>
+        </subsystem>
+        <subsystem name="exporter-implementation">
+            <description>contains all export format implementations</description>
+            <include-package name="com.tagtraum.perf.gcviewer.exp.impl"/>
+            <depends-upon name="user-interface-layer::exporter-interface"/>
+            <depends-upon name="parser-layer::model"/>
+            <depends-upon name="utilities-layer::helper-classes"/>
+        </subsystem>
+        <depends-upon name="parser-layer"/>
+        <depends-upon name="utilities-layer"/>
+    </layer>
+    <layer name="parser-layer">
+        <description>Contains the parser implementation</description>
+        <subsystem name="parser">
+            <description>Provides the console based user interface</description>
+            <include-package name="com.tagtraum.perf.gcviewer.imp"/>
+            <!-- Fully qualified name necessary -->
+            <depends-upon name="parser-layer::model"/> 
+            <depends-upon name="utilities-layer::helper-classes"/> 
+        </subsystem>
+        <subsystem name="model">
+            <description>contains the datamodel</description>
+            <include-package name="com.tagtraum.perf.gcviewer.model"/>
+            <depends-upon name="utilities-layer::helper-classes"/> 
+        </subsystem>
+        <depends-upon name="utilities-layer"/>
+    </layer>
+    <layer name="utilities-layer">
+        <description>Contains all utility classes</description>
+        <subsystem name="helper-classes">
+            <description>Provides the console based user interface</description>
+            <!-- Packages implementing the subsystem - regular expressions JDK 1.4 -->            
+            <include-package name="com.tagtraum.perf.gcviewer.util"/>
+            <include-package name="com.tagtraum.perf.gcviewer.math"/>
+            <include-package name="com.tagtraum.perf.gcviewer.log"/>
+        </subsystem>
+    </layer>
+</project>

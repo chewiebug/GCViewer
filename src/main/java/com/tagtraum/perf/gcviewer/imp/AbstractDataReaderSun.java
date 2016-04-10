@@ -2,7 +2,6 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
@@ -12,7 +11,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +18,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
@@ -32,12 +31,10 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
-public abstract class AbstractDataReaderSun implements DataReader {
+public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static final int LENGTH_OF_DATESTAMP = 29;
-
-    private static Logger LOG = Logger.getLogger(AbstractDataReaderSun.class.getName());
 
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
 
@@ -57,8 +54,6 @@ public abstract class AbstractDataReaderSun implements DataReader {
         LOG_INFORMATION_STRINGS.add(LOG_INFORMATION_COMMANDLINE_FLAGS);
     }
 
-    /** the reader accessing the log file */
-    protected LineNumberReader in;
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
 
@@ -68,9 +63,8 @@ public abstract class AbstractDataReaderSun implements DataReader {
      * @param gcLogType type of the logfile
      * @throws UnsupportedEncodingException if ASCII is not supported
      */
-    public AbstractDataReaderSun(InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
-        super();
-        this.in = new LineNumberReader(new InputStreamReader(in, "ASCII"), 64 * 1024);
+    protected AbstractDataReaderSun(GCResource gcResource, InputStream in, GcLogType gcLogType) throws UnsupportedEncodingException {
+        super(gcResource, in);
         this.gcLogType = gcLogType;
     }
 
@@ -96,8 +90,8 @@ public abstract class AbstractDataReaderSun implements DataReader {
             return (int) Math.rint(memoryValue * 1024*1024);
         }
         else {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.warning("unknown memoryunit '" + memUnit + "' in line " + line);
+            if (getLogger().isLoggable(Level.WARNING)) {
+                getLogger().warning("unknown memoryunit '" + memUnit + "' in line " + line);
             }
             return 1;
         }
@@ -601,7 +595,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
         String line = "";
 
         if (!in.markSupported()) {
-            LOG.warning("input stream does not support marking!");
+            getLogger().warning("input stream does not support marking!");
         }
         else {
             in.mark(200);
@@ -642,7 +636,7 @@ public abstract class AbstractDataReaderSun implements DataReader {
     private void skipUntilEndOfDetail(final String line, final ParseInformation pos, Exception e) {
         skipUntilEndOfDetail(line, pos, 1);
 
-        if (LOG.isLoggable(Level.FINE)) LOG.fine("Skipping detail event because of " + e);
+        if (getLogger().isLoggable(Level.FINE)) getLogger().fine("Skipping detail event because of " + e);
     }
 
     /**

@@ -24,8 +24,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.tagtraum.perf.gcviewer.imp.UnittestHelper;
 import org.junit.Test;
+
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 
 public class TestHttpUrlConnectionHelper {
 

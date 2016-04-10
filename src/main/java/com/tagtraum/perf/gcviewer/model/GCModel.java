@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -78,6 +79,11 @@ public class GCModel implements Serializable {
 
             return fileInfo.lastModified == lastModified
                             && fileInfo.length == length;
+        }
+
+        @Override
+        public String toString() {
+            return FileInformation.class.toString() + "; lastModified=" + lastModified + ", length=" + length;
         }
     }
 

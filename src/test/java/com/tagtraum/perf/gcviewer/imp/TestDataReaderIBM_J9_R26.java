@@ -1,6 +1,6 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static com.tagtraum.perf.gcviewer.imp.UnittestHelper.toKiloBytes;
+import static com.tagtraum.perf.gcviewer.UnittestHelper.toKiloBytes;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import org.junit.Test;

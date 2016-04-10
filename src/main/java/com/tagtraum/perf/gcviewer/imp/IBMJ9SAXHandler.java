@@ -20,6 +20,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
@@ -30,18 +31,23 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
  */
 public class IBMJ9SAXHandler extends DefaultHandler {
     private GCModel model;
+    private GCResource gcResource;
     private DateFormat cycleStartGCFormat5 = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
     private DateFormat cycleStartGCFormat6 = new SimpleDateFormat("MMM dd HH:mm:ss yyyy", Locale.US);
     private DateFormat current = cycleStartGCFormat5;
     protected AF currentAF;
     int currentTenured = 0; // 0 = none, 1=pre, 2=mid, 3=end
-    private static Logger LOG = Logger.getLogger(IBMJ9SAXHandler.class.getName());
     private Date begin = null;
 
-    public IBMJ9SAXHandler(GCModel model) {
+    public IBMJ9SAXHandler(GCResource gcResource, GCModel model) {
+        this.gcResource = gcResource;
         this.model = model;
     }
 
+    private Logger getLogger() {
+        return gcResource.getLogger();
+    }
+    
     protected Date parseTime(String ts) throws ParseException {
         try {
             return current.parse(ts);
@@ -147,7 +153,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                         currentAF.afterTotalBytes = total;
                     } 
                     else {
-                        LOG.warning("currentTenured is > 3!");
+                        getLogger().warning("currentTenured is > 3!");
                     }
                 }
                 else if ("soa".equals(qName)) {
@@ -174,7 +180,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                         currentAF.afterSOATotalBytes = total;
                     }
                     else {
-                        LOG.warning("currentTenured is > 3!");
+                        getLogger().warning("currentTenured is > 3!");
                     }
                 } 
                 else if ("loa".equals(qName)) {
@@ -201,7 +207,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                         currentAF.afterLOATotalBytes = total;
                     } 
                     else {
-                        LOG.warning("currentTenured is > 3!");
+                        getLogger().warning("currentTenured is > 3!");
                     }
                 }
             }
@@ -220,10 +226,10 @@ public class IBMJ9SAXHandler extends DefaultHandler {
             if (currentAF != null) {
                 GCEvent event = new GCEvent();
                 if (!"tenured".equals(currentAF.type)) {
-                    LOG.warning("Unhandled AF type: " + currentAF.type);
+                    getLogger().warning("Unhandled AF type: " + currentAF.type);
                 }
                 if (!"global".equals(currentAF.gcType)) {
-                    LOG.warning("Different GC type: " + currentAF.gcType);
+                    getLogger().warning("Different GC type: " + currentAF.gcType);
                 } 
                 else {
                     event.setType(AbstractGCEvent.Type.FULL_GC);
@@ -284,7 +290,7 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                 currentAF = null;
             } 
             else {
-                LOG.warning("Found end <af> tag with no begin tag");
+                getLogger().warning("Found end <af> tag with no begin tag");
             }
 
         }

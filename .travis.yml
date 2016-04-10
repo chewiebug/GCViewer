@@ -20,6 +20,11 @@ before_install:
 # No need to run mvn install, so skip this step
 install: true
 
+# emulate a display for the gui tests
+before_script:
+  - "export DISPLAY=:99.0"
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+
 # run branch dependent build using a separate script
 # make sure, script is executable (http://blog.lesc.se/2011/11/how-to-change-file-premissions-in-git.html)
 script: "./target/travis/gcviewer-script.sh"
