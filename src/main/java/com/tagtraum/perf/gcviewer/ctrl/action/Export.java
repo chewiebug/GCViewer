@@ -99,12 +99,12 @@ public class Export extends AbstractAction {
     private static class ExportExtensionFileFilter extends ExtensionFileFilter {
 
         public static final ExportExtensionFileFilter[] EXT_FILE_FILTERS = {
-            new ExportExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV),
-            new ExportExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv_ts"), DataWriterType.CSV_TS),
-            new ExportExtensionFileFilter(".txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN),
-            new ExportExtensionFileFilter(".simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE),
-            new ExportExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_summarylog"), DataWriterType.SUMMARY),
-            new ExportExtensionFileFilter(".png", LocalisationHelper.getString("fileexport_dialog_png"), DataWriterType.PNG)        
+            new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV),
+            new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_csv_ts"), DataWriterType.CSV_TS),
+            new ExportExtensionFileFilter("txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN),
+            new ExportExtensionFileFilter("simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE),
+            new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_summarylog"), DataWriterType.SUMMARY),
+            new ExportExtensionFileFilter("png", LocalisationHelper.getString("fileexport_dialog_png"), DataWriterType.PNG)        
         };
 
         private final String description;
