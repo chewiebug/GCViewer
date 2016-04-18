@@ -31,6 +31,13 @@ public interface GCModelLoaderController {
     void open(List<GCResource> gcResourceList);
 
     /**
+     * Opens the given {@link GCResource}s as a series of rotated logfiles.
+     *
+     * @param gcResourceList a list of rotated gc logfiles. Ordering is not required.
+     */
+    void openAsSeries(List<GCResource> gcResourceList);
+
+    /**
      * Reload all models of <code>gcDocument</code> and provide tracker. The tracker will
      * fire a propertyChangeEvent, as soon as all GCModelLoaders have finished loading.
      *

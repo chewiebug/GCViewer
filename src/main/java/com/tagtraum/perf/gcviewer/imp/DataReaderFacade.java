@@ -1,8 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.ctrl.impl.GcSeriesLoader;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
@@ -50,8 +52,8 @@ public class DataReaderFacade {
         if (gcResource == null) {
             throw new NullPointerException("gcResource must never be null");
         }
-		if(!(gcResource instanceof GcResourceFile))
-			throw new UnsupportedOperationException("Only supported for files!");
+        if (!(gcResource instanceof GcResourceFile))
+            throw new UnsupportedOperationException("Only supported for files!");
 
         DataReaderException dataReaderException = new DataReaderException();
         GCModel model = null;
@@ -73,6 +75,18 @@ public class DataReaderFacade {
         }
 
         return model;
+    }
+
+    /**
+     * Loads the {@link GCResource}s as a rotated series of logfiles. Takes care of ordering them
+     *
+     * @param gcResource the {@link GcResourceSeries} to load
+     * @return a {@link GCModel} containing all events found in the given {@link GCResource}s that were readable
+     * @throws DataReaderException
+     */
+    public GCModel loadModelFromSeries(GcResourceSeries gcResource) throws DataReaderException {
+        GcSeriesLoader seriesLoader = new GcSeriesLoader(this);
+        return seriesLoader.load(gcResource);
     }
 
     /**

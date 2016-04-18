@@ -982,6 +982,12 @@ public class GCModel implements Serializable {
                  ? get(0).getDatestamp()
                  : null;
     }
+    public Optional<Double> getFirstTimeStamp() {
+        if(allEvents.size() > 0)
+            return Optional.of(get(0).getTimestamp());
+        else
+            return Optional.empty();
+    }
 
     public String toString() {
         return "GCModel[size=" + size() + "]: " + allEvents.toString();

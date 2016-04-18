@@ -8,54 +8,60 @@ import java.util.logging.Logger;
  *
  * @author Hans Bausewein
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
- * <p>Date: November 8, 2013</p>
+ *         <p>Date: November 8, 2013</p>
  */
-public interface GCResource
-{
-	void addPropertyChangeListener(PropertyChangeListener listener);
+public interface GCResource {
+    void addPropertyChangeListener(PropertyChangeListener listener);
 
-	Logger getLogger();
+    Logger getLogger();
 
-	GCModel getModel();
+    void setLogger(Logger logger);
 
-	String getResourceName();
+    GCModel getModel();
 
-	/**
-	 * Returns true, if the underlying resource has changed.
-	 * @return true, if the underlying resource has changed.
-	 */
-	boolean hasUnderlyingResourceChanged();
+    String getResourceName();
 
-	/**
-	 * If this resource is being reloaded, this will return <code>true</code>.
-	 * @return <code>true</code> if this resource is being reloaded.
-	 */
-	boolean isReload();
+    /**
+     * Returns true, if the underlying resource has changed.
+     *
+     * @return true, if the underlying resource has changed.
+     */
+    boolean hasUnderlyingResourceChanged();
 
-	/**
-	 * Returns <code>true</code>, if reading of this GCResource should be cancelled.
-	 * @return <code>true</code>, if reading should be cancelled
-	 */
-	boolean isReadCancelled();
+    /**
+     * If this resource is being reloaded, this will return <code>true</code>.
+     *
+     * @return <code>true</code> if this resource is being reloaded.
+     */
+    boolean isReload();
 
-	void removePropertyChangeListener(PropertyChangeListener listener);
+    /**
+     * Returns <code>true</code>, if reading of this GCResource should be cancelled.
+     *
+     * @return <code>true</code>, if reading should be cancelled
+     */
+    boolean isReadCancelled();
 
-	/**
-	 * if this resource is being reloaded, set this property to <code>true</code>.
-	 * @param isReload <code>true</code>, if this resource is being reloaded
-	 */
-	void setIsReload(boolean isReload);
+    void removePropertyChangeListener(PropertyChangeListener listener);
 
-	/**
-	 * Indicate, that reading of this GCResource should be cancelled.
-	 * @param isReadCancelled <code>true</code>, if read should be cancelled
-	 */
-	void setIsReadCancelled(boolean isReadCancelled);
+    /**
+     * if this resource is being reloaded, set this property to <code>true</code>.
+     *
+     * @param isReload <code>true</code>, if this resource is being reloaded
+     */
+    void setIsReload(boolean isReload);
 
-	void setModel(GCModel model);
+    /**
+     * Indicate, that reading of this GCResource should be cancelled.
+     *
+     * @param isReadCancelled <code>true</code>, if read should be cancelled
+     */
+    void setIsReadCancelled(boolean isReadCancelled);
 
-	/**
-	 * reset internal boolean state to default (e.g. readCancelled)
-	 */
-	void reset();
+    void setModel(GCModel model);
+
+    /**
+     * reset internal boolean state to default (e.g. readCancelled)
+     */
+    void reset();
 }

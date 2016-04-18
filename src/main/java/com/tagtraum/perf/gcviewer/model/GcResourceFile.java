@@ -3,6 +3,8 @@ package com.tagtraum.perf.gcviewer.model;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 /**
  * Identifies a GC resource: a file or URL resource containing GC info.
@@ -14,22 +16,22 @@ import java.net.URL;
 public class GcResourceFile extends AbstractGcResource
 {
     public static final String PROPERTY_MODEL = "model";
+    private static final AtomicInteger COUNT = new AtomicInteger(0);
 
-	public GcResourceFile(File file)
-	{
-		this(file.getAbsolutePath());
-	}
+    public GcResourceFile(File file) {
+        this(file.getAbsolutePath());
+    }
 
-	public GcResourceFile(String resourceName) {
-		super(resourceName);
+    public GcResourceFile(String resourceName) {
+        super(resourceName, Logger.getLogger("GCResourceFile".concat(Integer.toString(COUNT.incrementAndGet()))));
 
-		if (resourceName == null) {
-			throw new IllegalArgumentException("resourceName cannot be null");
-		}
+        if (resourceName == null) {
+            throw new IllegalArgumentException("resourceName cannot be null");
+        }
 
-	}
+    }
 
-	public URL getResourceNameAsUrl() throws MalformedURLException {
+    public URL getResourceNameAsUrl() throws MalformedURLException {
         URL url = null;
         if (getResourceName().startsWith("http") || getResourceName().startsWith("file")) {
             url = new URL(getResourceName());
@@ -41,11 +43,12 @@ public class GcResourceFile extends AbstractGcResource
         return url;
     }
 
-	/**
-	 * Same as {@link #getResourceNameAsUrl()}, but still returns a string, if MalFormedURLException occurred.
-	 * @return same as getResourceNameAsUrl(), but without Exception
-	 */
-	public String getResourceNameAsUrlString() {
+    /**
+     * Same as {@link #getResourceNameAsUrl()}, but still returns a string, if MalFormedURLException occurred.
+     *
+     * @return same as getResourceNameAsUrl(), but without Exception
+     */
+    public String getResourceNameAsUrlString() {
         try {
             return getResourceNameAsUrl().toString();
         }
@@ -55,7 +58,7 @@ public class GcResourceFile extends AbstractGcResource
     }
 
     @Override
-	public boolean hasUnderlyingResourceChanged() {
+    public boolean hasUnderlyingResourceChanged() {
         if (getModel().getURL() == null) {
             return true;
         }
@@ -63,7 +66,7 @@ public class GcResourceFile extends AbstractGcResource
         return getModel().isDifferent(getModel().getURL());
     }
 
-	@Override
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -83,7 +86,7 @@ public class GcResourceFile extends AbstractGcResource
         return true;
     }
 
-	@Override
+    @Override
     public int hashCode() {
         int prime = 31;
         int result = 1;
@@ -92,9 +95,9 @@ public class GcResourceFile extends AbstractGcResource
         return result;
     }
 
-	@Override
-	public String toString() {
-		return "GCResourceFile [resourceNameAsUrlString=" + getResourceNameAsUrlString() + ", isReload=" + isReload()
-				+ ", logger=" + getLogger() + ", model=" + getModel() + "]";
-	}
+    @Override
+    public String toString() {
+        return "GCResourceFile [resourceNameAsUrlString=" + getResourceNameAsUrlString() + ", isReload=" + isReload() + ", logger=" + getLogger() + ", model="
+                + getModel() + "]";
+    }
 }

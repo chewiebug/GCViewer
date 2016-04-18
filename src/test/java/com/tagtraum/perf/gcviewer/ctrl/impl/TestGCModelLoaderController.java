@@ -16,8 +16,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 /**
  * Unittest for main controller class of GCViewerGui ({@link GCModelLoaderControllerImpl}).
@@ -50,6 +58,18 @@ public class TestGCModelLoaderController {
         controller.open(new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt")));
         assertThat("number of gcdocuments after", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(1));
         
+    }
+
+    @Test
+    public void openAsSeries() throws Exception {
+        assertThat("number of gcdocuments before", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(0));
+        ArrayList<GCResource> gcResourceList = new ArrayList<>();
+        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath()));
+        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath()));
+        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath()));
+
+        controller.openAsSeries(gcResourceList);
+        assertThat("number of gcdocuments after", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(1)); // Input files are merged -> only one file is open
     }
 
     /**
