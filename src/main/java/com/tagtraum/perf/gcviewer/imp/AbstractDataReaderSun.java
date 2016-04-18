@@ -1,5 +1,13 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
@@ -13,14 +21,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
@@ -45,6 +45,8 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     protected static final String LOG_INFORMATION_HOTSPOT = "Java HotSpot";
     protected static final String LOG_INFORMATION_MEMORY = "Memory:";
     protected static final String LOG_INFORMATION_COMMANDLINE_FLAGS = "CommandLine flags:";
+    protected static final String LOGFILE_ROLLING_BEGIN = "GC log file created"; // Printed at beginning of file when -XX:+UseGCLogFileRotation is used (since 7u76)
+    protected static final String LOGFILE_ROLLING_END = "GC log file has reached the maximum size. Saved as"; // Printed at end of file when -XX:+UseGCLogFileRotation is used (since 7u76)
     protected static final List<String> LOG_INFORMATION_STRINGS = new LinkedList<String>();
 
     static {

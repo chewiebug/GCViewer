@@ -1,0 +1,5 @@
+2016-04-14 22:37:22 GC log file created logs/garbageCollection.log.1
+Java HotSpot(TM) 64-Bit Server VM (25.45-b02) for windows-amd64 JRE (1.8.0_45-b15), built on Apr 30 2015 12:40:44 by "java_re" with MS VC++ 10.0 (VS2010)
+Memory: 4k page, physical 16664956k(9157704k free), swap 20473812k(9756156k free)
+CommandLine flags: -XX:CICompilerCount=4 -XX:+CMSParallelRemarkEnabled -XX:+CMSScavengeBeforeRemark -XX:GCLogFileSize=20480 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/logs -XX:InitialHeapSize=838860800 -XX:MaxHeapSize=838860800 -XX:MaxNewSize=279576576 -XX:MaxTenuringThreshold=6 -XX:MinHeapDeltaBytes=196608 -XX:NewSize=279576576 -XX:NumberOfGCLogFiles=10 -XX:OldPLABSize=16 -XX:OldSize=559284224 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+ScavengeBeforeFullGC -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+UseFastUnorderedTimeStamps -XX:+UseGCLogFileRotation -XX:-UseLargePagesIndividualAllocation -XX:+UseParNewGC
+2016-04-14 22:41:41 GC log file has reached the maximum size. Saved as logs/garbageCollection.log.1

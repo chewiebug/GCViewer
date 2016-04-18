@@ -1,10 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,12 +13,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
-import org.junit.Test;
-
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class TestDataReaderSun1_6_0G1 {
     
@@ -395,6 +392,20 @@ public class TestDataReaderSun1_6_0G1 {
         assertThat("GC count", model.size(), is(1));
         assertThat("GC pause", model.getFullGCPause().getSum(), closeTo(37.0629320, 0.000000001));
         assertThat("heap size", model.getHeapAllocatedSizes().getMax(), is(10240 * 1024));
+        assertThat("number of errors", handler.getCount(), is(0));
+    }
+
+    @Test
+    public void logfileRollingProducesNoWarnings() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GCResource("SampleSun1_8_0RollingLogfile.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        InputStream in = getInputStream(gcResource.getResourceName());
+        DataReader reader = new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_6G1);
+        reader.read();
+
         assertThat("number of errors", handler.getCount(), is(0));
     }
 }
