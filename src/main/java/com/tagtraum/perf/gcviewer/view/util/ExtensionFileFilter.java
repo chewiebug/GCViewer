@@ -15,7 +15,7 @@ public class ExtensionFileFilter extends FileFilter {
         new ExtensionFileFilter("txt.gz"), new ExtensionFileFilter("gc.gz"), new ExtensionFileFilter("log.gz")
     };
 
-    private final String extension;
+    protected final String extension;
 
     public ExtensionFileFilter(String extension) {
         this.extension = extension;

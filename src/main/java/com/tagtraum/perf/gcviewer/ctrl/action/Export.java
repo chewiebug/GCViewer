@@ -19,6 +19,7 @@ import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.ChartPanelView;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.util.ExtensionFileFilter;
 import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 
 /**
@@ -27,6 +28,7 @@ import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
  * Time: 2:01:07 PM
  */
 public class Export extends AbstractAction {
+
     private GCViewerGui gcViewer;
     private JFileChooser saveDialog;
 
@@ -43,14 +45,12 @@ public class Export extends AbstractAction {
         saveDialog = new JFileChooser();
         saveDialog.setDialogTitle(LocalisationHelper.getString("fileexport_dialog_title"));
         saveDialog.removeChoosableFileFilter(saveDialog.getAcceptAllFileFilter());
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_csv_ts"), DataWriterType.CSV_TS));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".csv", LocalisationHelper.getString("fileexport_dialog_summarylog"), DataWriterType.SUMMARY));
-        saveDialog.addChoosableFileFilter(new ExtensionFileFilter(".png", LocalisationHelper.getString("fileexport_dialog_png"), DataWriterType.PNG));
+        for (ExportExtensionFileFilter filter : ExportExtensionFileFilter.EXT_FILE_FILTERS) {
+            saveDialog.addChoosableFileFilter(filter);
         }
+    }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
         final GCDocument gcDocument = gcViewer.getSelectedGCDocument();
         for (int i=0; i<gcDocument.getChartPanelViewCount(); i++) {
@@ -60,10 +60,10 @@ public class Export extends AbstractAction {
             saveDialog.setSelectedFile(file);
             final int val = saveDialog.showSaveDialog(gcViewer);
             if (val == JFileChooser.APPROVE_OPTION) {
-                ExtensionFileFilter fileFilter = (ExtensionFileFilter) saveDialog.getFileFilter();
+                ExportExtensionFileFilter fileFilter = (ExportExtensionFileFilter) saveDialog.getFileFilter();
                 // On OS/X if you don't select one of the filters and just press "Save" the filter may be null. Use the CSV one then
                 if (fileFilter==null) {
-                    fileFilter = (ExtensionFileFilter) saveDialog.getChoosableFileFilters()[0];
+                    fileFilter = (ExportExtensionFileFilter) saveDialog.getChoosableFileFilters()[0];
                 }
                 exportFile(chartPanelView.getGCResource().getModel(),
                         saveDialog.getSelectedFile(), 
@@ -96,31 +96,31 @@ public class Export extends AbstractAction {
         }
     }
 
-    private static class ExtensionFileFilter extends FileFilter {
-        private String extension;
-        private String description;
-        private DataWriterType dataWriterType;
+    private static class ExportExtensionFileFilter extends ExtensionFileFilter {
 
-        public ExtensionFileFilter(final String extension, final String description, final DataWriterType dataWriterType) {
-            this.extension = extension.toLowerCase();
+        public static final ExportExtensionFileFilter[] EXT_FILE_FILTERS = {
+            new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV),
+            new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_csv_ts"), DataWriterType.CSV_TS),
+            new ExportExtensionFileFilter("txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN),
+            new ExportExtensionFileFilter("simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE),
+            new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_summarylog"), DataWriterType.SUMMARY),
+            new ExportExtensionFileFilter("png", LocalisationHelper.getString("fileexport_dialog_png"), DataWriterType.PNG)        
+        };
+
+        private final String description;
+        private final DataWriterType dataWriterType;
+
+        public ExportExtensionFileFilter(final String extension, final String description, final DataWriterType dataWriterType) {
+            super(extension.toLowerCase());
             this.description = description;
             this.dataWriterType = dataWriterType;
         }
 
-        public boolean accept(final File file) {
-        	// TODO refactor
-        	try {
-                return file.toString().toLowerCase().endsWith(extension);
-        	}
-        	catch (NullPointerException e) {
-        		return false;
-        	}
-        }
-
         public String getExtension() {
-            return extension;
+            return super.extension;
         }
 
+        @Override
         public String getDescription() {
             return description;
         }
