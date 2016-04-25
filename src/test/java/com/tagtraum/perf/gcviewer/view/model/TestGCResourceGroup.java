@@ -1,20 +1,17 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Test for {@link GCResourceGroup} class.
@@ -24,10 +21,10 @@ public class TestGCResourceGroup {
 
     @Before
     public void setup() {
-        GCResource gcResource1 = new GCResource("gcResource1");
+        GCResource gcResource1 = new GcResourceFile("gcResource1");
         gcResource1.getModel().add(new GCEvent(1.1, 100, 50, 200, 0.003, Type.GC));
 
-        GCResource gcResource2 = new GCResource("gcResource2");
+        GCResource gcResource2 = new GcResourceFile("gcResource2");
         gcResource2.getModel().add(new GCEvent(1.5, 1000, 400, 2000, 0.044, Type.FULL_GC));
 
         gcResourceList = new ArrayList<>();

@@ -10,12 +10,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  *
@@ -30,7 +30,7 @@ public class TestDataReaderIBM1_4_2 {
     public void testParse1() throws Exception {
         String fileName = "SampleIBM1_4_2.txt";
         final InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, fileName);
-        final DataReader reader = new DataReaderIBM1_4_2(new GCResource(fileName), in);
+        final DataReader reader = new DataReaderIBM1_4_2(new GcResourceFile(fileName), in);
         GCModel model = reader.read();
         
         assertEquals("number of events", 2884, model.size());

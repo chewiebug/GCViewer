@@ -1,12 +1,5 @@
 package com.tagtraum.perf.gcviewer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.tagtraum.perf.gcviewer.ctrl.impl.GCViewerGuiController;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
@@ -14,8 +7,15 @@ import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
 import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.view.SimpleChartRenderer;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Main class of GCViewer. Parses command line parameters if there are any and either remains
@@ -72,7 +72,7 @@ public class GCViewer {
             throws IOException, DataReaderException {
         
         DataReaderFacade dataReaderFacade = new DataReaderFacade();
-        GCModel model = dataReaderFacade.loadModel(new GCResource(gcFilename));
+        GCModel model = dataReaderFacade.loadModel(new GcResourceFile(gcFilename));
 
         exportType(model, summaryFilePath, type);
         if (chartFilePath != null)

@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.model.GCEvent;
@@ -38,7 +39,7 @@ public class TestDataReaderSun1_8_0G1 {
     public void fullConcurrentCycle() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0G1_ConcurrentCycle.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1_ConcurrentCycle.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -62,7 +63,7 @@ public class TestDataReaderSun1_8_0G1 {
     public void fullGcWithDetailedSizes() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("byteArray");
+        GCResource gcResource = new GcResourceFile("byteArray");
 
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2014-07-24T13:49:45.090+0400: 92457.841: [Full GC (Allocation Failure)  5811M->3097M(12G), 8.9862292 secs]"
@@ -88,7 +89,7 @@ public class TestDataReaderSun1_8_0G1 {
     public void printGCCauseTenuringDistribution() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0G1PrintGCCausePrintTenuringDistribution.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1PrintGCCausePrintTenuringDistribution.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -103,7 +104,7 @@ public class TestDataReaderSun1_8_0G1 {
     public void printHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0G1PrintHeapAtGc.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1PrintHeapAtGc.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -118,7 +119,7 @@ public class TestDataReaderSun1_8_0G1 {
     public void humongousMixed() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0G1HumongousMixed.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1HumongousMixed.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -132,7 +133,7 @@ public class TestDataReaderSun1_8_0G1 {
     public void extendedRemark() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0G1extended-remark.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1extended-remark.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);

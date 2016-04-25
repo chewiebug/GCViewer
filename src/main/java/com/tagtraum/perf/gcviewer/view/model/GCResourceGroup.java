@@ -1,12 +1,13 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * <p>Holds a group of resource names (those displayed in the same GCDocument).</p>
@@ -21,7 +22,7 @@ public class GCResourceGroup {
 
     public GCResourceGroup(List<GCResource> gcResourceList) {
         this.gcResourceList = gcResourceList.stream()
-                .map(gcResource -> new GCResource(gcResource.getResourceName()))
+                .map(gcResource -> new GcResourceFile(gcResource.getResourceName()))
                 .collect(Collectors.toList());
     }
     
@@ -74,7 +75,15 @@ public class GCResourceGroup {
         StringBuilder sb = new StringBuilder();
         for (GCResource gcResource : gcResourceList) {
             try {
-                sb.append(gcResource.getResourceNameAsUrl().toString()).append(";");
+				String url;
+				if(gcResource instanceof GcResourceFile) {
+					url = ((GcResourceFile) gcResource).getResourceNameAsUrl().toString();
+				}
+				else {
+					// no URL available -> fallback
+					url = gcResource.getResourceName();
+				}
+                sb.append(url).append(";");
             }
             catch (MalformedURLException e) {
                 // ignore it
@@ -107,7 +116,14 @@ public class GCResourceGroup {
             return sb.toString();
         }
         else {
-            return gcResourceList.get(0).getResourceNameAsUrlString();
+			GCResource singleResource = gcResourceList.get(0);
+			if(singleResource instanceof  GcResourceFile)
+			{
+				return ((GcResourceFile) singleResource).getResourceNameAsUrlString();
+			}
+			else
+				// no URL available -> fallback
+				return singleResource.getResourceName();
         }
     }
     
@@ -123,7 +139,7 @@ public class GCResourceGroup {
     private void setGCResourceList(String[] resourceNames) {
         gcResourceList = new ArrayList<>();
         for (String resourceName : resourceNames) {
-            gcResourceList.add(new GCResource(resourceName));
+            gcResourceList.add(new GcResourceFile(resourceName));
         }
     }
 

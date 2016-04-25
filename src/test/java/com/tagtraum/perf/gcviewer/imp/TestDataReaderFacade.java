@@ -1,19 +1,17 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
+import static org.junit.Assert.*;
 
 /**
  * Tests the implementation of {@link DataReaderFacade}.
@@ -42,7 +40,7 @@ public class TestDataReaderFacade {
     public void loadModelStringFileExistsNoWarnings() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
+        GCResource gcResource = new GcResourceFile(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
         gcResource.getLogger().addHandler(handler);
 
         final GCModel model = dataReaderFacade.loadModel(gcResource);
@@ -60,7 +58,7 @@ public class TestDataReaderFacade {
     public void loadModelMalformedUrl() throws Exception {
 
         try {
-            dataReaderFacade.loadModel(new GCResource("httpblabla"));
+            dataReaderFacade.loadModel(new GcResourceFile("httpblabla"));
         }
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
@@ -78,7 +76,7 @@ public class TestDataReaderFacade {
     public void loadModelIllegalArgument() throws Exception {
 
         try {
-            dataReaderFacade.loadModel(new GCResource("http://"));
+            dataReaderFacade.loadModel(new GcResourceFile("http://"));
         }
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
@@ -95,7 +93,7 @@ public class TestDataReaderFacade {
     @Test
     public void loadModelFileDoesntExists() throws Exception {
         try {
-            dataReaderFacade.loadModel(new GCResource("dummy.txt"));
+            dataReaderFacade.loadModel(new GcResourceFile("dummy.txt"));
             fail("DataReaderException expected");
         }
         catch (DataReaderException e) {

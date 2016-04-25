@@ -1,20 +1,16 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.junit.Assert.assertEquals;
+import com.tagtraum.perf.gcviewer.model.*;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
+import static org.junit.Assert.assertEquals;
 
 public class TestAbstractDataReaderSun {
 
@@ -22,7 +18,7 @@ public class TestAbstractDataReaderSun {
     
     @Before
     public void setUp() throws UnsupportedEncodingException {
-        dataReader = new AbstractDataReaderSunSub(new GCResource("empty"), new ByteArrayInputStream(new byte[0]), GcLogType.SUN1_6);
+        dataReader = new AbstractDataReaderSunSub(new GcResourceFile("empty"), new ByteArrayInputStream(new byte[0]), GcLogType.SUN1_6);
     }
     
     /**

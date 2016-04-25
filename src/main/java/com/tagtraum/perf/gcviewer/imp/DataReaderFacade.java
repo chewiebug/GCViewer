@@ -1,5 +1,12 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
+import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
@@ -11,12 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
-
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
-import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
-import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file
@@ -49,6 +50,8 @@ public class DataReaderFacade {
         if (gcResource == null) {
             throw new NullPointerException("gcResource must never be null");
         }
+		if(!(gcResource instanceof GcResourceFile))
+			throw new UnsupportedOperationException("Only supported for files!");
 
         DataReaderException dataReaderException = new DataReaderException();
         GCModel model = null;
@@ -57,7 +60,7 @@ public class DataReaderFacade {
         try {
             logger.info("GCViewer version " + BuildInfoReader.getVersion()
                     + " (" + BuildInfoReader.getBuildDate() + ")");
-            model = readModel(gcResource);
+            model = readModel((GcResourceFile) gcResource);
         }
         catch (RuntimeException | IOException e) {
             dataReaderException.initCause(e);
@@ -79,7 +82,7 @@ public class DataReaderFacade {
      * @return GCModel containing events parsed from <code>gcResource</code>
      * @throws IOException problem reading the data
      */
-    private GCModel readModel(GCResource gcResource) throws IOException {
+    private GCModel readModel(GcResourceFile gcResource) throws IOException {
         URL url = gcResource.getResourceNameAsUrl();
         DataReaderFactory factory = new DataReaderFactory();
         long contentLength = 0L;

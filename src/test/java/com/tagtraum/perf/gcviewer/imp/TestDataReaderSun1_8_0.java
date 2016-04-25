@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
@@ -36,7 +37,7 @@ public class TestDataReaderSun1_8_0 {
     public void parallelPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0ParallelPrintHeapAtGC.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0ParallelPrintHeapAtGC.txt");
         gcResource.getLogger().addHandler(handler);
         
         DataReader reader = getDataReader(gcResource);
@@ -51,7 +52,7 @@ public class TestDataReaderSun1_8_0 {
     public void scavengeBeforeRemarkPrintHeapAtGC_YGOccupancy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0CMS_ScavengeBeforeRemark_HeapAtGc.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0CMS_ScavengeBeforeRemark_HeapAtGc.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -68,7 +69,7 @@ public class TestDataReaderSun1_8_0 {
     public void scavengeBeforeRemark_HeapAtGC_PrintTenuringDistribution_PrintFLSStats() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0CMS_ScavengeBR_HeapAtGC_TenuringDist_PrintFLS.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0CMS_ScavengeBR_HeapAtGC_TenuringDist_PrintFLS.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -85,7 +86,7 @@ public class TestDataReaderSun1_8_0 {
     public void parallelPrintTenuringGcCause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0Parallel_Tenuring_PrintGCCause.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0Parallel_Tenuring_PrintGCCause.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -102,7 +103,7 @@ public class TestDataReaderSun1_8_0 {
     public void parallelApple() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0Parallel_Apple.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0Parallel_Apple.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -117,7 +118,7 @@ public class TestDataReaderSun1_8_0 {
     public void cmsPrintHeapBeforeFullGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_8_0CMS_HeadDumpBeforeFullGc.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0CMS_HeadDumpBeforeFullGc.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);

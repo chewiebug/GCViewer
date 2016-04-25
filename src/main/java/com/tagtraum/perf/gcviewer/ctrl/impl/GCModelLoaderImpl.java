@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * <p>Date: November 8, 2013</p>
  */
 public class GCModelLoaderImpl extends SwingWorker<GCModel, Object> implements GCModelLoader {
-	
+
 	private final DataReaderFacade dataReaderFacade;
     private final GCResource gcResource;
 	
@@ -38,7 +38,7 @@ public class GCModelLoaderImpl extends SwingWorker<GCModel, Object> implements G
 		setProgress(0);
 		final GCModel result;
 		try {
-			result = dataReaderFacade.loadModel(gcResource);			
+			result = dataReaderFacade.loadModel(gcResource);
 		}
 		catch (DataReaderException | RuntimeException e) {
 			Logger logger = gcResource.getLogger();
@@ -57,16 +57,17 @@ public class GCModelLoaderImpl extends SwingWorker<GCModel, Object> implements G
 			gcResource.setModel(get());
             // TODO delete
             gcResource.getModel().printDetailedInformation();
-		} 
+		}
 		catch (InterruptedException e) {
 			logger.log(Level.FINE, "model get() interrupted", e);
-		} 
+		}
 		catch (ExecutionException | RuntimeException e) {
 			if (logger.isLoggable(Level.WARNING))
-				logger.log(Level.WARNING, "Failed to create GCModel from " + gcResource.getResourceName(), e);			
+				logger.log(Level.WARNING, "Failed to create GCModel from " + gcResource.getResourceName(), e);
 		}
 	}
-	
+
+	@Override
 	public GCResource getGcResource() {
 		return gcResource;
 	}
@@ -76,5 +77,5 @@ public class GCModelLoaderImpl extends SwingWorker<GCModel, Object> implements G
         if (evt.getPropertyName() == MonitoredBufferedInputStream.PROGRESS) {
             setProgress((int)evt.getNewValue());
         }
-    }    	
+    }
 }

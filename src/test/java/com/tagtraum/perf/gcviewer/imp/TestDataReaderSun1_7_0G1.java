@@ -1,25 +1,18 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.*;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.math.DoubleData;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class TestDataReaderSun1_7_0G1 {
 
@@ -28,7 +21,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     private DataReader getDataReader(String fileName) throws IOException {
-        return new DataReaderSun1_6_0G1(new GCResource(fileName), getInputStream(fileName), GcLogType.SUN1_7G1);
+        return new DataReaderSun1_6_0G1(new GcResourceFile(fileName), getInputStream(fileName), GcLogType.SUN1_7G1);
     }
 
     private DataReader getDataReader(GCResource gcResource) throws IOException {
@@ -39,7 +32,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void youngPause_u1() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0-01_G1_young.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0-01_G1_young.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -57,7 +50,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void youngPause_u2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0-02_G1_young.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0-02_G1_young.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -88,7 +81,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void youngPauseDateStamp_u2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0_02_G1_young_datestamp.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0_02_G1_young_datestamp.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -110,7 +103,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printAdaptiveSizePolicy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0_12PrintAdaptiveSizePolicy.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0_12PrintAdaptiveSizePolicy.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -134,7 +127,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printGCCause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0_40PrintGCCause.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0_40PrintGCCause.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -157,7 +150,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printGCCause2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0_40PrintGCCause2.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0_40PrintGCCause2.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -192,7 +185,7 @@ public class TestDataReaderSun1_7_0G1 {
 
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine2.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine2.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -225,7 +218,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void applicationStoppedMixedLine() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("byteArray");
+        GCResource gcResource = new GcResourceFile("byteArray");
         gcResource.getLogger().addHandler(handler);
 
         InputStream in = new ByteArrayInputStream(
@@ -248,7 +241,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void applicationTimeMixed() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("byteArray");
+        GCResource gcResource = new GcResourceFile("byteArray");
         gcResource.getLogger().addHandler(handler);
 
         InputStream in = new ByteArrayInputStream(
@@ -298,7 +291,7 @@ public class TestDataReaderSun1_7_0G1 {
                         "\n [Times: user=0.00 sys=0.00, real=0.00 secs]")
                 .getBytes());
 
-        DataReader reader = new DataReaderSun1_6_0G1(new GCResource("byteArray"), in, GcLogType.SUN1_7G1);
+        DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -312,7 +305,7 @@ public class TestDataReaderSun1_7_0G1 {
                         " [Times: user=0.43 sys=0.00, real=0.03 secs] \n")
                 .getBytes());
 
-        DataReader reader = new DataReaderSun1_6_0G1(new GCResource("byteArray"), in, GcLogType.SUN1_7G1);
+        DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -323,7 +316,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printTenuringDistribution() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1TenuringDistribution.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1TenuringDistribution.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -343,7 +336,7 @@ public class TestDataReaderSun1_7_0G1 {
         // -XX:+PrintGCApplicationConcurrentTime (output ignored)
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0_02PrintApplicationTimeTenuringDistribution.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0_02PrintApplicationTimeTenuringDistribution.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -375,7 +368,7 @@ public class TestDataReaderSun1_7_0G1 {
                         + "\n2013-06-22T18:58:46.002+0200: 1.483: [GC pause (young) 91M->90M(128M), 0.0128787 secs]")
                 .getBytes());
 
-        DataReader reader = new DataReaderSun1_6_0G1(new GCResource("bytearray"), in, GcLogType.SUN1_7G1);
+        DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("bytearray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
         assertEquals("count", 4, model.size());
@@ -389,7 +382,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printHeapAtGcWithConcurrentEvents() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1_PrintHeapAtGC_withConcurrent.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_PrintHeapAtGC_withConcurrent.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -414,7 +407,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0_40PrintHeapAtGC.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0_40PrintHeapAtGC.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -431,7 +424,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printAdaptiveSizePolicyPrintReferencePolicy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1AdaptiveSize_Reference.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1AdaptiveSize_Reference.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -457,7 +450,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printReferencePolicy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1PrintReferencePolicy.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1PrintReferencePolicy.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -474,7 +467,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printDetailsWithoutTimestamp() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1_DetailsWoTimestamp.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_DetailsWoTimestamp.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -493,7 +486,7 @@ public class TestDataReaderSun1_7_0G1 {
                 ("2013-12-21T15:48:44.062+0100: 0.441: [GC pause (G1 Evacuation Pause) (young)-- 90M->94M(128M), 0.0245257 secs]")
                 .getBytes());
 
-        DataReader reader = new DataReaderSun1_6_0G1(new GCResource("bytearray"), in, GcLogType.SUN1_7G1);
+        DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("bytearray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
         assertEquals("count", 1, model.size());
@@ -505,7 +498,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void pauseWithComma() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1_PauseWithComma.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_PauseWithComma.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -527,7 +520,7 @@ public class TestDataReaderSun1_7_0G1 {
     private void verifyYoungToSpaceOverflowInitialMarkMixedOrder(String fileName, Type type) throws IOException {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource(fileName);
+        GCResource gcResource = new GcResourceFile(fileName);
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -558,7 +551,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printGCApplicationStoppedTimeTenuringDist() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0_51_G1_PrintApplicationTimeTenuringDistribution.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0_51_G1_PrintApplicationTimeTenuringDistribution.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -588,7 +581,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printGCApplicationStoppedTimeTenuringDistErgonomicsComma() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1_AppStopped_TenuringDist_Ergonomics_comma.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_AppStopped_TenuringDist_Ergonomics_comma.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -618,7 +611,7 @@ public class TestDataReaderSun1_7_0G1 {
         // TODO relax G1 parser: don't warn, when 2 timestamps are in the beginning of a line
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleSun1_7_0G1_MixedApplicationStopped.txt");
+        GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_MixedApplicationStopped.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -638,7 +631,7 @@ public class TestDataReaderSun1_7_0G1 {
     public void printAdaptiveSizePolicyFullGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("byteArray");
+        GCResource gcResource = new GcResourceFile("byteArray");
         gcResource.getLogger().addHandler(handler);
 
         InputStream in = new ByteArrayInputStream(

@@ -4,6 +4,7 @@ import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
 import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
@@ -44,7 +45,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     public void add(File[] files) {
         List<GCResource> gcResourceList = new ArrayList<>();
         for (File file : files) {
-            GCResource gcResource = new GCResource(file.getAbsolutePath());
+            GCResource gcResource = new GcResourceFile(file.getAbsolutePath());
             gcResourceList.add(gcResource);
             
             addGCResource(gcResource);
@@ -135,7 +136,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     public void open(File[] files) {
         List<GCResource> gcResourceList = new ArrayList<GCResource>();
         for (File file : files) {
-            GCResource gcResource = new GCResource(file.getAbsolutePath());
+            GCResource gcResource = new GcResourceFile(file.getAbsolutePath());
             gcResourceList.add(gcResource);
         }
         
@@ -151,7 +152,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     @Override
     public void open(List<GCResource> gcResourceList) {
         for (int i = 0; i < gcResourceList.size(); ++i) {
-            GCResource gcResource = new GCResource(gcResourceList.get(i).getResourceName());
+            GCResource gcResource = new GcResourceFile(gcResourceList.get(i).getResourceName());
 
             if (i == 0) {
                 openGCResource(gcResource);
