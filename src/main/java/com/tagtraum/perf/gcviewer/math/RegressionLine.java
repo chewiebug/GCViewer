@@ -62,4 +62,40 @@ public class RegressionLine implements Serializable {
         return (n * sumXY - sumX * sumY) / (n * sumXSquare - sumX * sumX);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        RegressionLine that = (RegressionLine) o;
+
+        if (Double.compare(that.sumX, sumX) != 0)
+            return false;
+        if (Double.compare(that.sumY, sumY) != 0)
+            return false;
+        if (Double.compare(that.sumXSquare, sumXSquare) != 0)
+            return false;
+        if (Double.compare(that.sumXY, sumXY) != 0)
+            return false;
+        return n == that.n;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(sumX);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(sumY);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(sumXSquare);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(sumXY);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + n;
+        return result;
+    }
 }

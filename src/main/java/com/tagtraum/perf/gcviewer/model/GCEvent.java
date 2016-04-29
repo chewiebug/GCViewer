@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer.model;
 
+import java.util.Objects;
+
 /**
  * The GCEvent is the type of event that contains memory (preused, postused, total) and 
  * pause information.
@@ -143,7 +145,7 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
         sb.append(getExtendedType() != null ? getExtendedType().getName() : ExtendedType.UNDEFINED);
         if (details != null) {
             sb.append(' ');
-            for (GCEvent event : details) {
+            for (AbstractGCEvent event : details) {
                 event.toStringBuffer(sb);
             }
             sb.append(' ');
@@ -161,4 +163,22 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
         sb.append(" secs]");
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof GCEvent))
+            return false;
+        if (!super.equals(o))
+            return false;
+        GCEvent gcEvent = (GCEvent) o;
+        return preUsed == gcEvent.preUsed &&
+               postUsed == gcEvent.postUsed &&
+               total == gcEvent.total;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), preUsed, postUsed, total);
+    }
 }

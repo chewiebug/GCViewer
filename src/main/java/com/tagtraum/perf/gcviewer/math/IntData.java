@@ -15,7 +15,7 @@ public class IntData implements Serializable  {
     private long sum;
     private long sumSquares;
     private int min = Integer.MAX_VALUE;
-    private int max = Integer.MIN_VALUE;
+	private int max = Integer.MIN_VALUE;
 
     public void add(int x) {
         sum += x;
@@ -82,5 +82,36 @@ public class IntData implements Serializable  {
             m += weight[i];
         }
         return sum / m;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        IntData intData = (IntData) o;
+
+        if (n != intData.n)
+            return false;
+        if (sum != intData.sum)
+            return false;
+        if (sumSquares != intData.sumSquares)
+            return false;
+        if (min != intData.min)
+            return false;
+        return max == intData.max;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = n;
+        result = 31 * result + (int) (sum ^ (sum >>> 32));
+        result = 31 * result + (int) (sumSquares ^ (sumSquares >>> 32));
+        result = 31 * result + min;
+        result = 31 * result + max;
+        return result;
     }
 }

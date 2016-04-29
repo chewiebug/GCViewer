@@ -1,5 +1,11 @@
 package com.tagtraum.perf.gcviewer.model;
 
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.math.IntData;
+import com.tagtraum.perf.gcviewer.math.RegressionLine;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,22 +14,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.tagtraum.perf.gcviewer.math.DoubleData;
-import com.tagtraum.perf.gcviewer.math.IntData;
-import com.tagtraum.perf.gcviewer.math.RegressionLine;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
 /**
  * Collection of GCEvents.
@@ -142,7 +137,7 @@ public class GCModel implements Serializable {
     private RegressionLine relativePostFullGCIncrease;
     private URL url;
 
-    public GCModel() {
+	public GCModel() {
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
         this.stopTheWorldEvents = new ArrayList<AbstractGCEvent<?>>();
         this.gcEvents = new ArrayList<GCEvent>();
@@ -156,6 +151,7 @@ public class GCModel implements Serializable {
         this.freedMemoryByGC = new IntData();
         this.freedMemoryByFullGC = new IntData();
         this.postFullGCUsedHeap = new IntData();
+
         this.postGCUsedMemory = new IntData();
         this.totalPause = new DoubleData();
         this.fullGCPause = new DoubleData();
@@ -942,7 +938,24 @@ public class GCModel implements Serializable {
         return "GCModel[size=" + size() + "]: " + allEvents.toString();
     }
 
-    public static class Format implements Serializable {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GCModel model = (GCModel) o;
+        return Objects.equals(allEvents, model.allEvents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(allEvents, fileInformation, fullGcEventPauses, gcEventPauses, concurrentGcEventPauses, vmOperationEventPauses, heapAllocatedSizes, tenuredAllocatedSizes, youngAllocatedSizes, permAllocatedSizes, heapUsedSizes, tenuredUsedSizes, youngUsedSizes, permUsedSizes, postConcurrentCycleUsedTenuredSizes, postConcurrentCycleUsedHeapSizes, promotion, firstPauseTimeStamp, lastPauseTimeStamp, totalPause, fullGCPause, lastFullGcPauseTimeStamp, fullGcPauseInterval, gcPause, vmOperationPause, lastGcPauseTimeStamp, pauseInterval, initiatingOccupancyFraction, freedMemory, format, postGCUsedMemory, postFullGCUsedHeap, freedMemoryByGC, freedMemoryByFullGC, postGCSlope, currentPostGCSlope, currentRelativePostGCIncrease, relativePostGCIncrease, postFullGCSlope, relativePostFullGCIncrease, url);
+    }
+
+	public static class Format implements Serializable {
 		private static final long serialVersionUID = 483615745336894207L;
 
 		private String format;
@@ -959,5 +972,5 @@ public class GCModel implements Serializable {
         public static final Format SUN_X_LOG_GC = new Format("Sun -Xloggc:<file>");
         public static final Format IBM_VERBOSE_GC = new Format("IBM -verbose:gc");
         public static final Format SUN_1_2_2VERBOSE_GC = new Format("Sun 1.2.2 -verbose:gc");
-    }
+	}
 }

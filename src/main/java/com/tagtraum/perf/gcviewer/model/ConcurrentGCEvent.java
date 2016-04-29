@@ -4,7 +4,7 @@ package com.tagtraum.perf.gcviewer.model;
  * ConcurrentGCEvent.
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
+public final class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
 
     private double duration;
 
@@ -37,7 +37,7 @@ public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
         return !getExtendedType().getName().endsWith("-start");
     }
 
-    public void toStringBuffer(StringBuffer sb) {
+	public void toStringBuffer(StringBuffer sb) {
         sb.append(getTimestamp());
         sb.append(": [");
         sb.append(getExtendedType().getName());
@@ -49,5 +49,29 @@ public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
             sb.append(" secs");
         }
         sb.append(']');
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        ConcurrentGCEvent that = (ConcurrentGCEvent) o;
+
+        return Double.compare(that.duration, duration) == 0;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        long temp;
+        temp = Double.doubleToLongBits(duration);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 }
