@@ -13,6 +13,8 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -36,29 +38,56 @@ public class GCModel implements Serializable {
      */
     private static class FileInformation implements Serializable {
         private static final long serialVersionUID = 1L;
+        private static final Logger logger = Logger.getLogger(FileInformation.class.getName());
 
+        public long creationTime;
         public long lastModified;
         public long length;
 
         public FileInformation() {
-            this(-1, -1);
+            creationTime = 0;
+            creationTime = 0;
+            length = 0;
         }
 
-        public FileInformation(long lastModified, long length) {
-            super();
+        public FileInformation(File file) {
+            if (file == null)
+                throw new IllegalArgumentException("File must not  be null!");
 
-            this.lastModified = lastModified;
-            this.length = length;
+            Optional<BasicFileAttributes> fileAttributes = getFileAttributes(file);
+            this.lastModified = file.lastModified();
+            this.creationTime = determineCreationDate(file, fileAttributes);
+            this.length = file.length();
+        }
+
+        private Optional<BasicFileAttributes> getFileAttributes(File file) {
+            try {
+                return Optional.of(Files.readAttributes(file.toPath(), BasicFileAttributes.class));
+            }
+            catch (IOException ex) {
+                logger.log(Level.WARNING, "Failed to read attributes of file " + file + ". Reason: " + ex.getMessage());
+                logger.log(Level.FINER, "Details: ", ex);
+            }
+            return Optional.empty();
+        }
+
+        private long determineCreationDate(File file, Optional<BasicFileAttributes> fileAttributes) {
+            if (fileAttributes.isPresent()) {
+                return fileAttributes.get().creationTime().toMillis();
+            }
+            else {
+                // Creation date is unavailable on unix based oS
+                return file.lastModified();
+            }
         }
 
         public void setFileInformation(FileInformation other) {
+            this.creationTime = other.creationTime;
             this.lastModified = other.lastModified;
             this.length = other.length;
         }
 
-        /**
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
+        @Override
         public boolean equals(Object other) {
             if (this == other) {
                 return true;
@@ -72,8 +101,15 @@ public class GCModel implements Serializable {
 
             FileInformation fileInfo = (FileInformation)other;
 
-            return fileInfo.lastModified == lastModified
-                            && fileInfo.length == length;
+            return fileInfo.lastModified == lastModified && fileInfo.creationTime == creationTime && fileInfo.length == length;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (creationTime ^ (creationTime >>> 32));
+            result = 31 * result + (int) (lastModified ^ (lastModified >>> 32));
+            result = 31 * result + (int) (length ^ (length >>> 32));
+            return result;
         }
 
         @Override
@@ -189,6 +225,10 @@ public class GCModel implements Serializable {
         return fileInformation.lastModified;
     }
 
+    public long getCreationTime() {
+        return fileInformation.creationTime;
+    }
+
     public URL getURL() {
         return url;
     }
@@ -232,19 +272,28 @@ public class GCModel implements Serializable {
 
     private FileInformation readFileInformation(URL url) {
         FileInformation fileInformation = new FileInformation();
-        URLConnection urlConnection = null;
+        URLConnection urlConnection;
         try {
-            urlConnection = url.openConnection();
             if (url.getProtocol().startsWith("http")) {
-                ((HttpURLConnection)urlConnection).setRequestMethod("HEAD");
+                urlConnection = url.openConnection();
+                ((HttpURLConnection) urlConnection).setRequestMethod("HEAD");
+                try (InputStream inputStream = urlConnection.getInputStream()) {
+                    fileInformation.length = urlConnection.getContentLength();
+                    fileInformation.lastModified = urlConnection.getLastModified();
+                }
             }
-            try (InputStream inputStream = urlConnection.getInputStream()) {
-                fileInformation.length = urlConnection.getContentLength();
-                fileInformation.lastModified = urlConnection.getLastModified();
+            else {
+                if (url.getProtocol().startsWith("file")) {
+                    File file = new File(url.getFile());
+                    if (file.exists()) {
+                        fileInformation = new FileInformation(file);
+                    }
+                }
             }
         }
         catch (IOException e) {
-            if (LOG.isLoggable(Level.WARNING)) LOG.log(Level.WARNING, "Failed to obtain age and length of URL " + url, e);
+            if (LOG.isLoggable(Level.WARNING))
+                LOG.log(Level.WARNING, "Failed to obtain age and length of URL " + url, e);
         }
 
         return fileInformation;
@@ -257,7 +306,7 @@ public class GCModel implements Serializable {
 
     public boolean isDifferent(File otherFile) {
         // we just ignore the file name for now...
-        FileInformation fileInformation = new FileInformation(otherFile.lastModified(), otherFile.length());
+        FileInformation fileInformation = new FileInformation(otherFile);
 
         return !this.fileInformation.equals(fileInformation);
     }
