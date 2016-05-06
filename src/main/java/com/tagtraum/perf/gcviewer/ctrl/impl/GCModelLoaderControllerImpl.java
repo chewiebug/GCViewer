@@ -68,7 +68,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     }
     
     private void addGCResource(GCResource gcResource) {
-        GCModelLoader loader = new GCModelLoaderImpl(gcResource);
+        GCModelLoader loader = GCModelLoaderFactory.createFor(gcResource);
         GCDocumentController docController = getDocumentController(gcViewerGui.getSelectedGCDocument());
         docController.addGCResource(loader, getViewMenuController());
         
@@ -113,7 +113,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     }
 
     private void openGCResource(GCResource gcResource) {
-        GCModelLoader loader = new GCModelLoaderImpl(gcResource);
+        GCModelLoader loader = GCModelLoaderFactory.createFor(gcResource);
         openGCResource(gcResource, loader);
     }
 
@@ -150,7 +150,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     @Override
     public void open(List<GCResource> gcResourceList) {
         for (int i = 0; i < gcResourceList.size(); ++i) {
-            GCResource gcResource = new GcResourceFile(gcResourceList.get(i).getResourceName());
+            GCResource gcResource = gcResourceList.get(i);
 
             if (i == 0) {
                 openGCResource(gcResource);

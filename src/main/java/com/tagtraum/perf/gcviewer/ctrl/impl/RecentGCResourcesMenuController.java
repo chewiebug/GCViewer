@@ -1,14 +1,13 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenRecent;
 import com.tagtraum.perf.gcviewer.view.RecentGCResourcesMenu;
 import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesEvent;
 import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesListener;
 import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
+
+import javax.swing.*;
 
 /**
  * Controller for the {@link RecentGCResourcesMenu} keeping it in sync with the {@link RecentGCResourcesModel}. 
@@ -41,9 +40,7 @@ public class RecentGCResourcesMenuController implements RecentGCResourcesListene
      */
     @Override
     public void add(RecentGCResourcesEvent e) {
-        // TODO It is not a good idea to store GCResources in the recent menu -> whole model is stored in there!
-        // TODO should be only URL / string of the resource (as it was in the earlier implementation :-()
-        menu.add(new JMenuItem(new OpenRecent(controller, 
+        menu.add(new JMenuItem(new OpenRecent(controller,
                 e.getResourceNameGroup())), 
                 e.getPosition());
     }

@@ -4,19 +4,28 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Assert;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test for {@link GCResourceGroup} class.
  */
 public class TestGCResourceGroup {
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     private List<GCResource> gcResourceList;
 
     @Before
@@ -33,31 +42,76 @@ public class TestGCResourceGroup {
     }
 
     @Test
-    public void constructorList() {
-        Assert.assertThat("has event before", gcResourceList.get(0).getModel().size(), is(1));
+    public void testGCResourceGroup_List() {
+        assertThat("has event before", gcResourceList.get(0).getModel().size(), is(1));
         GCResourceGroup group = new GCResourceGroup(gcResourceList);
-        Assert.assertThat("has still the event from before", gcResourceList.get(0).getModel().size(), is(1));
-        Assert.assertThat("doesn't have event inside group", group.getGCResourceList().get(0).getModel().size(), is(0));
+        assertThat("has still the event from before", gcResourceList.get(0).getModel().size(), is(1));
+        assertThat("doesn't have event inside group", group.getGCResourceList().get(0).getModel().size(), is(0));
+    }
+
+    @Test
+    public void testGetGCResourceList_SingleFile() throws Exception {
+        File file = temporaryFolder.newFile();
+        GCResourceGroup group = new GCResourceGroup(file.toURI().toURL().toString());
+        assertThat(group.getGCResourceList(), contains(new GcResourceFile(file)));
+    }
+
+    @Test
+    public void testGetGCResourceList_SeveralFiles() throws Exception {
+        File file1 = temporaryFolder.newFile();
+        File file2 = temporaryFolder.newFile();
+        File file3 = temporaryFolder.newFile();
+        GCResourceGroup group =
+                new GCResourceGroup(file1.toURI().toURL().toString() + ";" + file2.toURI().toURL().toString() + ";" + file3.toURI().toURL().toString());
+        assertThat(group.getGCResourceList(), contains(new GcResourceFile(file1), new GcResourceFile(file2), new GcResourceFile(file3)));
+    }
+
+    @Test
+    public void testGetGCResourceList_SingleSeries() throws Exception {
+        File file1 = temporaryFolder.newFile();
+        File file2 = temporaryFolder.newFile();
+        File file3 = temporaryFolder.newFile();
+        List<GCResource> resources = Arrays.asList(new GcResourceFile(file1), new GcResourceFile(file2), new GcResourceFile(file3));
+        GCResourceGroup group =
+                new GCResourceGroup(file1.toURI().toURL().toString() + ">" + file2.toURI().toURL().toString() + ">" + file3.toURI().toURL().toString());
+        assertThat(group.getGCResourceList(), contains(new GcResourceSeries(resources)));
+    }
+
+    @Test
+    public void testGetGCResourceList_SeveralSeries() throws Exception {
+        File file1 = temporaryFolder.newFile();
+        File file2 = temporaryFolder.newFile();
+        File file3 = temporaryFolder.newFile();
+        List<GCResource> resourcesForSeries1 = Arrays.asList(new GcResourceFile(file1), new GcResourceFile(file2), new GcResourceFile(file3));
+
+        File file4 = temporaryFolder.newFile();
+        File file5 = temporaryFolder.newFile();
+        File file6 = temporaryFolder.newFile();
+        String resourceNameGroup1 = file1.toURI().toURL().toString() + ">" + file2.toURI().toURL().toString() + ">" + file3.toURI().toURL().toString();
+        String resourceNameGroup2 = file4.toURI().toURL().toString() + ">" + file5.toURI().toURL().toString() + ">" + file6.toURI().toURL().toString();
+        GCResourceGroup group = new GCResourceGroup(resourceNameGroup1 + ";" + resourceNameGroup2);
+        List<GCResource> resourcesForSeries2 = Arrays.asList(new GcResourceFile(file4), new GcResourceFile(file5), new GcResourceFile(file6));
+        assertThat(group.getGCResourceList(), contains(new GcResourceSeries(resourcesForSeries1), new GcResourceSeries(resourcesForSeries2)));
     }
 
     @Test
     public void getUrlGroupString() {
         GCResourceGroup gcResourceGroup = new GCResourceGroup(gcResourceList);
-        Assert.assertThat("starts with", gcResourceGroup.getUrlGroupString(), startsWith("file"));
-        Assert.assertThat("contains resource 1", gcResourceGroup.getUrlGroupString(), containsString("gcResource1"));
-        Assert.assertThat("contains resource 2", gcResourceGroup.getUrlGroupString(), containsString("gcResource2"));
+        assertThat("starts with", gcResourceGroup.getUrlGroupString(), startsWith("file"));
+        assertThat("contains resource 1", gcResourceGroup.getUrlGroupString(), containsString("gcResource1"));
+        assertThat("contains resource 2", gcResourceGroup.getUrlGroupString(), containsString("gcResource2"));
     }
 
     @Test
     public void getGroupStringShort2Elements() {
         GCResourceGroup gcResourceGroup = new GCResourceGroup(gcResourceList);
-        Assert.assertThat(gcResourceGroup.getGroupStringShort(), equalTo("gcResource1;gcResource2;"));
+        assertThat(gcResourceGroup.getGroupStringShort(), equalTo("gcResource1;gcResource2;"));
     }
 
     @Test
     public void getGroupStringShort1Element() {
         GCResourceGroup gcResourceGroup = new GCResourceGroup("c:/temp/test/gc-log-file.log");
-        Assert.assertThat("should start with", gcResourceGroup.getGroupStringShort(), startsWith("file:/"));
-        Assert.assertThat("should end with", gcResourceGroup.getGroupStringShort(), endsWith("/temp/test/gc-log-file.log"));
+        assertThat("should start with", gcResourceGroup.getGroupStringShort(), startsWith("file:/"));
+        assertThat("should end with", gcResourceGroup.getGroupStringShort(), endsWith("/temp/test/gc-log-file.log"));
     }
 }
