@@ -2,7 +2,7 @@ package com.tagtraum.perf.gcviewer.ctrl.impl;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenFile;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.ActionCommands;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
@@ -107,16 +107,16 @@ public class GCViewerGuiController extends WindowAdapter {
     /**
      * Start graphical user interface and load a log file (resourceName - if not <code>null</code>).
      * 
-     * @param resourceName log file to be loaded at startup or <code>null</code>
+     * @param gcResource {@link GCResource} to be loaded at startup or <code>null</code>
      * @throws InvocationTargetException Some problem trying to start the gui
      * @throws InterruptedException Some problem trying to start the gui
      */
-    public void startGui(final String resourceName) throws InvocationTargetException, InterruptedException {
+    public void startGui(final GCResource gcResource) throws InvocationTargetException, InterruptedException {
         final GCViewerGui gcViewerGui = new GCViewerGui();
         final GCModelLoaderController modelLoaderController = new GCModelLoaderControllerImpl(gcViewerGui);
         
         Runnable guiStarter = new Runnable() {
-            
+
             @Override
             public void run() {
                 new GCViewerGuiBuilder().initGCViewerGui(gcViewerGui, modelLoaderController);
@@ -129,12 +129,12 @@ public class GCViewerGuiController extends WindowAdapter {
         
         SwingUtilities.invokeAndWait(guiStarter);
         
-        if (resourceName != null) {
+        if (gcResource != null) {
             Runnable resourceLoader = new Runnable() {
 
                 @Override
                 public void run() {
-                    modelLoaderController.open(new GcResourceFile(resourceName));
+                    modelLoaderController.open(gcResource);
                 }
                 
             };

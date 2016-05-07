@@ -1,10 +1,14 @@
 package com.tagtraum.perf.gcviewer;
 
+import com.tagtraum.perf.gcviewer.exp.DataWriterType;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.tagtraum.perf.gcviewer.exp.DataWriterType;
+import java.util.stream.Collectors;
 
 /**
  * Parser for commandline arguments. 
@@ -18,7 +22,7 @@ public class GCViewerArgsParser {
     
     private int argumentCount;
     private String chartFilePath;
-    private String gcfile;
+    private String gcFile;
     private String summaryFilePath;
     private DataWriterType type = DataWriterType.SUMMARY;
     
@@ -29,9 +33,19 @@ public class GCViewerArgsParser {
     public String getChartFilePath() {
         return chartFilePath;
     }
-    
-    public String getGcfile() {
-        return gcfile;
+
+    public GCResource getGcResource() {
+        List<String> files = Arrays.asList(gcFile.split(";"));
+        List<GCResource> resources = files.stream().map(GcResourceFile::new).collect(Collectors.toList());
+        if (resources.isEmpty())
+            throw new IllegalStateException("Found no valid resource!");
+
+        if (resources.size() == 1) {
+            return resources.get(0);
+        }
+        else {
+            return new GcResourceSeries(resources);
+        }
     }
     
     public String getSummaryFilePath() {
@@ -65,7 +79,7 @@ public class GCViewerArgsParser {
         }
 
         argumentCount = argsList.size();
-        gcfile = safeGetArgument(argsList, ARG_POS_GCFILE);
+        gcFile = safeGetArgument(argsList, ARG_POS_GCFILE);
         summaryFilePath = safeGetArgument(argsList, ARG_POS_SUMMARY_FILE);
         chartFilePath = safeGetArgument(argsList, ARG_POS_CHART_FILE);
     }
