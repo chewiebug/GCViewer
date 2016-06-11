@@ -110,7 +110,7 @@ public class TestDataReaderFacade {
     }
 
     @Test
-    public void testLoadModelFromSeries() throws IOException, DataReaderException {
+    public void testLoadModel_forSeries() throws IOException, DataReaderException {
         GCResource file1 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
         GCResource file2 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
         GCResource file3 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
@@ -132,6 +132,32 @@ public class TestDataReaderFacade {
         GcResourceSeries series = new GcResourceSeries(resources);
 
         GCModel result = dataReaderFacade.loadModelFromSeries(series);
+        assertThat(result.toString(), is(expectedModel.toString()));
+    }
+
+    @Test
+    public void testLoadModelFromSeries() throws IOException, DataReaderException {
+        GCResource file1 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
+        GCResource file2 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
+        GCResource file3 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
+        GCResource file4 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part4.txt").getPath());
+        GCResource file5 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part5.txt").getPath());
+        GCResource file6 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part6.txt").getPath());
+        GCResource file7 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part7.txt").getPath());
+        GCResource expectedResult = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-ManuallyMerged.txt").getPath());
+        GCModel expectedModel = dataReaderFacade.loadModel(expectedResult);
+
+        List<GCResource> resources = new ArrayList<>();
+        resources.add(file4);
+        resources.add(file3);
+        resources.add(file6);
+        resources.add(file1);
+        resources.add(file7);
+        resources.add(file2);
+        resources.add(file5);
+        GcResourceSeries series = new GcResourceSeries(resources);
+
+        GCModel result = dataReaderFacade.loadModel(series);
         assertThat(result.toString(), is(expectedModel.toString()));
     }
 }

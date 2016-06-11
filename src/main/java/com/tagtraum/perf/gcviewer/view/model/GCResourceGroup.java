@@ -138,8 +138,9 @@ public class GCResourceGroup {
     }
 
     /**
-     * Get short version of resource names (only file name without path), if more than one
-     * resource is in this group.
+     * Get short version of resource names.<br>
+     * If more than one resource is in this group, returns only file name without path.
+     * {@link GcResourceSeries} are abbreviated by showing the name of the first file and how many files are following.
      *
      * @return get short group name (only file name without path), if there is more than one
      * resource
@@ -148,6 +149,7 @@ public class GCResourceGroup {
         if (gcResourceList.size() > 1) {
             StringBuilder sb = new StringBuilder();
             for (String resourceName : gcResourceList) {
+                resourceName = shortenGroupStringForSeries(resourceName);
                 // test for "/" and "\\" because in Windows you have a "/" in a http url
                 // but "\\" in file strings
                 int lastIndexOfPathSeparator = resourceName.lastIndexOf("/");
@@ -159,8 +161,19 @@ public class GCResourceGroup {
             return sb.toString();
         }
         else {
-            return gcResourceList.get(0);
+            String resourceName = gcResourceList.get(0);
+            return shortenGroupStringForSeries(resourceName);
         }
+    }
+
+    private String shortenGroupStringForSeries(String resourceName) {
+        String[] splitBySeriesSeparator = resourceName.split(SERIES_SEPARATOR);
+        if(splitBySeriesSeparator.length > 1)
+        {
+            // Series: Shorten description by showing first entry only + number of remaining files
+            resourceName = splitBySeriesSeparator[0] + " (series, " + (splitBySeriesSeparator.length -1) +" more files)";
+        }
+        return resourceName;
     }
 
     @Override

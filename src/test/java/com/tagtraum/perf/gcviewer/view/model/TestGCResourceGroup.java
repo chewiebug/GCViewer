@@ -114,4 +114,16 @@ public class TestGCResourceGroup {
         assertThat("should start with", gcResourceGroup.getGroupStringShort(), startsWith("file:/"));
         assertThat("should end with", gcResourceGroup.getGroupStringShort(), endsWith("/temp/test/gc-log-file.log"));
     }
+
+    @Test
+    public void getGroupStringShort_Series() {
+        GCResourceGroup gcResourceGroup = new GCResourceGroup("file:/log1>file:/log2>file:/log3>file:/log4");
+        assertThat(gcResourceGroup.getGroupStringShort(), is("file:/log1 (series, 3 more files)"));
+    }
+
+    @Test
+    public void getGroupStringShort_SeveralSeries() {
+        GCResourceGroup gcResourceGroup = new GCResourceGroup("file:/log1>file:/log2>file:/log3>file:/log4;file:/log5>file:/log6>file:/log7");
+        assertThat(gcResourceGroup.getGroupStringShort(), is("log1 (series, 3 more files);log5 (series, 2 more files);"));
+    }
 }

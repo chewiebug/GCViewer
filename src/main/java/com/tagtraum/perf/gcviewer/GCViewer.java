@@ -26,13 +26,24 @@ public class GCViewer {
     private static final int EXIT_OK = 0;
     private static final int EXIT_EXPORT_FAILED = -1;
     private static final int EXIT_ARGS_PARSE_FAILED = -2;
+    private GCViewerGuiController gcViewerGuiController;
+    private GCViewerArgsParser gcViewerArgsParser;
+
+    public GCViewer() {
+        this(new GCViewerGuiController(), new GCViewerArgsParser());
+    }
+
+    public GCViewer(GCViewerGuiController gcViewerGuiController, GCViewerArgsParser gcViewerArgsParser) {
+        this.gcViewerGuiController = gcViewerGuiController;
+        this.gcViewerArgsParser = gcViewerArgsParser;
+    }
 
     public static void main(final String[] args) throws InvocationTargetException, InterruptedException {
         new GCViewer().doMain(args);
     }
 
     public void doMain(String[] args) throws InvocationTargetException, InterruptedException {
-        GCViewerArgsParser argsParser = new GCViewerArgsParser();
+        GCViewerArgsParser argsParser = gcViewerArgsParser;
         try {
             argsParser.parseArguments(args);
         }
@@ -64,7 +75,7 @@ public class GCViewer {
             }
         }
         else {
-            new GCViewerGuiController().startGui(argsParser.getArgumentCount() == 1 ? argsParser.getGcResource() : null);
+            gcViewerGuiController.startGui(argsParser.getArgumentCount() == 1 ? argsParser.getGcResource() : null);
         }
     }
 

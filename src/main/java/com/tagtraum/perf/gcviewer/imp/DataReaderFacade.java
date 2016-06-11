@@ -52,6 +52,9 @@ public class DataReaderFacade {
         if (gcResource == null) {
             throw new NullPointerException("gcResource must never be null");
         }
+        if (gcResource instanceof  GcResourceSeries) {
+            return loadModelFromSeries((GcResourceSeries) gcResource);
+        }
         if (!(gcResource instanceof GcResourceFile))
             throw new UnsupportedOperationException("Only supported for files!");
 
@@ -84,7 +87,7 @@ public class DataReaderFacade {
      * @return a {@link GCModel} containing all events found in the given {@link GCResource}s that were readable
      * @throws DataReaderException
      */
-    public GCModel loadModelFromSeries(GcResourceSeries gcResource) throws DataReaderException {
+    protected GCModel loadModelFromSeries(GcResourceSeries gcResource) throws DataReaderException {
         GcSeriesLoader seriesLoader = new GcSeriesLoader(this);
         return seriesLoader.load(gcResource);
     }

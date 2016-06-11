@@ -16,6 +16,8 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -987,6 +989,24 @@ public class GCModel implements Serializable {
             return Optional.of(get(0).getTimestamp());
         else
             return Optional.empty();
+    }
+
+    /**
+     * Best effort calculation of this {@link GCModel}s start date based on the available information
+     *
+     * @return the most probable start date of this {@link GCModel}
+     */
+    public ZonedDateTime getStartDate() {
+        ZonedDateTime suggestedStartDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(getLastModified()), ZoneId.systemDefault());
+        if (hasDateStamp()) {
+            suggestedStartDate = getFirstDateStamp();
+        }
+        else if (hasCorrectTimestamp()) {
+            double runningTimeInSeconds = getRunningTime();
+            long runningTimeInMillis = (long) (runningTimeInSeconds * 1000d);
+            suggestedStartDate = suggestedStartDate.minus(runningTimeInMillis, ChronoUnit.MILLIS);
+        }
+        return suggestedStartDate;
     }
 
     public String toString() {

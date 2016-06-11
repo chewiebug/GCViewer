@@ -28,6 +28,6 @@ public class GCModelSeriesLoaderImpl extends AbstractGCModelLoaderImpl {
 
     @Override
     protected GCModel loadGcModel() throws DataReaderException {
-        return dataReaderFacade.loadModelFromSeries(gcResourceSeries);
+        return dataReaderFacade.loadModel(gcResourceSeries);
     }
 }

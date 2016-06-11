@@ -8,6 +8,11 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.Matchers.closeTo;
@@ -49,5 +54,33 @@ public class TestGCModel {
     @Test
     public void testEquals_ForEmptyModels() {
         assertThat(new GCModel(), is(new GCModel()));
+    }
+
+    @Test
+    public void testGetStartDate_WhenNeitherDateNorTimeStampsAreAvailable() throws Exception {
+        GCModel model = new GCModel();
+        model.setURL(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+
+        assertThat(model.getStartDate(), is(ZonedDateTime.ofInstant(Instant.ofEpochMilli(model.getLastModified()), ZoneId.systemDefault())));
+    }
+
+    @Test
+    public void testGetStartDate_WhenDateStampsAreAvailable() throws Exception {
+        DataReaderFacade dataReader = new DataReaderFacade();
+        GCModel model = dataReader.loadModel(new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMSAdaptiveSizePolicy.txt")));
+
+        ZonedDateTime expectedTime = ZonedDateTime.of(2012, 4, 18, 14, 23, 59, 890_000_000, ZoneId.ofOffset("", ZoneOffset.ofHours(2)));
+        assertThat(model.getStartDate(), is(expectedTime));
+    }
+
+    @Test
+    public void testGetStartDate_WhenNoDateButTimestampsAreAvailable() throws Exception {
+        DataReaderFacade dataReader = new DataReaderFacade();
+        GcResourceFile gcResource = new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+        GCModel model = dataReader.loadModel(gcResource);
+
+        ZonedDateTime expectedTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(model.getLastModified()), ZoneId.systemDefault());
+        expectedTime = expectedTime.minus(1381, ChronoUnit.MILLIS);// 1,381s (diff between last and first timestamp
+        assertThat(model.getStartDate(), is(expectedTime));
     }
 }
