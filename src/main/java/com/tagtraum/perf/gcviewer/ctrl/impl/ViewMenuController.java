@@ -6,12 +6,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
-import javax.swing.JCheckBoxMenuItem;
 
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import com.tagtraum.perf.gcviewer.view.model.PropertyChangeEventConsts;
+import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
 
 /**
  * Deals with all actions for the "view".
@@ -40,7 +40,7 @@ public class ViewMenuController implements ActionListener, PropertyChangeListene
             return;
         }
 
-        boolean state = ((JCheckBoxMenuItem)e.getSource()).getState();
+        boolean state = ((StayOpenCheckBoxMenuItem)e.getSource()).getState();
         if (GCPreferences.SHOW_MODEL_METRICS_PANEL.equals(e.getActionCommand())) {
             gui.getSelectedGCDocument().setShowModelMetricsPanel(state);
         }

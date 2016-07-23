@@ -9,8 +9,8 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
+import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
 
-import javax.swing.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
@@ -98,12 +98,12 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     }
     
     private ViewMenuController getViewMenuController() {
-        Map<String, JCheckBoxMenuItem> viewMenuItems 
+        Map<String, StayOpenCheckBoxMenuItem> viewMenuItems
             = ((GCViewerGuiMenuBar) this.gcViewerGui.getJMenuBar()).getViewMenuItems();
 
         assert viewMenuItems.size() > 0 : "viewMenuItems is not initialised!!";
         
-        JCheckBoxMenuItem menuItem = viewMenuItems.values().iterator().next();
+        StayOpenCheckBoxMenuItem menuItem = viewMenuItems.values().iterator().next();
         for (ActionListener actionListener : menuItem.getActionListeners()) {
             if (actionListener instanceof ViewMenuController) {
                 return (ViewMenuController) actionListener;

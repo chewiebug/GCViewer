@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.swing.JCheckBoxMenuItem;
+
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 
@@ -21,6 +21,7 @@ import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
+import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
 
 /**
  * Main controller class of GCViewer. 
@@ -34,8 +35,8 @@ public class GCViewerGuiController extends WindowAdapter {
         // default visibility to be able to access it from unittests
         gui.setPreferences(preferences);
         if (preferences.isPropertiesLoaded()) {
-            for (Entry<String, JCheckBoxMenuItem> menuEntry : ((GCViewerGuiMenuBar)gui.getJMenuBar()).getViewMenuItems().entrySet()) {
-                JCheckBoxMenuItem item = menuEntry.getValue();
+            for (Entry<String, StayOpenCheckBoxMenuItem> menuEntry : ((GCViewerGuiMenuBar)gui.getJMenuBar()).getViewMenuItems().entrySet()) {
+                StayOpenCheckBoxMenuItem item = menuEntry.getValue();
                 item.setState(preferences.getGcLineProperty(menuEntry.getKey()));
                 
                 // TODO necessary? state is set above; no GCDocument open at this moment
@@ -84,8 +85,8 @@ public class GCViewerGuiController extends WindowAdapter {
      */
     private GCPreferences copyPreferencesFromGui(GCViewerGui gui) {
         GCPreferences preferences = gui.getPreferences();
-        for (Entry<String, JCheckBoxMenuItem> menuEntry : ((GCViewerGuiMenuBar)gui.getJMenuBar()).getViewMenuItems().entrySet()) {
-            JCheckBoxMenuItem item = menuEntry.getValue();
+        for (Entry<String, StayOpenCheckBoxMenuItem> menuEntry : ((GCViewerGuiMenuBar)gui.getJMenuBar()).getViewMenuItems().entrySet()) {
+            StayOpenCheckBoxMenuItem item = menuEntry.getValue();
             preferences.setGcLineProperty(item.getActionCommand(), item.getState());
         }
         preferences.setWindowWidth(gui.getWidth());

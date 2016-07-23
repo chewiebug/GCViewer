@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.Action;
-import javax.swing.JCheckBoxMenuItem;
+
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -18,6 +18,7 @@ import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiToolBar;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
 
 /**
  * Controller class for internal frames of {@link GCViewerGui}. 
@@ -29,7 +30,7 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
 
     @Override
     public void internalFrameOpened(InternalFrameEvent e) {
-        JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(new WindowMenuItemAction(e));
+        StayOpenCheckBoxMenuItem menuItem = new StayOpenCheckBoxMenuItem(new WindowMenuItemAction(e));
         
         getMenuBar(e).addToWindowMenuGroup(menuItem);
     }
@@ -126,8 +127,8 @@ public class GCViewerGuiInternalFrameController extends InternalFrameAdapter {
         getToolBar(e).getZoomComboBox().setSelectedItem(
                 (int) (getSelectedGCDocument(e).getModelChart().getScaleFactor() * 1000.0) + "%");
         GCPreferences preferences = getSelectedGCDocument(e).getPreferences();
-        for (Entry<String, JCheckBoxMenuItem> menuEntry : getMenuBar(e).getViewMenuItems().entrySet()) {
-            JCheckBoxMenuItem item = menuEntry.getValue();
+        for (Entry<String, StayOpenCheckBoxMenuItem> menuEntry : getMenuBar(e).getViewMenuItems().entrySet()) {
+            StayOpenCheckBoxMenuItem item = menuEntry.getValue();
             item.setState(preferences.getGcLineProperty(menuEntry.getKey()));
         }
     }
