@@ -7,13 +7,13 @@ import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
+import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
 import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 
 /**
@@ -23,7 +23,7 @@ import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
  * <p>created on: 07.02.2014</p>
  */
 public class GCViewerGuiMenuBar extends JMenuBar {
-    private Map<String, JCheckBoxMenuItem> viewMenuItemMap;
+    private Map<String, StayOpenCheckBoxMenuItem> viewMenuItemMap;
     private JMenu fileMenu;
     private RecentGCResourcesModel recentResourceNamesModel;
     private JMenu viewMenu;
@@ -35,7 +35,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
     public GCViewerGuiMenuBar() {
         super();
         
-        viewMenuItemMap = new HashMap<String, JCheckBoxMenuItem>();
+        viewMenuItemMap = new HashMap<String, StayOpenCheckBoxMenuItem>();
         
         fileMenu = new JMenu(LocalisationHelper.getString("main_frame_menu_file"));
         fileMenu.setMnemonic(LocalisationHelper.getString("main_frame_menu_mnemonic_file").charAt(0));
@@ -82,7 +82,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
         helpMenu.add(action);
     }
     
-    public void addToViewMenu(String key, JCheckBoxMenuItem menuItem) {
+    public void addToViewMenu(String key, StayOpenCheckBoxMenuItem menuItem) {
         viewMenu.add(menuItem);
         viewMenuItemMap.put(key, menuItem);
     }
@@ -98,7 +98,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
      * @param key unique key for storage of this <code>menuItem</code> in the internal map
      * @param menuItem item to be stored in the map
      */
-    public void addToViewMenuInvisible(String key, JCheckBoxMenuItem menuItem) {
+    public void addToViewMenuInvisible(String key, StayOpenCheckBoxMenuItem menuItem) {
         viewMenuItemMap.put(key, menuItem);
     }
     
@@ -114,7 +114,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
      * Add checkbox item to window menu group (only one of these items can be active at a time).
      * @param menuItem checkbox item to be added
      */
-    public void addToWindowMenuGroup(JCheckBoxMenuItem menuItem) {
+    public void addToWindowMenuGroup(StayOpenCheckBoxMenuItem menuItem) {
         windowMenu.add(menuItem);
         windowMenuCheckBoxGroup.add(menuItem);
     }
@@ -141,7 +141,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
         return viewMenu;
     }
     
-    public Map<String, JCheckBoxMenuItem> getViewMenuItems() {
+    public Map<String, StayOpenCheckBoxMenuItem> getViewMenuItems() {
         return Collections.unmodifiableMap(viewMenuItemMap);
     }
     
@@ -150,19 +150,19 @@ public class GCViewerGuiMenuBar extends JMenuBar {
     }
 
     /**
-     * Returns JCheckBoxMenuItem, which is associated with "WATCH" action command.
+     * Returns StayOpenCheckBoxMenuItem, which is associated with "WATCH" action command.
      * 
      * @return "WATCH" menu item
      */
-    public JCheckBoxMenuItem getWatchMenuItem() {
+    public StayOpenCheckBoxMenuItem getWatchMenuItem() {
         for (Component component : fileMenu.getMenuComponents()) {
-            if (component instanceof JCheckBoxMenuItem
-                && ((JCheckBoxMenuItem) component).getActionCommand().equals(ActionCommands.WATCH.toString())) {
+            if (component instanceof StayOpenCheckBoxMenuItem
+                && ((StayOpenCheckBoxMenuItem) component).getActionCommand().equals(ActionCommands.WATCH.toString())) {
                 
-                return (JCheckBoxMenuItem) component;
+                return (StayOpenCheckBoxMenuItem) component;
             }
         }
         
-        throw new IllegalStateException("JCheckBoxMenuItem with actionCommand '" + ActionCommands.WATCH + "' not found");
+        throw new IllegalStateException("StayOpenCheckBoxMenuItem with actionCommand '" + ActionCommands.WATCH + "' not found");
     }
 }

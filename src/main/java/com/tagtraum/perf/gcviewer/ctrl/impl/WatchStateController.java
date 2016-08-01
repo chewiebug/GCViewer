@@ -1,9 +1,10 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
+import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JToggleButton;
 
 /**
@@ -14,10 +15,10 @@ import javax.swing.JToggleButton;
  */
 public class WatchStateController implements ActionListener {
 
-    private JCheckBoxMenuItem menuItemWatch;
+    private StayOpenCheckBoxMenuItem menuItemWatch;
     private JToggleButton watchToggle;
     
-    public WatchStateController(JCheckBoxMenuItem menuItemWatch, JToggleButton watchToggle) {
+    public WatchStateController(StayOpenCheckBoxMenuItem menuItemWatch, JToggleButton watchToggle) {
         super();
         
         this.menuItemWatch = menuItemWatch;
