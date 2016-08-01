@@ -49,6 +49,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Michi Gysel",
         "Johan Kaving",
         "Maciej Kwiecien",
+        "Henry Lin",
         "James Livingston",
         "Tony Mancill",
         "Samuel Mendenhall",
