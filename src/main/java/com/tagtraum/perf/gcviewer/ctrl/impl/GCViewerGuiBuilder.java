@@ -5,8 +5,8 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JToggleButton;
@@ -33,7 +33,7 @@ import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiToolBar;
 import com.tagtraum.perf.gcviewer.view.RecentGCResourcesMenu;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
-import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
+import com.tagtraum.perf.gcviewer.view.StayOpenCheckBoxMenuItem;
 import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
 import com.tagtraum.perf.gcviewer.view.renderer.GCRectanglesRenderer;
@@ -134,7 +134,7 @@ public class GCViewerGuiBuilder {
         menuBar.addToFileMenu(recentResourceNamesMenu);
         menuBar.addToFileMenu(actions.get(ActionCommands.EXPORT.toString()));
         menuBar.addToFileMenu(actions.get(ActionCommands.REFRESH.toString()));
-        menuBar.addToFileMenu(new StayOpenCheckBoxMenuItem(actions.get(ActionCommands.WATCH.toString())));
+        menuBar.addToFileMenu(new JCheckBoxMenuItem(actions.get(ActionCommands.WATCH.toString())));
         if ( ! OSXSupport.isOSX()) {
             menuBar.addToFileMenu(actions.get(ActionCommands.EXIT.toString()));
         }

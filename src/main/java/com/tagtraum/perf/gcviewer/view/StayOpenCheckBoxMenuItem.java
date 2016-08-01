@@ -1,4 +1,4 @@
-package com.tagtraum.perf.gcviewer.view.model;
+package com.tagtraum.perf.gcviewer.view;
 
 import javax.swing.Action;
 import javax.swing.Icon;

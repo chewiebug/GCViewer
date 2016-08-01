@@ -1,16 +1,5 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
-import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.view.GCDocument;
-import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
-import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
-import com.tagtraum.perf.gcviewer.view.model.StayOpenCheckBoxMenuItem;
-
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
@@ -20,6 +9,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JCheckBoxMenuItem;
+
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
+import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.view.GCDocument;
+import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
 
 /**
  * Controller class for {@link GCModelLoader}.
@@ -98,12 +98,12 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     }
     
     private ViewMenuController getViewMenuController() {
-        Map<String, StayOpenCheckBoxMenuItem> viewMenuItems
+        Map<String, JCheckBoxMenuItem> viewMenuItems
             = ((GCViewerGuiMenuBar) this.gcViewerGui.getJMenuBar()).getViewMenuItems();
 
         assert viewMenuItems.size() > 0 : "viewMenuItems is not initialised!!";
-        
-        StayOpenCheckBoxMenuItem menuItem = viewMenuItems.values().iterator().next();
+
+        JCheckBoxMenuItem menuItem = viewMenuItems.values().iterator().next();
         for (ActionListener actionListener : menuItem.getActionListeners()) {
             if (actionListener instanceof ViewMenuController) {
                 return (ViewMenuController) actionListener;
