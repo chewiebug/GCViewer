@@ -1,0 +1,12 @@
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R28_Java8_GA_20150116_2030_B231420_CMPRSS">
+
+<concurrent-kickoff id="13398" timestamp="2016-08-09T15:35:46.017">
+  <kickoff reason="threshold reached" targetBytes="376080782" thresholdFreeBytes="50490372" />
+</concurrent-kickoff>
+<exclusive-start id="13399" timestamp="2016-08-09T15:35:46.051" intervalms="18313.494">
+  <response-info timems="1.561" idlems="1.298" threads="7" lastid="0000000034D10800" lastname="HTTP Handler 10.172.46.44" />
+</exclusive-start>
+<cycle-start id="13400" type="global" contextid="0" timestamp="2016-08-09T15:35:46.051" intervalms="18311.139" />
+<exclusive-end id="13401" timestamp="2016-08-09T15:35:46.052" durationms="0.809" />
+
+</verbosegc>

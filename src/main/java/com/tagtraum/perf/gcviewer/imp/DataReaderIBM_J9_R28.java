@@ -76,7 +76,11 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                             break;
                         case EXCLUSIVE_END:
                             handleExclusiveEnd(startElement, currentGcEvent);
-                            model.add(currentGcEvent);
+                            if (currentGcEvent.getExtendedType() == null) {
+                                if (getLogger().isLoggable(Level.FINE)) getLogger().fine("event at " + in.getLineNumber() + " doesn't contain any information, the parser can handle");
+                            } else {
+                                model.add(currentGcEvent);
+                            }
                             currentGcEvent = null;
                             break;
                     }
