@@ -207,14 +207,14 @@ public class DataReaderIBM_J9_R28 implements DataReader {
     }
 
     private void setTotalAndPreUsed(GCEvent event, StartElement startEl) {
-        long total = NumberParser.parseInt(getAttributeValue(startEl, "total"));
+        long total = NumberParser.parseLong(getAttributeValue(startEl, "total"));
         event.setTotal(toKiloBytes(total));
-        event.setPreUsed(toKiloBytes(total - NumberParser.parseInt(getAttributeValue(startEl, "free"))));
+        event.setPreUsed(toKiloBytes(total - NumberParser.parseLong(getAttributeValue(startEl, "free"))));
     }
 
     private void setPostUsed(GCEvent event, StartElement startEl) {
-        long total = NumberParser.parseInt(getAttributeValue(startEl, "total"));
-        event.setPostUsed(toKiloBytes(total - NumberParser.parseInt(getAttributeValue(startEl, "free"))));
+        long total = NumberParser.parseLong(getAttributeValue(startEl, "total"));
+        event.setPostUsed(toKiloBytes(total - NumberParser.parseLong(getAttributeValue(startEl, "free"))));
     }
 
     private String getAttributeValue(StartElement event, String name) {
