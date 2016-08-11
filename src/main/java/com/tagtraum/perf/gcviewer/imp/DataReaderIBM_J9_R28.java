@@ -2,15 +2,14 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -23,12 +22,13 @@ import javax.xml.stream.events.XMLEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * Parser for IBM gc logs R26_Java6 + R27_Java7 + R28_Java8
  */
-public class DataReaderIBM_J9_R28 implements DataReader {
+public class DataReaderIBM_J9_R28 extends AbstractDataReader {
     // TODO IBM_J9: support system gcs
 
     private static final String VERBOSEGC = "verbosegc";
@@ -38,13 +38,13 @@ public class DataReaderIBM_J9_R28 implements DataReader {
     private static final String GC_END = "gc-end";
     private static final String EXCLUSIVE_END = "exclusive-end";
 
-    private static Logger LOG = Logger.getLogger(DataReaderIBM_J9_R28.class.getName());
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private LineNumberReader in;
 
-    public DataReaderIBM_J9_R28(InputStream in) {
-        this.in = new LineNumberReader(new InputStreamReader(in));
+    public DataReaderIBM_J9_R28(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
+        super(gcResource, in);
+        this.in = super.in;
     }
 
     @Override
@@ -85,8 +85,8 @@ public class DataReaderIBM_J9_R28 implements DataReader {
             }
         }
         catch (XMLStreamException e) {
-            if (LOG.isLoggable(Level.WARNING)) LOG.warning("line " + in.getLineNumber() + ": " + e.toString());
-            if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
+            if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("line " + in.getLineNumber() + ": " + e.toString());
+            if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
         }
 
         return model;
@@ -94,7 +94,7 @@ public class DataReaderIBM_J9_R28 implements DataReader {
 
     private void handleVerboseGC(StartElement startElement) {
         assert startElement.getName().getLocalPart().equals(VERBOSEGC) : "expected name of startElement: " + VERBOSEGC + ", but got " + startElement.getName();
-        LOG.info("gc log version = " + getAttributeValue(startElement, "version"));
+        getLogger().info("gc log version = " + getAttributeValue(startElement, "version"));
     }
 
     private void handleInitialized(XMLEventReader eventReader) throws XMLStreamException {
@@ -106,7 +106,7 @@ public class DataReaderIBM_J9_R28 implements DataReader {
                 if (startElement.getName().getLocalPart().equals("attribute")) {
                     String name = getAttributeValue(startElement, "name");
                     if (name != null && name.equals("gcPolicy")) {
-                        LOG.info("gcPolicy = " + getAttributeValue(startElement, "value"));
+                        getLogger().info("gcPolicy = " + getAttributeValue(startElement, "value"));
                     }
                 }
             }
@@ -125,8 +125,8 @@ public class DataReaderIBM_J9_R28 implements DataReader {
                     ZoneId.systemDefault()));
         }
         catch (DateTimeParseException e) {
-            if (LOG.isLoggable(Level.WARNING)) LOG.warning("line " + in.getLineNumber() + ": " + e.toString());
-            if (LOG.isLoggable(Level.FINE)) LOG.log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
+            if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("line " + in.getLineNumber() + ": " + e.toString());
+            if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
         }
         
         return event;
@@ -139,7 +139,7 @@ public class DataReaderIBM_J9_R28 implements DataReader {
     private void handleGcStart(XMLEventReader eventReader, StartElement startElement, GCEvent event) throws XMLStreamException {
         event.setType(Type.lookup(getAttributeValue(startElement, "type")));
         if (event.getExtendedType() == null) {
-            LOG.warning("could not determine type of event " + startElement.toString());
+            getLogger().warning("could not determine type of event " + startElement.toString());
             return;
         }
         

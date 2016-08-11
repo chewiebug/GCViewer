@@ -5,13 +5,14 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import org.junit.Test;
 
 /**
@@ -19,18 +20,23 @@ import org.junit.Test;
  *         <p>created on 08.10.2014</p>
  */
 public class TestDataReaderIBM_J9_R27 {
-    private static final Logger IMP_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.imp");
-    private static final Logger DATA_READER_FACTORY_LOGGER = Logger.getLogger("com.tagtraum.perf.gcviewer.DataReaderFactory");
+
+    private InputStream getInputStream(String fileName) throws IOException {
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, fileName);
+    }
+
+    private DataReader getDataReader(GCResource gcResource) throws IOException {
+        return new DataReaderIBM_J9_R28(gcResource, getInputStream(gcResource.getResourceName()));
+    }
 
     @Test
     public void testFullHeaderWithAfGcs() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleIBMJ9_R27_SR1_full_header.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, "SampleIBMJ9_R27_SR1_full_header.txt");
-        DataReader reader = new DataReaderIBM_J9_R28(in);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
         
         assertThat("model size", model.size(), is(3));
@@ -61,11 +67,10 @@ public class TestDataReaderIBM_J9_R27 {
     public void testSystemGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        IMP_LOGGER.addHandler(handler);
-        DATA_READER_FACTORY_LOGGER.addHandler(handler);
+        GCResource gcResource = new GCResource("SampleIBMJ9_R27_SR1_global.txt");
+        gcResource.getLogger().addHandler(handler);
 
-        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, "SampleIBMJ9_R27_SR1_global.txt");
-        DataReader reader = new DataReaderIBM_J9_R28(in);
+        DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
         assertThat("model size", model.size(), is(1));

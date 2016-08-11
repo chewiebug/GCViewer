@@ -192,7 +192,7 @@ public class DataReaderFactory {
         }
         else if (s.contains("<verbosegc") && (s.contains("version=\"R26_Java6") || s.contains("version=\"R27_Java7") || s.contains("version=\"R28_Java8"))) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM J9 R26 / R27 / R28");
-            return new DataReaderIBM_J9_R28(in);
+            return new DataReaderIBM_J9_R28(gcResource, in);
         }
         else if (s.indexOf("<verbosegc version=\"") != -1) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM J9 5.0");
