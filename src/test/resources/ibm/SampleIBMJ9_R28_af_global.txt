@@ -1,0 +1,44 @@
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R28_Java8_GA_20150116_2030_B231420_CMPRSS">
+
+<exclusive-start id="9871" timestamp="2016-08-09T14:58:58.343" intervalms="14425.085">
+  <response-info timems="1.109" idlems="0.826" threads="7" lastid="0000000033719C00" lastname="HTTP Handler 10.172.46.44" />
+</exclusive-start>
+<af-start id="9872" totalBytesRequested="40" timestamp="2016-08-09T14:58:58.346" intervalms="453274064.112" />
+<cycle-start id="9873" type="global" contextid="0" timestamp="2016-08-09T14:58:58.346" intervalms="14426.710" />
+<gc-start id="9874" type="global" contextid="9873" timestamp="2016-08-09T14:58:58.347">
+  <mem-info id="9875" free="322121728" total="6442450944" percent="4">
+    <mem type="tenure" free="322121728" total="6442450944" percent="4">
+      <mem type="soa" free="0" total="6120329216" percent="0" />
+      <mem type="loa" free="322121728" total="322121728" percent="100" />
+    </mem>
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="4674836712" >
+  <allocated-bytes non-tlh="103021496" tlh="4571815216" />
+  <largest-consumer threadName="HTTP Handler 10.172.46.44" threadId="00000000349A0100" bytes="180588648" />
+</allocation-stats>
+<gc-op id="9876" type="mark" timems="1229.959" contextid="9873" timestamp="2016-08-09T14:58:59.577">
+  <trace-info objectcount="34811076" scancount="27617833" scanbytes="990253856" />
+  <finalization candidates="7738" enqueued="4005" />
+  <ownableSynchronizers candidates="339246" cleared="73" />
+  <references type="soft" candidates="18886" cleared="0" enqueued="0" dynamicThreshold="24" maxThreshold="32" />
+  <references type="weak" candidates="37919" cleared="16" enqueued="16" />
+  <references type="phantom" candidates="115" cleared="0" enqueued="0" />
+  <stringconstants candidates="73321" cleared="28"  />
+</gc-op>
+<gc-op id="9877" type="sweep" timems="7.808" contextid="9873" timestamp="2016-08-09T14:58:59.585" />
+<gc-end id="9878" type="global" contextid="9873" durationms="1239.395" usertimems="2046.100" systemtimems="2.290" timestamp="2016-08-09T14:58:59.586">
+  <mem-info id="9879" free="4911161608" total="6442450944" percent="76">
+    <mem type="tenure" free="4911161608" total="6442450944" percent="76">
+      <mem type="soa" free="4653463848" total="6184753152" percent="75" />
+      <mem type="loa" free="257697760" total="257697792" percent="99" />
+    </mem>
+    <pending-finalizers system="217" default="3788" reference="16" classloader="0" />
+  </mem-info>
+</gc-end>
+<cycle-end id="9880" type="global" contextid="9873" timestamp="2016-08-09T14:58:59.598" />
+<allocation-satisfied id="9881" threadId="0000000034272200" bytesRequested="40" />
+<af-end id="9882" timestamp="2016-08-09T14:58:59.598" />
+<exclusive-end id="9883" timestamp="2016-08-09T14:58:59.598" durationms="1255.648" />
+
+</verbosegc>

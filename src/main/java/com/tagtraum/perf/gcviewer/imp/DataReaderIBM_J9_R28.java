@@ -19,6 +19,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -34,6 +35,9 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
     private static final String VERBOSEGC = "verbosegc";
     private static final String INITIALIZED = "initialized";
     private static final String EXCLUSIVE_START = "exclusive-start";
+    private static final String SYS_START = "sys-start";
+    private static final String AF_START = "af-start";
+    private static final String CONCURRENT_COLLECTION_START = "concurrent-collection-start";
     private static final String GC_START = "gc-start";
     private static final String GC_END = "gc-end";
     private static final String EXCLUSIVE_END = "exclusive-end";
@@ -54,43 +58,69 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLEventReader eventReader = factory.createXMLEventReader(in);
             GCEvent currentGcEvent = null;
+            String eventNameStart = null;
             while (eventReader.hasNext()) {
-                XMLEvent event = eventReader.nextEvent();
-                if (event.isStartElement()) {
-                    StartElement startElement = event.asStartElement();
-                    switch (startElement.getName().getLocalPart()) {
-                        case VERBOSEGC:
-                            handleVerboseGC(startElement);
-                            break;
-                        case INITIALIZED:
-                            handleInitialized(eventReader);
-                            break;
-                        case EXCLUSIVE_START:
-                            currentGcEvent = handleExclusiveStart(startElement);
-                            break;
-                        case GC_START:
-                            handleGcStart(eventReader, startElement, currentGcEvent);
-                            break;
-                        case GC_END:
-                            handleGcEnd(eventReader, currentGcEvent);
-                            break;
-                        case EXCLUSIVE_END:
-                            handleExclusiveEnd(startElement, currentGcEvent);
-                            if (currentGcEvent.getExtendedType() == null) {
-                                if (getLogger().isLoggable(Level.FINE)) getLogger().fine("event at " + in.getLineNumber() + " doesn't contain any information, the parser can handle");
-                            } else {
-                                model.add(currentGcEvent);
-                            }
-                            currentGcEvent = null;
-                            break;
+                try {
+                    XMLEvent event = eventReader.nextEvent();
+                    if (event.isStartElement()) {
+                        StartElement startElement = event.asStartElement();
+                        switch (startElement.getName().getLocalPart()) {
+                            case VERBOSEGC:
+                                handleVerboseGC(startElement);
+                                break;
+                            case INITIALIZED:
+                                handleInitialized(eventReader);
+                                break;
+                            case EXCLUSIVE_START:
+                                currentGcEvent = handleExclusiveStart(startElement);
+                                break;
+                            case SYS_START:
+                                assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
+                                eventNameStart = handleSysStart(eventReader, startElement);
+                                break;
+                            case AF_START:
+                                assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
+                                eventNameStart = handleAfStart(eventReader, startElement);
+                                break;
+                            case GC_START:
+                                handleGcStart(eventReader, startElement, currentGcEvent, eventNameStart);
+                                break;
+                            case GC_END:
+                                if (currentGcEvent.getTypeAsString() != null) {
+                                    handleGcEnd(eventReader, currentGcEvent);
+                                }
+                                break;
+                            case EXCLUSIVE_END:
+                                handleExclusiveEnd(startElement, currentGcEvent);
+                                if (currentGcEvent.getExtendedType() == null) {
+                                    if (getLogger().isLoggable(Level.FINE))
+                                        getLogger().fine("event at " + in.getLineNumber() + " doesn't contain any information, the parser can handle");
+                                }
+                                else {
+                                    model.add(currentGcEvent);
+                                }
+                                currentGcEvent = null;
+                                eventNameStart = null;
+                                break;
+                        }
                     }
-                }
 
+                }
+                catch (Exception e) {
+                    if (e instanceof XMLStreamException) {
+                        throw e;
+                    }
+                    if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("line " + in.getLineNumber() + ": " + e.toString());
+                    if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
+                }
             }
         }
         catch (XMLStreamException e) {
             if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("line " + in.getLineNumber() + ": " + e.toString());
             if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
+        }
+        finally {
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
 
         return model;
@@ -132,7 +162,7 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
             if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("line " + in.getLineNumber() + ": " + e.toString());
             if (getLogger().isLoggable(Level.FINE)) getLogger().log(Level.FINE, "line " + in.getLineNumber() + ": " + e.getMessage(), e);
         }
-        
+
         return event;
     }
 
@@ -140,13 +170,29 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
         event.setPause(NumberParser.parseDouble(getAttributeValue(startElement, "durationms")) / 1000);
     }
 
-    private void handleGcStart(XMLEventReader eventReader, StartElement startElement, GCEvent event) throws XMLStreamException {
-        event.setType(Type.lookup(getAttributeValue(startElement, "type")));
-        if (event.getExtendedType() == null) {
-            getLogger().warning("could not determine type of event " + startElement.toString());
-            return;
+    private String handleSysStart(XMLEventReader eventReader, StartElement startElement) throws XMLStreamException {
+        String reason = getAttributeValue(startElement, "reason");
+        return "sys " + (reason != null ? reason + " " : "");
+    }
+
+    private String handleAfStart(XMLEventReader eventReader, StartElement startElement) throws XMLStreamException {
+        return "af ";
+    }
+
+    private void handleConcurrentCollectionStart(XMLEventReader eventReader, StartElement startElement) {
+    }
+
+    private void handleGcStart(XMLEventReader eventReader, StartElement startElement, GCEvent event, String eventNameStart) throws
+            XMLStreamException,
+            UnknownGcTypeException {
+
+        String typeName = eventNameStart + getAttributeValue(startElement, "type");
+        AbstractGCEvent.Type type = Type.lookup(typeName);
+        if (type == null) {
+            throw new UnknownGcTypeException(typeName, startElement.toString());
         }
-        
+        event.setType(type);
+
         String currentElementName = "";
         while (eventReader.hasNext() && !currentElementName.equals(GC_START)) {
             

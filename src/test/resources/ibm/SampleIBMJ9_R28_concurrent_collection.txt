@@ -1,0 +1,48 @@
+<verbosegc xmlns="http://www.ibm.com/j9/verbosegc" version="R28_Java8_GA_20150116_2030_B231420_CMPRSS">
+
+<exclusive-start id="11420" timestamp="2016-08-09T15:14:56.110" intervalms="76.020">
+  <response-info timems="3.943" idlems="2.966" threads="27" lastid="0000000034775300" lastname="HTTP Handler 10.172.46.44" />
+</exclusive-start>
+<concurrent-collection-start id="11421" timestamp="2016-08-09T15:14:56.114" intervalms="454231830.812" />
+<gc-start id="11422" type="global" contextid="11388" timestamp="2016-08-09T15:14:56.115">
+  <mem-info id="11423" free="12883968" total="6442450944" percent="0">
+    <mem type="tenure" free="12883968" total="6442450944" percent="0">
+      <mem type="soa" free="0" total="6429566976" percent="0" />
+      <mem type="loa" free="12883968" total="12883968" percent="100" />
+    </mem>
+  </mem-info>
+</gc-start>
+<allocation-stats totalBytes="5091236872" >
+  <allocated-bytes non-tlh="82774752" tlh="5008462120" />
+  <largest-consumer threadName="IS &lt;octopus#OCT_SRV_Demande_V3_0.utils.threads:actConsulterDemande&gt;" threadId="0000000034B25900" bytes="100498456" />
+</allocation-stats>
+<gc-op id="11424" type="card-cleaning" timems="35.676" contextid="11388" timestamp="2016-08-09T15:14:56.151">
+  <card-cleaning cardsCleaned="4845" bytesTraced="7868432" workStackOverflowCount="0" />
+</gc-op>
+<gc-op id="11425" type="mark" timems="1133.811" contextid="11388" timestamp="2016-08-09T15:14:57.286">
+  <trace-info objectcount="25717326" scancount="20845868" scanbytes="741280452" />
+  <finalization candidates="8383" enqueued="4354" />
+  <ownableSynchronizers candidates="339217" cleared="45" />
+  <references type="soft" candidates="19261" cleared="0" enqueued="0" dynamicThreshold="25" maxThreshold="32" />
+  <references type="weak" candidates="52578" cleared="12" enqueued="12" />
+  <references type="phantom" candidates="115" cleared="0" enqueued="0" />
+  <stringconstants candidates="73384" cleared="10"  />
+</gc-op>
+<gc-op id="11426" type="classunload" timems="0.275" contextid="11388" timestamp="2016-08-09T15:14:57.286">
+  <classunload-info classloadercandidates="932" classloadersunloaded="0" classesunloaded="0" anonymousclassesunloaded="0" quiescems="0.000" setupms="0.274" scanms="0.000" postms="0.000" />
+</gc-op>
+<gc-op id="11427" type="sweep" timems="2.542" contextid="11388" timestamp="2016-08-09T15:14:57.289" />
+<gc-end id="11428" type="global" contextid="11388" durationms="1175.175" usertimems="1772.853" systemtimems="2.967" timestamp="2016-08-09T15:14:57.290">
+  <mem-info id="11429" free="5069413376" total="6442450944" percent="78">
+    <mem type="tenure" free="5069413376" total="6442450944" percent="78">
+      <mem type="soa" free="5062971392" total="6436008960" percent="78" />
+      <mem type="loa" free="6441984" total="6441984" percent="100" />
+    </mem>
+    <pending-finalizers system="225" default="4129" reference="12" classloader="0" />
+  </mem-info>
+</gc-end>
+<cycle-end id="11430" type="global" contextid="11388" timestamp="2016-08-09T15:14:57.292" />
+<concurrent-collection-end id="11431" timestamp="2016-08-09T15:14:57.292" />
+<exclusive-end id="11432" timestamp="2016-08-09T15:14:57.292" durationms="1182.375" />
+
+</verbosegc>
