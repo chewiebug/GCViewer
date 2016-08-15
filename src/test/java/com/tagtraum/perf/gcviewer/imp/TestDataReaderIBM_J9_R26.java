@@ -13,6 +13,7 @@ import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 /**
@@ -31,7 +32,7 @@ public class TestDataReaderIBM_J9_R26 {
     public void testFullHeaderWithAfGcs() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleIBMJ9_R26_GAFP1_full_header.txt");
+        GCResource gcResource = new GcResourceFile("SampleIBMJ9_R26_GAFP1_full_header.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -49,7 +50,7 @@ public class TestDataReaderIBM_J9_R26 {
     public void testSystemGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleIBMJ9_R26_GAFP1_global.txt");
+        GCResource gcResource = new GcResourceFile("SampleIBMJ9_R26_GAFP1_global.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
@@ -51,7 +52,7 @@ public class TestDataReaderJRockit1_5_0 {
     public void testGcPrioPausetime() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleJRockit1_5_12_gcpriopausetime.txt");
+        GCResource gcResource = new GcResourceFile("SampleJRockit1_5_12_gcpriopausetime.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader1_5(gcResource);
@@ -72,7 +73,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testGcPrioThroughput() throws Exception {
-        DataReader reader = getDataReader1_5(new GCResource("SampleJRockit1_5_12_gcpriothroughput.txt"));
+        DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12_gcpriothroughput.txt"));
         GCModel model = reader.read();
         
         assertEquals("count", 8, model.size());
@@ -88,7 +89,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testGenCon() throws Exception {
-        DataReader reader = getDataReader1_5(new GCResource("SampleJRockit1_5_12_gencon.txt"));
+        DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12_gencon.txt"));
         GCModel model = reader.read();
         
         assertEquals("count", 8, model.size());
@@ -112,7 +113,7 @@ public class TestDataReaderJRockit1_5_0 {
         // allthough this log file was written with JRockit 1.5 VM, it has the same structure
         // as a JRockit 1.6 gc log file.
         // TODO refactor JRockit DataReader
-        DataReader reader = getDataReader1_6(new GCResource("SampleJRockit1_5_20_memstats2.txt"));
+        DataReader reader = getDataReader1_6(new GcResourceFile("SampleJRockit1_5_20_memstats2.txt"));
         GCModel model = reader.read();
         
         assertEquals("count", 11, model.size());
@@ -120,7 +121,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testGenPar() throws Exception {
-        DataReader reader = getDataReader1_5(new GCResource("SampleJRockit1_5_12_genpar.txt"));
+        DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12_genpar.txt"));
         GCModel model = reader.read();
         
         assertEquals("count", 17, model.size());
@@ -137,7 +138,7 @@ public class TestDataReaderJRockit1_5_0 {
     public void testMalformedType() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.INFO);
-        GCResource gcResource = new GCResource("byteArray");
+        GCResource gcResource = new GcResourceFile("byteArray");
         gcResource.getLogger().addHandler(handler);
 
         ByteArrayInputStream in = new ByteArrayInputStream(
@@ -159,7 +160,7 @@ public class TestDataReaderJRockit1_5_0 {
     
     @Test
     public void testSimpleOpts() throws Exception {
-        DataReader reader = getDataReader1_5(new GCResource("SampleJRockit1_5_12-gcreport-simpleopts-singlecon.txt"));
+        DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12-gcreport-simpleopts-singlecon.txt"));
         GCModel model = reader.read();
         
         assertEquals("count", 5, model.size());

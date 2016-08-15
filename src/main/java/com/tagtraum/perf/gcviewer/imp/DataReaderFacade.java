@@ -1,5 +1,14 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.ctrl.impl.GcSeriesLoader;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
+import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
@@ -11,12 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
-
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
-import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
-import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  * DataReaderFacade is a helper class providing a simple interface to read a gc log file
@@ -49,6 +52,11 @@ public class DataReaderFacade {
         if (gcResource == null) {
             throw new NullPointerException("gcResource must never be null");
         }
+        if (gcResource instanceof  GcResourceSeries) {
+            return loadModelFromSeries((GcResourceSeries) gcResource);
+        }
+        if (!(gcResource instanceof GcResourceFile))
+            throw new UnsupportedOperationException("Only supported for files!");
 
         DataReaderException dataReaderException = new DataReaderException();
         GCModel model = null;
@@ -57,7 +65,7 @@ public class DataReaderFacade {
         try {
             logger.info("GCViewer version " + BuildInfoReader.getVersion()
                     + " (" + BuildInfoReader.getBuildDate() + ")");
-            model = readModel(gcResource);
+            model = readModel((GcResourceFile) gcResource);
         }
         catch (RuntimeException | IOException e) {
             dataReaderException.initCause(e);
@@ -73,13 +81,25 @@ public class DataReaderFacade {
     }
 
     /**
+     * Loads the {@link GCResource}s as a rotated series of logfiles. Takes care of ordering them
+     *
+     * @param gcResource the {@link GcResourceSeries} to load
+     * @return a {@link GCModel} containing all events found in the given {@link GCResource}s that were readable
+     * @throws DataReaderException
+     */
+    protected GCModel loadModelFromSeries(GcResourceSeries gcResource) throws DataReaderException {
+        GcSeriesLoader seriesLoader = new GcSeriesLoader(this);
+        return seriesLoader.load(gcResource);
+    }
+
+    /**
      * Open and parse data designated by <code>gcResource</code>.
      *
      * @param gcResource where to find data to be parsed
      * @return GCModel containing events parsed from <code>gcResource</code>
      * @throws IOException problem reading the data
      */
-    private GCModel readModel(GCResource gcResource) throws IOException {
+    private GCModel readModel(GcResourceFile gcResource) throws IOException {
         URL url = gcResource.getResourceNameAsUrl();
         DataReaderFactory factory = new DataReaderFactory();
         long contentLength = 0L;

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
@@ -39,7 +40,7 @@ public class TestDataReaderJRockit1_6_0 {
     public void testGcPrioPauseSingleParCon() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleJRockit1_6_gc_mode_singleparcon.txt");
+        GCResource gcResource = new GcResourceFile("SampleJRockit1_6_gc_mode_singleparcon.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -62,7 +63,7 @@ public class TestDataReaderJRockit1_6_0 {
     public void testGcPrioPauseSingleParConVerbose() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleJRockit1_6_verbose_gc_mode_singleparcon.txt");
+        GCResource gcResource = new GcResourceFile("SampleJRockit1_6_verbose_gc_mode_singleparcon.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -91,7 +92,7 @@ public class TestDataReaderJRockit1_6_0 {
      */
     @Test
     public void testGenConVerbose() throws Exception {
-        DataReader reader = getDataReader(new GCResource("SampleJRockit1_6_verbose_gc_mode_gencon.txt"));
+        DataReader reader = getDataReader(new GcResourceFile("SampleJRockit1_6_verbose_gc_mode_gencon.txt"));
         GCModel model = reader.read();
         
         assertEquals("count", 15, model.size());
@@ -101,7 +102,7 @@ public class TestDataReaderJRockit1_6_0 {
     public void testGenParVerboseNursery() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource("SampleJRockit1_6_33_gc_mode_genpar_verbosenursery.txt");
+        GCResource gcResource = new GcResourceFile("SampleJRockit1_6_33_gc_mode_genpar_verbosenursery.txt");
         gcResource.getLogger().addHandler(handler);
 
         DataReader reader = getDataReader(gcResource);
@@ -145,7 +146,7 @@ public class TestDataReaderJRockit1_6_0 {
     public void testMalformedType() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.INFO);
-        GCResource gcResource = new GCResource("byteArray");
+        GCResource gcResource = new GcResourceFile("byteArray");
         gcResource.getLogger().addHandler(handler);
 
         ByteArrayInputStream in = new ByteArrayInputStream(
@@ -171,7 +172,7 @@ public class TestDataReaderJRockit1_6_0 {
                 ("[INFO ][memory ] [YC#1] 9.743-9.793: YC 294974KB->122557KB (524288KB), 0.050 s, sum of pauses 49.692 ms, longest pause 49.692 ms.")
                         .getBytes());
         
-        DataReader reader = new DataReaderJRockit1_6_0(new GCResource("byteArray"), in);
+        DataReader reader = new DataReaderJRockit1_6_0(new GcResourceFile("byteArray"), in);
         GCModel model = reader.read();
         
         assertEquals("count", 1, model.size());

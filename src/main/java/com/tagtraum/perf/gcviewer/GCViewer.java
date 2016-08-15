@@ -1,12 +1,5 @@
 package com.tagtraum.perf.gcviewer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.tagtraum.perf.gcviewer.ctrl.impl.GCViewerGuiController;
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
@@ -17,6 +10,13 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.SimpleChartRenderer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Main class of GCViewer. Parses command line parameters if there are any and either remains
  * in command line mode or starts the gui (depending on parameters). 
@@ -26,13 +26,24 @@ public class GCViewer {
     private static final int EXIT_OK = 0;
     private static final int EXIT_EXPORT_FAILED = -1;
     private static final int EXIT_ARGS_PARSE_FAILED = -2;
+    private GCViewerGuiController gcViewerGuiController;
+    private GCViewerArgsParser gcViewerArgsParser;
 
-	public static void main(final String[] args) throws InvocationTargetException, InterruptedException {
+    public GCViewer() {
+        this(new GCViewerGuiController(), new GCViewerArgsParser());
+    }
+
+    public GCViewer(GCViewerGuiController gcViewerGuiController, GCViewerArgsParser gcViewerArgsParser) {
+        this.gcViewerGuiController = gcViewerGuiController;
+        this.gcViewerArgsParser = gcViewerArgsParser;
+    }
+
+    public static void main(final String[] args) throws InvocationTargetException, InterruptedException {
         new GCViewer().doMain(args);
     }
 
     public void doMain(String[] args) throws InvocationTargetException, InterruptedException {
-        GCViewerArgsParser argsParser = new GCViewerArgsParser();
+        GCViewerArgsParser argsParser = gcViewerArgsParser;
         try {
             argsParser.parseArguments(args);
         }
@@ -47,14 +58,14 @@ public class GCViewer {
         }
         else if (argsParser.getArgumentCount() >= 2) {
             LOGGER.info("GCViewer command line mode");
-            String gcfile = argsParser.getGcfile();
+            GCResource gcResource = argsParser.getGcResource();
             String summaryFilePath = argsParser.getSummaryFilePath();
             String chartFilePath = argsParser.getChartFilePath();
             DataWriterType type = argsParser.getType();
 
             //export summary:
             try {
-                export(gcfile, summaryFilePath, chartFilePath, type);
+                export(gcResource, summaryFilePath, chartFilePath, type);
                 LOGGER.info("export completed successfully");
                 System.exit(EXIT_OK);
             }
@@ -64,22 +75,22 @@ public class GCViewer {
             }
         }
         else {
-            new GCViewerGuiController().startGui(argsParser.getArgumentCount() == 1 ? argsParser.getGcfile() : null);
+            gcViewerGuiController.startGui(argsParser.getArgumentCount() == 1 ? argsParser.getGcResource() : null);
         }
     }
 
-    private void export(String gcFilename, String summaryFilePath, String chartFilePath, DataWriterType type)
+    private void export(GCResource gcResource, String summaryFilePath, String chartFilePath, DataWriterType type)
             throws IOException, DataReaderException {
         
         DataReaderFacade dataReaderFacade = new DataReaderFacade();
-        GCModel model = dataReaderFacade.loadModel(new GCResource(gcFilename));
+        GCModel model = dataReaderFacade.loadModel(gcResource);
 
         exportType(model, summaryFilePath, type);
         if (chartFilePath != null)
             renderChart(model, chartFilePath);
     }
 
-	private void exportType(GCModel model, String summaryFilePath, DataWriterType type) throws IOException {
+    private void exportType(GCModel model, String summaryFilePath, DataWriterType type) throws IOException {
         try (DataWriter summaryWriter = DataWriterFactory.getDataWriter(new File(summaryFilePath), type)) {
             summaryWriter.write(model);
         }
@@ -90,13 +101,16 @@ public class GCViewer {
         renderer.render(model, new FileOutputStream(new File(chartFilePath)));
     }
 
-	private static void usage() {
-		System.out.println("Welcome to GCViewer with cmdline");
+    private static void usage() {
+        System.out.println("Welcome to GCViewer with cmdline");
         System.out.println("java -jar gcviewer.jar [<gc-log-file|url>] -> opens gui and loads given file");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file|url>];[<gc-log-file|url>];[...] -> opens gui and loads given files as series of rotated logfiles");
         System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>] -> cmdline: writes report to <export.csv>");
-        System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>] [<chart.png>] " +
-                "-> cmdline: writes report to <export.csv> and renders gc chart to <chart.png>");
-        System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>] [<chart.png>] [-t <SUMMARY, CSV, CSV_TS, PLAIN, SIMPLE>]");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file|url>];[<gc-log-file|url>];[...] [<export.csv>] -> cmdline: loads given files as series of rotated logfiles and writes report to <export.csv>");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file>] [<export.csv>] [<chart.png>] -> cmdline: writes report to <export.csv> and renders gc chart to <chart.png>");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file|url>];[<gc-log-file|url>];[...] [<export.csv>] [<chart.png>] -> cmdline: loads given files as series of rotated logfiles and writes report to <export.csv> and renders gc chart to <chart.png>");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file|url>] [<export.csv>] [<chart.png>] [-t <SUMMARY, CSV, CSV_TS, PLAIN, SIMPLE>]");
+        System.out.println("java -jar gcviewer.jar [<gc-log-file|url>];[<gc-log-file|url>];[...] [<export.csv>] [<chart.png>] [-t <SUMMARY, CSV, CSV_TS, PLAIN, SIMPLE>]");
     }
 
 }

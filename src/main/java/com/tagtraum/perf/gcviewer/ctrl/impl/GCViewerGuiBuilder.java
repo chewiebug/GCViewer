@@ -1,53 +1,21 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
-import java.awt.Image;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
+import com.tagtraum.perf.gcviewer.ctrl.action.*;
+import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import com.tagtraum.perf.gcviewer.view.*;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.renderer.*;
+import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
+import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.swing.Action;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JDesktopPane;
-import javax.swing.JToggleButton;
-
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
-import com.tagtraum.perf.gcviewer.ctrl.action.About;
-import com.tagtraum.perf.gcviewer.ctrl.action.Arrange;
-import com.tagtraum.perf.gcviewer.ctrl.action.Exit;
-import com.tagtraum.perf.gcviewer.ctrl.action.Export;
-import com.tagtraum.perf.gcviewer.ctrl.action.LicenseAction;
-import com.tagtraum.perf.gcviewer.ctrl.action.OSXFullScreen;
-import com.tagtraum.perf.gcviewer.ctrl.action.OpenFile;
-import com.tagtraum.perf.gcviewer.ctrl.action.OpenURL;
-import com.tagtraum.perf.gcviewer.ctrl.action.ReadmeAction;
-import com.tagtraum.perf.gcviewer.ctrl.action.Refresh;
-import com.tagtraum.perf.gcviewer.ctrl.action.Watch;
-import com.tagtraum.perf.gcviewer.ctrl.action.Zoom;
-import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
-import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-import com.tagtraum.perf.gcviewer.view.ActionCommands;
-import com.tagtraum.perf.gcviewer.view.DesktopPane;
-import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
-import com.tagtraum.perf.gcviewer.view.GCViewerGuiToolBar;
-import com.tagtraum.perf.gcviewer.view.RecentGCResourcesMenu;
-import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
-import com.tagtraum.perf.gcviewer.view.StayOpenCheckBoxMenuItem;
-import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.GCRectanglesRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.GCTimesRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.IncLineRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.InitialMarkLevelRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.TotalHeapRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.TotalTenuredRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.TotalYoungRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.UsedHeapRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.UsedTenuredRenderer;
-import com.tagtraum.perf.gcviewer.view.renderer.UsedYoungRenderer;
-import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
-import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 
 /**
  * This class is responsible for construction of {@link GCViewerGui}, whose construction is
@@ -87,6 +55,7 @@ public class GCViewerGuiBuilder {
         actions.put(ActionCommands.SHOW_README.toString(), new ReadmeAction(gui));
         actions.put(ActionCommands.SHOW_LICENSE.toString(), new LicenseAction(gui));
         actions.put(ActionCommands.OPEN_FILE.toString(), new OpenFile(controller, gui));
+        actions.put(ActionCommands.OPEN_SERIES.toString(), new OpenSeries(controller, gui));
         actions.put(ActionCommands.OPEN_URL.toString(), new OpenURL(controller, gui));
         actions.put(ActionCommands.REFRESH.toString(), new Refresh(controller, gui));
         actions.put(ActionCommands.EXPORT.toString(), new Export(gui));
@@ -128,6 +97,7 @@ public class GCViewerGuiBuilder {
 
         // file menu
         menuBar.addToFileMenu(actions.get(ActionCommands.OPEN_FILE.toString()));
+        menuBar.addToFileMenu(actions.get(ActionCommands.OPEN_SERIES.toString()));
         menuBar.addToFileMenu(actions.get(ActionCommands.OPEN_URL.toString()));
         RecentGCResourcesMenu recentResourceNamesMenu = new RecentGCResourcesMenu();
         recentResourceNamesMenu.setIcon(ImageHelper.createEmptyImageIcon(20, 20));
@@ -291,6 +261,7 @@ public class GCViewerGuiBuilder {
         toolBar.setFloatable(false);
         
         toolBar.add(actions.get(ActionCommands.OPEN_FILE.toString()));
+        toolBar.add(actions.get(ActionCommands.OPEN_SERIES.toString()));
         toolBar.add(actions.get(ActionCommands.OPEN_URL.toString()));
         toolBar.add(actions.get(ActionCommands.EXPORT.toString()));
         toolBar.add(actions.get(ActionCommands.REFRESH.toString()));

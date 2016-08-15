@@ -1,14 +1,13 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import java.awt.BorderLayout;
-import java.beans.PropertyVetoException;
-import java.util.Map;
-
-import javax.swing.Action;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+
+import javax.swing.*;
+import java.awt.*;
+import java.beans.PropertyVetoException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is the main window of GCViewer.
@@ -66,7 +65,18 @@ public class GCViewerGui extends JFrame {
     public GCDocument getSelectedGCDocument() {
         return (GCDocument)desktopPane.getSelectedFrame();
     }
-    
+
+    public List<GCDocument> getAllGCDocuments() {
+        List<GCDocument> documents = new ArrayList<>();
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            if (frame instanceof GCDocument) {
+                GCDocument document = (GCDocument) frame;
+                documents.add(document);
+            }
+        }
+        return documents;
+    }
+
     public GCViewerGuiToolBar getToolBar() {
         return toolBar;
     }

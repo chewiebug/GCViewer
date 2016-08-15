@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 
-import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class TestRecentGCResourcesModel {
      * Return the missing part of a relative path compared to its absolute path.
      */
     private String getPathExpansion() {
-        String resourceNameAsUrlString = new GCResource("temp").getResourceNameAsUrlString();
+        String resourceNameAsUrlString = new GcResourceFile("temp").getResourceNameAsUrlString();
         return resourceNameAsUrlString.substring("file:/".length(), resourceNameAsUrlString.indexOf("temp"));
     }
 
@@ -37,13 +37,13 @@ public class TestRecentGCResourcesModel {
     @Test
     public void addList() {
         RecentGCResourcesModel model = new RecentGCResourcesModel();
-        model.add(Arrays.asList(new GCResource("temp/test.log")));
+        model.add(Arrays.asList(new GcResourceFile("temp/test.log")));
         Assert.assertThat("add first entry", model.getResourceNameGroups().size(), is(1));
 
-        model.add(Arrays.asList(new GCResource("temp/test.log")));
+        model.add(Arrays.asList(new GcResourceFile("temp/test.log")));
         Assert.assertThat("add identical entry", model.getResourceNameGroups().size(), is(1));
 
-        model.add(Arrays.asList(new GCResource("file:/" + getPathExpansion() + "temp/test.log")));
+        model.add(Arrays.asList(new GcResourceFile("file:/" + getPathExpansion() + "temp/test.log")));
         Assert.assertThat("add url entry of same file", model.getResourceNameGroups().size(), is(1));
     }
 

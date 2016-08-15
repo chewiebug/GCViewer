@@ -13,6 +13,7 @@ public enum ActionCommands {
     EXPORT,
     SHOW_LICENSE,
     OPEN_FILE,
+    OPEN_SERIES,
     OPEN_URL,
     OPEN_RECENT,
     OSX_FULLSCREEN,

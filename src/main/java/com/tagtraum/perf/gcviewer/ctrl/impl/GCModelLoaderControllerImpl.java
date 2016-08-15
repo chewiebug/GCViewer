@@ -1,25 +1,24 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
+import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
+import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+import com.tagtraum.perf.gcviewer.view.GCDocument;
+import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
+import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
+
+import javax.swing.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import javax.swing.JCheckBoxMenuItem;
-
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
-import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.view.GCDocument;
-import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
-import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
+import java.util.*;
 
 /**
  * Controller class for {@link GCModelLoader}.
@@ -44,7 +43,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     public void add(File[] files) {
         List<GCResource> gcResourceList = new ArrayList<>();
         for (File file : files) {
-            GCResource gcResource = new GCResource(file.getAbsolutePath());
+            GCResource gcResource = new GcResourceFile(file.getAbsolutePath());
             gcResourceList.add(gcResource);
             
             addGCResource(gcResource);
@@ -69,7 +68,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     }
     
     private void addGCResource(GCResource gcResource) {
-        GCModelLoader loader = new GCModelLoaderImpl(gcResource);
+        GCModelLoader loader = GCModelLoaderFactory.createFor(gcResource);
         GCDocumentController docController = getDocumentController(gcViewerGui.getSelectedGCDocument());
         docController.addGCResource(loader, getViewMenuController());
         
@@ -112,30 +111,30 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
         
         throw new IllegalStateException("no ActionListener of type 'ViewMenuController' found");
     }
-    
+
     private void openGCResource(GCResource gcResource) {
-        GCModelLoader loader = new GCModelLoaderImpl(gcResource);
+        GCModelLoader loader = GCModelLoaderFactory.createFor(gcResource);
+        openGCResource(gcResource, loader);
+    }
+
+    private void openGCResource(GCResource gcResource, GCModelLoader loader) {
         GCDocument document = new GCDocument(gcViewerGui.getPreferences(), gcResource.getResourceName());
-        document.setDropTarget(
-                new DropTarget(document, 
-                        DnDConstants.ACTION_COPY, 
-                        new FileDropTargetListener(this, DropFlavor.ADD))
-                );
+        document.setDropTarget(new DropTarget(document, DnDConstants.ACTION_COPY, new FileDropTargetListener(this, DropFlavor.ADD)));
         document.addInternalFrameListener(new GCViewerGuiInternalFrameController());
-        
+
         gcViewerGui.addDocument(document);
-        
+
         GCDocumentController docController = new GCDocumentController(document);
         docController.addGCResource(loader, getViewMenuController());
-        
+
         loader.execute();
     }
-    
+
     @Override
     public void open(File[] files) {
         List<GCResource> gcResourceList = new ArrayList<GCResource>();
         for (File file : files) {
-            GCResource gcResource = new GCResource(file.getAbsolutePath());
+            GCResource gcResource = new GcResourceFile(file.getAbsolutePath());
             gcResourceList.add(gcResource);
         }
         
@@ -151,7 +150,7 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     @Override
     public void open(List<GCResource> gcResourceList) {
         for (int i = 0; i < gcResourceList.size(); ++i) {
-            GCResource gcResource = new GCResource(gcResourceList.get(i).getResourceName());
+            GCResource gcResource = gcResourceList.get(i);
 
             if (i == 0) {
                 openGCResource(gcResource);
@@ -163,7 +162,15 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
         
         getRecentGCResourcesModel().add(gcResourceList);
     }
-    
+
+    @Override
+    public void openAsSeries(List<GCResource> gcResourceList) {
+        GcResourceSeries resourceSeries = new GcResourceSeries(gcResourceList);
+        GCModelLoader loader = GCModelLoaderFactory.createFor(resourceSeries);
+        openGCResource(loader.getGcResource(), loader);
+        getRecentGCResourcesModel().add(Collections.singletonList(resourceSeries));
+    }
+
     @Override
     public GCModelLoaderGroupTracker reload(GCDocument gcDocument) {
         GCModelLoaderGroupTracker tracker = new GCModelLoaderGroupTrackerImpl();
@@ -171,16 +178,16 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
             if (gcResource.hasUnderlyingResourceChanged()) {
                 gcResource.reset();
                 gcResource.setIsReload(true);
-                GCModelLoader loader = new GCModelLoaderImpl(gcResource);
+                GCModelLoader loader = GCModelLoaderFactory.createFor(gcResource);
                 GCDocumentController docController = getDocumentController(gcDocument);
                 docController.reloadGCResource(loader);
 
                 tracker.addGcModelLoader(loader);
             }
         }
-        
+
         tracker.execute();
-        
+
         return tracker;
     }
     

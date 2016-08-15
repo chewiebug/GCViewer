@@ -2,14 +2,7 @@ package com.tagtraum.perf.gcviewer.model;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * The abstract gc event is the base class for all types of events. All sorts of general
@@ -19,7 +12,6 @@ import java.util.TreeSet;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable {
-    private final Iterator<T> EMPTY_ITERATOR = Collections.emptyIterator();
     private ZonedDateTime datestamp;
     private double timestamp;
     private ExtendedType extendedType = ExtendedType.UNDEFINED;
@@ -30,7 +22,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     private double pause;
 
     public Iterator<T> details() {
-        if (details == null) return EMPTY_ITERATOR;
+        if (details == null) return Collections.emptyIterator();
         return details.iterator();
     }
 
@@ -160,27 +152,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         this.tenuredDetail = tenuredDetail;
     }
 
-    // better than nothing hashcode
-    public int hashCode() {
-        return toString().hashCode();
-    }
-
-    // better than nothing equals
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-           return false;
-        }
-        if (!(obj instanceof AbstractGCEvent<?>)) {
-            return false;
-        }
-
-        return toString().equals(obj.toString());
-    }
-
-    public String toString() {
+	public String toString() {
         StringBuffer sb = new StringBuffer(128);
         toStringBuffer(sb);
         return sb.toString();
@@ -246,6 +218,28 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     public void setPause(double pause) {
         this.pause = pause;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof AbstractGCEvent))
+            return false;
+        AbstractGCEvent<?> that = (AbstractGCEvent<?>) o;
+        return Double.compare(that.timestamp, timestamp) == 0 &&
+                tenuredDetail == that.tenuredDetail &&
+                Double.compare(that.pause, pause) == 0 &&
+                Objects.equals(datestamp, that.datestamp) &&
+                Objects.equals(extendedType, that.extendedType) &&
+                Objects.equals(typeAsString, that.typeAsString) &&
+                generation == that.generation &&
+                Objects.equals(details, that.details);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(datestamp, timestamp, extendedType, tenuredDetail, typeAsString, generation, details);
     }
 
     /**
@@ -316,8 +310,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public String toString() {
             return fullName;
         }
-
-    }
+	}
 
     /**
      * Representation of an event type

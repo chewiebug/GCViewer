@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
  * Date: Jan 30, 2002
@@ -27,11 +27,11 @@ public class TestDataReaderJRockit1_4_2 {
     }
     
     private DataReader getDataReader1_4(String fileName) throws UnsupportedEncodingException, IOException {
-        return new DataReaderJRockit1_4_2(new GCResource(fileName), getInputStream(fileName));
+        return new DataReaderJRockit1_4_2(new GcResourceFile(fileName), getInputStream(fileName));
     }
     
     private DataReader getDataReader1_5(String fileName) throws UnsupportedEncodingException, IOException {
-        return new DataReaderJRockit1_5_0(new GCResource(fileName), getInputStream(fileName));
+        return new DataReaderJRockit1_5_0(new GcResourceFile(fileName), getInputStream(fileName));
     }
     
     @Test
@@ -138,7 +138,7 @@ public class TestDataReaderJRockit1_4_2 {
     public void testParseTsGCReportPrioPauseTime() throws Exception {
         String fileName = "SampleJRockit1_4_2ts-gcreport-gcpriopausetime.txt";
         InputStream in = getInputStream(fileName);
-        DataReader reader = new DataReaderFactory().getDataReader(new GCResource(fileName), in);
+        DataReader reader = new DataReaderFactory().getDataReader(new GcResourceFile(fileName), in);
         
         assertTrue("should be DataReaderJRockit1_4_2 (but was " + reader.toString() + ")", reader instanceof DataReaderJRockit1_4_2);
 

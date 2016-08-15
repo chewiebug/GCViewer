@@ -85,4 +85,41 @@ public class DoubleData implements Serializable {
         }
         return sum / m;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        DoubleData that = (DoubleData) o;
+
+        if (n != that.n)
+            return false;
+        if (Double.compare(that.sum, sum) != 0)
+            return false;
+        if (Double.compare(that.sumSquares, sumSquares) != 0)
+            return false;
+        if (Double.compare(that.min, min) != 0)
+            return false;
+        return Double.compare(that.max, max) == 0;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = n;
+        temp = Double.doubleToLongBits(sum);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(sumSquares);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(min);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(max);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }

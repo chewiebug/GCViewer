@@ -1,19 +1,22 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.util.logging.Level;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 
 /**
  * Tests the implementation of {@link DataReaderFacade}.
@@ -42,7 +45,7 @@ public class TestDataReaderFacade {
     public void loadModelStringFileExistsNoWarnings() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GCResource(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
+        GCResource gcResource = new GcResourceFile(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
         gcResource.getLogger().addHandler(handler);
 
         final GCModel model = dataReaderFacade.loadModel(gcResource);
@@ -60,7 +63,7 @@ public class TestDataReaderFacade {
     public void loadModelMalformedUrl() throws Exception {
 
         try {
-            dataReaderFacade.loadModel(new GCResource("httpblabla"));
+            dataReaderFacade.loadModel(new GcResourceFile("httpblabla"));
         }
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
@@ -78,7 +81,7 @@ public class TestDataReaderFacade {
     public void loadModelIllegalArgument() throws Exception {
 
         try {
-            dataReaderFacade.loadModel(new GCResource("http://"));
+            dataReaderFacade.loadModel(new GcResourceFile("http://"));
         }
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
@@ -95,7 +98,7 @@ public class TestDataReaderFacade {
     @Test
     public void loadModelFileDoesntExists() throws Exception {
         try {
-            dataReaderFacade.loadModel(new GCResource("dummy.txt"));
+            dataReaderFacade.loadModel(new GcResourceFile("dummy.txt"));
             fail("DataReaderException expected");
         }
         catch (DataReaderException e) {
@@ -106,4 +109,55 @@ public class TestDataReaderFacade {
         }
     }
 
+    @Test
+    public void testLoadModel_forSeries() throws IOException, DataReaderException {
+        GCResource file1 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
+        GCResource file2 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
+        GCResource file3 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
+        GCResource file4 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part4.txt").getPath());
+        GCResource file5 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part5.txt").getPath());
+        GCResource file6 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part6.txt").getPath());
+        GCResource file7 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part7.txt").getPath());
+        GCResource expectedResult = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-ManuallyMerged.txt").getPath());
+        GCModel expectedModel = dataReaderFacade.loadModel(expectedResult);
+
+        List<GCResource> resources = new ArrayList<>();
+        resources.add(file4);
+        resources.add(file3);
+        resources.add(file6);
+        resources.add(file1);
+        resources.add(file7);
+        resources.add(file2);
+        resources.add(file5);
+        GcResourceSeries series = new GcResourceSeries(resources);
+
+        GCModel result = dataReaderFacade.loadModelFromSeries(series);
+        assertThat(result.toString(), is(expectedModel.toString()));
+    }
+
+    @Test
+    public void testLoadModelFromSeries() throws IOException, DataReaderException {
+        GCResource file1 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
+        GCResource file2 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
+        GCResource file3 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
+        GCResource file4 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part4.txt").getPath());
+        GCResource file5 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part5.txt").getPath());
+        GCResource file6 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part6.txt").getPath());
+        GCResource file7 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part7.txt").getPath());
+        GCResource expectedResult = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-ManuallyMerged.txt").getPath());
+        GCModel expectedModel = dataReaderFacade.loadModel(expectedResult);
+
+        List<GCResource> resources = new ArrayList<>();
+        resources.add(file4);
+        resources.add(file3);
+        resources.add(file6);
+        resources.add(file1);
+        resources.add(file7);
+        resources.add(file2);
+        resources.add(file5);
+        GcResourceSeries series = new GcResourceSeries(resources);
+
+        GCModel result = dataReaderFacade.loadModel(series);
+        assertThat(result.toString(), is(expectedModel.toString()));
+    }
 }
