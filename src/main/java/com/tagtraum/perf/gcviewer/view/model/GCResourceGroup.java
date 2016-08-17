@@ -1,9 +1,5 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,6 +9,10 @@ import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 
 /**
  * <p>Holds a group of resource names (those displayed in the same GCDocument).</p>
@@ -34,7 +34,7 @@ public class GCResourceGroup {
 
     /**
      * Initialise a group from a single string consisting of {@link GcResourceFile}s separated by "{@value RESOURCE_SEPARATOR}"
-     * and contents of a {@link GcResourceSeries} separated by {@value SERIES_SEPARATOR}.
+     * and contents of a {@link GcResourceSeries} separated by "&gt;".
      *
      * @param resourceNameGroup resource names separated by ";"
      */
