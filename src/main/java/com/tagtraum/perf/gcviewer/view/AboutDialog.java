@@ -44,6 +44,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Frank Dietrich",
         "Bernd Eckenfels",
         "Ryan Gardner",
+        "Martin Geldmacher",
         "Neil Gentleman",
         "Chris Grindstaff",
         "Michi Gysel",
