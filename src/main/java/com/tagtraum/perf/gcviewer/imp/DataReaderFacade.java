@@ -8,6 +8,8 @@ import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 import com.tagtraum.perf.gcviewer.util.HttpUrlConnectionHelper;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -19,6 +21,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -83,13 +86,20 @@ public class DataReaderFacade {
     /**
      * Loads the {@link GCResource}s as a rotated series of logfiles. Takes care of ordering them
      *
-     * @param gcResource the {@link GcResourceSeries} to load
+     * @param series the {@link GcResourceSeries} to load
      * @return a {@link GCModel} containing all events found in the given {@link GCResource}s that were readable
      * @throws DataReaderException
      */
-    protected GCModel loadModelFromSeries(GcResourceSeries gcResource) throws DataReaderException {
+    protected GCModel loadModelFromSeries(GcResourceSeries series) throws DataReaderException {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         GcSeriesLoader seriesLoader = new GcSeriesLoader(this);
-        return seriesLoader.load(gcResource);
+        GCModel model = seriesLoader.load(series);
+
+        stopWatch.stop();
+        series.getLogger().log(Level.INFO, "Parsing logfile series containing of " + series.getResourcesInOrder().size() + " files took " + getDurationFormatted(stopWatch));
+        return model;
     }
 
     /**
@@ -126,11 +136,21 @@ public class DataReaderFacade {
             }
         }
 
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         DataReader reader = factory.getDataReader(gcResource, in);
         GCModel model = reader.read();
         model.setURL(url);
 
+        stopWatch.stop();
+        gcResource.getLogger().log(Level.INFO, "Parsing logfile " + gcResource.getResourceName() + " took " + getDurationFormatted(stopWatch));
+
         return model;
+    }
+
+    private String getDurationFormatted(StopWatch stopWatch) {
+        return DurationFormatUtils.formatDuration(stopWatch.getTime(), "s,SS") + "s";
     }
 
 }

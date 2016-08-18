@@ -1,10 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.model.*;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,9 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.logging.Level;
 
-import com.tagtraum.perf.gcviewer.model.*;
-import org.junit.Test;
-import com.tagtraum.perf.gcviewer.UnittestHelper;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for logs generated specifically by jdk 1.7.0.
@@ -24,8 +22,6 @@ import com.tagtraum.perf.gcviewer.UnittestHelper;
  * <p>created on: 13.09.2013</p>
  */
 public class TestDataReaderSun1_7_0 {
-
-    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
@@ -386,7 +382,7 @@ public class TestDataReaderSun1_7_0 {
                 model.get(1).getTimestamp(),
                 closeTo(33395.153 + 0.1120380, 0.0000001));
         assertThat("Application Stopped datestamp",
-                dateTimeFormatter.format(model.get(1).getDatestamp()),
+                model.get(1).getDatestamp().format(DateTimeFormatter.ofPattern(AbstractDataReaderSun.TIMESTAMP_PATTERN)),
                 equalTo("2012-04-26T23:59:51.011+0400"));
         assertThat("first timestamp", model.getFirstPauseTimeStamp(), closeTo(33395.153, 0.00001));
     }

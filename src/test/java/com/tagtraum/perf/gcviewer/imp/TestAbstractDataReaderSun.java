@@ -9,8 +9,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class TestAbstractDataReaderSun {
 
@@ -90,7 +94,16 @@ public class TestAbstractDataReaderSun {
         assertEquals("heap before", 121344, event.getPreUsed());
         assertEquals("heap after", 128, event.getPostUsed());
     }
-    
+
+    @Test
+    public void testParseDatestamp() throws Exception {
+        String line =
+                "2016-04-14T22:37:55.315+0200: 467.260: [GC (Allocation Failure) 467.260: [ParNew: 226563K->6586K(245760K), 0.0044323 secs] 385679K->165875K(791936K), 0.0045438 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] ";
+        ParseInformation pos = new ParseInformation(0);
+        ZonedDateTime time = dataReader.parseDatestamp(line, pos);
+        assertThat(time, is(ZonedDateTime.of(2016, 4, 14, 22, 37, 55, 315000000, ZoneOffset.ofHours(2))));
+    }
+
     /**
      * Subclass of {@link AbstractDataReaderSun} which makes those methods public, I want to test here.
      * 

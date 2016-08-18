@@ -2,16 +2,16 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
 import static org.hamcrest.Matchers.*;
@@ -20,8 +20,6 @@ import static org.junit.Assert.assertThat;
 
 public class TestDataReaderSun1_6_0G1 {
     
-    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
-
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
     }
@@ -31,11 +29,11 @@ public class TestDataReaderSun1_6_0G1 {
      */
     @Test
     public void testG1GcVerbose() throws Exception {
-    	TestLogHandler handler = new TestLogHandler();
+        TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_6_0G1_gc_verbose.txt");
         gcResource.getLogger().addHandler(handler);
-    	
+
         InputStream in = getInputStream(gcResource.getResourceName());
         DataReader reader = new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
@@ -71,30 +69,25 @@ public class TestDataReaderSun1_6_0G1 {
 
         assertEquals("count", 1, model.size());
         assertEquals("gc pause", 0.0032067, model.getGCPause().getMax(), 0.000001);
-        assertEquals("datestamp", 
-                ZonedDateTime.parse("2012-02-29T13:41:00.721+0100", dateTimeFormatter),
-                model.getGCEvents().next().getDatestamp());
+        ZonedDateTime expected = ZonedDateTime.from(AbstractDataReaderSun.DATE_TIME_FORMATTER.parse("2012-02-29T13:41:00.721+0100").toInstant().atZone(ZoneOffset.ofHours(1)));
+        assertEquals("datestamp", expected, model.getGCEvents().next().getDatestamp());
     }
-    
+
     @Test
     public void testG1FullGcSystemGc() throws Exception {
-    	InputStream in = new ByteArrayInputStream(
-				("9.978: [Full GC (System.gc()) 597M->1142K(7168K), 0.1604955 secs]")
-				.getBytes());
-    	
-		DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6G1);
-		GCModel model = reader.read();
+        InputStream in = new ByteArrayInputStream(("9.978: [Full GC (System.gc()) 597M->1142K(7168K), 0.1604955 secs]").getBytes());
 
-		assertEquals("count", 1, model.size());
-		assertEquals("full gc pause", 0.1604955, model.getFullGCPause().getMax(), 0.000001);
+        DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6G1);
+        GCModel model = reader.read();
 
+        assertEquals("count", 1, model.size());
+        assertEquals("full gc pause", 0.1604955, model.getFullGCPause().getMax(), 0.000001);
     }
     
     @Test
     public void testG1MixedLine1() throws Exception {
         InputStream in = new ByteArrayInputStream(
-                ("0.388: [GC pause (young) (initial-mark) 10080K->10080K(16M)0.390: [GC concurrent-mark-start]" +
-                		"\n, 0.0013065 secs]")
+                ("0.388: [GC pause (young) (initial-mark) 10080K->10080K(16M)0.390: [GC concurrent-mark-start]" + "\n, 0.0013065 secs]")
                 .getBytes());
         
         DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6G1);
@@ -183,8 +176,8 @@ public class TestDataReaderSun1_6_0G1 {
     @Test
     public void testFullGcMixed() throws Exception {
         InputStream in = new ByteArrayInputStream(("107.222: [Full GC107.248: [GC concurrent-mark-end, 0.0437048 sec]" +
-        		"\n 254M->59M(199M), 0.0687356 secs]" +
-        		"\n [Times: user=0.06 sys=0.02, real=0.07 secs]").getBytes());
+                "\n 254M->59M(199M), 0.0687356 secs]" +
+                "\n [Times: user=0.06 sys=0.02, real=0.07 secs]").getBytes());
         DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6G1);
         GCModel model = reader.read();
 
