@@ -18,60 +18,69 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class RefreshWatchDog {
-    private static final int RELOAD_DELAY = 1000;
+	private static int RELOAD_DELAY = 1000;
 
-    private GCModelLoaderController controller;
-    private GCDocument gcDocument;
+	private final GCModelLoaderController controller;
+	private final GCDocument gcDocument;
 
-    private java.util.Timer reloadTimer;
+	private java.util.Timer reloadTimer;
 
-    public RefreshWatchDog(GCModelLoaderController controller, GCDocument gcDocument) {
-        this.controller = controller;
-        this.gcDocument = gcDocument;
-    }
-    
-    public void start() {
-        reloadTimer = new java.util.Timer(true);
-        reloadTimer.schedule(new ModelReloader(), 0, RELOAD_DELAY);
-    }
-    
-    public void stop() {
-        if (reloadTimer != null) {
-            reloadTimer.cancel();
-        }
-    }
+	public RefreshWatchDog(GCModelLoaderController controller, GCDocument gcDocument) {
+		this.controller = controller;
+		this.gcDocument = gcDocument;
+	}
 
-    private class ModelReloader extends TimerTask implements PropertyChangeListener {
-        
-        private GCModelLoaderGroupTracker tracker;
-        /** initial value must be true for the first start */
-        private boolean isFinished = true;
-        
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            if ("state".equals(evt.getPropertyName())
-                    && SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+	public void start() {
+		reloadTimer = new java.util.Timer(true);
+		reloadTimer.schedule(new ModelReloader(), 0, RELOAD_DELAY);
+	}
 
-                isFinished = true;
-                tracker.removePropertyChangeListener(this);
-            }
-        }
+	public void stop() {
+		if (reloadTimer != null) {
+			reloadTimer.cancel();
+		}
+	}
 
-        public void run() {
-            if (isFinished) {
-                isFinished = false;
-                tracker = controller.reload(gcDocument);
+	protected static int getRELOAD_DELAY() {
+		return RELOAD_DELAY;
+	}
 
-                // if no reload takes place, the propertyChangeEvent is fired, before the listener is attached
-                // => set finished manually to true again.
-                if (tracker.size() == 0) {
-                    isFinished = true;
-                }
-                else {
-                    tracker.addPropertyChangeListener(this);
-                }
-            }
-        }
+	protected static void setRELOAD_DELAY(int rELOAD_DELAY) {
+		RELOAD_DELAY = rELOAD_DELAY;
+	}
 
-    }
+	private class ModelReloader extends TimerTask implements PropertyChangeListener {
+
+		private GCModelLoaderGroupTracker tracker;
+		/** initial value must be true for the first start */
+		private boolean isFinished = true;
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if ("state".equals(evt.getPropertyName())
+					&& SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+
+				isFinished = true;
+				tracker.removePropertyChangeListener(this);
+			}
+		}
+
+		@Override
+		public void run() {
+			if (isFinished) {
+				isFinished = false;
+				tracker = controller.reload(gcDocument);
+
+				// if no reload takes place, the propertyChangeEvent is fired, before the listener is attached
+				// => set finished manually to true again.
+				if (tracker.size() == 0) {
+					isFinished = true;
+				}
+				else {
+					tracker.addPropertyChangeListener(this);
+				}
+			}
+		}
+
+	}
 }
