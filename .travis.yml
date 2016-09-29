@@ -1,0 +1,14 @@
+language: java
+script: mvn -q clean install
+jdk:
+  - oraclejdk7
+  - openjdk6
+  - openjdk7
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    - gcviewer-info@googlegroups.com
