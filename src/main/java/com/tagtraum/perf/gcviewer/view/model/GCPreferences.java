@@ -197,7 +197,7 @@ public class GCPreferences {
             result = Integer.parseInt(properties.getProperty(key));
         }
         catch (NumberFormatException e) {
-            e.printStackTrace();
+            LOGGER.info(() -> "could not read property '" + key + "' from " + getPreferencesFile().getAbsolutePath() + "; using default: " + defaultValue);
         }
         
         return result;
