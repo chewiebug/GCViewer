@@ -59,6 +59,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Reinhard Nägele",
         "Robert Nibali",
         "Àngel Ollé Blázquez",
+        "Thomas Peyrard",
         "Rupesh Ramachandran",
         "Fred Rolland",
         "Heiko W. Rupp",
