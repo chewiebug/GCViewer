@@ -627,14 +627,14 @@
 
                         <dependencies>
                             <dependency>
-                                <groupId>ant</groupId>
+                                <groupId>org.apache.ant</groupId>
                                 <artifactId>ant-jsch</artifactId>
-                                <version>1.6.5</version>
+                                <version>1.10.0</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.jcraft</groupId>
                                 <artifactId>jsch</artifactId>
-                                <version>0.1.50</version>
+                                <version>0.1.54</version>
                             </dependency>
                         </dependencies>
 
