@@ -607,6 +607,7 @@
                                         <scp  todir="${env.SCP_USERNAME}@frs.sourceforge.net:/home/frs/project/gcviewer/"
                                               password="${env.SCP_PASSWORD}"
                                               trust="true"
+                                              sftp="true"
                                               failonerror="true">
                                             <fileset dir="${project.basedir}/target">
                                                 <include name="${project.build.finalName}.${project.packaging}" />
