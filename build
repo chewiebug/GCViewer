@@ -1,0 +1,2 @@
+mvn clean install -DskipTests
+cp target/*.jar ~/Java/Projects/Hazelcast/hazelcast-simulator/dist/src/main/dist/lib

@@ -56,7 +56,7 @@ public class SimpleGcWriter extends AbstractDataWriter {
      * @param typeName name of the gc event type
      * @return name without spaces
      */
-    private String getSimpleType(AbstractGCEvent<?> event) {
+    public static String getSimpleType(AbstractGCEvent<?> event) {
         String simpleType;
 
         if (isYoungOnly(event)) {
@@ -84,7 +84,7 @@ public class SimpleGcWriter extends AbstractDataWriter {
      * @param event event to be analysed.
      * @return <code>true</code> if the event is only in the young generation, <code>false</code> otherwise
      */
-    private boolean isYoungOnly(AbstractGCEvent<?> event) {
+    public static boolean isYoungOnly(AbstractGCEvent<?> event) {
         boolean isYoungOnly = false;
         if (!event.hasDetails() && event.getExtendedType().getGeneration().equals(Generation.YOUNG)) {
             isYoungOnly = true;
@@ -105,7 +105,7 @@ public class SimpleGcWriter extends AbstractDataWriter {
         return isYoungOnly;
     }
 
-    private String stripBlanks(String eventTypeName) {
+    private static String stripBlanks(String eventTypeName) {
         StringBuilder sb = new StringBuilder(eventTypeName);
         for (int i = sb.length()-1; i >= 0; --i) {
             if (sb.charAt(i) == ' ') {
