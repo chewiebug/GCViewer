@@ -1,17 +1,17 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 public class TestDataReaderSun1_6_0 {
 
-    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
@@ -28,19 +27,18 @@ public class TestDataReaderSun1_6_0 {
 
     @Test
     public void testPrintGCDateStamps() throws Exception {
-		ByteArrayInputStream in = new ByteArrayInputStream(
-				("2011-10-05T04:23:39.427+0200: 19.845: [GC 19.845: [ParNew: 93184K->5483K(104832K), 0.0384413 secs] 93184K->5483K(1036928K), 0.0388082 secs] [Times: user=0.41 sys=0.06, real=0.04 secs]")
-						.getBytes());
-		 
-        DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
-		GCModel model = reader.read();
+        ByteArrayInputStream in =
+                new ByteArrayInputStream(("2011-10-05T04:23:39.427+0200: 19.845: [GC 19.845: [ParNew: 93184K->5483K(104832K), 0.0384413 secs] 93184K->5483K(1036928K), 0.0388082 secs] [Times: user=0.41 sys=0.06, real=0.04 secs]").getBytes());
 
-		assertTrue("hasDateStamp", model.hasDateStamp());
-		assertEquals("DateStamp",
-				ZonedDateTime.parse("2011-10-05T04:23:39.427+0200", dateTimeFormatter),
-				model.getFirstDateStamp());
+        DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+
+        assertTrue("hasDateStamp", model.hasDateStamp());
+        ZonedDateTime expected =
+                ZonedDateTime.from(AbstractDataReaderSun.DATE_TIME_FORMATTER.parse("2011-10-05T04:23:39.427+0200").toInstant().atZone(ZoneOffset.ofHours(2)));
+        assertEquals("DateStamp", expected, model.getFirstDateStamp());
         assertEquals("gc pause", 0.0388082, model.getGCPause().getMax(), 0.000001);
-	}
+    }
 
     @Test
 	public void testCMSPromotionFailed() throws Exception {

@@ -7,14 +7,15 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +34,8 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    public static final String TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    public static final FastDateFormat DATE_TIME_FORMATTER = FastDateFormat.getInstance(TIMESTAMP_PATTERN);
     private static final int LENGTH_OF_DATESTAMP = 29;
 
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
@@ -58,6 +60,8 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
     /** the log type allowing for small differences between different versions of the gc logs */
     protected GcLogType gcLogType;
+    /** the ZoneId of the GcResource that is being parsed. Lazily initialized. Assumption: constant for a GcResource */
+    private ZoneId zoneId;
 
     /**
      * Create an instance of this class passing an inputStream an the type of the logfile.
@@ -231,8 +235,8 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     }
 
     protected double parsePause(String line, ParseInformation pos) throws ParseException {
-    	// usual pattern expected: "..., 0.002032 secs]"
-    	// but may be as well (G1): "..., 0.003032]"
+        // usual pattern expected: "..., 0.002032 secs]"
+        // but may be as well (G1): "..., 0.003032]"
 
         // if the next token is "icms_dc" skip until after the comma
         // ...] icms_dc=0 , 8.0600619 secs]
@@ -476,18 +480,31 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         ZonedDateTime zonedDateTime = null;
         if (nextIsDatestamp(line, pos)) {
             try {
-                zonedDateTime = ZonedDateTime.parse(line.substring(pos.getIndex(), pos.getIndex() + LENGTH_OF_DATESTAMP - 1),
-                        DATE_TIME_FORMATTER);
+                String timestamp = line.substring(pos.getIndex(), pos.getIndex() + LENGTH_OF_DATESTAMP - 1);
+                zonedDateTime = parseDatestamp(timestamp);
                 pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
                 if (pos.getFirstDateStamp() == null) {
                     pos.setFirstDateStamp(zonedDateTime);
                 }
-            } catch (DateTimeParseException e){
+            } catch (java.text.ParseException e){
                  throw new ParseException(e.toString(), line);
             }
         }
 
         return zonedDateTime;
+    }
+
+    private ZonedDateTime parseDatestamp(String timestamp) throws java.text.ParseException {
+        ZoneId zone = getOrParseZoneId(timestamp);
+        // Faster than using ZonedDateTime#parse. Zone must be explicitly set in order to keep original offset value.
+        return ZonedDateTime.from(DATE_TIME_FORMATTER.parse(timestamp).toInstant().atZone(zone));
+    }
+
+    private ZoneId getOrParseZoneId(String timestamp) {
+        if (zoneId == null) {
+            zoneId = ZonedDateTime.parse(timestamp, DateTimeFormatter.ofPattern(TIMESTAMP_PATTERN)).getZone();
+        }
+        return zoneId;
     }
 
     /**
