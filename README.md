@@ -40,6 +40,12 @@ on his very good work.
 Links to detailed descriptions of many JVM parameters relevant to garbage collection
 can be found in the links section of https://github.com/chewiebug/GCViewer/wiki
 
+Results of log analysis
+=======================
+There are two sections, where the results of the log analysis are shown.
+One is the left side with the chart, the other the data panel on the right side.
+In the following, the content of these sections is explained.
+
 Chart
 -----
 
@@ -77,7 +83,9 @@ GCViewer shows a number of lines etc. in a chart (first tab). These are:
       and pink vertical line for every end (CMS-concurrent-reset /
       G1: concurrent-cleanup-end) of a concurrent collection cycle
 
-In the second tab ("Event details") it shows details about the events it parsed:
+Event details
+-------------
+In the second tab it shows details about the events it parsed:
 E.g. events like the following
 
 24.187: [GC 24.188: [ParNew: 93184K->5464K(104832K), 0.0442895 secs] \
@@ -100,10 +108,53 @@ So for every line the text is extracted (not always every part of it). This allo
 a user which is familiar with the text log files to find out more details about
 the events that occurred.
 
-Metrics
-=======
+### Gc pauses
+This are shows all stop-the-world pauses, that are not full gc pauses.
 
-GCViewer provides some metrics to help you interpret the graph.
+### Full gc pauses
+In this area all pauses are shown, which GCViewer considers as "full gc"
+pauses. The current definition of a "full gc" is: Either the gc algorithm
+prints "full gc" in its event name, or more than one generation (young,
+old, permgen / metaspace) were involved during collection.
+
+### VM operations overhead (safepoint pauses)
+This area is only shown, if the gc log was written with the option
+-XX:+PrintGCApplicationStoppedTime. To understand the meaning of this
+metric, it is important to know about safepoints (see e.g.
+http://blog.ragozin.info/2012/10/safepoints-in-hotspot-jvm.html).
+
+If GCViewer finds gc log lines like the following:
+2017-03-29T14:37:12.812+0200: 8.832: [GC (Allocation Failure) \
+  [PSYoungGen: 29146K->3457K(29184K)] 78228K->52539K(116736K), 0.0009340 secs] \
+  [Times: user=0.00 sys=0.00, real=0.00 secs]
+2017-03-29T14:37:12.813+0200: 8.833: Total time for which application \
+  threads were stopped: 0.0010682 seconds, Stopping threads took: 0.0000155 seconds
+
+GCViewer will report one event in the "Gc pauses" area and one in this area.
+The pause duration reported for "Total time..." will be 0.0001342s
+(0.0010682 (duration of safepoint pause) - 0.0009340 (duration of gc pause))
+So GCViewer only calculates the additional overhead needed for the whole
+safepoint on top of the gc pause.
+
+If the event immediately before the "Total time..." event was not a any
+kind of gc pause, but another "Total time..." event, then the whole pause
+for "Total time..." will be recorded for this event. In this case the
+safepoint was not caused by a gc pause.
+
+### Concurrent GCs
+This are contains information about concurrent collection cycles, if
+the gc algorithm used them. The time reported here is spent while the
+application threads are running. It is possible to read here, how long
+concurrent gc operations took until they finished.
+
+Parser
+------
+In the third tab the output of the parser is shown. If there were warnings
+during the parsing process or other output, you can check there.
+
+Data Panel
+==========
+GCViewer provides some metrics to help you interpret the chart.
 Note that some metrics based on averages are shown along with
 their standard deviation. If it is obvious that the standard
 deviation is fairly big in comparison to the average, the values
