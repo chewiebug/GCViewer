@@ -101,7 +101,7 @@ public class GCModel implements Serializable {
                 return false;
             }
 
-            FileInformation fileInfo = (FileInformation)other;
+            FileInformation fileInfo = (FileInformation) other;
 
             return fileInfo.lastModified == lastModified && fileInfo.creationTime == creationTime && fileInfo.length == length;
         }
@@ -175,7 +175,7 @@ public class GCModel implements Serializable {
     private RegressionLine relativePostFullGCIncrease;
     private URL url;
 
-	public GCModel() {
+    public GCModel() {
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
         this.stopTheWorldEvents = new ArrayList<AbstractGCEvent<?>>();
         this.gcEvents = new ArrayList<GCEvent>();
@@ -236,7 +236,7 @@ public class GCModel implements Serializable {
     }
 
     private void printPauseMap(Map<String, DoubleData> pauseMap) {
-        for (Map.Entry<String, DoubleData> entry: pauseMap.entrySet()) {
+        for (Map.Entry<String, DoubleData> entry : pauseMap.entrySet()) {
             System.out.println(entry.getKey() + " [n, avg, sum, min, max]:\t" + entry.getValue().getN() + "\t" + entry.getValue().average() + "\t" + entry.getValue().getSum() + "\t" + entry.getValue().getMin() + "\t" + entry.getValue().getMax());
         }
     }
@@ -326,7 +326,7 @@ public class GCModel implements Serializable {
      */
     public AbstractGCEvent<?> getLastEventAdded() {
         if (allEvents.size() > 0) {
-            return allEvents.get(allEvents.size()-1);
+            return allEvents.get(allEvents.size() - 1);
         }
         else {
             return null;
@@ -410,17 +410,58 @@ public class GCModel implements Serializable {
         }
 
         if (abstractEvent instanceof ConcurrentGCEvent) {
-        	ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
+            ConcurrentGCEvent concEvent = (ConcurrentGCEvent) abstractEvent;
             concurrentGCEvents.add(concEvent);
 
             DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
             pauses.add(concEvent.getPause());
+        } else if (abstractEvent instanceof ShenandoahGCEvent) {
+            ShenandoahGCEvent event = (ShenandoahGCEvent) abstractEvent;
+
+            if (event.isInitialMark()) {
+                updateInitiatingOccupancyFraction(event);
+            }
+            if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd()) {
+                updatePostConcurrentCycleUsedSizes(event);
+            }
+            if (firstPauseTimeStamp == 0) {
+                firstPauseTimeStamp = event.getTimestamp();
+            }
+            freedMemory += event.getPreUsed() - event.getPostUsed();
+            updateHeapSizes(event);
+            updateGcPauseInterval(event);
+            updatePromotion(event);
+            gcEvents.add(event);
+
+
+            if (event.isConcurrent()) {
+                DoubleData pauses = getDoubleData(event.getExtendedType().getName(), concurrentGcEventPauses);
+                pauses.add(event.getPause());
+                postGCUsedMemory.add(event.getPostUsed());
+                freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
+                currentNoFullGCEvents.add(event);
+                lastPauseTimeStamp = event.getTimestamp();
+                currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+                currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
+                gcPause.add(event.getPause());
+            } else {
+                DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
+                pauses.add(event.getPause());
+                updateFullGcPauseInterval(event);
+                stopTheWorldEvents.add(event); // for calculating throughput
+                fullGCEvents.add(event);
+                postFullGCUsedHeap.add(event.getPostUsed());
+                freedMemoryByFullGC.add(event.getPreUsed() - event.getPostUsed());
+                fullGCPause.add(event.getPause());
+                postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+                relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
+
+            }
         }
         else if (abstractEvent instanceof GCEvent) {
 
             // collect statistics about all stop the world events
             GCEvent event = (GCEvent) abstractEvent;
-
             updateHeapSizes(event);
 
             updateGcPauseInterval(event);
@@ -437,7 +478,7 @@ public class GCModel implements Serializable {
             freedMemory += event.getPreUsed() - event.getPostUsed();
 
             if (!event.isFull()) {
-            	// make a difference between stop the world events, which only collect from some generations...
+                // make a difference between stop the world events, which only collect from some generations...
                 DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
                 pauses.add(event.getPause());
 
@@ -451,7 +492,7 @@ public class GCModel implements Serializable {
 
             }
             else {
-            	// ... as opposed to all generations
+                // ... as opposed to all generations
                 DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
                 pauses.add(event.getPause());
 
@@ -464,9 +505,7 @@ public class GCModel implements Serializable {
                 postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
                 relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
 
-                // process no full-gc run data
                 if (currentPostGCSlope.hasPoints()) {
-                    // make sure we have at least _two_ data points
                     if (currentPostGCSlope.isLine()) {
                         postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
                         relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
@@ -476,7 +515,6 @@ public class GCModel implements Serializable {
                 }
 
             }
-
         }
         else if (abstractEvent instanceof VmOperationEvent) {
             adjustPause((VmOperationEvent) abstractEvent);
@@ -498,6 +536,8 @@ public class GCModel implements Serializable {
         if (abstractEvent.isStopTheWorld()) {
             // add to total pause here, because then adjusted VmOperationEvents are added correctly
             // as well
+            totalPause.add(abstractEvent.getPause());
+        } else if (abstractEvent instanceof ShenandoahGCEvent) {
             totalPause.add(abstractEvent.getPause());
         }
     }
@@ -553,7 +593,7 @@ public class GCModel implements Serializable {
      * pause duration of <code>previousEvent</code>.
      *
      * @param previousEvent event just before <code>vmOpEvent</code>
-     * @param vmOpEvent event to be adjusted
+     * @param vmOpEvent     event to be adjusted
      */
     private void adjustTimeStamp(AbstractGCEvent<?> previousEvent, VmOperationEvent vmOpEvent) {
         if (previousEvent.getTimestamp() + previousEvent.getPause() > vmOpEvent.getTimestamp()) {
@@ -598,8 +638,8 @@ public class GCModel implements Serializable {
 
             if (youngEvent != null) {
                 promotion.add((youngEvent.getPreUsed() - youngEvent.getPostUsed())
-                              - (event.getPreUsed() - event.getPostUsed())
-                             );
+                        - (event.getPreUsed() - event.getPostUsed())
+                );
             }
         }
     }
@@ -655,7 +695,7 @@ public class GCModel implements Serializable {
         // getTotal() returns 0 only if just the memory information could not be parsed
         // which can be the case with java 7 G1 algorithm (mixed with concurrent event)
         if (initialMarkEvent != null && initialMarkEvent.getTotal() > 0) {
-            initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double)initialMarkEvent.getTotal());
+            initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double) initialMarkEvent.getTotal());
         }
     }
 
@@ -936,8 +976,8 @@ public class GCModel implements Serializable {
     public double getRunningTime() {
         return lastPauseTimeStamp - firstPauseTimeStamp
                 + (stopTheWorldEvents.size() > 0
-                        ? stopTheWorldEvents.get(stopTheWorldEvents.size() - 1).getPause()
-                        : 0);
+                ? stopTheWorldEvents.get(stopTheWorldEvents.size() - 1).getPause()
+                : 0);
     }
 
     /**
@@ -970,22 +1010,23 @@ public class GCModel implements Serializable {
     }
 
     public boolean hasCorrectTimestamp() {
-        return format == Format.IBM_VERBOSE_GC || format == Format.SUN_X_LOG_GC || format == Format.SUN_1_2_2VERBOSE_GC;
+        return format == Format.IBM_VERBOSE_GC || format == Format.SUN_X_LOG_GC || format == Format.SUN_1_2_2VERBOSE_GC || format == Format.RED_HAT_SHENANDOAH_GC;
     }
 
     public boolean hasDateStamp() {
         return allEvents.size() > 0
-                 ? get(0).getDatestamp() != null
-                 : false;
+                ? get(0).getDatestamp() != null
+                : false;
     }
 
     public ZonedDateTime getFirstDateStamp() {
         return allEvents.size() > 0
-                 ? get(0).getDatestamp()
-                 : null;
+                ? get(0).getDatestamp()
+                : null;
     }
+
     public Optional<Double> getFirstTimeStamp() {
-        if(allEvents.size() > 0)
+        if (allEvents.size() > 0)
             return Optional.of(get(0).getTimestamp());
         else
             return Optional.empty();
@@ -1000,8 +1041,7 @@ public class GCModel implements Serializable {
         ZonedDateTime suggestedStartDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(getLastModified()), ZoneId.systemDefault());
         if (hasDateStamp()) {
             suggestedStartDate = getFirstDateStamp();
-        }
-        else if (hasCorrectTimestamp()) {
+        } else if (hasCorrectTimestamp()) {
             double runningTimeInSeconds = getRunningTime();
             long runningTimeInMillis = (long) (runningTimeInSeconds * 1000d);
             suggestedStartDate = suggestedStartDate.minus(runningTimeInMillis, ChronoUnit.MILLIS);
@@ -1030,10 +1070,10 @@ public class GCModel implements Serializable {
         return Objects.hash(allEvents, fileInformation, fullGcEventPauses, gcEventPauses, concurrentGcEventPauses, vmOperationEventPauses, heapAllocatedSizes, tenuredAllocatedSizes, youngAllocatedSizes, permAllocatedSizes, heapUsedSizes, tenuredUsedSizes, youngUsedSizes, permUsedSizes, postConcurrentCycleUsedTenuredSizes, postConcurrentCycleUsedHeapSizes, promotion, firstPauseTimeStamp, lastPauseTimeStamp, totalPause, fullGCPause, lastFullGcPauseTimeStamp, fullGcPauseInterval, gcPause, vmOperationPause, lastGcPauseTimeStamp, pauseInterval, initiatingOccupancyFraction, freedMemory, format, postGCUsedMemory, postFullGCUsedHeap, freedMemoryByGC, freedMemoryByFullGC, postGCSlope, currentPostGCSlope, currentRelativePostGCIncrease, relativePostGCIncrease, postFullGCSlope, relativePostFullGCIncrease, url);
     }
 
-	public static class Format implements Serializable {
-		private static final long serialVersionUID = 483615745336894207L;
+    public static class Format implements Serializable {
+        private static final long serialVersionUID = 483615745336894207L;
 
-		private String format;
+        private String format;
 
         private Format(String format) {
             this.format = format;
@@ -1047,5 +1087,6 @@ public class GCModel implements Serializable {
         public static final Format SUN_X_LOG_GC = new Format("Sun -Xloggc:<file>");
         public static final Format IBM_VERBOSE_GC = new Format("IBM -verbose:gc");
         public static final Format SUN_1_2_2VERBOSE_GC = new Format("Sun 1.2.2 -verbose:gc");
-	}
+        public static final Format RED_HAT_SHENANDOAH_GC = new Format("Shenandoah -Xlog:gc");
+    }
 }

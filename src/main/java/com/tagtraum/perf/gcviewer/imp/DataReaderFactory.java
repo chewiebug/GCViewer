@@ -1,5 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
+
 import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -8,9 +11,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -201,6 +201,11 @@ public class DataReaderFactory {
         else if (s.indexOf("starting collection, threshold allocation reached.") != -1) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM i5/OS 1.4.2");
             return new DataReaderIBMi5OS1_4_2(gcResource, in);
+        }
+        // Shenandoah
+        else if (s.contains("Using Shenandoah")) {
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Red Hat Shenandoah");
+            return new DataReaderShenandoah(gcResource, in);
         }
         return null;
     }

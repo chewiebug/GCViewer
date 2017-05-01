@@ -90,7 +90,9 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     public boolean isStopTheWorld() {
-        boolean isStopTheWorld = getExtendedType().getConcurrency() == Concurrency.SERIAL;
+        boolean isStopTheWorld = getExtendedType().getConcurrency() == Concurrency.SERIAL ||
+                getExtendedType().getType() == Type.SHEN_CONCURRENT_INIT_MARK ||
+                getExtendedType().getType() == Type.SHEN_CONCURRENT_FINAL_MARK;
         if (details != null) {
             for (T detailEvent : details) {
                 if (!isStopTheWorld) {
@@ -162,6 +164,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         if (getExtendedType().getGeneration().compareTo(Generation.ALL) == 0) {
             return true;
         }
+        if (getExtendedType().getType().getName().contains("S"))
 
         if (details != null) {
             // the assumption is, that a full collection is everything, that collects from more
@@ -503,7 +506,16 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        
+
+        // Shenandoah types of Generation.TENURED since Generation.ALL gets ignored apparently (GCEvent.java line 56)
+        public static final Type SHEN_CONCURRENT_INIT_MARK = new Type("GC Initial Mark (STW pause) initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_CONCURRENT_CONC_MARK = new Type("GC Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_FINAL_MARK = new Type("GC Final Mark (STW pause)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_CONCURRENT_CONC_EVAC = new Type("GC Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+
+        // Allocation failure types
+        public static final Type SHEN_CONCURRENT_ALLOC_FAILURE = new Type("GC Pause Full (Allocation Failure)", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+
         // IBM Types
         // TODO: are scavenge always young only??
         public static final Type IBM_AF = new Type("af", Generation.YOUNG);
