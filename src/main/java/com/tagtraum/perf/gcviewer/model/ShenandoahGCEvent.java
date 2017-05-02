@@ -6,14 +6,13 @@ package com.tagtraum.perf.gcviewer.model;
  */
 public class ShenandoahGCEvent extends GCEvent {
 
-    /** Used before GC in KB */
+    /** Heap usage in KB, override for convertion from MB to KB */
     private int preUsed;
-
-    /** Used after GC in KB */
     private int postUsed;
-
-    /** Capacity in KB */
     private int total;
+
+    /** Override GCEvent as Shenandoah pause times are in milliseconds and GCViewer displays seconds */
+    private double pause;
 
     /** By default events are not concurrent, must be set so */
     private boolean concurrency;
@@ -30,28 +29,46 @@ public class ShenandoahGCEvent extends GCEvent {
         this.concurrency = concurrency;
     }
 
+    @Override
     public void setPreUsed(int preUsed) {
-        this.preUsed = preUsed;
+        this.preUsed = preUsed * 1000;
     }
 
+    @Override
     public void setPostUsed(int postUsed) {
-        this.postUsed = postUsed;
+        this.postUsed = postUsed * 1000;
     }
 
+    @Override
     public void setTotal(int total) {
-        this.total = total;
+        this.total = total * 1000;
     }
 
+    @Override
     public int getPreUsed() {
         return preUsed;
     }
 
+    @Override
     public int getPostUsed() {
         return postUsed;
     }
 
+    @Override
     public int getTotal() {
         return total;
     }
+
+    @Override
+    public double getPause() {
+        return pause;
+    }
+
+    @Override
+    public void setPause(double pause) {
+        this.pause = pause / 1000;
+    }
+
+
 
 }

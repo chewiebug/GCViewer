@@ -431,37 +431,44 @@ public class GCModel implements Serializable {
             updateHeapSizes(event);
             updateGcPauseInterval(event);
             updatePromotion(event);
-            gcEvents.add(event);
 
-
-            if (event.isConcurrent()) {
+            if (!event.isStopTheWorld()) {
                 DoubleData pauses = getDoubleData(event.getExtendedType().getName(), concurrentGcEventPauses);
                 pauses.add(event.getPause());
                 postGCUsedMemory.add(event.getPostUsed());
-                freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
                 currentNoFullGCEvents.add(event);
-                lastPauseTimeStamp = event.getTimestamp();
+                //lastPauseTimeStamp = event.getTimestamp();
                 currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
                 currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
+                gcEvents.add(event);
+                freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
                 gcPause.add(event.getPause());
             } else {
                 DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
                 pauses.add(event.getPause());
                 updateFullGcPauseInterval(event);
-                stopTheWorldEvents.add(event); // for calculating throughput
-                fullGCEvents.add(event);
                 postFullGCUsedHeap.add(event.getPostUsed());
-                freedMemoryByFullGC.add(event.getPreUsed() - event.getPostUsed());
-                fullGCPause.add(event.getPause());
                 postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
                 relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
+                fullGCEvents.add(event);
+                freedMemoryByFullGC.add(event.getPreUsed() - event.getPostUsed());
+                fullGCPause.add(event.getPause());
 
+                if (currentPostGCSlope.hasPoints()) {
+                    if (currentPostGCSlope.isLine()) {
+                        postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
+                        relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
+                    }
+                    currentPostGCSlope.reset();
+                    currentRelativePostGCIncrease.reset();
+                }
             }
         }
         else if (abstractEvent instanceof GCEvent) {
 
             // collect statistics about all stop the world events
             GCEvent event = (GCEvent) abstractEvent;
+
             updateHeapSizes(event);
 
             updateGcPauseInterval(event);
@@ -505,7 +512,9 @@ public class GCModel implements Serializable {
                 postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
                 relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
 
+                // process no full-gc run data
                 if (currentPostGCSlope.hasPoints()) {
+                    // make sure we have at least _two_ data points
                     if (currentPostGCSlope.isLine()) {
                         postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
                         relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
@@ -515,6 +524,7 @@ public class GCModel implements Serializable {
                 }
 
             }
+
         }
         else if (abstractEvent instanceof VmOperationEvent) {
             adjustPause((VmOperationEvent) abstractEvent);
@@ -533,11 +543,11 @@ public class GCModel implements Serializable {
             firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
         }
         lastPauseTimeStamp = Math.max(lastPauseTimeStamp, abstractEvent.getTimestamp());
-        if (abstractEvent.isStopTheWorld()) {
+        if (abstractEvent instanceof ShenandoahGCEvent) {
+            totalPause.add(abstractEvent.getPause());
+        } else if (abstractEvent.isStopTheWorld()) {
             // add to total pause here, because then adjusted VmOperationEvents are added correctly
             // as well
-            totalPause.add(abstractEvent.getPause());
-        } else if (abstractEvent instanceof ShenandoahGCEvent) {
             totalPause.add(abstractEvent.getPause());
         }
     }
