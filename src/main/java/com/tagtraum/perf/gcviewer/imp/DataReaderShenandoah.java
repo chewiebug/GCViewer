@@ -5,34 +5,35 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.ShenandoahGCEvent;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
+/**
+ * Currently only parsing 5 main messages for GCViewer with default decorations.
+ * Initial mark, concurrent mark, final mark, concurrent evacuation
+ * <p>
+ * Example Format
+ * [0.730s][info][gc,start     ] GC(0) Pause Init Mark
+ * [0.731s][info][gc           ] GC(0) Pause Init Mark 1.021ms
+ * [0.731s][info][gc,start     ] GC(0) Concurrent marking
+ * [0.735s][info][gc           ] GC(0) Concurrent marking 74M->74M(128M) 3.688ms
+ * [0.735s][info][gc,start     ] GC(0) Pause Final Mark
+ * [0.736s][info][gc           ] GC(0) Pause Final Mark 74M->76M(128M) 0.811ms
+ * [0.736s][info][gc,start     ] GC(0) Concurrent evacuation
+ * ...
+ * [29.628s][info][gc            ] Cancelling concurrent GC: Allocation Failure
+ * ... skipping detailed messages as those aren't parsed yet
+ * [43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M->6013M(8192M) 14289.335ms
+ */
 public class DataReaderShenandoah extends AbstractDataReader {
-    /**
-     * Currently only parsing 5 main messages for GCViewer with default decorations.
-     * Initial mark, concurrent mark, final mark, concurrent evacuation
-     *
-     * Example Format
-     * [0.730s][info][gc,start     ] GC(0) Pause Init Mark
-     * [0.731s][info][gc           ] GC(0) Pause Init Mark 1.021ms
-     * [0.731s][info][gc,start     ] GC(0) Concurrent marking
-     * [0.735s][info][gc           ] GC(0) Concurrent marking 74M->74M(128M) 3.688ms
-     * [0.735s][info][gc,start     ] GC(0) Pause Final Mark
-     * [0.736s][info][gc           ] GC(0) Pause Final Mark 74M->76M(128M) 0.811ms
-     * [0.736s][info][gc,start     ] GC(0) Concurrent evacuation
-     * ...
-     * [29.628s][info][gc            ] Cancelling concurrent GC: Allocation Failure
-     * ... skipping detailed messages as those aren't parsed yet
-     * [43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M->6013M(8192M) 14289.335ms
-     */
+
 
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
     // Group 1: 0.693
@@ -65,27 +66,10 @@ public class DataReaderShenandoah extends AbstractDataReader {
     private static final int HEAP_AFTER = 2;
     private static final int HEAP_CURRENT_TOTAL = 3;
 
-    private static final List<String> EXCLUDE_STRINGS = new LinkedList<>();
-
-    static {
-        EXCLUDE_STRINGS.add("Using Shenandoah");
-        EXCLUDE_STRINGS.add("Cancelling concurrent GC: Stopping VM");
-        EXCLUDE_STRINGS.add("[gc,start");
-        EXCLUDE_STRINGS.add("[gc,ergo");
-        EXCLUDE_STRINGS.add("[gc,stringtable");
-        EXCLUDE_STRINGS.add("[gc,init");
-        EXCLUDE_STRINGS.add("[gc,heap");
-        EXCLUDE_STRINGS.add("[gc,stats");
-        EXCLUDE_STRINGS.add("[pagesize");
-        EXCLUDE_STRINGS.add("[class");
-        EXCLUDE_STRINGS.add("[os");
-        EXCLUDE_STRINGS.add("[startuptime");
-        EXCLUDE_STRINGS.add("[os,thread");
-        EXCLUDE_STRINGS.add("[gc,heap,exit");
-        EXCLUDE_STRINGS.add("Concurrent reset bitmaps");
-        EXCLUDE_STRINGS.add("Cancelling concurrent GC: Allocation Failure");
-        EXCLUDE_STRINGS.add("Phase "); // Ignore Allocation failure standalone messages, only parse the total
-    }
+    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Using Shenandoah", "Cancelling concurrent GC",
+            "[gc,start", "[gc,ergo", "[gc,stringtable", "[gc,init", "[gc,heap", "[pagesize", "[class", "[os", "[startuptime",
+            "[os,thread", "[gc,heap,exit", "Concurrent reset bitmaps", "Cancelling concurrent GC: Allocation Failure", "Phase ",
+            "[gc,stats", "[biasedlocking", "[logging", "[verification", "[modules,startuptime", "[safepoint");
 
     protected DataReaderShenandoah(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
@@ -93,19 +77,13 @@ public class DataReaderShenandoah extends AbstractDataReader {
 
     @Override
     public GCModel read() throws IOException {
-        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Shenandoah format...");
+        getLogger().info("Reading Shenandoah format...");
 
         GCModel model = new GCModel();
         model.setFormat(GCModel.Format.RED_HAT_SHENANDOAH_GC);
 
-        try (LineNumberReader in = this.in) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                if ("".equals(line) || lineInExcludedStrings(line)) continue;
-                model.add(parseShenandoahEvent(line));
-            }
-        }
-
+        Stream<String> lines = new BufferedReader(in).lines();
+        lines.filter(this::lineNotInExcludedStrings).forEach(e -> model.add(parseShenandoahEvent(e)));
         return model;
     }
 
@@ -119,7 +97,7 @@ public class DataReaderShenandoah extends AbstractDataReader {
                 event.setPause(Double.parseDouble(matcher.group(INIT_MARK_DURATION)));
                 setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_INIT_MARK);
             } else {
-                logMessage("Failed to match init mark line: " + line, Level.WARNING);
+                getLogger().warning("Failed to match init mark line: " + line);
             }
         } else {
             Matcher matcher = PATTERN_GENERIC_LINE.matcher(line);
@@ -139,7 +117,7 @@ public class DataReaderShenandoah extends AbstractDataReader {
                 event.setTimestamp(Double.parseDouble(matcher.group(GENERIC_MARK_TIMESTAMP)));
                 addHeapDetailsToEvent(event, matcher.group(GENERIC_MARK_MEMORY));
             } else {
-                logMessage("Failed to match generic GC line: " + line, Level.WARNING);
+                getLogger().warning("Failed to match generic GC line: " + line);
             }
         }
         return event;
@@ -157,23 +135,17 @@ public class DataReaderShenandoah extends AbstractDataReader {
             event.setTotal(Integer.parseInt(matcher.group(HEAP_CURRENT_TOTAL)));
             event.setExtendedType(event.getExtendedType());
         } else {
-            logMessage("Failed to find heap details from line: " + memoryString, Level.WARNING);
+            getLogger().warning("Failed to find heap details from line: " + memoryString);
         }
     }
-
 
     private void setEventTypes(ShenandoahGCEvent event, AbstractGCEvent.Type type) {
         event.setType(type);
         event.setExtendedType(AbstractGCEvent.ExtendedType.lookup(type));
     }
 
-    private boolean lineInExcludedStrings(String line) {
-        return EXCLUDE_STRINGS.stream().anyMatch(line::contains);
+    private boolean lineNotInExcludedStrings(String line) {
+        return EXCLUDE_STRINGS.stream().noneMatch(line::contains);
     }
 
-    private void logMessage(String message, Level level) {
-        if (getLogger().isLoggable(level)) {
-            getLogger().info(message);
-        }
-    }
 }
