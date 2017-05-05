@@ -38,15 +38,15 @@ public class DataReaderShenandoah extends AbstractDataReader {
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
     // Group 1: 0.693
     // Group 2: 1.070
-    // Regex without breaking: ^\[([0-9]+\.[0-9]+).*[ ]([0-9]+\.[0-9]+)
-    private static final Pattern PATTERN_INIT_MARK = Pattern.compile("^\\[([0-9]+\\.[0-9]+).*[ ]([0-9]+\\.[0-9]+)");
+    // Regex without breaking: ^\[([0-9]+\.[0-9]+)[^\-]*[ ]([0-9]+\.[0-9]+)
+    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile("^\\[([0-9]+\\.[0-9]+)[^\\-]*[ ]([0-9]+\\.[0-9]+)");
 
     // Input: [13.522s][info][gc            ] GC(708) Concurrent evacuation  4848M->4855M(4998M) 2.872ms
     // Group 1: 13.522
     // Group 2: 4848M->4855M(4998M)
     // Group 3: 2.872
     // Regex without breaking: ^\[([0-9]+\.[0-9]+).*[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+\.[0-9]+)
-    private static final Pattern PATTERN_GENERIC_LINE = Pattern.compile("^\\[([0-9]+\\.[0-9]+)" +
+    private static final Pattern PATTERN_WITH_HEAP = Pattern.compile("^\\[([0-9]+\\.[0-9]+)" +
             ".*[ ]([0-9]+[BKMG]\\-\\>[0-9]+[BKMG]\\([0-9]+[BKMG]\\)) " +
             "([0-9]+\\.[0-9]+)");
 
@@ -57,18 +57,18 @@ public class DataReaderShenandoah extends AbstractDataReader {
     // Regex without breaking: ([0-9]+)[BKMG]\-\>([0-9]+)[BKMG]\(([0-9]+)[BKMG]\)
     private static final Pattern PATTERN_HEAP_CHANGES = Pattern.compile("([0-9]+)[BKMG]->([0-9]+)[BKMG]\\(([0-9]+)[BKMG]\\)");
 
-    private static final int INIT_MARK_TIMESTAMP = 1;
-    private static final int INIT_MARK_DURATION = 2;
-    private static final int GENERIC_MARK_TIMESTAMP = 1;
-    private static final int GENERIC_MARK_MEMORY = 2;
-    private static final int GENERIC_MARK_DURATION = 3;
+    private static final int NO_HEAP_TIMESTAMP = 1;
+    private static final int NO_HEAP_DURATION = 2;
+    private static final int WITH_HEAP_TIMESTAMP = 1;
+    private static final int WITH_HEAP_MEMORY = 2;
+    private static final int WITH_HEAP_DURATION = 3;
     private static final int HEAP_BEFORE = 1;
     private static final int HEAP_AFTER = 2;
     private static final int HEAP_CURRENT_TOTAL = 3;
 
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Using Shenandoah", "Cancelling concurrent GC",
             "[gc,start", "[gc,ergo", "[gc,stringtable", "[gc,init", "[gc,heap", "[pagesize", "[class", "[os", "[startuptime",
-            "[os,thread", "[gc,heap,exit", "Concurrent reset bitmaps", "Cancelling concurrent GC: Allocation Failure", "Phase ",
+            "[os,thread", "[gc,heap,exit", "Cancelling concurrent GC: Allocation Failure", "Phase ",
             "[gc,stats", "[biasedlocking", "[logging", "[verification", "[modules,startuptime", "[safepoint");
 
     protected DataReaderShenandoah(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
@@ -90,36 +90,40 @@ public class DataReaderShenandoah extends AbstractDataReader {
     private AbstractGCEvent<?> parseShenandoahEvent(String line) {
         ShenandoahGCEvent event = new ShenandoahGCEvent();
 
-        if (line.contains("Init Mark")) {
-            Matcher matcher = PATTERN_INIT_MARK.matcher(line);
-            if (matcher.find()) {
-                event.setTimestamp(Double.parseDouble(matcher.group(INIT_MARK_TIMESTAMP)));
-                event.setPause(Double.parseDouble(matcher.group(INIT_MARK_DURATION)));
-                setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_INIT_MARK);
+        Matcher noHeapMatcher = PATTERN_WITHOUT_HEAP.matcher(line);
+        Matcher withHeapMatcher = PATTERN_WITH_HEAP.matcher(line);
+        if (noHeapMatcher.find()) {
+            System.out.println(line);
+            if (line.contains("Init Mark")) {
+                setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_INIT_MARK);
+            } else if (line.contains("Concurrent reset bitmaps")) {
+                setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_RESET);
             } else {
-                getLogger().warning("Failed to match init mark line: " + line);
+                getLogger().warning("Failed to match line with no heap info: " + line);
             }
+            event.setPause(Double.parseDouble(noHeapMatcher.group(NO_HEAP_DURATION)));
+            event.setTimestamp(Double.parseDouble(noHeapMatcher.group(NO_HEAP_TIMESTAMP)));
+        } else if (withHeapMatcher.find()) {
+            if (line.contains("Final Mark")) {
+                setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_FINAL_MARK);
+            } else if (line.contains("Concurrent marking")) {
+                setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK);
+                event.setConcurrency(true);
+            } else if (line.contains("Concurrent evacuation")) {
+                setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_EVAC);
+                event.setConcurrency(true);
+            } else if (line.contains("Pause Full (Allocation Failure)")) {
+                setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_ALLOC_FAILURE);
+            } else {
+                getLogger().warning("Failed to match line with heap info: " + line);
+            }
+            event.setPause(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_DURATION)));
+            event.setTimestamp(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_TIMESTAMP)));
+            addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
         } else {
-            Matcher matcher = PATTERN_GENERIC_LINE.matcher(line);
-            if (matcher.find()) {
-                if (line.contains("Final Mark")) {
-                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_FINAL_MARK);
-                } else if (line.contains("Concurrent marking")) {
-                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK);
-                    event.setConcurrency(true);
-                } else if (line.contains("Concurrent evacuation")) {
-                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_EVAC);
-                    event.setConcurrency(true);
-                } else if (line.contains("Pause Full (Allocation Failure)")) {
-                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_ALLOC_FAILURE);
-                }
-                event.setPause(Double.parseDouble(matcher.group(GENERIC_MARK_DURATION)));
-                event.setTimestamp(Double.parseDouble(matcher.group(GENERIC_MARK_TIMESTAMP)));
-                addHeapDetailsToEvent(event, matcher.group(GENERIC_MARK_MEMORY));
-            } else {
-                getLogger().warning("Failed to match generic GC line: " + line);
-            }
+            getLogger().warning("Found line that has no match:" + line);
         }
+
         return event;
     }
 
