@@ -435,13 +435,13 @@ public class GCModel implements Serializable {
             if (!event.isStopTheWorld()) {
                 DoubleData pauses = getDoubleData(event.getExtendedType().getName(), concurrentGcEventPauses);
                 pauses.add(event.getPause());
-                postGCUsedMemory.add(event.getPostUsed());
                 currentNoFullGCEvents.add(event);
-                //lastPauseTimeStamp = event.getTimestamp();
-                currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-                currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
+                updatePostConcurrentCycleUsedSizes(event);
+                //postGCUsedMemory.add(event.getPostUsed());
+                //currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+                //currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
                 gcEvents.add(event);
-                freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
+                //freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
                 gcPause.add(event.getPause());
             } else {
                 DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
@@ -569,7 +569,9 @@ public class GCModel implements Serializable {
             afterConcurrentEvent = event.getTenured();
         }
 
-        postConcurrentCycleUsedTenuredSizes.add(afterConcurrentEvent.getPreUsed());
+        if (!(event instanceof ShenandoahGCEvent)) {
+            postConcurrentCycleUsedTenuredSizes.add(afterConcurrentEvent.getPreUsed());
+        }
         postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
     }
 

@@ -69,7 +69,8 @@ public class DataReaderShenandoah extends AbstractDataReader {
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Using Shenandoah", "Cancelling concurrent GC",
             "[gc,start", "[gc,ergo", "[gc,stringtable", "[gc,init", "[gc,heap", "[pagesize", "[class", "[os", "[startuptime",
             "[os,thread", "[gc,heap,exit", "Cancelling concurrent GC: Allocation Failure", "Phase ",
-            "[gc,stats", "[biasedlocking", "[logging", "[verification", "[modules,startuptime", "[safepoint");
+            "[gc,stats", "[biasedlocking", "[logging", "[verification", "[modules,startuptime", "[safepoint", "[stacktrace",
+            "[exceptions", "thrown", "at bci", "for thread");
 
     protected DataReaderShenandoah(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
@@ -93,7 +94,6 @@ public class DataReaderShenandoah extends AbstractDataReader {
         Matcher noHeapMatcher = PATTERN_WITHOUT_HEAP.matcher(line);
         Matcher withHeapMatcher = PATTERN_WITH_HEAP.matcher(line);
         if (noHeapMatcher.find()) {
-            System.out.println(line);
             if (line.contains("Init Mark")) {
                 setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_INIT_MARK);
             } else if (line.contains("Concurrent reset bitmaps")) {
