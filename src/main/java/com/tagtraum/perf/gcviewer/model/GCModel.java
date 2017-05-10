@@ -436,7 +436,7 @@ public class GCModel implements Serializable {
                 DoubleData pauses = getDoubleData(event.getExtendedType().getName(), concurrentGcEventPauses);
                 pauses.add(event.getPause());
                 currentNoFullGCEvents.add(event);
-                updatePostConcurrentCycleUsedSizes(event);
+                postConcurrentCycleUsedHeapSizes.add(event.getPreUsed()); // the method update
                 //postGCUsedMemory.add(event.getPostUsed());
                 //currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
                 //currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
@@ -569,9 +569,7 @@ public class GCModel implements Serializable {
             afterConcurrentEvent = event.getTenured();
         }
 
-        if (!(event instanceof ShenandoahGCEvent)) {
-            postConcurrentCycleUsedTenuredSizes.add(afterConcurrentEvent.getPreUsed());
-        }
+        postConcurrentCycleUsedTenuredSizes.add(afterConcurrentEvent.getPreUsed());
         postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
     }
 
