@@ -421,29 +421,26 @@ public class GCModel implements Serializable {
             if (event.isInitialMark()) {
                 updateInitiatingOccupancyFraction(event);
             }
-            if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd()) {
-                updatePostConcurrentCycleUsedSizes(event);
-            }
+
             if (firstPauseTimeStamp == 0) {
                 firstPauseTimeStamp = event.getTimestamp();
             }
+
             freedMemory += event.getPreUsed() - event.getPostUsed();
             updateHeapSizes(event);
             updateGcPauseInterval(event);
             updatePromotion(event);
 
             if (!event.isStopTheWorld()) {
+                // handle concurrent events
                 DoubleData pauses = getDoubleData(event.getExtendedType().getName(), concurrentGcEventPauses);
                 pauses.add(event.getPause());
                 currentNoFullGCEvents.add(event);
-                postConcurrentCycleUsedHeapSizes.add(event.getPreUsed()); // the method update
-                //postGCUsedMemory.add(event.getPostUsed());
-                //currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-                //currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
+                postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
                 gcEvents.add(event);
-                //freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
                 gcPause.add(event.getPause());
             } else {
+                // handle STW events
                 DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
                 pauses.add(event.getPause());
                 updateFullGcPauseInterval(event);
