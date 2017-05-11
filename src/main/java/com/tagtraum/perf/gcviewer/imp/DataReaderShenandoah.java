@@ -23,14 +23,14 @@ import java.util.stream.Stream;
  * [0.730s][info][gc,start     ] GC(0) Pause Init Mark
  * [0.731s][info][gc           ] GC(0) Pause Init Mark 1.021ms
  * [0.731s][info][gc,start     ] GC(0) Concurrent marking
- * [0.735s][info][gc           ] GC(0) Concurrent marking 74M->74M(128M) 3.688ms
+ * [0.735s][info][gc           ] GC(0) Concurrent marking 74M-&gt;74M(128M) 3.688ms
  * [0.735s][info][gc,start     ] GC(0) Pause Final Mark
- * [0.736s][info][gc           ] GC(0) Pause Final Mark 74M->76M(128M) 0.811ms
+ * [0.736s][info][gc           ] GC(0) Pause Final Mark 74M-&gt;76M(128M) 0.811ms
  * [0.736s][info][gc,start     ] GC(0) Concurrent evacuation
  * ...
  * [29.628s][info][gc            ] Cancelling concurrent GC: Allocation Failure
  * ... skipping detailed messages as those aren't parsed yet
- * [43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M->6013M(8192M) 14289.335ms
+ * [43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M-&gt;6013M(8192M) 14289.335ms
  */
 public class DataReaderShenandoah extends AbstractDataReader {
 
