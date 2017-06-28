@@ -343,7 +343,7 @@
                         <goals>deploy</goals>
                         <tagNameFormat>@{project.version}</tagNameFormat>
                         <mavenExecutorId>forked-path</mavenExecutorId>
-                        <releaseProfiles>sonatype-oss-release</releaseProfiles>
+                        <releaseProfiles>sonatype-oss-release,sourceforge-release</releaseProfiles>
                     </configuration>
                     <dependencies>
                         <dependency>
