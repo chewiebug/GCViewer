@@ -70,7 +70,7 @@ public class DataReaderShenandoah extends AbstractDataReader {
             "[gc,start", "[gc,ergo", "[gc,stringtable", "[gc,init", "[gc,heap", "[pagesize", "[class", "[os", "[startuptime",
             "[os,thread", "[gc,heap,exit", "Cancelling concurrent GC: Allocation Failure", "Phase ",
             "[gc,stats", "[biasedlocking", "[logging", "[verification", "[modules,startuptime", "[safepoint", "[stacktrace",
-            "[exceptions", "thrown", "at bci", "for thread");
+            "[exceptions", "thrown", "at bci", "for thread", "[module,load", "[module,startuptime");
 
     protected DataReaderShenandoah(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
@@ -96,26 +96,44 @@ public class DataReaderShenandoah extends AbstractDataReader {
         if (noHeapMatcher.find()) {
             if (line.contains("Init Mark")) {
                 setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_INIT_MARK);
-            } else if (line.contains("Concurrent reset bitmaps")) {
-                setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_RESET);
+            } else if (line.contains("Pause Init Update Refs")) {
+                setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_INIT_UPDATE_REFS);
             } else {
                 getLogger().warning("Failed to match line with no heap info: " + line);
             }
             event.setPause(Double.parseDouble(noHeapMatcher.group(NO_HEAP_DURATION)));
             event.setTimestamp(Double.parseDouble(noHeapMatcher.group(NO_HEAP_TIMESTAMP)));
         } else if (withHeapMatcher.find()) {
-            if (line.contains("Final Mark")) {
-                setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_FINAL_MARK);
-            } else if (line.contains("Concurrent marking")) {
-                setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK);
-                event.setConcurrency(true);
-            } else if (line.contains("Concurrent evacuation")) {
-                setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_EVAC);
-                event.setConcurrency(true);
-            } else if (line.contains("Pause Full (Allocation Failure)")) {
+            // Concurrent events
+            if (line.contains("Concurrent")) {
+                if (line.contains("Concurrent marking")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK);
+                    event.setConcurrency(true);
+                } else if (line.contains("Concurrent evacuation")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_EVAC);
+                    event.setConcurrency(true);
+                } else if (line.contains("Concurrent update references")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_UPDATE_REFS);
+                    event.setConcurrency(true);
+                } else if (line.contains("Concurrent reset bitmaps")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_RESET_BITMAPS);
+                    event.setConcurrency(true);
+                } else if (line.contains("Concurrent precleaning")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_CONCURRENT_PRECLEANING);
+                    event.setConcurrency(true);
+                }
+            }
+            // STW events
+            else {
+                if (line.contains("Final Mark")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_FINAL_MARK);
+                } else if (line.contains("Pause Full (Allocation Failure)")) {
                 setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_ALLOC_FAILURE);
-            } else {
+                } else if (line.contains("Pause Final Update Refs")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_FINAL_UPDATE_REFS);
+                } else {
                 getLogger().warning("Failed to match line with heap info: " + line);
+                }
             }
             event.setPause(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_DURATION)));
             event.setTimestamp(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_TIMESTAMP)));

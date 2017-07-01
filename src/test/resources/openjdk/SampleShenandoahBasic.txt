@@ -16,4 +16,4 @@
 [193.496s][info][gc,start                ] GC(57) Concurrent evacuation
 [193.498s][info][gc                      ] GC(57) Concurrent evacuation  88M->92M(128M) 2.026ms
 [193.499s][info][gc,start                ] GC(57) Concurrent reset bitmaps
-[193.499s][info][gc                      ] GC(57) Concurrent reset bitmaps 0.282ms
+[193.499s][info][gc                      ] GC(57) Concurrent reset bitmaps 33M->33M(128M) 0.072ms
