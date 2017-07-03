@@ -38,17 +38,17 @@ public class DataReaderShenandoah extends AbstractDataReader {
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
     // Group 1: 0.693
     // Group 2: 1.070
-    // Regex without breaking: ^\[([0-9]+\.[0-9]+)[^\-]*[ ]([0-9]+\.[0-9]+)
-    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile("^\\[([0-9]+\\.[0-9]+)[^\\-]*[ ]([0-9]+\\.[0-9]+)");
+    // Regex without breaking: ^\[([0-9]+[.,][0-9]+)[^\-]*[ ]([0-9]+[.,][0-9]+)
+    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile("^\\[([0-9]+[.,][0-9]+)[^\\-]*[ ]([0-9]+[.,][0-9]+)");
 
     // Input: [13.522s][info][gc            ] GC(708) Concurrent evacuation  4848M->4855M(4998M) 2.872ms
     // Group 1: 13.522
     // Group 2: 4848M->4855M(4998M)
     // Group 3: 2.872
-    // Regex without breaking: ^\[([0-9]+\.[0-9]+).*[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+\.[0-9]+)
-    private static final Pattern PATTERN_WITH_HEAP = Pattern.compile("^\\[([0-9]+\\.[0-9]+)" +
+    // Regex without breaking: ^\[([0-9]+[.,][0-9]+).*[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+[.,][0-9]+)
+    private static final Pattern PATTERN_WITH_HEAP = Pattern.compile("^\\[([0-9]+[.,][0-9]+)" +
             ".*[ ]([0-9]+[BKMG]\\-\\>[0-9]+[BKMG]\\([0-9]+[BKMG]\\)) " +
-            "([0-9]+\\.[0-9]+)");
+            "([0-9]+[.,][0-9]+)");
 
     // Input: 4848M->4855M(4998M)
     // Group 1: 4848
@@ -101,8 +101,8 @@ public class DataReaderShenandoah extends AbstractDataReader {
             } else {
                 getLogger().warning("Failed to match line with no heap info: " + line);
             }
-            event.setPause(Double.parseDouble(noHeapMatcher.group(NO_HEAP_DURATION)));
-            event.setTimestamp(Double.parseDouble(noHeapMatcher.group(NO_HEAP_TIMESTAMP)));
+            event.setPause(Double.parseDouble(noHeapMatcher.group(NO_HEAP_DURATION).replace(",", ".")));
+            event.setTimestamp(Double.parseDouble(noHeapMatcher.group(NO_HEAP_TIMESTAMP).replace(",", ".")));
         } else if (withHeapMatcher.find()) {
             // Concurrent events
             if (line.contains("Concurrent")) {
@@ -131,12 +131,14 @@ public class DataReaderShenandoah extends AbstractDataReader {
                 setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_ALLOC_FAILURE);
                 } else if (line.contains("Pause Final Update Refs")) {
                     setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_FINAL_UPDATE_REFS);
+                } else if (line.contains("Pause Full (System.gc())")) {
+                    setEventTypes(event, AbstractGCEvent.Type.SHEN_STW_SYSTEM_GC);
                 } else {
-                getLogger().warning("Failed to match line with heap info: " + line);
+                    getLogger().warning("Failed to match line with heap info: " + line);
                 }
             }
-            event.setPause(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_DURATION)));
-            event.setTimestamp(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_TIMESTAMP)));
+            event.setPause(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_DURATION).replace(",", ".")));
+            event.setTimestamp(Double.parseDouble(withHeapMatcher.group(WITH_HEAP_TIMESTAMP).replace(",", ".")));
             addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
         } else {
             getLogger().warning("Found line that has no match:" + line);
