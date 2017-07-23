@@ -1,0 +1,19 @@
+[0.401s][info][gc     ] Using Shenandoah
+[193.492s][info][gc,start                ] GC(57) Pause Init Mark
+[193.492s][info][gc                      ] GC(57) Pause Init Mark 0.412ms
+[193.492s][info][safepoint               ] Total time for which application threads were stopped: 0.0008600 seconds, Stopping threads took: 0.0000370 seconds
+[193.492s][info][gc,start                ] GC(57) Concurrent marking
+[193.495s][info][gc                      ] GC(57) Concurrent marking 122M->122M(128M) 2.447ms
+[193.495s][info][safepoint               ] Application time: 0.0026570 seconds
+[193.495s][info][safepoint,cleanup       ] deflating idle monitors, 0.0000030 secs
+[193.495s][info][safepoint,cleanup       ] updating inline caches, 0.0000000 secs
+[193.495s][info][safepoint,cleanup       ] compilation policy safepoint handler, 0.0000000 secs
+[193.495s][info][safepoint,cleanup       ] mark nmethods, 0.0000110 secs
+[193.495s][info][safepoint,cleanup       ] purging class loader data graph, 0.0000010 secs
+[193.495s][info][gc,start                ] GC(57) Pause Final Mark
+[193.496s][info][gc                      ] GC(57) Pause Final Mark 122M->88M(128M) 0.906ms
+[193.496s][info][safepoint               ] Total time for which application threads were stopped: 0.0012680 seconds, Stopping threads took: 0.0000280 seconds
+[193.496s][info][gc,start                ] GC(57) Concurrent evacuation
+[193.498s][info][gc                      ] GC(57) Concurrent evacuation  88M->92M(128M) 2.026ms
+[193.499s][info][gc,start                ] GC(57) Concurrent reset bitmaps
+[193.499s][info][gc                      ] GC(57) Concurrent reset bitmaps 33M->33M(128M) 0.072ms

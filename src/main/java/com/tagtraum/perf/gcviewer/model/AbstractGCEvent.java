@@ -503,7 +503,21 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        
+
+        // Shenandoah types of Generation.TENURED since Generation.ALL gets ignored apparently (GCEvent.java line 56)
+        // STW pause events
+        public static final Type SHEN_STW_INIT_MARK = new Type("GC Pause Initial Mark (STW pause)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_FINAL_MARK = new Type("GC Pause Final Mark (STW pause)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_INIT_UPDATE_REFS = new Type("GC Pause Init Update Refs (STW pause)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_FINAL_UPDATE_REFS = new Type("GC Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_ALLOC_FAILURE = new Type("GC Pause Full (Allocation Failure)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        // Concurrent events
+        public static final Type SHEN_CONCURRENT_CONC_MARK = new Type("GC Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_CONC_EVAC = new Type("GC Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("GC Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("GC Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_PRECLEANING = new Type("GC Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+
         // IBM Types
         // TODO: are scavenge always young only??
         public static final Type IBM_AF = new Type("af", Generation.YOUNG);
