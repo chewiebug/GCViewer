@@ -1,4 +1,4 @@
-GCViewer 1.35
+GCViewer 1.36
 =============
 
 [![Build Status](https://travis-ci.org/chewiebug/GCViewer.svg?branch=develop)](https://travis-ci.org/chewiebug/GCViewer)
@@ -19,6 +19,7 @@ When logfile rotation (-XX:+UseGCLogFileRotation) is enabled, the logfiles can b
 
 Supported verbose:gc formats are:
 
+- preliminary support for OpenJDK 9 Shenandoah algorithm in unified logging format -Xlog:gc:<file> -XX:+UseShenandoahGC
 - Oracle JDK 1.8 -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.7 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.6 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
