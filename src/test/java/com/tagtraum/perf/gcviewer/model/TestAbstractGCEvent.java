@@ -1,12 +1,13 @@
 package com.tagtraum.perf.gcviewer.model;
 
 import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import static org.junit.Assert.assertThat;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
  * Tests for methods written in {@link AbstractGCEvent}.
@@ -100,5 +101,18 @@ public class TestAbstractGCEvent {
         event.add(detailedEvent);
         
         assertEquals("typeAsString", "GC (Allocation Failure); PSYoungGen", event.getTypeAsString());
+    }
+
+    @Test
+    public void isFullShenandoah() throws Exception {
+        AbstractGCEvent event = new AbstractGCEvent() {
+            @Override
+            public void toStringBuffer(StringBuffer sb) {
+                // do nothing
+            }
+        };
+
+        event.setType(Type.SHEN_STW_SYSTEM_GC);
+        assertThat("should be full gc", event.isFull(), Matchers.is(true));
     }
 }

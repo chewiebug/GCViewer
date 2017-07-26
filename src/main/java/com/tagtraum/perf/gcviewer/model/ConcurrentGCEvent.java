@@ -41,11 +41,20 @@ public final class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> 
         sb.append(getTimestamp());
         sb.append(": [");
         sb.append(getExtendedType().getName());
+        if (hasMemoryInformation()) {
+            sb.append(' ');
+            sb.append(getPreUsed());
+            sb.append("K->");
+            sb.append(getPostUsed());
+            sb.append("K(");
+            sb.append(getTotal());
+            sb.append("K), ");
+        }
         if (hasDuration()) {
             sb.append(' ');
             sb.append(getPause());
             sb.append('/');
-            sb.append(duration);
+            sb.append(getDuration());
             sb.append(" secs");
         }
         sb.append(']');
