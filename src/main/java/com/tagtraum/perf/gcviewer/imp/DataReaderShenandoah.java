@@ -18,21 +18,23 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
- * Currently only parsing 5 main messages for GCViewer with default decorations.
- * Initial mark, concurrent mark, final mark, concurrent evacuation
+ * DataReaderShenandoah can parse all the main messages for GCViewer with default decorations. <p>
+ * Initial mark, Final mark, Init Update Refs, Final Update Refs, Pause Full Allocation Failure, Pause Full (System.gc()),
+ * Concurrent mark, Concurrent evacuation, Concurrent reset bitmaps, Concurrent update references, Concurrent precleaning
+ * <p>
+ * For more information: <a href="https://wiki.openjdk.java.net/display/shenandoah/Main">Shenandoah Wiki at OpenJDK</a>
+ *
  * <p>
  * Example Format
- * [0.730s][info][gc,start     ] GC(0) Pause Init Mark
- * [0.731s][info][gc           ] GC(0) Pause Init Mark 1.021ms
- * [0.731s][info][gc,start     ] GC(0) Concurrent marking
- * [0.735s][info][gc           ] GC(0) Concurrent marking 74M-&gt;74M(128M) 3.688ms
- * [0.735s][info][gc,start     ] GC(0) Pause Final Mark
- * [0.736s][info][gc           ] GC(0) Pause Final Mark 74M-&gt;76M(128M) 0.811ms
- * [0.736s][info][gc,start     ] GC(0) Concurrent evacuation
- * ...
- * [29.628s][info][gc            ] Cancelling concurrent GC: Allocation Failure
- * ... skipping detailed messages as those aren't parsed yet
- * [43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M-&gt;6013M(8192M) 14289.335ms
+ * <p>[0.730s][info][gc,start     ] GC(0) Pause Init Mark
+ * <p>[0.731s][info][gc           ] GC(0) Pause Init Mark 1.021ms
+ * <p>[0.731s][info][gc,start     ] GC(0) Concurrent marking
+ * <p>[0.735s][info][gc           ] GC(0) Concurrent marking 74M-&gt;74M(128M) 3.688ms
+ * <p>[0.735s][info][gc,start     ] GC(0) Pause Final Mark
+ * <p>[0.736s][info][gc           ] GC(0) Pause Final Mark 74M-&gt;76M(128M) 0.811ms
+ * <p>[0.736s][info][gc,start     ] GC(0) Concurrent evacuation
+ * <p>...
+ * <p>[43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M-&gt;6013M(8192M) 14289.335ms
  */
 public class DataReaderShenandoah extends AbstractDataReader {
 
