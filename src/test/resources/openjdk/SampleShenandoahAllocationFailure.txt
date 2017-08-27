@@ -1,3 +1,4 @@
+[0.401s][info][gc     ] Using Shenandoah
 [29.628s][info][gc            ] Cancelling concurrent GC: Allocation Failure
 [29.657s][info][gc,start      ] GC(831) Pause Full (Allocation Failure)
 [29.658s][info][gc,phases,start] GC(831) Phase 1: Mark live objects

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -88,7 +89,10 @@ public class DataReaderShenandoah extends AbstractDataReader {
         model.setFormat(GCModel.Format.RED_HAT_SHENANDOAH_GC);
 
         Stream<String> lines = new BufferedReader(in).lines();
-        lines.filter(this::lineNotInExcludedStrings).forEach(e -> model.add(parseShenandoahEvent(e)));
+        lines.filter(this::lineNotInExcludedStrings)
+                .map(this::parseShenandoahEvent)
+                .filter(Objects::nonNull)
+                .forEach(model::add);
         return model;
     }
 
