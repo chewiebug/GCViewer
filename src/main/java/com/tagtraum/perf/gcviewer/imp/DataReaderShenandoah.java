@@ -39,31 +39,34 @@ public class DataReaderShenandoah extends AbstractDataReader {
 
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
     // Group 1: 0.693
-    // Group 2: 1.070
-    // Regex without breaking: ^\[([0-9]+[.,][0-9]+)[^\-]*[ ]([0-9]+[.,][0-9]+)
-    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile("^\\[([0-9]+[.,][0-9]+)[^\\-]*[ ]([0-9]+[.,][0-9]+)");
+    // Group 2: Pause Init Mark
+    // Group 3: 1.070
+    // Regex: ^\[([0-9]+[.,][0-9]+)[^\-]*\)[ ]([^\-]*)[ ]([0-9]+[.,][0-9]+)
+    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile("^\\[([0-9]+[.,][0-9]+)[^\\-]*\\)[ ]([^\\-]*)[ ]([0-9]+[.,][0-9]+)");
 
     // Input: [13.522s][info][gc            ] GC(708) Concurrent evacuation  4848M->4855M(4998M) 2.872ms
     // Group 1: 13.522
-    // Group 2: 4848M->4855M(4998M)
-    // Group 3: 2.872
-    // Regex without breaking: ^\[([0-9]+[.,][0-9]+).*[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+[.,][0-9]+)
-    private static final Pattern PATTERN_WITH_HEAP = Pattern.compile("^\\[([0-9]+[.,][0-9]+)" +
-            ".*[ ]([0-9]+[BKMG]\\-\\>[0-9]+[BKMG]\\([0-9]+[BKMG]\\)) " +
-            "([0-9]+[.,][0-9]+)");
+    // Group 2: Concurrent evacuation
+    // Group 3: 4848M->4855M(4998M)
+    // Group 4: 2.872
+    // Regex: ^\[([0-9]+[.,][0-9]+).*\)[ ](.*)[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+[.,][0-9]+)
+    private static final Pattern PATTERN_WITH_HEAP = Pattern.compile(
+            "^\\[([0-9]+[.,][0-9]+).*\\)[ ](.*)[ ]([0-9]+[BKMG]->[0-9]+[BKMG]\\([0-9]+[BKMG]\\)) ([0-9]+[.,][0-9]+)");
 
     // Input: 4848M->4855M(4998M)
     // Group 1: 4848
     // Group 2: 4855
     // Group 3: 4998
-    // Regex without breaking: ([0-9]+)[BKMG]\-\>([0-9]+)[BKMG]\(([0-9]+)[BKMG]\)
+    // Regex: ([0-9]+)[BKMG]\-\>([0-9]+)[BKMG]\(([0-9]+)[BKMG]\)
     private static final Pattern PATTERN_HEAP_CHANGES = Pattern.compile("([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\)");
 
     private static final int NO_HEAP_TIMESTAMP = 1;
-    private static final int NO_HEAP_DURATION = 2;
+    private static final int NO_HEAP_EVENT_NAME = 2;
+    private static final int NO_HEAP_DURATION = 3;
     private static final int WITH_HEAP_TIMESTAMP = 1;
-    private static final int WITH_HEAP_MEMORY = 2;
-    private static final int WITH_HEAP_DURATION = 3;
+    private static final int WITH_HEAP_EVENT_NAME = 2;
+    private static final int WITH_HEAP_MEMORY = 3;
+    private static final int WITH_HEAP_DURATION = 4;
     private static final int HEAP_BEFORE = 1;
     private static final int HEAP_BEFORE_UNIT = 2;
     private static final int HEAP_AFTER = 3;
@@ -103,50 +106,14 @@ public class DataReaderShenandoah extends AbstractDataReader {
         Matcher withHeapMatcher = PATTERN_WITH_HEAP.matcher(line);
         if (noHeapMatcher.find()) {
             event = new GCEvent();
-            if (line.contains("Init Mark")) {
-                event.setType(AbstractGCEvent.Type.SHEN_STW_INIT_MARK);
-            } else if (line.contains("Pause Init Update Refs")) {
-                event.setType(AbstractGCEvent.Type.SHEN_STW_INIT_UPDATE_REFS);
-            } else {
-                getLogger().warning("Failed to match line with no heap info: " + line);
-            }
-            setPauseAndTimestamp(event,
-                    Double.parseDouble(noHeapMatcher.group(NO_HEAP_DURATION).replace(",", ".")),
-                    Double.parseDouble(noHeapMatcher.group(NO_HEAP_TIMESTAMP).replace(",", ".")));
+            AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup(noHeapMatcher.group(NO_HEAP_EVENT_NAME));
+            event.setType(type);
+            setPauseAndTimestamp(event, noHeapMatcher.group(NO_HEAP_DURATION), noHeapMatcher.group(NO_HEAP_TIMESTAMP));
         } else if (withHeapMatcher.find()) {
-            // Concurrent events
-            if (line.contains("Concurrent")) {
-                event = new ConcurrentGCEvent();
-                if (line.contains("Concurrent marking")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK);
-                } else if (line.contains("Concurrent evacuation")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_EVAC);
-                } else if (line.contains("Concurrent update references")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_UPDATE_REFS);
-                } else if (line.contains("Concurrent reset bitmaps")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_RESET_BITMAPS);
-                } else if (line.contains("Concurrent precleaning")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_CONCURRENT_PRECLEANING);
-                }
-            }
-            // STW events
-            else {
-                event = new GCEvent();
-                if (line.contains("Final Mark")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_STW_FINAL_MARK);
-                } else if (line.contains("Pause Full (Allocation Failure)")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_STW_ALLOC_FAILURE);
-                } else if (line.contains("Pause Final Update Refs")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_STW_FINAL_UPDATE_REFS);
-                } else if (line.contains("Pause Full (System.gc())")) {
-                    event.setType(AbstractGCEvent.Type.SHEN_STW_SYSTEM_GC);
-                } else {
-                    getLogger().warning("Failed to match line with heap info: " + line);
-                }
-            }
-            setPauseAndTimestamp(event,
-                    Double.parseDouble(withHeapMatcher.group(WITH_HEAP_DURATION).replace(",", ".")),
-                    Double.parseDouble(withHeapMatcher.group(WITH_HEAP_TIMESTAMP).replace(",", ".")));
+            event = line.contains("Concurrent") ? new ConcurrentGCEvent() : new GCEvent();
+            AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup(withHeapMatcher.group(WITH_HEAP_EVENT_NAME));
+            event.setType(type);
+            setPauseAndTimestamp(event, withHeapMatcher.group(WITH_HEAP_DURATION), withHeapMatcher.group(WITH_HEAP_TIMESTAMP));
             addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
         } else {
             getLogger().warning("Found line that has no match:" + line);
@@ -155,7 +122,14 @@ public class DataReaderShenandoah extends AbstractDataReader {
         return event;
     }
 
-    private void setPauseAndTimestamp(AbstractGCEvent<?> event, double pause, double timestamp) {
+    /**
+     * @param event                 GC event to which pause and timestamp information is added
+     * @param pauseAsString         Pause information from regex group as string
+     * @param timestampAsString     Timestamp information from regex group as string
+     */
+    private void setPauseAndTimestamp(AbstractGCEvent<?> event, String pauseAsString, String timestampAsString) {
+        double pause = Double.parseDouble(pauseAsString.replace(",", "."));
+        double timestamp = Double.parseDouble(timestampAsString.replace(",", "."));
         event.setPause(pause / 1000);
         event.setTimestamp(timestamp);
     }
