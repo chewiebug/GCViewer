@@ -1,6 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -93,7 +92,7 @@ public class DataReaderShenandoah extends AbstractDataReader {
         GCModel model = new GCModel();
         model.setFormat(GCModel.Format.RED_HAT_SHENANDOAH_GC);
 
-        Stream<String> lines = new BufferedReader(in).lines();
+        Stream<String> lines = in.lines();
         lines.filter(this::lineNotInExcludedStrings)
                 .map(this::parseShenandoahEvent)
                 .filter(Objects::nonNull)
@@ -118,7 +117,7 @@ public class DataReaderShenandoah extends AbstractDataReader {
             setPauseAndTimestamp(event, withHeapMatcher.group(WITH_HEAP_DURATION), withHeapMatcher.group(WITH_HEAP_TIMESTAMP));
             addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
         } else {
-            getLogger().warning("Found line that has no match:" + line);
+            getLogger().warning(String.format("Failed to parse Line number %d in the log file: %s", in.getLineNumber(), line));
         }
 
         return event;

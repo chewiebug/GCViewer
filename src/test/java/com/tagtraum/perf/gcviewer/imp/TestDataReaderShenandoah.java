@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.closeTo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +31,8 @@ public class TestDataReaderShenandoah {
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(2));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(0));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(3));
-        assertThat("total pause time", model.getPause().getSum(), is(0.001318));
-        assertThat("gc pause time", model.getGCPause().getSum(), is(0.001318));
+        assertThat("total pause time", model.getPause().getSum(), closeTo(0.001318, 0.000001));
+        assertThat("gc pause time", model.getGCPause().getSum(), closeTo(0.001318, 0.000001));
         assertThat("full gc pause time", model.getFullGCPause().getSum(), is(0.0));
         assertThat("heap size after concurrent cycle", model.getPostConcurrentCycleHeapUsedSizes().getMax(), is(33 * 1024));
         assertThat("max memory freed during STW pauses", model.getFreedMemoryByGC().getMax(), is(34 * 1024));
@@ -44,16 +45,16 @@ public class TestDataReaderShenandoah {
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(0));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(1));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
-        assertThat("total pause time", model.getPause().getSum(), is(14.289335));
+        assertThat("total pause time", model.getPause().getSum(), closeTo(14.289335, 0.000001));
         assertThat("gc pause time", model.getGCPause().getSum(), is(0.0));
-        assertThat("full gc pause time", model.getFullGCPause().getSum(), is(14.289335));
+        assertThat("full gc pause time", model.getFullGCPause().getSum(), closeTo(14.289335, 0.000001));
 
         GCEvent event = (GCEvent) model.get(0);
         assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_ALLOC_FAILURE.toString()));
         assertThat("preUsed heap size", event.getPreUsed(), is(7943 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(6013 * 1024));
         assertThat("total heap size", event.getTotal(), is(8192 * 1024));
-        assertThat("timestamp", event.getTimestamp(), is(43.948));
+        assertThat("timestamp", event.getTimestamp(), closeTo(43.948, 0.001));
         assertThat("generation", event.getGeneration(), is(AbstractGCEvent.Generation.ALL));
     }
 
@@ -71,7 +72,7 @@ public class TestDataReaderShenandoah {
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
-        assertThat("timestamp", event.getTimestamp(), is(1.337));
+        assertThat("timestamp", event.getTimestamp(), closeTo(1.337, 0.001));
         assertThat("generation", event.getGeneration(), is(AbstractGCEvent.Generation.ALL));
     }
 
@@ -101,7 +102,7 @@ public class TestDataReaderShenandoah {
         assertThat("preUsed heap size", event2.getPreUsed(), is(90 * 1024));
         assertThat("postUsed heap size", event2.getPostUsed(), is(90 * 1024));
         assertThat("total heap size", event2.getTotal(), is(128 * 1024));
-        assertThat("timestamp", event2.getTimestamp(), is(8.350));
+        assertThat("timestamp", event2.getTimestamp(), closeTo(8.350, 0.001));
         assertThat("generation", event2.getGeneration(), is(AbstractGCEvent.Generation.TENURED));
     }
 
@@ -118,7 +119,7 @@ public class TestDataReaderShenandoah {
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
-        assertThat("timestamp", event.getTimestamp(), is(1.481));
+        assertThat("timestamp", event.getTimestamp(), closeTo(1.481, 0.001));
         assertThat("generation", event.getGeneration(), is(AbstractGCEvent.Generation.ALL));
     }
 
@@ -136,7 +137,7 @@ public class TestDataReaderShenandoah {
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
         assertThat("generation", event.getGeneration(), is(AbstractGCEvent.Generation.ALL));
-        assertThat("timestamp", event.getTimestamp(), is(1.303));
+        assertThat("timestamp", event.getTimestamp(), closeTo(1.303, 0.001));
     }
 
     private GCModel getGCModelFromLogFile(String fileName) throws IOException {
