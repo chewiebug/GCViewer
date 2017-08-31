@@ -3,6 +3,7 @@ package com.tagtraum.perf.gcviewer.imp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -42,24 +43,31 @@ public class DataReaderShenandoah extends AbstractDataReader {
     // Group 1: 0.693
     // Group 2: Pause Init Mark
     // Group 3: 1.070
-    // Regex: ^\[([0-9]+[.,][0-9]+)[^\-]*\)[ ]([^\-]*)[ ]([0-9]+[.,][0-9]+)
-    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile("^\\[([0-9]+[.,][0-9]+)[^\\-]*\\)[ ]([^\\-]*)[ ]([0-9]+[.,][0-9]+)");
+    // Regex: ^\[([^s\]]*)[^\-]*\)[ ]([^\-]*)[ ]([0-9]+[.,][0-9]+)
+    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile(
+            "^\\[([^s\\]]*)[^\\-]*\\)[ ]([^\\-]*)[ ]([0-9]+[.,][0-9]+)");
 
     // Input: [13.522s][info][gc            ] GC(708) Concurrent evacuation  4848M->4855M(4998M) 2.872ms
     // Group 1: 13.522
     // Group 2: Concurrent evacuation
     // Group 3: 4848M->4855M(4998M)
     // Group 4: 2.872
-    // Regex: ^\[([0-9]+[.,][0-9]+).*\)[ ](.*)[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+[.,][0-9]+)
+    // Regex: ^\[([^s\]]*).*\)[ ](.*)[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+[.,][0-9]+)
     private static final Pattern PATTERN_WITH_HEAP = Pattern.compile(
-            "^\\[([0-9]+[.,][0-9]+).*\\)[ ](.*)[ ]([0-9]+[BKMG]->[0-9]+[BKMG]\\([0-9]+[BKMG]\\)) ([0-9]+[.,][0-9]+)");
+            "^\\[([^s\\]]*).*\\)[ ](.*)[ ]([0-9]+[BKMG]\\-\\>[0-9]+[BKMG]\\([0-9]+[BKMG]\\)) ([0-9]+[.,][0-9]+)");
 
     // Input: 4848M->4855M(4998M)
     // Group 1: 4848
     // Group 2: 4855
     // Group 3: 4998
     // Regex: ([0-9]+)[BKMG]\-\>([0-9]+)[BKMG]\(([0-9]+)[BKMG]\)
-    private static final Pattern PATTERN_HEAP_CHANGES = Pattern.compile("([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\)");
+    private static final Pattern PATTERN_HEAP_CHANGES = Pattern.compile(
+            "([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\)");
+
+    // Input: 2017-08-30T23:22:47.357+0300
+    // Regex: ^\d{4}\-\d\d\-\d\d[tT][\d:\.]*?(?:[zZ]|[+\-]\d\d:?\d\d)?$
+    private static final Pattern PATTERN_ISO8601_DATE = Pattern.compile(
+            "^\\d{4}\\-\\d\\d\\-\\d\\d[tT][\\d:\\.]*?(?:[zZ]|[+\\-]\\d\\d:?\\d\\d)?$");
 
     private static final int NO_HEAP_TIMESTAMP = 1;
     private static final int NO_HEAP_EVENT_NAME = 2;
@@ -109,30 +117,35 @@ public class DataReaderShenandoah extends AbstractDataReader {
             event = new GCEvent();
             AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup(noHeapMatcher.group(NO_HEAP_EVENT_NAME));
             event.setType(type);
-            setPauseAndTimestamp(event, noHeapMatcher.group(NO_HEAP_DURATION), noHeapMatcher.group(NO_HEAP_TIMESTAMP));
+            setPauseAndDateOrTimestamp(event, noHeapMatcher.group(NO_HEAP_TIMESTAMP), noHeapMatcher.group(NO_HEAP_DURATION));
         } else if (withHeapMatcher.find()) {
             event = line.contains("Concurrent") ? new ConcurrentGCEvent() : new GCEvent();
             AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup(withHeapMatcher.group(WITH_HEAP_EVENT_NAME));
             event.setType(type);
-            setPauseAndTimestamp(event, withHeapMatcher.group(WITH_HEAP_DURATION), withHeapMatcher.group(WITH_HEAP_TIMESTAMP));
+            setPauseAndDateOrTimestamp(event, withHeapMatcher.group(WITH_HEAP_TIMESTAMP), withHeapMatcher.group(WITH_HEAP_DURATION));
             addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
         } else {
-            getLogger().warning(String.format("Failed to parse Line number %d in the log file: %s", in.getLineNumber(), line));
+            getLogger().warning(String.format("Failed to parse line number %d in the log file: %s", in.getLineNumber(), line));
         }
 
         return event;
     }
 
     /**
-     * @param event                 GC event to which pause and timestamp information is added
-     * @param pauseAsString         Pause information from regex group as string
-     * @param timestampAsString     Timestamp information from regex group as string
+     * @param event                     GC event to which pause and timestamp information is added
+     * @param pauseAsString             Pause information from regex group as string
+     * @param dateOrTimeStampAsString   Date- or timestamp information from regex group as string
      */
-    private void setPauseAndTimestamp(AbstractGCEvent<?> event, String pauseAsString, String timestampAsString) {
+    private void setPauseAndDateOrTimestamp(AbstractGCEvent<?> event, String dateOrTimeStampAsString, String pauseAsString) {
         double pause = Double.parseDouble(pauseAsString.replace(",", "."));
-        double timestamp = Double.parseDouble(timestampAsString.replace(",", "."));
         event.setPause(pause / 1000);
-        event.setTimestamp(timestamp);
+        if (PATTERN_ISO8601_DATE.matcher(dateOrTimeStampAsString).find()) {
+            ZonedDateTime dateTime = ZonedDateTime.parse(dateOrTimeStampAsString, AbstractDataReaderSun.DATE_TIME_FORMATTER);
+            event.setDateStamp(dateTime);
+        } else {
+            double timestamp = Double.parseDouble(dateOrTimeStampAsString.replace(",", "."));
+            event.setTimestamp(timestamp);
+        }
     }
 
     /**

@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.closeTo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
@@ -139,6 +140,30 @@ public class TestDataReaderShenandoah {
         assertThat("generation", event.getGeneration(), is(AbstractGCEvent.Generation.ALL));
         assertThat("timestamp", event.getTimestamp(), closeTo(1.303, 0.001));
     }
+
+    @Test
+    public void parseDateTimeStamps() throws Exception {
+        GCModel model = getGCModelFromLogFile("SampleShenandoahDateTimeStamps.txt");
+        assertThat("size", model.size(), is(557));
+
+        GCEvent event = (GCEvent) model.get(0);
+        assertThat("datestamp", event.getDatestamp(), is(ZonedDateTime.parse("2017-08-30T23:22:47.357+0300",
+                AbstractDataReaderSun.DATE_TIME_FORMATTER)));
+        assertThat("timestamp", event.getTimestamp(), is(0.0));
+        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_INIT_MARK.toString()));
+        assertThat("generation", event.getGeneration(), is(AbstractGCEvent.Generation.TENURED));
+
+        ConcurrentGCEvent event2 = (ConcurrentGCEvent) model.get(1);
+        assertThat("datestamp", event.getDatestamp(), is(ZonedDateTime.parse("2017-08-30T23:22:47.357+0300",
+                AbstractDataReaderSun.DATE_TIME_FORMATTER)));
+        assertThat("timestamp", event2.getTimestamp(), closeTo(0.003, 0.001));
+        assertThat("type", event2.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK.toString()));
+        assertThat("preUsed heap size", event2.getPreUsed(), is(90 * 1024));
+        assertThat("postUsed heap size", event2.getPostUsed(), is(90 * 1024));
+        assertThat("total heap size", event2.getTotal(), is(128 * 1024));
+        assertThat("generation", event2.getGeneration(), is(AbstractGCEvent.Generation.TENURED));
+    }
+
 
     private GCModel getGCModelFromLogFile(String fileName) throws IOException {
         TestLogHandler handler = new TestLogHandler();
