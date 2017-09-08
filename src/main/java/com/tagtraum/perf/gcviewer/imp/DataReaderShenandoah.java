@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -97,15 +98,20 @@ public class DataReaderShenandoah extends AbstractDataReader {
     public GCModel read() throws IOException {
         getLogger().info("Reading Shenandoah format...");
 
-        GCModel model = new GCModel();
-        model.setFormat(GCModel.Format.RED_HAT_SHENANDOAH_GC);
+        try {
+            GCModel model = new GCModel();
+            model.setFormat(GCModel.Format.RED_HAT_SHENANDOAH_GC);
 
-        Stream<String> lines = in.lines();
-        lines.filter(this::lineNotInExcludedStrings)
-                .map(this::parseShenandoahEvent)
-                .filter(Objects::nonNull)
-                .forEach(model::add);
-        return model;
+            Stream<String> lines = in.lines();
+            lines.filter(this::lineNotInExcludedStrings)
+                    .map(this::parseShenandoahEvent)
+                    .filter(Objects::nonNull)
+                    .forEach(model::add);
+
+            return model;
+        } finally {
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading done.");
+        }
     }
 
     private AbstractGCEvent<?> parseShenandoahEvent(String line) {

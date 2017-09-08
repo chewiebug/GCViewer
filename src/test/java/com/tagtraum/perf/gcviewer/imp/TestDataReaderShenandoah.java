@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +10,12 @@ import java.time.ZonedDateTime;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.*;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 /**
@@ -19,10 +24,6 @@ import org.junit.Test;
 public class TestDataReaderShenandoah {
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
-    }
-
-    private DataReader getDataReader(GCResource gcResource) throws IOException {
-        return new DataReaderShenandoah(gcResource, getInputStream(gcResource.getResourceName()));
     }
 
     @Test
@@ -171,10 +172,12 @@ public class TestDataReaderShenandoah {
         GCResource gcResource = new GcResourceFile(fileName);
         gcResource.getLogger().addHandler(handler);
 
-        DataReader reader = getDataReader(gcResource);
-        GCModel model = reader.read();
-        assertThat("model format", model.getFormat(), is(GCModel.Format.RED_HAT_SHENANDOAH_GC));
-        assertThat("number of errors", handler.getCount(), is(0));
-        return model;
+        try (InputStream in = getInputStream(gcResource.getResourceName())) {
+            DataReader reader = new DataReaderShenandoah(gcResource, in);
+            GCModel model = reader.read();
+            assertThat("model format", model.getFormat(), is(GCModel.Format.RED_HAT_SHENANDOAH_GC));
+            assertThat("number of errors", handler.getCount(), is(0));
+            return model;
+        }
     }
 }
