@@ -1,11 +1,5 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import com.tagtraum.perf.gcviewer.math.DoubleData;
-import com.tagtraum.perf.gcviewer.math.IntData;
-import com.tagtraum.perf.gcviewer.math.RegressionLine;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,9 +14,21 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.math.IntData;
+import com.tagtraum.perf.gcviewer.math.RegressionLine;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
 /**
  * Collection of GCEvents.
@@ -415,50 +421,10 @@ public class GCModel implements Serializable {
 
             DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
             pauses.add(concEvent.getPause());
-        } else if (abstractEvent instanceof ShenandoahGCEvent) {
-            ShenandoahGCEvent event = (ShenandoahGCEvent) abstractEvent;
 
-            if (event.isInitialMark()) {
-                updateInitiatingOccupancyFraction(event);
-            }
-
-            if (firstPauseTimeStamp == 0) {
-                firstPauseTimeStamp = event.getTimestamp();
-            }
-
-            freedMemory += event.getPreUsed() - event.getPostUsed();
-            updateHeapSizes(event);
-            updateGcPauseInterval(event);
-            updatePromotion(event);
-
-            if (!event.isStopTheWorld()) {
-                // handle concurrent events
-                DoubleData pauses = getDoubleData(event.getExtendedType().getName(), concurrentGcEventPauses);
-                pauses.add(event.getPause());
-                currentNoFullGCEvents.add(event);
-                postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
-                gcEvents.add(event);
-                gcPause.add(event.getPause());
-            } else {
-                // handle STW events
-                DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
-                pauses.add(event.getPause());
-                updateFullGcPauseInterval(event);
-                postFullGCUsedHeap.add(event.getPostUsed());
-                postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-                relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
-                fullGCEvents.add(event);
-                freedMemoryByFullGC.add(event.getPreUsed() - event.getPostUsed());
-                fullGCPause.add(event.getPause());
-
-                if (currentPostGCSlope.hasPoints()) {
-                    if (currentPostGCSlope.isLine()) {
-                        postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
-                        relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
-                    }
-                    currentPostGCSlope.reset();
-                    currentRelativePostGCIncrease.reset();
-                }
+            if (concEvent.hasMemoryInformation() && concEvent.isConcurrentCollectionEnd()) {
+                // register postConcurrentCycleUsedSizes, if event contains memory information. Otherwise deduce it (see in handling of GCEvent)
+                updatePostConcurrentCycleUsedSizes(concEvent);
             }
         }
         else if (abstractEvent instanceof GCEvent) {
@@ -475,7 +441,8 @@ public class GCModel implements Serializable {
             if (event.isInitialMark()) {
                 updateInitiatingOccupancyFraction(event);
             }
-            if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd()) {
+            if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd() && !allEvents.get(allEvents.size() - 2).hasMemoryInformation()) {
+                // only deduce postConcurrentCycleUsedSizes, if concurrent event itself does not contain memory information
                 updatePostConcurrentCycleUsedSizes(event);
             }
 
@@ -556,11 +523,16 @@ public class GCModel implements Serializable {
         }
     }
 
+    private void updatePostConcurrentCycleUsedSizes(ConcurrentGCEvent event) {
+        postConcurrentCycleUsedTenuredSizes.add(event.getPreUsed());
+        postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
+    }
+
     private void updatePostConcurrentCycleUsedSizes(GCEvent event) {
-        // Most interesting is the size of the life objects immediately after a concurrent cycle.
-        // Since the "concurrent-end" events don't have the heap size information, the next event
-        // after is taken to get the information. Young generation, that has already filled up
-        // again since the concurrent-end should not be counted, so take tenured size, if available.
+            // Most interesting is the size of the life objects immediately after a concurrent cycle.
+            // Since the "concurrent-end" events don't have the heap size information, the next event
+            // after is taken to get the information. Young generation, that has already filled up
+            // again since the concurrent-end should not be counted, so take tenured size, if available.
         GCEvent afterConcurrentEvent = event;
         if (event.hasDetails()) {
             afterConcurrentEvent = event.getTenured();

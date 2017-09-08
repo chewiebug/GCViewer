@@ -2,7 +2,15 @@ package com.tagtraum.perf.gcviewer.model;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The abstract gc event is the base class for all types of events. All sorts of general
@@ -12,6 +20,12 @@ import java.util.*;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable {
+    /** Used before GC in KB */
+    private int preUsed;
+    /** Used after GC in KB */
+    private int postUsed;
+    /** Capacity in KB */
+    private int total;
     private ZonedDateTime datestamp;
     private double timestamp;
     private ExtendedType extendedType = ExtendedType.UNDEFINED;
@@ -142,6 +156,36 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         return datestamp;
     }
 
+    public boolean hasMemoryInformation() {
+        return getPreUsed() > 0
+                || getPostUsed() > 0
+                || getTotal() > 0;
+    }
+
+    public void setPreUsed(int preUsed) {
+        this.preUsed = preUsed;
+    }
+
+    public void setPostUsed(int postUsed) {
+        this.postUsed = postUsed;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getPreUsed() {
+        return preUsed;
+    }
+
+    public int getPostUsed() {
+        return postUsed;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
     public abstract void toStringBuffer(StringBuffer sb);
 
     public boolean isTenuredDetail() {
@@ -187,17 +231,20 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public boolean isConcurrentCollectionStart() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_MARK_START.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_MARK_START.getName()) // CMS AdaptiveSizePolicy
-                || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName());// G1
+                || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName())// G1
+                || getExtendedType().getName().equals(Type.SHEN_CONCURRENT_CONC_MARK); // Shenandoah
     }
 
     public boolean isConcurrentCollectionEnd() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_RESET.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_RESET.getName()) // CMS AdaptiveSizePolicy
-                || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()); // G1
+                || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()) // G1
+                || getExtendedType().getName().equals(Type.SHEN_CONCURRENT_CONC_RESET_BITMAPS.getName()); // Shenandoah
     }
 
     public boolean isInitialMark() {
-        return getTypeAsString().indexOf("initial-mark") >= 0;
+        return getTypeAsString().indexOf("initial-mark") >= 0      // all others
+                || getTypeAsString().indexOf("Initial Mark") >= 0; // Shenandoah
     }
 
     public boolean isRemark() {
@@ -504,20 +551,18 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
 
-        // Shenandoah types of Generation.TENURED since Generation.ALL gets ignored apparently (GCEvent.java line 56)
-        // STW pause events
-        public static final Type SHEN_STW_INIT_MARK = new Type("GC Pause Initial Mark (STW pause)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type SHEN_STW_FINAL_MARK = new Type("GC Pause Final Mark (STW pause)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type SHEN_STW_INIT_UPDATE_REFS = new Type("GC Pause Init Update Refs (STW pause)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type SHEN_STW_FINAL_UPDATE_REFS = new Type("GC Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type SHEN_STW_ALLOC_FAILURE = new Type("GC Pause Full (Allocation Failure)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type SHEN_STW_SYSTEM_GC = new Type("GC Pause Full (System.gc())", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        // Concurrent events
-        public static final Type SHEN_CONCURRENT_CONC_MARK = new Type("GC Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
-        public static final Type SHEN_CONCURRENT_CONC_EVAC = new Type("GC Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
-        public static final Type SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("GC Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
-        public static final Type SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("GC Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
-        public static final Type SHEN_CONCURRENT_PRECLEANING = new Type("GC Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        // Shenandoah types
+        public static final Type SHEN_STW_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_INIT_UPDATE_REFS = new Type("Pause Init Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_ALLOC_FAILURE = new Type("Pause Full (Allocation Failure)", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_STW_SYSTEM_GC = new Type("Pause Full (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type SHEN_CONCURRENT_CONC_MARK = new Type("Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_CONC_EVAC = new Type("Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
+        public static final Type SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
 
         // IBM Types
         // TODO: are scavenge always young only??
