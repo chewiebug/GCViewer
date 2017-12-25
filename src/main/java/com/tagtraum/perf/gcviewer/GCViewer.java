@@ -26,6 +26,7 @@ public class GCViewer {
     private static final int EXIT_OK = 0;
     private static final int EXIT_EXPORT_FAILED = -1;
     private static final int EXIT_ARGS_PARSE_FAILED = -2;
+    private static final int EXIT_TOO_MANY_ARGS = -3;
     private GCViewerGuiController gcViewerGuiController;
     private GCViewerArgsParser gcViewerArgsParser;
 
@@ -39,10 +40,13 @@ public class GCViewer {
     }
 
     public static void main(final String[] args) throws InvocationTargetException, InterruptedException {
-        new GCViewer().doMain(args);
+        int exitValue = new GCViewer().doMain(args);
+        if (exitValue != 0) {
+            System.exit(exitValue);
+        }
     }
 
-    public void doMain(String[] args) throws InvocationTargetException, InterruptedException {
+    public int doMain(String[] args) throws InvocationTargetException, InterruptedException {
         GCViewerArgsParser argsParser = gcViewerArgsParser;
         try {
             argsParser.parseArguments(args);
@@ -50,11 +54,12 @@ public class GCViewer {
         catch (GCViewerArgsParserException e) {
             usage();
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            System.exit(EXIT_ARGS_PARSE_FAILED);
+            return EXIT_ARGS_PARSE_FAILED;
         }
 
         if (argsParser.getArgumentCount() > 3) {
             usage();
+            return EXIT_TOO_MANY_ARGS;
         }
         else if (argsParser.getArgumentCount() >= 2) {
             LOGGER.info("GCViewer command line mode");
@@ -67,15 +72,16 @@ public class GCViewer {
             try {
                 export(gcResource, summaryFilePath, chartFilePath, type);
                 LOGGER.info("export completed successfully");
-                System.exit(EXIT_OK);
+                return EXIT_OK;
             }
             catch(Exception e) {
                 LOGGER.log(Level.SEVERE, "Error during report generation", e);
-                System.exit(EXIT_EXPORT_FAILED);
+                return EXIT_EXPORT_FAILED;
             }
         }
         else {
             gcViewerGuiController.startGui(argsParser.getArgumentCount() == 1 ? argsParser.getGcResource() : null);
+            return EXIT_OK;
         }
     }
 
