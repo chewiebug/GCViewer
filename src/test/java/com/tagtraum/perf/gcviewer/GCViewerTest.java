@@ -58,7 +58,7 @@ public class GCViewerTest {
         GCViewerGuiController controller = mock(GCViewerGuiController.class);
         GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
 
-        String[] args = {"target/test-classes/openjdk/SampleShenandoahAggressiveHeuristics.txt", "target/export.csv", "target/export.png", "-t", "PLAIN"};
+        String[] args = {"target/test-classes/openjdk/SampleSun1_7_0-01_G1_young.txt", "target/export.csv", "target/export.png", "-t", "PLAIN"};
         int exitValue = gcViewer.doMain(args);
         verify(controller, never()).startGui(any(GCResource.class));
         assertThat("result of doMain", exitValue, is(0));
