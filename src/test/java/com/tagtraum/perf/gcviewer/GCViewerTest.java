@@ -1,19 +1,19 @@
 package com.tagtraum.perf.gcviewer;
 
-import com.tagtraum.perf.gcviewer.ctrl.impl.GCViewerGuiController;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import org.junit.Test;
-
-import java.util.Arrays;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+
+import java.util.Arrays;
+
+import com.tagtraum.perf.gcviewer.ctrl.impl.GCViewerGuiController;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+import org.junit.Test;
 
 /**
  * @author martin.geldmacher
@@ -51,5 +51,36 @@ public class GCViewerTest {
         int exitValue = gcViewer.doMain(args);
         verify(controller, never()).startGui(any(GCResource.class));
         assertThat("result of doMain", exitValue, is(-3));
+    }
+
+    @Test
+    public void export() throws Exception {
+        GCViewerGuiController controller = mock(GCViewerGuiController.class);
+        GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
+
+        String[] args = {"target/test-classes/openjdk/SampleShenandoahAggressiveHeuristics.txt", "target/export.csv", "target/export.png", "-t", "PLAIN"};
+        int exitValue = gcViewer.doMain(args);
+        verify(controller, never()).startGui(any(GCResource.class));
+        assertThat("result of doMain", exitValue, is(0));
+    }
+
+    @Test
+    public void exportFileNotFound() throws Exception {
+        GCViewerGuiController controller = mock(GCViewerGuiController.class);
+        GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
+
+        String[] args = {"doesNotExist.log", "export.csv", "-t", "PLAIN"};
+        int exitValue = gcViewer.doMain(args);
+        verify(controller, never()).startGui(any(GCResource.class));
+        assertThat("result of doMain", exitValue, is(-1));
+    }
+
+    @Test
+    public void illegalExportFormat() throws Exception {
+        GCViewer gcViewer = new GCViewer();
+
+        String[] args = {"-t", "INVALID"};
+        int exitValue = gcViewer.doMain(args);
+        assertThat("result of doMain", exitValue, is(-2));
     }
 }
