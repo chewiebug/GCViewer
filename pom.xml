@@ -180,6 +180,7 @@
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.plugin.version>1.9.5</maven.scm.plugin.version>
         <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
+        <maven.jdeps.plugin.version>3.1.0</maven.jdeps.plugin.version>
         <nexus.staging.maven.plugin.version>1.6.8</nexus.staging.maven.plugin.version>
     </properties>
 
@@ -438,6 +439,18 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <artifactId>maven-jdeps-plugin</artifactId>
+                <version>${maven.jdeps.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jdkinternals</goal> <!-- verify main classes -->
+                            <goal>test-jdkinternals</goal> <!-- verify test classes -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
