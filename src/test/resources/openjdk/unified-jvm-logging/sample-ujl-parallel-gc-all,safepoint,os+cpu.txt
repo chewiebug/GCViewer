@@ -1,0 +1,113 @@
+[0.014s][info][os,cpu] CPU:total 4 (initial active 4) (4 cores per cpu, 1 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, tsc, tscinvbit, bmi1, bmi2, adx, fma
+[0.018s][info][gc    ] Using Parallel
+[0.018s][info][gc,heap,coops] Heap address: 0x00000000f8000000, size: 128 MB, Compressed Oops mode: 32-bit
+[0.072s][info][safepoint    ] Total time for which application threads were stopped: 0.0000470 seconds, Stopping threads took: 0.0000117 seconds
+[0.209s][info][safepoint    ] Application time: 0.1315700 seconds
+[0.209s][info][gc,start     ] GC(0) Pause Young (Allocation Failure)
+[0.217s][info][gc,heap      ] GC(0) PSYoungGen: 33275K->5090K(38400K)
+[0.217s][info][gc,heap      ] GC(0) ParOldGen: 0K->25596K(87552K)
+[0.217s][info][gc,metaspace ] GC(0) Metaspace: 3643K->3643K(1056768K)
+[0.217s][info][gc           ] GC(0) Pause Young (Allocation Failure) 32M->29M(123M) 8.112ms
+[0.217s][info][gc,cpu       ] GC(0) User=0.03s Sys=0.03s Real=0.01s
+[0.217s][info][safepoint    ] Total time for which application threads were stopped: 0.0083073 seconds, Stopping threads took: 0.0000223 seconds
+[0.223s][info][safepoint    ] Application time: 0.0053318 seconds
+[0.223s][info][gc,start     ] GC(1) Pause Young (Allocation Failure)
+[0.231s][info][gc,heap      ] GC(1) PSYoungGen: 38354K->5106K(38400K)
+[0.231s][info][gc,heap      ] GC(1) ParOldGen: 25596K->58444K(87552K)
+[0.231s][info][gc,metaspace ] GC(1) Metaspace: 3646K->3646K(1056768K)
+[0.231s][info][gc           ] GC(1) Pause Young (Allocation Failure) 62M->62M(123M) 8.126ms
+[0.231s][info][gc,cpu       ] GC(1) User=0.02s Sys=0.05s Real=0.01s
+[0.231s][info][gc,start     ] GC(2) Pause Full (Ergonomics)
+[0.231s][info][gc,phases,start] GC(2) Marking Phase
+[0.232s][info][gc,phases      ] GC(2) Marking Phase 1.586ms
+[0.233s][info][gc,phases,start] GC(2) Summary Phase
+[0.233s][info][gc,phases      ] GC(2) Summary Phase 0.009ms
+[0.233s][info][gc,phases,start] GC(2) Adjust Roots
+[0.233s][info][gc,phases      ] GC(2) Adjust Roots 0.724ms
+[0.233s][info][gc,phases,start] GC(2) Compaction Phase
+[0.244s][info][gc,phases      ] GC(2) Compaction Phase 10.900ms
+[0.244s][info][gc,phases,start] GC(2) Post Compact
+[0.244s][info][gc,phases      ] GC(2) Post Compact 0.119ms
+[0.244s][info][gc,heap        ] GC(2) PSYoungGen: 5106K->0K(38400K)
+[0.244s][info][gc,heap        ] GC(2) ParOldGen: 58444K->63435K(87552K)
+[0.244s][info][gc,metaspace   ] GC(2) Metaspace: 3646K->3646K(1056768K)
+[0.244s][info][gc             ] GC(2) Pause Full (Ergonomics) 62M->61M(123M) 13.561ms
+[0.244s][info][gc,cpu         ] GC(2) User=0.06s Sys=0.00s Real=0.01s
+[0.245s][info][safepoint      ] Total time for which application threads were stopped: 0.0219412 seconds, Stopping threads took: 0.0000182 seconds
+[0.286s][info][safepoint      ] Application time: 0.0411313 seconds
+[0.286s][info][gc,start       ] GC(3) Pause Full (Ergonomics)
+[0.286s][info][gc,phases,start] GC(3) Marking Phase
+[0.287s][info][gc,phases      ] GC(3) Marking Phase 1.490ms
+[0.287s][info][gc,phases,start] GC(3) Summary Phase
+[0.287s][info][gc,phases      ] GC(3) Summary Phase 0.010ms
+[0.287s][info][gc,phases,start] GC(3) Adjust Roots
+[0.288s][info][gc,phases      ] GC(3) Adjust Roots 0.720ms
+[0.288s][info][gc,phases,start] GC(3) Compaction Phase
+[0.294s][info][gc,phases      ] GC(3) Compaction Phase 5.774ms
+[0.294s][info][gc,phases,start] GC(3) Post Compact
+[0.294s][info][gc,phases      ] GC(3) Post Compact 0.305ms
+[0.294s][info][gc,heap        ] GC(3) PSYoungGen: 33252K->0K(38400K)
+[0.294s][info][gc,heap        ] GC(3) ParOldGen: 63435K->31043K(87552K)
+[0.294s][info][gc,metaspace   ] GC(3) Metaspace: 3646K->3646K(1056768K)
+[0.294s][info][gc             ] GC(3) Pause Full (Ergonomics) 94M->30M(123M) 8.490ms
+[0.294s][info][gc,cpu         ] GC(3) User=0.06s Sys=0.00s Real=0.01s
+[0.294s][info][safepoint      ] Total time for which application threads were stopped: 0.0086462 seconds, Stopping threads took: 0.0000371 seconds
+[0.297s][info][safepoint      ] Application time: 0.0030238 seconds
+[0.298s][info][gc,start       ] GC(4) Pause Young (Allocation Failure)
+[0.305s][info][gc,heap        ] GC(4) PSYoungGen: 33280K->5090K(38400K)
+[0.305s][info][gc,heap        ] GC(4) ParOldGen: 31043K->59153K(87552K)
+[0.305s][info][gc,metaspace   ] GC(4) Metaspace: 3646K->3646K(1056768K)
+[0.305s][info][gc             ] GC(4) Pause Young (Allocation Failure) 62M->62M(123M) 7.118ms
+[0.305s][info][gc,cpu         ] GC(4) User=0.02s Sys=0.00s Real=0.01s
+[0.305s][info][gc,start       ] GC(5) Pause Full (Ergonomics)
+[0.305s][info][gc,phases,start] GC(5) Marking Phase
+[0.307s][info][gc,phases      ] GC(5) Marking Phase 1.815ms
+[0.307s][info][gc,phases,start] GC(5) Summary Phase
+[0.307s][info][gc,phases      ] GC(5) Summary Phase 0.009ms
+[0.307s][info][gc,phases,start] GC(5) Adjust Roots
+[0.307s][info][gc,phases      ] GC(5) Adjust Roots 0.210ms
+[0.307s][info][gc,phases,start] GC(5) Compaction Phase
+[0.308s][info][gc,phases      ] GC(5) Compaction Phase 1.299ms
+[0.308s][info][gc,phases,start] GC(5) Post Compact
+[0.308s][info][gc,phases      ] GC(5) Post Compact 0.179ms
+[0.308s][info][gc,heap        ] GC(5) PSYoungGen: 5090K->0K(38400K)
+[0.308s][info][gc,heap        ] GC(5) ParOldGen: 59153K->64243K(87552K)
+[0.308s][info][gc,metaspace   ] GC(5) Metaspace: 3646K->3646K(1056768K)
+[0.309s][info][gc             ] GC(5) Pause Full (Ergonomics) 62M->62M(123M) 3.728ms
+[0.309s][info][gc,cpu         ] GC(5) User=0.00s Sys=0.00s Real=0.00s
+[0.309s][info][safepoint      ] Total time for which application threads were stopped: 0.0111981 seconds, Stopping threads took: 0.0000340 seconds
+[0.312s][info][safepoint      ] Application time: 0.0031864 seconds
+[0.312s][info][gc,start       ] GC(6) Pause Full (Ergonomics)
+[0.312s][info][gc,phases,start] GC(6) Marking Phase
+[0.314s][info][gc,phases      ] GC(6) Marking Phase 1.893ms
+[0.314s][info][gc,phases,start] GC(6) Summary Phase
+[0.314s][info][gc,phases      ] GC(6) Summary Phase 0.010ms
+[0.314s][info][gc,phases,start] GC(6) Adjust Roots
+[0.314s][info][gc,phases      ] GC(6) Adjust Roots 0.207ms
+[0.314s][info][gc,phases,start] GC(6) Compaction Phase
+[0.320s][info][gc,phases      ] GC(6) Compaction Phase 6.103ms
+[0.320s][info][gc,phases,start] GC(6) Post Compact
+[0.321s][info][gc,phases      ] GC(6) Post Compact 0.368ms
+[0.321s][info][gc,heap        ] GC(6) PSYoungGen: 33280K->0K(38400K)
+[0.321s][info][gc,heap        ] GC(6) ParOldGen: 64243K->31767K(87552K)
+[0.321s][info][gc,metaspace   ] GC(6) Metaspace: 3646K->3646K(1056768K)
+[0.321s][info][gc             ] GC(6) Pause Full (Ergonomics) 95M->31M(123M) 8.792ms
+[0.321s][info][gc,cpu         ] GC(6) User=0.06s Sys=0.00s Real=0.01s
+[0.321s][info][safepoint      ] Total time for which application threads were stopped: 0.0090116 seconds, Stopping threads took: 0.0000297 seconds
+[0.324s][info][safepoint      ] Application time: 0.0028342 seconds
+[0.324s][info][gc,start       ] GC(7) Pause Young (Allocation Failure)
+[0.330s][info][gc,heap        ] GC(7) PSYoungGen: 33280K->5090K(38400K)
+[0.330s][info][gc,heap        ] GC(7) ParOldGen: 31767K->59524K(87552K)
+[0.330s][info][gc,metaspace   ] GC(7) Metaspace: 3646K->3646K(1056768K)
+[0.330s][info][gc             ] GC(7) Pause Young (Allocation Failure) 63M->63M(123M) 5.794ms
+[0.330s][info][gc,cpu         ] GC(7) User=0.00s Sys=0.00s Real=0.01s
+[30.132s][info][gc,heap,exit   ] Heap
+[30.132s][info][gc,heap,exit   ]  PSYoungGen      total 38400K, used 24133K [0x00000000fd580000, 0x0000000100000000, 0x0000000100000000)
+[30.132s][info][gc,heap,exit   ]   eden space 33280K, 72% used [0x00000000fd580000,0x00000000fed11728,0x00000000ff600000)
+[30.132s][info][gc,heap,exit   ]   from space 5120K, 0% used [0x00000000ffb00000,0x00000000ffb00000,0x0000000100000000)
+[30.132s][info][gc,heap,exit   ]   to   space 5120K, 0% used [0x00000000ff600000,0x00000000ff600000,0x00000000ffb00000)
+[30.132s][info][gc,heap,exit   ]  ParOldGen       total 87552K, used 43202K [0x00000000f8000000, 0x00000000fd580000, 0x00000000fd580000)
+[30.132s][info][gc,heap,exit   ]   object space 87552K, 49% used [0x00000000f8000000,0x00000000faa30ae0,0x00000000fd580000)
+[30.132s][info][gc,heap,exit   ]  Metaspace       used 3661K, capacity 4490K, committed 4864K, reserved 1056768K
+[30.132s][info][gc,heap,exit   ]   class space    used 375K, capacity 386K, committed 512K, reserved 1048576K
+[30.132s][info][safepoint      ] Application time: 0.0052622 seconds

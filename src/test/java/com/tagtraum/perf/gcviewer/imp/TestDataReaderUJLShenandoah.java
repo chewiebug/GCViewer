@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -21,9 +23,9 @@ import org.junit.Test;
 /**
  * Created by Mart on 10/05/2017.
  */
-public class TestDataReaderShenandoah {
+public class TestDataReaderUJLShenandoah {
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK_UJL, fileName);
     }
 
     @Test
@@ -38,6 +40,18 @@ public class TestDataReaderShenandoah {
         assertThat("full gc pause time", model.getFullGCPause().getSum(), is(0.0));
         assertThat("heap size after concurrent cycle", model.getPostConcurrentCycleHeapUsedSizes().getMax(), is(33 * 1024));
         assertThat("max memory freed during STW pauses", model.getFreedMemoryByGC().getMax(), is(34 * 1024));
+
+        AbstractGCEvent<?> initialMarkEvent = model.get(0);
+        assertThat("isInitialMark", initialMarkEvent.isInitialMark(), is(true));
+
+        AbstractGCEvent<?> finalMarkEvent = model.get(2);
+        assertThat("isRemark", finalMarkEvent.isRemark(), is(true));
+
+        AbstractGCEvent<?> concurrentMarkingEvent = model.get(1);
+        assertThat("event is start of concurrent collection", concurrentMarkingEvent.isConcurrentCollectionStart(), is(true));
+
+        AbstractGCEvent<?> concurrentResetEvent = model.get(4);
+        assertThat("event is end of concurrent collection", concurrentResetEvent.isConcurrentCollectionEnd(), is(true));
     }
 
     @Test
@@ -52,7 +66,7 @@ public class TestDataReaderShenandoah {
         assertThat("full gc pause time", model.getFullGCPause().getSum(), closeTo(14.289335, 0.000001));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_ALLOC_FAILURE.toString()));
+        assertThat("type", event.getTypeAsString(), startsWith(Type.UJL_PAUSE_FULL.toString()));
         assertThat("preUsed heap size", event.getPreUsed(), is(7943 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(6013 * 1024));
         assertThat("total heap size", event.getTotal(), is(8192 * 1024));
@@ -70,7 +84,7 @@ public class TestDataReaderShenandoah {
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(5));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_SYSTEM_GC.toString()));
+        assertThat("type", event.getTypeAsString(), is(Type.UJL_PAUSE_FULL_SYSTEM.toString()));
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
@@ -117,7 +131,7 @@ public class TestDataReaderShenandoah {
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(5));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_SYSTEM_GC.toString()));
+        assertThat("type", event.getTypeAsString(), is(Type.UJL_PAUSE_FULL_SYSTEM.toString()));
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
@@ -134,7 +148,7 @@ public class TestDataReaderShenandoah {
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_SYSTEM_GC.toString()));
+        assertThat("type", event.getTypeAsString(), is(Type.UJL_PAUSE_FULL_SYSTEM.toString()));
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
@@ -173,9 +187,9 @@ public class TestDataReaderShenandoah {
         gcResource.getLogger().addHandler(handler);
 
         try (InputStream in = getInputStream(gcResource.getResourceName())) {
-            DataReader reader = new DataReaderShenandoah(gcResource, in);
+            DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
             GCModel model = reader.read();
-            assertThat("model format", model.getFormat(), is(GCModel.Format.RED_HAT_SHENANDOAH_GC));
+            assertThat("model format", model.getFormat(), is(GCModel.Format.UNIFIED_JVM_LOGGING));
             assertThat("number of errors", handler.getCount(), is(0));
             return model;
         }

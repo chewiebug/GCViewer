@@ -17,6 +17,7 @@ public class UnittestHelper {
     public static final String FOLDER_IBM = "ibm";
     public static final String FOLDER_JROCKIT = "jrockit";
     public static final String FOLDER_OPENJDK = "openjdk";
+    public static final String FOLDER_OPENJDK_UJL = FOLDER_OPENJDK + File.separator + "unified-jvm-logging";
     public static final String FOLDER_HTTP = "http";
     
     /**

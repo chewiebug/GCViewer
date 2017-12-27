@@ -1,0 +1,125 @@
+[0.013s][info][os,cpu] CPU:total 4 (initial active 4) (4 cores per cpu, 1 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, tsc, tscinvbit, bmi1, bmi2, adx, fma
+[0.019s][info][gc    ] Using Concurrent Mark Sweep
+[0.019s][info][gc,heap,coops] Heap address: 0x00000000f6400000, size: 156 MB, Compressed Oops mode: 32-bit
+[0.079s][info][safepoint    ] Total time for which application threads were stopped: 0.0000572 seconds, Stopping threads took: 0.0000151 seconds
+[0.217s][info][safepoint    ] Application time: 0.1345196 seconds
+[0.217s][info][gc,start     ] GC(0) Pause Young (Allocation Failure)
+[0.217s][info][gc,task      ] GC(0) Using 4 workers of 4 for evacuation
+[0.227s][info][gc,heap      ] GC(0) ParNew: 42598K->5311K(47936K)
+[0.227s][info][gc,heap      ] GC(0) CMS: 0K->33624K(106496K)
+[0.227s][info][gc,metaspace ] GC(0) Metaspace: 3645K->3645K(1056768K)
+[0.227s][info][gc           ] GC(0) Pause Young (Allocation Failure) 41M->38M(150M) 9.618ms
+[0.227s][info][gc,cpu       ] GC(0) User=0.00s Sys=0.00s Real=0.01s
+[0.227s][info][safepoint    ] Total time for which application threads were stopped: 0.0097481 seconds, Stopping threads took: 0.0000201 seconds
+[0.290s][info][safepoint    ] Application time: 0.0624671 seconds
+[0.290s][info][gc,start     ] GC(1) Pause Young (Allocation Failure)
+[0.290s][info][gc,task      ] GC(1) Using 4 workers of 4 for evacuation
+[0.295s][info][gc,heap      ] GC(1) ParNew: 47932K->5289K(47936K)
+[0.295s][info][gc,heap      ] GC(1) CMS: 33624K->43864K(106496K)
+[0.295s][info][gc,metaspace ] GC(1) Metaspace: 3648K->3648K(1056768K)
+[0.295s][info][gc           ] GC(1) Pause Young (Allocation Failure) 79M->48M(150M) 5.628ms
+[0.295s][info][gc,cpu       ] GC(1) User=0.00s Sys=0.05s Real=0.01s
+[0.295s][info][safepoint    ] Total time for which application threads were stopped: 0.0057600 seconds, Stopping threads took: 0.0000151 seconds
+[0.299s][info][safepoint    ] Application time: 0.0032003 seconds
+[0.299s][info][gc,start     ] GC(2) Pause Young (Allocation Failure)
+[0.299s][info][gc,task      ] GC(2) Using 4 workers of 4 for evacuation
+[0.309s][info][gc,heap      ] GC(2) ParNew: 47913K->5282K(47936K)
+[0.309s][info][gc,heap      ] GC(2) CMS: 43864K->86165K(106496K)
+[0.309s][info][gc,metaspace ] GC(2) Metaspace: 3648K->3648K(1056768K)
+[0.309s][info][gc           ] GC(2) Pause Young (Allocation Failure) 89M->89M(150M) 10.578ms
+[0.309s][info][gc,cpu       ] GC(2) User=0.00s Sys=0.00s Real=0.01s
+[0.309s][info][safepoint    ] Total time for which application threads were stopped: 0.0106936 seconds, Stopping threads took: 0.0000151 seconds
+[0.309s][info][safepoint    ] Application time: 0.0001778 seconds
+[0.310s][info][gc,start     ] GC(3) Pause Initial Mark
+[0.310s][info][gc           ] GC(3) Pause Initial Mark 91M->91M(150M) 0.165ms
+[0.310s][info][gc,cpu       ] GC(3) User=0.00s Sys=0.00s Real=0.00s
+[0.310s][info][safepoint    ] Total time for which application threads were stopped: 0.0004053 seconds, Stopping threads took: 0.0001234 seconds
+[0.310s][info][gc           ] GC(3) Concurrent Mark
+[0.313s][info][gc           ] GC(3) Concurrent Mark 2.667ms
+[0.313s][info][gc,cpu       ] GC(3) User=0.03s Sys=0.00s Real=0.00s
+[0.313s][info][gc           ] GC(3) Concurrent Preclean
+[0.313s][info][gc           ] GC(3) Concurrent Preclean 0.270ms
+[0.313s][info][gc,cpu       ] GC(3) User=0.00s Sys=0.00s Real=0.00s
+[0.313s][info][gc           ] GC(3) Concurrent Abortable Preclean
+[0.313s][info][gc           ] GC(3) Concurrent Abortable Preclean 0.017ms
+[0.313s][info][gc,cpu       ] GC(3) User=0.00s Sys=0.00s Real=0.00s
+[0.313s][info][safepoint    ] Application time: 0.0032337 seconds
+[0.313s][info][gc,start     ] GC(3) Pause Remark
+[0.314s][info][gc           ] GC(3) Pause Remark 130M->130M(150M) 0.908ms
+[0.314s][info][gc,cpu       ] GC(3) User=0.00s Sys=0.00s Real=0.00s
+[0.314s][info][safepoint    ] Total time for which application threads were stopped: 0.0010345 seconds, Stopping threads took: 0.0000621 seconds
+[0.314s][info][gc           ] GC(3) Concurrent Sweep
+[0.314s][info][safepoint    ] Application time: 0.0001809 seconds
+[0.315s][info][gc,start     ] GC(4) Pause Young (Allocation Failure)
+[0.315s][info][gc,task      ] GC(4) Using 4 workers of 4 for evacuation
+[0.315s][info][gc,start     ] GC(5) Pause Full (Allocation Failure)
+[0.315s][info][gc           ] GC(3) Concurrent Sweep 0.817ms
+[0.315s][info][gc,cpu       ] GC(3) User=0.00s Sys=0.00s Real=0.00s
+[0.315s][info][gc,phases,start] GC(5) Phase 1: Mark live objects
+[0.316s][info][gc,phases      ] GC(5) Phase 1: Mark live objects 1.154ms
+[0.316s][info][gc,phases,start] GC(5) Phase 2: Compute new object addresses
+[0.317s][info][gc,phases      ] GC(5) Phase 2: Compute new object addresses 0.391ms
+[0.317s][info][gc,phases,start] GC(5) Phase 3: Adjust pointers
+[0.317s][info][gc,phases      ] GC(5) Phase 3: Adjust pointers 0.575ms
+[0.317s][info][gc,phases,start] GC(5) Phase 4: Move objects
+[0.324s][info][gc,phases      ] GC(5) Phase 4: Move objects 6.493ms
+[0.324s][info][gc             ] GC(5) Pause Full (Allocation Failure) 119M->33M(150M) 9.509ms
+[0.324s][info][gc,heap        ] GC(4) ParNew: 47878K->0K(47936K)
+[0.324s][info][gc,heap        ] GC(4) CMS: 74351K->34742K(106496K)
+[0.324s][info][gc,metaspace   ] GC(4) Metaspace: 3648K->3648K(1056768K)
+[0.324s][info][gc             ] GC(4) Pause Young (Allocation Failure) 119M->33M(150M) 9.590ms
+[0.324s][info][gc,cpu         ] GC(4) User=0.00s Sys=0.00s Real=0.01s
+[0.324s][info][safepoint      ] Total time for which application threads were stopped: 0.0096665 seconds, Stopping threads took: 0.0000062 seconds
+[0.324s][info][gc,heap        ] GC(3) Old: 86165K->34742K(106496K)
+[0.389s][info][safepoint      ] Application time: 0.0646403 seconds
+[0.389s][info][gc,start       ] GC(6) Pause Young (Allocation Failure)
+[0.389s][info][gc,task        ] GC(6) Using 4 workers of 4 for evacuation
+[0.391s][info][gc,heap        ] GC(6) ParNew: 42606K->5286K(47936K)
+[0.391s][info][gc,heap        ] GC(6) CMS: 34742K->40449K(106496K)
+[0.391s][info][gc,metaspace   ] GC(6) Metaspace: 3648K->3648K(1056768K)
+[0.391s][info][gc             ] GC(6) Pause Young (Allocation Failure) 75M->44M(150M) 2.050ms
+[0.391s][info][gc,cpu         ] GC(6) User=0.00s Sys=0.00s Real=0.00s
+[0.391s][info][safepoint      ] Total time for which application threads were stopped: 0.0021664 seconds, Stopping threads took: 0.0000192 seconds
+[0.394s][info][safepoint      ] Application time: 0.0031023 seconds
+[0.394s][info][gc,start       ] GC(7) Pause Young (Allocation Failure)
+[0.394s][info][gc,task        ] GC(7) Using 4 workers of 4 for evacuation
+[0.403s][info][gc,heap        ] GC(7) ParNew: 47910K->5282K(47936K)
+[0.403s][info][gc,heap        ] GC(7) CMS: 40449K->82782K(106496K)
+[0.403s][info][gc,metaspace   ] GC(7) Metaspace: 3648K->3648K(1056768K)
+[0.403s][info][gc             ] GC(7) Pause Young (Allocation Failure) 86M->86M(150M) 8.529ms
+[0.403s][info][gc,cpu         ] GC(7) User=0.00s Sys=0.00s Real=0.01s
+[0.403s][info][safepoint      ] Total time for which application threads were stopped: 0.0086462 seconds, Stopping threads took: 0.0000161 seconds
+[0.403s][info][safepoint      ] Application time: 0.0001663 seconds
+[0.403s][info][gc,start       ] GC(8) Pause Initial Mark
+[0.403s][info][gc             ] GC(8) Pause Initial Mark 88M->88M(150M) 0.150ms
+[0.403s][info][gc,cpu         ] GC(8) User=0.00s Sys=0.00s Real=0.00s
+[0.403s][info][safepoint      ] Total time for which application threads were stopped: 0.0003695 seconds, Stopping threads took: 0.0000974 seconds
+[0.403s][info][gc             ] GC(8) Concurrent Mark
+[0.405s][info][gc             ] GC(8) Concurrent Mark 1.612ms
+[0.405s][info][gc,cpu         ] GC(8) User=0.03s Sys=0.00s Real=0.00s
+[0.405s][info][gc             ] GC(8) Concurrent Preclean
+[0.405s][info][gc             ] GC(8) Concurrent Preclean 0.154ms
+[0.405s][info][gc,cpu         ] GC(8) User=0.00s Sys=0.00s Real=0.00s
+[0.405s][info][gc             ] GC(8) Concurrent Abortable Preclean
+[0.492s][info][safepoint      ] Application time: 0.0889049 seconds
+[0.493s][info][gc,start       ] GC(9) Pause Young (Allocation Failure)
+[0.493s][info][gc,task        ] GC(9) Using 4 workers of 4 for evacuation
+[0.493s][info][gc,start       ] GC(10) Pause Full (Allocation Failure)
+[0.493s][info][gc             ] GC(8) Concurrent Abortable Preclean 87.440ms
+[0.493s][info][gc,cpu         ] GC(8) User=0.00s Sys=0.00s Real=0.09s
+[0.493s][info][gc,phases,start] GC(10) Phase 1: Mark live objects
+[0.497s][info][gc,phases      ] GC(10) Phase 1: Mark live objects 3.687ms
+[0.497s][info][gc,phases,start] GC(10) Phase 2: Compute new object addresses
+[0.499s][info][gc,phases      ] GC(10) Phase 2: Compute new object addresses 1.839ms
+[0.499s][info][gc,phases,start] GC(10) Phase 3: Adjust pointers
+[0.501s][info][gc,phases      ] GC(10) Phase 3: Adjust pointers 1.976ms
+[0.501s][info][gc,phases,start] GC(10) Phase 4: Move objects
+[0.507s][info][gc,phases      ] GC(10) Phase 4: Move objects 6.689ms
+[0.508s][info][gc             ] GC(10) Pause Full (Allocation Failure) 127M->30M(150M) 15.029ms
+[0.508s][info][gc,heap        ] GC(9) ParNew: 47906K->0K(47936K)
+[0.508s][info][gc,heap        ] GC(9) CMS: 82782K->30853K(106496K)
+[0.508s][info][gc,metaspace   ] GC(9) Metaspace: 3648K->3648K(1056768K)
+[0.508s][info][gc             ] GC(9) Pause Young (Allocation Failure) 127M->30M(150M) 15.238ms
+[0.508s][info][gc,cpu         ] GC(9) User=0.02s Sys=0.00s Real=0.02s
+[0.508s][info][safepoint      ] Total time for which application threads were stopped: 0.0154688 seconds, Stopping threads took: 0.0000318 seconds
+[0.512s][info][safepoint      ] Application time: 0.0042855 seconds

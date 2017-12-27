@@ -231,26 +231,33 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public boolean isConcurrentCollectionStart() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_MARK_START.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_MARK_START.getName()) // CMS AdaptiveSizePolicy
-                || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName())// G1
-                || getExtendedType().getName().equals(Type.SHEN_CONCURRENT_CONC_MARK); // Shenandoah
+                || (getExtendedType().getName().equals(Type.UJL_CMS_CONCURRENT_MARK.getName()) && getPause() > 0.000001) // Universal jvm logging, CMS
+                || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName()) // G1
+                || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_CYCLE.getName()) && getPause() < 0.00001) // Universal jvm logging, G1
+                || getExtendedType().getName().equals(Type.SHEN_CONCURRENT_CONC_MARK.getName()); // Universal jvm logging, Shenandoah
     }
 
     public boolean isConcurrentCollectionEnd() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_RESET.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_RESET.getName()) // CMS AdaptiveSizePolicy
+                || (getExtendedType().getName().equals(Type.UJL_CMS_CONCURRENT_RESET.getName()) && getPause() > 0.0000001) // Universal jvm logging, CMS
                 || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()) // G1
-                || getExtendedType().getName().equals(Type.SHEN_CONCURRENT_CONC_RESET_BITMAPS.getName()); // Shenandoah
+                || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_CYCLE.getName()) && getPause() > 0.0000001) // Universal jvm logging, G1
+                || getExtendedType().getName().equals(Type.SHEN_CONCURRENT_CONC_RESET_BITMAPS.getName()); // Universal jvm logging, Shenandoah
     }
 
     public boolean isInitialMark() {
         return getTypeAsString().indexOf("initial-mark") >= 0      // all others
-                || getTypeAsString().indexOf("Initial Mark") >= 0; // Shenandoah
+                || getTypeAsString().indexOf("Initial Mark") >= 0 // Unified jvm logging, CMS
+                || getTypeAsString().indexOf("Init Mark") >= 0; // Shenandoah
     }
 
     public boolean isRemark() {
         return getTypeAsString().indexOf(Type.CMS_REMARK.getName()) >= 0
                 || getTypeAsString().indexOf(Type.ASCMS_REMARK.getName()) >= 0
-                || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0;
+                || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0
+                || getTypeAsString().indexOf(Type.UJL_PAUSE_REMARK.getName()) >= 0
+                || getTypeAsString().indexOf(Type.SHEN_STW_FINAL_MARK.getName()) >= 0;
     }
 
     public boolean hasPause() {
@@ -551,13 +558,33 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
 
-        // Shenandoah types
+        // unified jvm logging generic event types
+        public static final Type UJL_PAUSE_YOUNG = new Type("Pause Young", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_PAUSE_FULL = new Type("Pause Full", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_PAUSE_FULL_SYSTEM = new Type("Pause Full (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+
+        // unified jvm logging cms / g1 event types
+        public static final Type UJL_PAUSE_INITIAL_MARK = new Type("Pause Initial Mark", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        public static final Type UJL_PAUSE_REMARK = new Type("Pause Remark", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+
+        // unified jvm logging cms event types
+        public static final Type UJL_CMS_CONCURRENT_MARK = new Type("Concurrent Mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_PRECLEAN = new Type("Concurrent Preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("Concurrent Abortable Preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_SWEEP = new Type("Concurrent Sweep", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_RESET = new Type("Concurrent Reset", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+
+        // unified jvm logging g1 event types
+        public static final Type UJL_G1_PAUSE_MIXED = new Type("Pause Mixed", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_G1_TO_SPACE_EXHAUSTED = new Type("To-space exhausted", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC);
+        public static final Type UJL_G1_CONCURRENT_CYCLE = new Type("Concurrent Cycle", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PAUSE_CLEANUP = new Type("Pause Cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+
+        // unified jvm logging shenandoah event types
         public static final Type SHEN_STW_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type SHEN_STW_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type SHEN_STW_INIT_UPDATE_REFS = new Type("Pause Init Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type SHEN_STW_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type SHEN_STW_ALLOC_FAILURE = new Type("Pause Full (Allocation Failure)", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type SHEN_STW_SYSTEM_GC = new Type("Pause Full (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type SHEN_CONCURRENT_CONC_MARK = new Type("Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type SHEN_CONCURRENT_CONC_EVAC = new Type("Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);

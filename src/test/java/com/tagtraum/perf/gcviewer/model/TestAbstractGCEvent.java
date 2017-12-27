@@ -112,7 +112,7 @@ public class TestAbstractGCEvent {
             }
         };
 
-        event.setType(Type.SHEN_STW_SYSTEM_GC);
+        event.setType(Type.UJL_PAUSE_FULL);
         assertThat("should be full gc", event.isFull(), Matchers.is(true));
     }
 }

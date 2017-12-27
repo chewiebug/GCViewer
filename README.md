@@ -19,7 +19,9 @@ When logfile rotation (-XX:+UseGCLogFileRotation) is enabled, the logfiles can b
 
 Supported verbose:gc formats are:
 
-- preliminary support for OpenJDK 9 Shenandoah algorithm in unified logging format -Xlog:gc:<file> -XX:+UseShenandoahGC
+- partial support for OpenJDK 9 unified logging format -Xlog:gc:<file>
+  - no heap information is evaluated, but all events with tag "gc" only should be recognised
+  - required decorations: tags,uptime (others will be ignored or parser might fail)
 - Oracle JDK 1.8 -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.7 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.6 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]

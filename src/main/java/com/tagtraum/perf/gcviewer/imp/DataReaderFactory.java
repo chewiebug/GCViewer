@@ -1,8 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
-
 import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -11,6 +8,9 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 
 /**
  *
@@ -152,6 +152,11 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM <1.3.0");
             return new DataReaderIBM1_3_0(gcResource, in);
         }
+        // ...][info][gc       ] Using Shenandoah <or any other gc algorithm in unified jvm logging format>
+        else if (s.contains("][gc")) {
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Oracle / OpenJDK unified jvm logging");
+            return new DataReaderUnifiedJvmLogging(gcResource, in);
+        }
         else if (s.indexOf(" (young)") > 0 || s.indexOf("G1Ergonomics") > 0) {
             // G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             // but can start with  <timestamp>: [G1Ergonomics (Heap Sizing) expand the heap...
@@ -201,11 +206,6 @@ public class DataReaderFactory {
         else if (s.indexOf("starting collection, threshold allocation reached.") != -1) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM i5/OS 1.4.2");
             return new DataReaderIBMi5OS1_4_2(gcResource, in);
-        }
-        // Shenandoah
-        else if (s.contains("Using Shenandoah")) {
-            if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Red Hat Shenandoah");
-            return new DataReaderShenandoah(gcResource, in);
         }
         return null;
     }

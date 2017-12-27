@@ -507,9 +507,7 @@ public class GCModel implements Serializable {
             firstPauseTimeStamp = Math.min(firstPauseTimeStamp, abstractEvent.getTimestamp());
         }
         lastPauseTimeStamp = Math.max(lastPauseTimeStamp, abstractEvent.getTimestamp());
-        if (abstractEvent instanceof ShenandoahGCEvent) {
-            totalPause.add(abstractEvent.getPause());
-        } else if (abstractEvent.isStopTheWorld()) {
+        if (abstractEvent.isStopTheWorld()) {
             // add to total pause here, because then adjusted VmOperationEvents are added correctly
             // as well
             totalPause.add(abstractEvent.getPause());
@@ -989,7 +987,7 @@ public class GCModel implements Serializable {
     }
 
     public boolean hasCorrectTimestamp() {
-        return format == Format.IBM_VERBOSE_GC || format == Format.SUN_X_LOG_GC || format == Format.SUN_1_2_2VERBOSE_GC || format == Format.RED_HAT_SHENANDOAH_GC;
+        return format == Format.IBM_VERBOSE_GC || format == Format.SUN_X_LOG_GC || format == Format.SUN_1_2_2VERBOSE_GC || format == Format.UNIFIED_JVM_LOGGING;
     }
 
     public boolean hasDateStamp() {
@@ -1066,6 +1064,6 @@ public class GCModel implements Serializable {
         public static final Format SUN_X_LOG_GC = new Format("Sun -Xloggc:<file>");
         public static final Format IBM_VERBOSE_GC = new Format("IBM -verbose:gc");
         public static final Format SUN_1_2_2VERBOSE_GC = new Format("Sun 1.2.2 -verbose:gc");
-        public static final Format RED_HAT_SHENANDOAH_GC = new Format("Shenandoah -Xlog:gc");
+        public static final Format UNIFIED_JVM_LOGGING = new Format("Unified jvm logging -Xlog:gc");
     }
 }

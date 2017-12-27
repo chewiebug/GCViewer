@@ -2,11 +2,18 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 
 /**
  * Tools useful for (most) DataReader implementations.
  */
 public class DataReaderTools {
+
+    private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
     private Logger logger;
 
@@ -42,5 +49,47 @@ public class DataReaderTools {
             return 1;
         }
     }
+
+    /**
+     * Returns the <code>ExtendedType</code> for <code>typeString</code>, if it can find one. If there is a type name
+     * including gc cause ("ParNew (promotion failed)", where (promotion failed) is the gc cause), the cause is removed
+     * while trying to find the type.
+     *
+     * @param typeString string representation of the gc event
+     * @return <code>ExtendedType</code> representing <code>typeString</code>
+     * @throws UnknownGcTypeException If <code>typeString</code> can't be converted to an <code>ExtendedType</code>
+     */
+    public ExtendedType parseType(String typeString) throws UnknownGcTypeException {
+        ExtendedType gcType = extractTypeFromParsedString(typeString.trim());
+        if (gcType == null) {
+            throw new UnknownGcTypeException(typeString);
+        }
+
+        return gcType;
+    }
+
+    public ExtendedType extractTypeFromParsedString(String typeName) {
+        typeName = typeName.trim();
+        ExtendedType extendedType = null;
+        String lookupTypeName = typeName.endsWith("--")
+                ? typeName.substring(0, typeName.length()-2)
+                : typeName;
+        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
+        // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
+        if (gcType == null) {
+            // try to parse it again with the parens removed
+            Matcher parenMatcher = parenthesesPattern.matcher(lookupTypeName);
+            if (parenMatcher.find()) {
+                gcType = AbstractGCEvent.Type.lookup(parenMatcher.replaceFirst(""));
+            }
+        }
+
+        if (gcType != null) {
+            extendedType = ExtendedType.lookup(gcType, typeName);
+        }
+
+        return extendedType;
+    }
+
 
 }

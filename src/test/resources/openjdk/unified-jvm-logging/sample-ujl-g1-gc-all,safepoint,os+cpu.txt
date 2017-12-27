@@ -1,0 +1,199 @@
+[0.014s][info][os,cpu] CPU:total 4 (initial active 4) (4 cores per cpu, 1 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, tsc, tscinvbit, bmi1, bmi2, adx, fma
+[0.018s][info][gc,heap] Heap region size: 1M
+[0.022s][info][gc     ] Using G1
+[0.022s][info][gc,heap,coops] Heap address: 0x00000000f8000000, size: 128 MB, Compressed Oops mode: 32-bit
+[0.077s][info][safepoint    ] Total time for which application threads were stopped: 0.0000996 seconds, Stopping threads took: 0.0000424 seconds
+[0.200s][info][safepoint    ] Application time: 0.1177031 seconds
+[0.200s][info][gc,start     ] GC(0) Pause Young (G1 Evacuation Pause)
+[0.200s][info][gc,task      ] GC(0) Using 4 workers of 4 for evacuation
+[0.207s][info][gc,phases    ] GC(0)   Pre Evacuate Collection Set: 0.0ms
+[0.207s][info][gc,phases    ] GC(0)   Evacuate Collection Set: 6.4ms
+[0.207s][info][gc,phases    ] GC(0)   Post Evacuate Collection Set: 0.3ms
+[0.207s][info][gc,phases    ] GC(0)   Other: 0.3ms
+[0.207s][info][gc,heap      ] GC(0) Eden regions: 14->0(8)
+[0.207s][info][gc,heap      ] GC(0) Survivor regions: 0->2(2)
+[0.207s][info][gc,heap      ] GC(0) Old regions: 0->11
+[0.207s][info][gc,heap      ] GC(0) Humongous regions: 0->0
+[0.207s][info][gc,metaspace ] GC(0) Metaspace: 3644K->3644K(1056768K)
+[0.207s][info][gc           ] GC(0) Pause Young (G1 Evacuation Pause) 14M->12M(128M) 7.033ms
+[0.207s][info][gc,cpu       ] GC(0) User=0.00s Sys=0.06s Real=0.01s
+[0.207s][info][safepoint    ] Total time for which application threads were stopped: 0.0072168 seconds, Stopping threads took: 0.0000337 seconds
+[0.208s][info][safepoint    ] Application time: 0.0008991 seconds
+[0.208s][info][gc,start     ] GC(1) Pause Young (G1 Evacuation Pause)
+[0.208s][info][gc,task      ] GC(1) Using 4 workers of 4 for evacuation
+[0.211s][info][gc,phases    ] GC(1)   Pre Evacuate Collection Set: 0.0ms
+[0.211s][info][gc,phases    ] GC(1)   Evacuate Collection Set: 2.4ms
+[0.211s][info][gc,phases    ] GC(1)   Post Evacuate Collection Set: 0.5ms
+[0.211s][info][gc,phases    ] GC(1)   Other: 0.1ms
+[0.211s][info][gc,heap      ] GC(1) Eden regions: 8->0(17)
+[0.211s][info][gc,heap      ] GC(1) Survivor regions: 2->2(2)
+[0.211s][info][gc,heap      ] GC(1) Old regions: 11->19
+[0.211s][info][gc,heap      ] GC(1) Humongous regions: 0->0
+[0.211s][info][gc,metaspace ] GC(1) Metaspace: 3647K->3647K(1056768K)
+[0.211s][info][gc           ] GC(1) Pause Young (G1 Evacuation Pause) 20M->20M(128M) 3.211ms
+[0.211s][info][gc,cpu       ] GC(1) User=0.00s Sys=0.00s Real=0.00s
+[0.211s][info][safepoint    ] Total time for which application threads were stopped: 0.0032986 seconds, Stopping threads took: 0.0000161 seconds
+[0.213s][info][safepoint    ] Application time: 0.0021639 seconds
+[0.214s][info][gc,start     ] GC(2) Pause Young (G1 Evacuation Pause)
+[0.214s][info][gc,task      ] GC(2) Using 4 workers of 4 for evacuation
+[0.219s][info][gc,phases    ] GC(2)   Pre Evacuate Collection Set: 0.0ms
+[0.219s][info][gc,phases    ] GC(2)   Evacuate Collection Set: 5.1ms
+[0.219s][info][gc,phases    ] GC(2)   Post Evacuate Collection Set: 0.1ms
+[0.219s][info][gc,phases    ] GC(2)   Other: 0.1ms
+[0.219s][info][gc,heap      ] GC(2) Eden regions: 17->0(21)
+[0.219s][info][gc,heap      ] GC(2) Survivor regions: 2->3(3)
+[0.219s][info][gc,heap      ] GC(2) Old regions: 19->35
+[0.219s][info][gc,heap      ] GC(2) Humongous regions: 0->0
+[0.219s][info][gc,metaspace ] GC(2) Metaspace: 3647K->3647K(1056768K)
+[0.219s][info][gc           ] GC(2) Pause Young (G1 Evacuation Pause) 37M->37M(128M) 5.431ms
+[0.219s][info][gc,cpu       ] GC(2) User=0.00s Sys=0.06s Real=0.00s
+[0.219s][info][safepoint    ] Total time for which application threads were stopped: 0.0055043 seconds, Stopping threads took: 0.0000142 seconds
+[0.221s][info][safepoint    ] Application time: 0.0021834 seconds
+[0.221s][info][gc,start     ] GC(3) Pause Young (G1 Evacuation Pause)
+[0.221s][info][gc,task      ] GC(3) Using 4 workers of 4 for evacuation
+[0.228s][info][gc,phases    ] GC(3)   Pre Evacuate Collection Set: 0.0ms
+[0.228s][info][gc,phases    ] GC(3)   Evacuate Collection Set: 5.8ms
+[0.228s][info][gc,phases    ] GC(3)   Post Evacuate Collection Set: 0.4ms
+[0.228s][info][gc,phases    ] GC(3)   Other: 0.2ms
+[0.228s][info][gc,heap      ] GC(3) Eden regions: 21->0(17)
+[0.228s][info][gc,heap      ] GC(3) Survivor regions: 3->3(3)
+[0.228s][info][gc,heap      ] GC(3) Old regions: 35->56
+[0.228s][info][gc,heap      ] GC(3) Humongous regions: 0->0
+[0.228s][info][gc,metaspace ] GC(3) Metaspace: 3647K->3647K(1056768K)
+[0.228s][info][gc           ] GC(3) Pause Young (G1 Evacuation Pause) 58M->58M(128M) 6.424ms
+[0.228s][info][gc,cpu       ] GC(3) User=0.00s Sys=0.00s Real=0.01s
+[0.228s][info][safepoint    ] Total time for which application threads were stopped: 0.0064992 seconds, Stopping threads took: 0.0000142 seconds
+[0.288s][info][safepoint    ] Application time: 0.0605959 seconds
+[0.288s][info][gc,start     ] GC(4) Pause Young (G1 Evacuation Pause)
+[0.289s][info][gc,task      ] GC(4) Using 4 workers of 4 for evacuation
+[0.291s][info][gc,phases    ] GC(4)   Pre Evacuate Collection Set: 0.0ms
+[0.291s][info][gc,phases    ] GC(4)   Evacuate Collection Set: 2.3ms
+[0.291s][info][gc,phases    ] GC(4)   Post Evacuate Collection Set: 0.4ms
+[0.291s][info][gc,phases    ] GC(4)   Other: 0.1ms
+[0.291s][info][gc,heap      ] GC(4) Eden regions: 17->0(16)
+[0.291s][info][gc,heap      ] GC(4) Survivor regions: 3->3(3)
+[0.291s][info][gc,heap      ] GC(4) Old regions: 56->62
+[0.291s][info][gc,heap      ] GC(4) Humongous regions: 0->0
+[0.291s][info][gc,metaspace ] GC(4) Metaspace: 3647K->3647K(1056768K)
+[0.291s][info][gc           ] GC(4) Pause Young (G1 Evacuation Pause) 75M->64M(128M) 2.887ms
+[0.291s][info][gc,cpu       ] GC(4) User=0.00s Sys=0.00s Real=0.00s
+[0.291s][info][safepoint    ] Total time for which application threads were stopped: 0.0029783 seconds, Stopping threads took: 0.0000189 seconds
+[0.293s][info][safepoint    ] Application time: 0.0014065 seconds
+[0.293s][info][gc,start     ] GC(5) Pause Initial Mark (G1 Evacuation Pause)
+[0.293s][info][gc,task      ] GC(5) Using 4 workers of 4 for evacuation
+[0.298s][info][gc,phases    ] GC(5)   Pre Evacuate Collection Set: 0.0ms
+[0.298s][info][gc,phases    ] GC(5)   Evacuate Collection Set: 4.6ms
+[0.298s][info][gc,phases    ] GC(5)   Post Evacuate Collection Set: 0.2ms
+[0.298s][info][gc,phases    ] GC(5)   Other: 0.2ms
+[0.298s][info][gc,heap      ] GC(5) Eden regions: 16->0(10)
+[0.298s][info][gc,heap      ] GC(5) Survivor regions: 3->3(3)
+[0.298s][info][gc,heap      ] GC(5) Old regions: 62->78
+[0.298s][info][gc,heap      ] GC(5) Humongous regions: 0->0
+[0.298s][info][gc,metaspace ] GC(5) Metaspace: 3647K->3647K(1056768K)
+[0.298s][info][gc           ] GC(5) Pause Initial Mark (G1 Evacuation Pause) 80M->80M(128M) 5.011ms
+[0.298s][info][gc,cpu       ] GC(5) User=0.03s Sys=0.02s Real=0.01s
+[0.298s][info][safepoint    ] Total time for which application threads were stopped: 0.0051265 seconds, Stopping threads took: 0.0000151 seconds
+[0.298s][info][gc           ] GC(6) Concurrent Cycle
+[0.298s][info][gc,marking   ] GC(6) Concurrent Clear Claimed Marks
+[0.298s][info][gc,marking   ] GC(6) Concurrent Clear Claimed Marks 0.009ms
+[0.298s][info][gc,marking   ] GC(6) Concurrent Scan Root Regions
+[0.298s][info][gc,marking   ] GC(6) Concurrent Scan Root Regions 0.092ms
+[0.298s][info][gc,marking   ] GC(6) Concurrent Mark (0.298s)
+[0.298s][info][gc,marking   ] GC(6) Concurrent Mark From Roots
+[0.298s][info][gc,task      ] GC(6) Using 1 workers of 1 for marking
+[0.299s][info][safepoint    ] Application time: 0.0009294 seconds
+[0.299s][info][gc,start     ] GC(7) Pause Young (G1 Evacuation Pause)
+[0.299s][info][gc,task      ] GC(7) Using 4 workers of 4 for evacuation
+[0.303s][info][gc,phases    ] GC(7)   Pre Evacuate Collection Set: 0.0ms
+[0.303s][info][gc,phases    ] GC(7)   Evacuate Collection Set: 3.2ms
+[0.303s][info][gc,phases    ] GC(7)   Post Evacuate Collection Set: 0.3ms
+[0.303s][info][gc,phases    ] GC(7)   Other: 0.1ms
+[0.303s][info][gc,heap      ] GC(7) Eden regions: 10->0(8)
+[0.303s][info][gc,heap      ] GC(7) Survivor regions: 3->2(2)
+[0.303s][info][gc,heap      ] GC(7) Old regions: 78->89
+[0.303s][info][gc,heap      ] GC(7) Humongous regions: 0->0
+[0.303s][info][gc,metaspace ] GC(7) Metaspace: 3647K->3647K(1056768K)
+[0.303s][info][gc           ] GC(7) Pause Young (G1 Evacuation Pause) 90M->90M(128M) 3.819ms
+[0.303s][info][gc,cpu       ] GC(7) User=0.00s Sys=0.00s Real=0.00s
+[0.303s][info][safepoint    ] Total time for which application threads were stopped: 0.0038981 seconds, Stopping threads took: 0.0000145 seconds
+[0.304s][info][safepoint    ] Application time: 0.0008283 seconds
+[0.304s][info][gc,start     ] GC(8) Pause Young (G1 Evacuation Pause)
+[0.304s][info][gc,task      ] GC(8) Using 4 workers of 4 for evacuation
+[0.307s][info][gc,phases    ] GC(8)   Pre Evacuate Collection Set: 0.0ms
+[0.307s][info][gc,phases    ] GC(8)   Evacuate Collection Set: 2.8ms
+[0.307s][info][gc,phases    ] GC(8)   Post Evacuate Collection Set: 0.4ms
+[0.307s][info][gc,phases    ] GC(8)   Other: 0.1ms
+[0.307s][info][gc,heap      ] GC(8) Eden regions: 8->0(8)
+[0.307s][info][gc,heap      ] GC(8) Survivor regions: 2->2(2)
+[0.307s][info][gc,heap      ] GC(8) Old regions: 89->97
+[0.307s][info][gc,heap      ] GC(8) Humongous regions: 0->0
+[0.307s][info][gc,metaspace ] GC(8) Metaspace: 3647K->3647K(1056768K)
+[0.307s][info][gc           ] GC(8) Pause Young (G1 Evacuation Pause) 98M->98M(128M) 3.362ms
+[0.307s][info][gc,cpu       ] GC(8) User=0.00s Sys=0.00s Real=0.00s
+[0.307s][info][safepoint    ] Total time for which application threads were stopped: 0.0034399 seconds, Stopping threads took: 0.0000136 seconds
+[0.308s][info][safepoint    ] Application time: 0.0008298 seconds
+[0.308s][info][gc,start     ] GC(9) Pause Young (G1 Evacuation Pause)
+[0.308s][info][gc,task      ] GC(9) Using 4 workers of 4 for evacuation
+[0.311s][info][gc,phases    ] GC(9)   Pre Evacuate Collection Set: 0.0ms
+[0.311s][info][gc,phases    ] GC(9)   Evacuate Collection Set: 2.5ms
+[0.311s][info][gc,phases    ] GC(9)   Post Evacuate Collection Set: 0.2ms
+[0.311s][info][gc,phases    ] GC(9)   Other: 0.1ms
+[0.311s][info][gc,heap      ] GC(9) Eden regions: 8->0(8)
+[0.311s][info][gc,heap      ] GC(9) Survivor regions: 2->2(2)
+[0.311s][info][gc,heap      ] GC(9) Old regions: 97->105
+[0.311s][info][gc,heap      ] GC(9) Humongous regions: 0->0
+[0.311s][info][gc,metaspace ] GC(9) Metaspace: 3647K->3647K(1056768K)
+[0.311s][info][gc           ] GC(9) Pause Young (G1 Evacuation Pause) 106M->106M(128M) 3.004ms
+[0.311s][info][gc,cpu       ] GC(9) User=0.00s Sys=0.00s Real=0.00s
+[0.311s][info][safepoint    ] Total time for which application threads were stopped: 0.0030862 seconds, Stopping threads took: 0.0000133 seconds
+[0.312s][info][gc,marking   ] GC(6) Concurrent Mark From Roots 13.574ms
+[0.312s][info][gc,marking   ] GC(6) Concurrent Mark (0.298s, 0.312s) 13.627ms
+[0.312s][info][safepoint    ] Application time: 0.0006898 seconds
+[0.312s][info][gc,start     ] GC(6) Pause Remark
+[0.313s][info][gc,stringtable] GC(6) Cleaned string and symbol table, strings: 2498 processed, 15 removed, symbols: 16266 processed, 1 removed
+[0.313s][info][gc            ] GC(6) Pause Remark 113M->113M(128M) 0.939ms
+[0.313s][info][gc,cpu        ] GC(6) User=0.06s Sys=0.00s Real=0.00s
+[0.313s][info][safepoint     ] Total time for which application threads were stopped: 0.0009931 seconds, Stopping threads took: 0.0000121 seconds
+[0.313s][info][gc,marking    ] GC(6) Concurrent Create Live Data
+[0.313s][info][safepoint     ] Application time: 0.0002003 seconds
+[0.313s][info][gc,start      ] GC(10) Pause Young (G1 Evacuation Pause)
+[0.313s][info][gc,task       ] GC(10) Using 4 workers of 4 for evacuation
+[0.315s][info][gc,phases     ] GC(10)   Pre Evacuate Collection Set: 0.0ms
+[0.315s][info][gc,phases     ] GC(10)   Evacuate Collection Set: 1.6ms
+[0.315s][info][gc,phases     ] GC(10)   Post Evacuate Collection Set: 0.3ms
+[0.315s][info][gc,phases     ] GC(10)   Other: 0.1ms
+[0.315s][info][gc,heap       ] GC(10) Eden regions: 8->0(8)
+[0.315s][info][gc,heap       ] GC(10) Survivor regions: 2->2(2)
+[0.315s][info][gc,heap       ] GC(10) Old regions: 105->113
+[0.315s][info][gc,heap       ] GC(10) Humongous regions: 0->0
+[0.315s][info][gc,metaspace  ] GC(10) Metaspace: 3647K->3647K(1056768K)
+[0.315s][info][gc            ] GC(10) Pause Young (G1 Evacuation Pause) 114M->114M(128M) 2.149ms
+[0.315s][info][gc,cpu        ] GC(10) User=0.00s Sys=0.00s Real=0.00s
+[0.315s][info][safepoint     ] Total time for which application threads were stopped: 0.0022063 seconds, Stopping threads took: 0.0000059 seconds
+[0.316s][info][safepoint     ] Application time: 0.0007532 seconds
+[0.316s][info][gc,marking    ] GC(6) Concurrent Create Live Data 3.192ms
+[0.316s][info][gc,start      ] GC(11) Pause Young (G1 Evacuation Pause)
+[0.316s][info][gc,task       ] GC(11) Using 4 workers of 4 for evacuation
+[0.317s][info][gc,phases     ] GC(11)   Pre Evacuate Collection Set: 0.0ms
+[0.317s][info][gc,phases     ] GC(11)   Evacuate Collection Set: 0.3ms
+[0.317s][info][gc,phases     ] GC(11)   Post Evacuate Collection Set: 0.3ms
+[0.317s][info][gc,phases     ] GC(11)   Other: 0.1ms
+[0.317s][info][gc,heap       ] GC(11) Eden regions: 8->0(8)
+[0.317s][info][gc,heap       ] GC(11) Survivor regions: 2->1(2)
+[0.317s][info][gc,heap       ] GC(11) Old regions: 113->113
+[0.317s][info][gc,heap       ] GC(11) Humongous regions: 0->0
+[0.317s][info][gc,metaspace  ] GC(11) Metaspace: 3647K->3647K(1056768K)
+[0.317s][info][gc            ] GC(11) Pause Young (G1 Evacuation Pause) 122M->113M(128M) 0.774ms
+[0.317s][info][gc,cpu        ] GC(11) User=0.00s Sys=0.00s Real=0.00s
+[0.317s][info][safepoint     ] Total time for which application threads were stopped: 0.0008403 seconds, Stopping threads took: 0.0000155 seconds
+[0.317s][info][safepoint     ] Application time: 0.0001178 seconds
+[0.317s][info][gc,start      ] GC(6) Pause Cleanup
+[0.318s][info][gc            ] GC(6) Pause Cleanup 114M->70M(128M) 0.367ms
+[0.318s][info][gc,cpu        ] GC(6) User=0.00s Sys=0.00s Real=0.00s
+[0.318s][info][safepoint     ] Total time for which application threads were stopped: 0.0004217 seconds, Stopping threads took: 0.0000049 seconds
+[0.318s][info][gc,marking    ] GC(6) Concurrent Complete Cleanup
+[0.318s][info][gc,marking    ] GC(6) Concurrent Complete Cleanup 0.070ms
+[0.318s][info][gc,marking    ] GC(6) Concurrent Cleanup for Next Mark
+[0.318s][info][gc,marking    ] GC(6) Concurrent Cleanup for Next Mark 0.409ms
+[0.318s][info][gc            ] GC(6) Concurrent Cycle 20.140ms
+[0.318s][info][safepoint     ] Application time: 0.0007661 seconds

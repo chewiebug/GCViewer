@@ -1,0 +1,49 @@
+[0.012s][info][os,cpu] CPU:total 4 (initial active 4) (4 cores per cpu, 1 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, tsc, tscinvbit, bmi1, bmi2, adx, fma
+[0.016s][info][gc    ] Using Serial
+[0.016s][info][gc,heap,coops] Heap address: 0x00000000fa000000, size: 96 MB, Compressed Oops mode: 32-bit
+[0.070s][info][safepoint    ] Total time for which application threads were stopped: 0.0000754 seconds, Stopping threads took: 0.0000417 seconds
+[0.192s][info][safepoint    ] Application time: 0.1163074 seconds
+[0.192s][info][gc,start     ] GC(0) Pause Young (Allocation Failure)
+[0.202s][info][gc,heap      ] GC(0) DefNew: 26214K->3263K(29504K)
+[0.202s][info][gc,heap      ] GC(0) Tenured: 0K->20953K(65536K)
+[0.202s][info][gc,metaspace ] GC(0) Metaspace: 3644K->3644K(1056768K)
+[0.202s][info][gc           ] GC(0) Pause Young (Allocation Failure) 25M->23M(92M) 9.814ms
+[0.202s][info][gc,cpu       ] GC(0) User=0.00s Sys=0.02s Real=0.01s
+[0.202s][info][safepoint    ] Total time for which application threads were stopped: 0.0099559 seconds, Stopping threads took: 0.0000198 seconds
+[0.204s][info][safepoint    ] Application time: 0.0024017 seconds
+[0.204s][info][gc,start     ] GC(1) Pause Young (Allocation Failure)
+[0.215s][info][gc,heap      ] GC(1) DefNew: 29492K->3233K(29504K)
+[0.215s][info][gc,heap      ] GC(1) Tenured: 20953K->47140K(65536K)
+[0.215s][info][gc,metaspace ] GC(1) Metaspace: 3644K->3644K(1056768K)
+[0.215s][info][gc           ] GC(1) Pause Young (Allocation Failure) 49M->49M(92M) 10.926ms
+[0.215s][info][gc,cpu       ] GC(1) User=0.02s Sys=0.00s Real=0.01s
+[0.215s][info][safepoint    ] Total time for which application threads were stopped: 0.0110148 seconds, Stopping threads took: 0.0000139 seconds
+[0.282s][info][safepoint    ] Application time: 0.0672160 seconds
+[0.283s][info][gc,start     ] GC(2) Pause Young (Allocation Failure)
+[0.283s][info][gc,start     ] GC(3) Pause Full (Allocation Failure)
+[0.283s][info][gc,phases,start] GC(3) Phase 1: Mark live objects
+[0.285s][info][gc,phases      ] GC(3) Phase 1: Mark live objects 2.495ms
+[0.285s][info][gc,phases,start] GC(3) Phase 2: Compute new object addresses
+[0.286s][info][gc,phases      ] GC(3) Phase 2: Compute new object addresses 0.683ms
+[0.286s][info][gc,phases,start] GC(3) Phase 3: Adjust pointers
+[0.287s][info][gc,phases      ] GC(3) Phase 3: Adjust pointers 1.167ms
+[0.287s][info][gc,phases,start] GC(3) Phase 4: Move objects
+[0.290s][info][gc,phases      ] GC(3) Phase 4: Move objects 2.391ms
+[0.290s][info][gc             ] GC(3) Pause Full (Allocation Failure) 74M->10M(92M) 6.987ms
+[0.290s][info][gc,heap        ] GC(2) DefNew: 29459K->0K(29504K)
+[0.290s][info][gc,heap        ] GC(2) Tenured: 47140K->10970K(65536K)
+[0.290s][info][gc,metaspace   ] GC(2) Metaspace: 3644K->3644K(1056768K)
+[0.290s][info][gc             ] GC(2) Pause Young (Allocation Failure) 74M->10M(92M) 7.118ms
+[0.290s][info][gc,cpu         ] GC(2) User=0.00s Sys=0.00s Real=0.01s
+[0.290s][info][safepoint      ] Total time for which application threads were stopped: 0.0073074 seconds, Stopping threads took: 0.0000186 seconds
+[0.293s][info][safepoint      ] Application time: 0.0028992 seconds
+[30.112s][info][gc,heap,exit   ] Heap
+[30.112s][info][gc,heap,exit   ]  def new generation   total 29504K, used 15564K [0x00000000fa000000, 0x00000000fc000000, 0x00000000fc000000)
+[30.112s][info][gc,heap,exit   ]   eden space 26240K,  46% used [0x00000000fa000000, 0x00000000fac0aa60, 0x00000000fb9a0000)
+[30.112s][info][gc,heap,exit   ]   from space 3264K,  99% used [0x00000000fb9a0000, 0x00000000fbcc8650, 0x00000000fbcd0000)
+[30.112s][info][gc,heap,exit   ]   to   space 3264K,   0% used [0x00000000fbcd0000, 0x00000000fbcd0000, 0x00000000fc000000)
+[30.112s][info][gc,heap,exit   ]  tenured generation   total 65536K, used 51931K [0x00000000fc000000, 0x0000000100000000, 0x0000000100000000)
+[30.112s][info][gc,heap,exit   ]    the space 65536K,  79% used [0x00000000fc000000, 0x00000000ff2b6fc8, 0x00000000ff2b7000, 0x0000000100000000)
+[30.112s][info][gc,heap,exit   ]  Metaspace       used 3661K, capacity 4490K, committed 4864K, reserved 1056768K
+[30.112s][info][gc,heap,exit   ]   class space    used 375K, capacity 386K, committed 512K, reserved 1048576K
+[30.112s][info][safepoint      ] Application time: 0.0017091 seconds

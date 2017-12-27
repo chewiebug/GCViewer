@@ -19,34 +19,32 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 
 /**
- * DataReaderShenandoah can parse all the main messages for GCViewer with default decorations. <p>
- * Initial mark, Final mark, Init Update Refs, Final Update Refs, Pause Full Allocation Failure, Pause Full (System.gc()),
- * Concurrent mark, Concurrent evacuation, Concurrent reset bitmaps, Concurrent update references, Concurrent precleaning
+ * DataReaderUnifiedJvmLogging can parse all gc events of unified jvm logs with default decorations.
  * <p>
- * For more information: <a href="https://wiki.openjdk.java.net/display/shenandoah/Main">Shenandoah Wiki at OpenJDK</a>
+ * Currently needs the "gc" selector with "info" level and "uptime,level,tags" decorators (Java 9.0.1).
+ * <ul>
+ * <li>minimum configuration with defaults: <code>-Xlog:gc:file="path-to-file"</code></li>
+ * <li>configuration with tags + decorations: <code>-Xlog:gc=info:file="path-to-file":tags,uptime,level</code></li>
+ * </ul>
+ * Only processes the following information format for Serial, Parallel, CMS, G1 and Shenandoah algorithms, everything else is ignored:
+ * <pre>
+ * [0.731s][info][gc           ] GC(0) Pause Init Mark 1.021ms
+ * [0.735s][info][gc           ] GC(0) Concurrent marking 74M-&gt;74M(128M) 3.688ms
+ * [43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M-&gt;6013M(8192M) 14289.335ms
+ * </pre>
  *
  * <p>
- * Example Format
- * <p>[0.730s][info][gc,start     ] GC(0) Pause Init Mark
- * <p>[0.731s][info][gc           ] GC(0) Pause Init Mark 1.021ms
- * <p>[0.731s][info][gc,start     ] GC(0) Concurrent marking
- * <p>[0.735s][info][gc           ] GC(0) Concurrent marking 74M-&gt;74M(128M) 3.688ms
- * <p>[0.735s][info][gc,start     ] GC(0) Pause Final Mark
- * <p>[0.736s][info][gc           ] GC(0) Pause Final Mark 74M-&gt;76M(128M) 0.811ms
- * <p>[0.736s][info][gc,start     ] GC(0) Concurrent evacuation
- * <p>...
- * <p>[43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M-&gt;6013M(8192M) 14289.335ms
+ * For more information about Shenandoah see: <a href="https://wiki.openjdk.java.net/display/shenandoah/Main">Shenandoah Wiki at OpenJDK</a>
  */
-public class DataReaderShenandoah extends AbstractDataReader {
-
+public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
     // Group 1: 0.693
     // Group 2: Pause Init Mark
-    // Group 3: 1.070
+    // Group 3: 1.070 -> optional
     // Regex: ^\[([^s\]]*)[^\-]*\)[ ]([^\-]*)[ ]([0-9]+[.,][0-9]+)
     private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile(
-            "^\\[([^s\\]]*)[^\\-]*\\)[ ]([^\\-]*)[ ]([0-9]+[.,][0-9]+)");
+            "^\\[([^s\\]]*)[^\\-]*\\)[ ]([^\\d]*)(([0-9]+[.,][0-9]+)|$)");
 
     // Input: [13.522s][info][gc            ] GC(708) Concurrent evacuation  4848M->4855M(4998M) 2.872ms
     // Group 1: 13.522
@@ -84,27 +82,29 @@ public class DataReaderShenandoah extends AbstractDataReader {
     private static final int HEAP_CURRENT_TOTAL = 5;
     private static final int HEAP_CURRENT_TOTAL_UNIT = 6;
 
-    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Using Shenandoah", "Cancelling concurrent GC",
-            "[gc,start", "[gc,ergo", "[gc,stringtable", "[gc,init", "[gc,heap", "[pagesize", "[class", "[os", "[startuptime",
-            "[os,thread", "[gc,heap,exit", "Cancelling concurrent GC: Allocation Failure", "Phase ",
-            "[gc,stats", "[biasedlocking", "[logging", "[verification", "[modules,startuptime", "[safepoint", "[stacktrace",
-            "[exceptions", "thrown", "at bci", "for thread", "[module,load", "[module,startuptime");
+    /** list of strings, that must be part of the gc log line to be considered for parsing */
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]");
+    /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
+    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace");
+    /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
+    private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using");
 
-    protected DataReaderShenandoah(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
+
+    protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
     }
 
     @Override
     public GCModel read() throws IOException {
-        getLogger().info("Reading Shenandoah format...");
+        getLogger().info("Reading Oracle / OpenJDK unified jvm logging format...");
 
         try {
             GCModel model = new GCModel();
-            model.setFormat(GCModel.Format.RED_HAT_SHENANDOAH_GC);
+            model.setFormat(GCModel.Format.UNIFIED_JVM_LOGGING);
 
             Stream<String> lines = in.lines();
-            lines.filter(this::lineNotInExcludedStrings)
-                    .map(this::parseShenandoahEvent)
+            lines.filter(this::lineContainsParseableEvent)
+                    .map(this::parseEvent)
                     .filter(Objects::nonNull)
                     .forEach(model::add);
 
@@ -114,24 +114,31 @@ public class DataReaderShenandoah extends AbstractDataReader {
         }
     }
 
-    private AbstractGCEvent<?> parseShenandoahEvent(String line) {
+    private AbstractGCEvent<?> parseEvent(String line) {
         AbstractGCEvent<?> event = null;
 
         Matcher noHeapMatcher = PATTERN_WITHOUT_HEAP.matcher(line);
         Matcher withHeapMatcher = PATTERN_WITH_HEAP.matcher(line);
-        if (noHeapMatcher.find()) {
-            event = new GCEvent();
-            AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup(noHeapMatcher.group(NO_HEAP_EVENT_NAME));
-            event.setType(type);
-            setPauseAndDateOrTimestamp(event, noHeapMatcher.group(NO_HEAP_TIMESTAMP), noHeapMatcher.group(NO_HEAP_DURATION));
-        } else if (withHeapMatcher.find()) {
+        try {
             event = line.contains("Concurrent") ? new ConcurrentGCEvent() : new GCEvent();
-            AbstractGCEvent.Type type = AbstractGCEvent.Type.lookup(withHeapMatcher.group(WITH_HEAP_EVENT_NAME));
-            event.setType(type);
-            setPauseAndDateOrTimestamp(event, withHeapMatcher.group(WITH_HEAP_TIMESTAMP), withHeapMatcher.group(WITH_HEAP_DURATION));
-            addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
-        } else {
-            getLogger().warning(String.format("Failed to parse line number %d in the log file: %s", in.getLineNumber(), line));
+            if (noHeapMatcher.find()) {
+                AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(noHeapMatcher.group(NO_HEAP_EVENT_NAME));
+                event.setExtendedType(type);
+                setPauseAndDateOrTimestamp(event, noHeapMatcher.group(NO_HEAP_TIMESTAMP), noHeapMatcher.groupCount() > 2 ? noHeapMatcher.group(NO_HEAP_DURATION) : null);
+            } else if (withHeapMatcher.find()) {
+                AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(withHeapMatcher.group(WITH_HEAP_EVENT_NAME));
+                event.setExtendedType(type);
+                setPauseAndDateOrTimestamp(event, withHeapMatcher.group(WITH_HEAP_TIMESTAMP), withHeapMatcher.group(WITH_HEAP_DURATION));
+                addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
+            } else {
+                // prevent incomplete event from being added to the GCModel
+                event = null;
+                getLogger().warning(String.format("Failed to parse line number %d (line=\"%s\")", in.getLineNumber(), line));
+            }
+        } catch (UnknownGcTypeException | NumberFormatException e) {
+            // prevent incomplete event from being added to the GCModel
+            event = null;
+            getLogger().warning(String.format("Failed to parse gc event (%s) on line number %d (line=\"%s\")", e.toString(), in.getLineNumber(), line));
         }
 
         return event;
@@ -143,8 +150,10 @@ public class DataReaderShenandoah extends AbstractDataReader {
      * @param dateOrTimeStampAsString   Date- or timestamp information from regex group as string
      */
     private void setPauseAndDateOrTimestamp(AbstractGCEvent<?> event, String dateOrTimeStampAsString, String pauseAsString) {
-        double pause = Double.parseDouble(pauseAsString.replace(",", "."));
-        event.setPause(pause / 1000);
+        if (pauseAsString != null && pauseAsString.length() > 0) {
+            double pause = Double.parseDouble(pauseAsString.replace(",", "."));
+            event.setPause(pause / 1000);
+        }
         if (PATTERN_ISO8601_DATE.matcher(dateOrTimeStampAsString).find()) {
             ZonedDateTime dateTime = ZonedDateTime.parse(dateOrTimeStampAsString, AbstractDataReaderSun.DATE_TIME_FORMATTER);
             event.setDateStamp(dateTime);
@@ -169,12 +178,32 @@ public class DataReaderShenandoah extends AbstractDataReader {
                     Integer.parseInt(matcher.group(HEAP_CURRENT_TOTAL)), matcher.group(HEAP_CURRENT_TOTAL_UNIT).charAt(0), memoryString));
             event.setExtendedType(event.getExtendedType());
         } else {
-            getLogger().warning("Failed to find heap details from line: " + memoryString);
+            getLogger().warning("Failed to find heap details from string: \"" + memoryString + "\"");
         }
     }
 
-    private boolean lineNotInExcludedStrings(String line) {
-        return EXCLUDE_STRINGS.stream().noneMatch(line::contains);
+    private boolean isExcludedLine(String line) {
+        return EXCLUDE_STRINGS.stream().anyMatch(line::contains);
+    }
+
+    private boolean isCandidateForParseableEvent(String line) {
+        return INCLUDE_STRINGS.stream().anyMatch(line::contains);
+    }
+
+    private boolean isLogOnlyLine(String line) {
+        return LOG_ONLY_STRINGS.stream().anyMatch(line::contains);
+    }
+
+    private boolean lineContainsParseableEvent(String line) {
+        if (isCandidateForParseableEvent(line) && !isExcludedLine(line)) {
+            if (isLogOnlyLine(line)) {
+                getLogger().info(line.substring(line.lastIndexOf("]")+1));
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

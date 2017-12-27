@@ -11,8 +11,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
@@ -37,8 +35,6 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     private static final int LENGTH_OF_DATESTAMP = 29;
 
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
-
-    private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
     // java 8 log output
     protected static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
@@ -301,35 +297,12 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
     protected ExtendedType parseType(String line, ParseInformation pos) throws ParseException {
         String typeString = parseTypeString(line, pos);
-        ExtendedType gcType = extractTypeFromParsedString(typeString);
-        if (gcType == null) {
-            throw new UnknownGcTypeException(typeString, line, pos);
-        }
-
-        return gcType;
+        return getDataReaderTools().parseType(typeString);
     }
 
 
     protected ExtendedType extractTypeFromParsedString(String typeName) throws UnknownGcTypeException {
-        ExtendedType extendedType = null;
-        String lookupTypeName = typeName.endsWith("--")
-                ? typeName.substring(0, typeName.length()-2)
-                        : typeName;
-        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
-        // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
-        if (gcType == null) {
-            // try to parse it again with the parens removed
-            Matcher parenMatcher = parenthesesPattern.matcher(lookupTypeName);
-            if (parenMatcher.find()) {
-                gcType = AbstractGCEvent.Type.lookup(parenMatcher.replaceFirst(""));
-            }
-        }
-
-        if (gcType != null) {
-            extendedType = ExtendedType.lookup(gcType, typeName);
-        }
-
-        return extendedType;
+        return getDataReaderTools().extractTypeFromParsedString(typeName);
     }
 
     /**
