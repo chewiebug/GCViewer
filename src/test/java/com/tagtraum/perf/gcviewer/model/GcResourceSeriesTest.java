@@ -1,18 +1,19 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class GcResourceSeriesTest {
     @Rule
@@ -24,9 +25,9 @@ public class GcResourceSeriesTest {
     @Before
     public void setUp() throws Exception {
         resourceList = new ArrayList<>();
-        resourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath()));
-        resourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath()));
-        resourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath()));
+        resourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath()));
+        resourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath()));
+        resourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath()));
 
         resourceSeries = new GcResourceSeries(resourceList);
     }
@@ -53,7 +54,7 @@ public class GcResourceSeriesTest {
     @Test
     public void buildName() throws Exception {
         assertThat(GcResourceSeries.buildName(resourceList), is(
-                UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK).getPath() + "/" + "SampleSun1_8_0Series-Part1-3"));
+                UnittestHelper.getResource(FOLDER.OPENJDK.getFolderName()).getPath() + "/" + "SampleSun1_8_0Series-Part1-3"));
     }
 
     @Test
@@ -65,7 +66,7 @@ public class GcResourceSeriesTest {
     public void buildName_WhenOnlyOneEntryExists() throws Exception {
         resourceList = new ArrayList<>();
         GcResourceFile gcResourceFile =
-                new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
+                new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
         resourceList.add(gcResourceFile);
         assertThat(GcResourceSeries.buildName(resourceList), is(gcResourceFile.getResourceName()));
     }

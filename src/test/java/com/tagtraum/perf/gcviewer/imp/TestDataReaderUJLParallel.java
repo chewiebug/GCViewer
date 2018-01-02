@@ -6,23 +6,20 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 /**
  * Tests unified jvm logging parser for parallel gc events.
  */
 public class TestDataReaderUJLParallel {
-    private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK_UJL, fileName);
+    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
+        return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
@@ -76,20 +73,4 @@ public class TestDataReaderUJLParallel {
         assertThat("event3 timestamp", event3.getTimestamp(), closeTo(0.330, 0.0001));
     }
 
-    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
-        TestLogHandler handler = new TestLogHandler();
-        handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GcResourceFile(fileName);
-        gcResource.getLogger().addHandler(handler);
-
-        try (InputStream in = getInputStream(gcResource.getResourceName())) {
-            DataReader reader = new DataReaderFactory().getDataReader(gcResource, in);
-            assertThat("reader from factory", reader.getClass().getName(), is(DataReaderUnifiedJvmLogging.class.getName()));
-
-            GCModel model = reader.read();
-            assertThat("model format", model.getFormat(), is(GCModel.Format.UNIFIED_JVM_LOGGING));
-            assertThat("number of errors", handler.getCount(), is(0));
-            return model;
-        }
-    }
 }

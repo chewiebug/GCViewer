@@ -1,12 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,8 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the implementation of {@link DataReaderFacade}.
@@ -28,7 +32,7 @@ public class TestDataReaderFacade {
 
     private static final String SAMPLE_GCLOG_SUN1_6_0 = "SampleSun1_6_0PrintHeapAtGC.txt";
     
-    private static final String PARENT_PATH = "src/test/resources/" + UnittestHelper.FOLDER_OPENJDK + "/";
+    private static final String PARENT_PATH = "src/test/resources/" + FOLDER.OPENJDK.getFolderName() + "/";
 
     private DataReaderFacade dataReaderFacade;
     
@@ -111,14 +115,14 @@ public class TestDataReaderFacade {
 
     @Test
     public void testLoadModel_forSeries() throws IOException, DataReaderException {
-        GCResource file1 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
-        GCResource file2 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
-        GCResource file3 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
-        GCResource file4 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part4.txt").getPath());
-        GCResource file5 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part5.txt").getPath());
-        GCResource file6 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part6.txt").getPath());
-        GCResource file7 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part7.txt").getPath());
-        GCResource expectedResult = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-ManuallyMerged.txt").getPath());
+        GCResource file1 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
+        GCResource file2 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
+        GCResource file3 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
+        GCResource file4 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part4.txt").getPath());
+        GCResource file5 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part5.txt").getPath());
+        GCResource file6 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part6.txt").getPath());
+        GCResource file7 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part7.txt").getPath());
+        GCResource expectedResult = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-ManuallyMerged.txt").getPath());
         GCModel expectedModel = dataReaderFacade.loadModel(expectedResult);
 
         List<GCResource> resources = new ArrayList<>();
@@ -137,14 +141,14 @@ public class TestDataReaderFacade {
 
     @Test
     public void testLoadModelFromSeries() throws IOException, DataReaderException {
-        GCResource file1 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
-        GCResource file2 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
-        GCResource file3 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
-        GCResource file4 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part4.txt").getPath());
-        GCResource file5 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part5.txt").getPath());
-        GCResource file6 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part6.txt").getPath());
-        GCResource file7 = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part7.txt").getPath());
-        GCResource expectedResult = new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-ManuallyMerged.txt").getPath());
+        GCResource file1 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
+        GCResource file2 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
+        GCResource file3 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
+        GCResource file4 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part4.txt").getPath());
+        GCResource file5 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part5.txt").getPath());
+        GCResource file6 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part6.txt").getPath());
+        GCResource file7 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part7.txt").getPath());
+        GCResource expectedResult = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-ManuallyMerged.txt").getPath());
         GCModel expectedModel = dataReaderFacade.loadModel(expectedResult);
 
         List<GCResource> resources = new ArrayList<>();

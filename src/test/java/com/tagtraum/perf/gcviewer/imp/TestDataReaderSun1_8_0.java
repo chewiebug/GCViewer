@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
-
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Test;
 
 /**
  * Test logs generated specifically by java 1.8.
@@ -26,7 +26,7 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
 public class TestDataReaderSun1_8_0 {
 
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
     }
 
     private DataReader getDataReader(GCResource gcResource) throws IOException {

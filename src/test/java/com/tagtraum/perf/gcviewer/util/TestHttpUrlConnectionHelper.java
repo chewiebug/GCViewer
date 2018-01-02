@@ -24,16 +24,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import org.junit.Test;
-
-import com.tagtraum.perf.gcviewer.UnittestHelper;
 
 public class TestHttpUrlConnectionHelper {
 
     private static final String SAMPLE_GCLOG_SUN1_6_0 = "SampleSun1_6_0PrintHeapAtGC.txt";
     private static final String SAMPLE_GCLOG_SUN1_6_0_GZ = SAMPLE_GCLOG_SUN1_6_0 + ".gz";  
     
-    private static final String PARENT_PATH = "src/test/resources/" + UnittestHelper.FOLDER_OPENJDK + "/";
+    private static final String PARENT_PATH = "src/test/resources/" + FOLDER.OPENJDK + "/";
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     private ByteArrayInputStream create404InputStream() {

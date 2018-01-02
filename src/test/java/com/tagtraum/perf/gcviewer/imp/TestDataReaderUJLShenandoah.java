@@ -6,26 +6,23 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.ZonedDateTime;
-import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 /**
  * Created by Mart on 10/05/2017.
  */
 public class TestDataReaderUJLShenandoah {
-    private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK_UJL, fileName);
+    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
+        return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
@@ -179,19 +176,4 @@ public class TestDataReaderUJLShenandoah {
         assertThat("generation", event2.getGeneration(), is(AbstractGCEvent.Generation.TENURED));
     }
 
-
-    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
-        TestLogHandler handler = new TestLogHandler();
-        handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GcResourceFile(fileName);
-        gcResource.getLogger().addHandler(handler);
-
-        try (InputStream in = getInputStream(gcResource.getResourceName())) {
-            DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
-            GCModel model = reader.read();
-            assertThat("model format", model.getFormat(), is(GCModel.Format.UNIFIED_JVM_LOGGING));
-            assertThat("number of errors", handler.getCount(), is(0));
-            return model;
-        }
-    }
 }

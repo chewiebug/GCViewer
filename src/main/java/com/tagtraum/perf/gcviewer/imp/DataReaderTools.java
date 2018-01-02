@@ -60,7 +60,7 @@ public class DataReaderTools {
      * @throws UnknownGcTypeException If <code>typeString</code> can't be converted to an <code>ExtendedType</code>
      */
     public ExtendedType parseType(String typeString) throws UnknownGcTypeException {
-        ExtendedType gcType = extractTypeFromParsedString(typeString.trim());
+        ExtendedType gcType = parseTypeWithCause(typeString.trim());
         if (gcType == null) {
             throw new UnknownGcTypeException(typeString);
         }
@@ -68,7 +68,14 @@ public class DataReaderTools {
         return gcType;
     }
 
-    public ExtendedType extractTypeFromParsedString(String typeName) {
+    /**
+     * Same as @{link {@link #parseType(String)}}, but returns <code>null</code> instead of exception, if no type could
+     * be found.
+     *
+     * @param typeName string representation of the gc event
+     * @return <code>ExtendedType</code> representing <code>typeString</code>, or <code>null</code> if none could be found
+     */
+    public ExtendedType parseTypeWithCause(String typeName) {
         typeName = typeName.trim();
         ExtendedType extendedType = null;
         String lookupTypeName = typeName.endsWith("--")

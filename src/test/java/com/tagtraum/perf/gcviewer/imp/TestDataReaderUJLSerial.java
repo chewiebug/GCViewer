@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -22,8 +23,8 @@ import org.junit.Test;
  * Tests unified jvm logging parser for serial gc events.
  */
 public class TestDataReaderUJLSerial {
-    private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK_UJL, fileName);
+    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
+        return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
@@ -100,7 +101,7 @@ public class TestDataReaderUJLSerial {
         GCModel model = reader.read();
 
         assertThat("number of warnings", handler.getCount(), is(1));
-        assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Failed to parse line number"));
+        assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Expected memory and pause in the end of line number"));
     }
 
     @Test
@@ -120,20 +121,4 @@ public class TestDataReaderUJLSerial {
         assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Failed to parse gc event ("));
     }
 
-    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
-        TestLogHandler handler = new TestLogHandler();
-        handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GcResourceFile(fileName);
-        gcResource.getLogger().addHandler(handler);
-
-        try (InputStream in = getInputStream(gcResource.getResourceName())) {
-            DataReader reader = new DataReaderFactory().getDataReader(gcResource, in);
-            assertThat("reader from factory", reader.getClass().getName(), is(DataReaderUnifiedJvmLogging.class.getName()));
-
-            GCModel model = reader.read();
-            assertThat("model format", model.getFormat(), is(GCModel.Format.UNIFIED_JVM_LOGGING));
-            assertThat("number of errors", handler.getCount(), is(0));
-            return model;
-        }
-    }
 }

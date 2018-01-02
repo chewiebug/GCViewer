@@ -11,13 +11,13 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
-
-import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Test;
 
 /**
  * Test logs generated specifically by JDK 1.8 G1 algorithm.
@@ -28,7 +28,7 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
 public class TestDataReaderSun1_8_0G1 {
 
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
     }
 
     private DataReader getDataReader(GCResource gcResource) throws UnsupportedEncodingException, IOException {

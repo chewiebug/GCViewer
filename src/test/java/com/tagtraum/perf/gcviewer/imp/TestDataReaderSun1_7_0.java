@@ -13,9 +13,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.logging.Level;
 
-import com.tagtraum.perf.gcviewer.model.*;
-import org.junit.Test;
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Test;
 
 /**
  * Tests for logs generated specifically by jdk 1.7.0.
@@ -28,7 +33,7 @@ public class TestDataReaderSun1_7_0 {
     private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
     }
 
     private DataReader getDataReader(GCResource gcResource) throws IOException {

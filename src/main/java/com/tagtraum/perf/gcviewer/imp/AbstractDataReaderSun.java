@@ -301,8 +301,8 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     }
 
 
-    protected ExtendedType extractTypeFromParsedString(String typeName) throws UnknownGcTypeException {
-        return getDataReaderTools().extractTypeFromParsedString(typeName);
+    protected ExtendedType extractTypeFromParsedString(String typeName) {
+        return getDataReaderTools().parseTypeWithCause(typeName);
     }
 
     /**

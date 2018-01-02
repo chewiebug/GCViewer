@@ -1,14 +1,8 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import com.tagtraum.perf.gcviewer.view.GCViewerGui;
-import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -20,9 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+import com.tagtraum.perf.gcviewer.view.GCViewerGui;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Unittest for main controller class of GCViewerGui ({@link GCModelLoaderControllerImpl}).
@@ -53,7 +54,7 @@ public class TestGCModelLoaderController {
     @Test
     public void openString() throws Exception {
         assertThat("number of gcdocuments before", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(0));
-        controller.open(new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt")));
+        controller.open(new GcResourceFile(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt")));
         assertThat("number of gcdocuments after", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(1));
 
     }
@@ -70,9 +71,9 @@ public class TestGCModelLoaderController {
 
     private ArrayList<GCResource> getGcResourcesForSeries() throws IOException {
         ArrayList<GCResource> gcResourceList = new ArrayList<>();
-        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath()));
-        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath()));
-        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath()));
+        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath()));
+        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath()));
+        gcResourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath()));
         return gcResourceList;
     }
 
@@ -85,7 +86,7 @@ public class TestGCModelLoaderController {
         assertThat("number of gcdocuments before", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(0));
 
         List<File> fileList = new ArrayList<File>();
-        fileList.add(new File(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0G1_MarkStackFull.txt").getPath()));
+        fileList.add(new File(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_6_0G1_MarkStackFull.txt").getPath()));
 
         Transferable tr = Mockito.mock(Transferable.class);
         Mockito.when(tr.getTransferData(DataFlavor.javaFileListFlavor)).thenReturn(fileList);
@@ -103,7 +104,7 @@ public class TestGCModelLoaderController {
     @Test
     public void open_File() throws Exception {
         File[] files = new File[1];
-        File file = new File(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+        File file = new File(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt"));
         files[0] = file;
         controller.open(files);
         assertThat(getOpenResources(), contains(new GcResourceFile(file)));
@@ -111,7 +112,7 @@ public class TestGCModelLoaderController {
 
     @Test
     public void open_GcResourceFile() throws Exception {
-        GCResource resource = new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+        GCResource resource = new GcResourceFile(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt"));
         controller.open(resource);
         assertThat(getOpenResources(), contains(resource));
     }

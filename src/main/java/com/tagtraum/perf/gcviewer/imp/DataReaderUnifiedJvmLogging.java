@@ -13,10 +13,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * DataReaderUnifiedJvmLogging can parse all gc events of unified jvm logs with default decorations.
@@ -38,49 +41,52 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
  */
 public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
+    // matches the whole line and extracts decorators from it (decorators always appear between [] and are independent of the gc algorithm being logged)
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
-    // Group 1: 0.693
-    // Group 2: Pause Init Mark
-    // Group 3: 1.070 -> optional
-    // Regex: ^\[([^s\]]*)[^\-]*\)[ ]([^\-]*)[ ]([0-9]+[.,][0-9]+)
-    private static final Pattern PATTERN_WITHOUT_HEAP = Pattern.compile(
-            "^\\[([^s\\]]*)[^\\-]*\\)[ ]([^\\d]*)(([0-9]+[.,][0-9]+)|$)");
+    // Group 1 / time: <empty> (optional group, no full timestamp present)
+    // Group 2 / uptime: 0.693 (optional group, present in this example)
+    // Group 3 / level: info
+    // Group 4 / tags: gc
+    // Group 5 / gcnumber: 0
+    // Group 6 / tail: Pause Init Mark 1.070ms
+    // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
+    //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
+    private static final Pattern PATTERN_DECORATORS = Pattern.compile(
+            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>[-.a-zA-Z ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
+    );
+    private static final String GROUP_DECORATORS_TIME = "time";
+    private static final String GROUP_DECORATORS_UPTIME = "uptime";
+    private static final String GROUP_DECORATORS_LEVEL = "level";
+    private static final String GROUP_DECORATORS_TAGS = "tags";
+    private static final String GROUP_DECORATORS_GC_NUMBER = "gcnumber";
+    private static final String GROUP_DECORATORS_GC_TYPE = "type";
+    private static final String GROUP_DECORATORS_TAIL = "tail";
 
-    // Input: [13.522s][info][gc            ] GC(708) Concurrent evacuation  4848M->4855M(4998M) 2.872ms
-    // Group 1: 13.522
-    // Group 2: Concurrent evacuation
-    // Group 3: 4848M->4855M(4998M)
-    // Group 4: 2.872
-    // Regex: ^\[([^s\]]*).*\)[ ](.*)[ ]([0-9]+[BKMG]\-\>[0-9]+[BKMG]\([0-9]+[BKMG]\)) ([0-9]+[.,][0-9]+)
-    private static final Pattern PATTERN_WITH_HEAP = Pattern.compile(
-            "^\\[([^s\\]]*).*\\)[ ](.*)[ ]([0-9]+[BKMG]\\-\\>[0-9]+[BKMG]\\([0-9]+[BKMG]\\)) ([0-9]+[.,][0-9]+)");
+    private static final String PATTERN_PAUSE_STRING = "([0-9]+[.,][0-9]+)ms";
+    // Input: 1.070ms
+    // Group 1: 1.070
+    private static final Pattern PATTERN_PAUSE = Pattern.compile("^" + PATTERN_PAUSE_STRING);
 
-    // Input: 4848M->4855M(4998M)
+    private static final int GROUP_PAUSE = 1;
+
+    // Input: 4848M->4855M(4998M) 2.872ms
     // Group 1: 4848
-    // Group 2: 4855
-    // Group 3: 4998
-    // Regex: ([0-9]+)[BKMG]\-\>([0-9]+)[BKMG]\(([0-9]+)[BKMG]\)
-    private static final Pattern PATTERN_HEAP_CHANGES = Pattern.compile(
-            "([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\)");
+    // Group 2: M
+    // Group 3: 4855
+    // Group 4: M
+    // Group 5: 4998
+    // Group 6: M
+    // Group 7: 1.070
+    private static final Pattern PATTERN_MEMORY_PAUSE = Pattern.compile("^(([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\)) " + PATTERN_PAUSE_STRING);
 
-    // Input: 2017-08-30T23:22:47.357+0300
-    // Regex: ^\d{4}\-\d\d\-\d\d[tT][\d:\.]*?(?:[zZ]|[+\-]\d\d:?\d\d)?$
-    private static final Pattern PATTERN_ISO8601_DATE = Pattern.compile(
-            "^\\d{4}\\-\\d\\d\\-\\d\\d[tT][\\d:\\.]*?(?:[zZ]|[+\\-]\\d\\d:?\\d\\d)?$");
-
-    private static final int NO_HEAP_TIMESTAMP = 1;
-    private static final int NO_HEAP_EVENT_NAME = 2;
-    private static final int NO_HEAP_DURATION = 3;
-    private static final int WITH_HEAP_TIMESTAMP = 1;
-    private static final int WITH_HEAP_EVENT_NAME = 2;
-    private static final int WITH_HEAP_MEMORY = 3;
-    private static final int WITH_HEAP_DURATION = 4;
-    private static final int HEAP_BEFORE = 1;
-    private static final int HEAP_BEFORE_UNIT = 2;
-    private static final int HEAP_AFTER = 3;
-    private static final int HEAP_AFTER_UNIT = 4;
-    private static final int HEAP_CURRENT_TOTAL = 5;
-    private static final int HEAP_CURRENT_TOTAL_UNIT = 6;
+    private static final int GROUP_MEMORY = 1;
+    private static final int GROUP_MEMORY_BEFORE = 2;
+    private static final int GROUP_MEMORY_BEFORE_UNIT = 3;
+    private static final int GROUP_MEMORY_AFTER = 4;
+    private static final int GROUP_MEMORY_AFTER_UNIT = 5;
+    private static final int GROUP_MEMORY_CURRENT_TOTAL = 6;
+    private static final int GROUP_MEMORY_CURRENT_TOTAL_UNIT = 7;
+    private static final int GROUP_MEMORY_PAUSE = 8;
 
     /** list of strings, that must be part of the gc log line to be considered for parsing */
     private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]");
@@ -117,23 +123,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private AbstractGCEvent<?> parseEvent(String line) {
         AbstractGCEvent<?> event = null;
 
-        Matcher noHeapMatcher = PATTERN_WITHOUT_HEAP.matcher(line);
-        Matcher withHeapMatcher = PATTERN_WITH_HEAP.matcher(line);
+        Matcher decoratorsMatcher = PATTERN_DECORATORS.matcher(line);
         try {
-            event = line.contains("Concurrent") ? new ConcurrentGCEvent() : new GCEvent();
-            if (noHeapMatcher.find()) {
-                AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(noHeapMatcher.group(NO_HEAP_EVENT_NAME));
-                event.setExtendedType(type);
-                setPauseAndDateOrTimestamp(event, noHeapMatcher.group(NO_HEAP_TIMESTAMP), noHeapMatcher.groupCount() > 2 ? noHeapMatcher.group(NO_HEAP_DURATION) : null);
-            } else if (withHeapMatcher.find()) {
-                AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(withHeapMatcher.group(WITH_HEAP_EVENT_NAME));
-                event.setExtendedType(type);
-                setPauseAndDateOrTimestamp(event, withHeapMatcher.group(WITH_HEAP_TIMESTAMP), withHeapMatcher.group(WITH_HEAP_DURATION));
-                addHeapDetailsToEvent(event, withHeapMatcher.group(WITH_HEAP_MEMORY));
-            } else {
-                // prevent incomplete event from being added to the GCModel
-                event = null;
-                getLogger().warning(String.format("Failed to parse line number %d (line=\"%s\")", in.getLineNumber(), line));
+            event = createGcEventWithStandardDecorators(decoratorsMatcher, line);
+            if (event != null) {
+                String tail = decoratorsMatcher.group(GROUP_DECORATORS_TAIL);
+                if (event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE)) {
+                    handleGcPauseTail(line, event, tail);
+                } else if (event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE)) {
+                    handleGcMemoryPauseTail(line, event, tail);
+                } else if (event.getExtendedType().getPattern().equals(GcPattern.GC) || event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION)) {
+                    handleGcTail(line, tail);
+                }
             }
         } catch (UnknownGcTypeException | NumberFormatException e) {
             // prevent incomplete event from being added to the GCModel
@@ -144,41 +145,90 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         return event;
     }
 
-    /**
-     * @param event                     GC event to which pause and timestamp information is added
-     * @param pauseAsString             Pause information from regex group as string
-     * @param dateOrTimeStampAsString   Date- or timestamp information from regex group as string
-     */
-    private void setPauseAndDateOrTimestamp(AbstractGCEvent<?> event, String dateOrTimeStampAsString, String pauseAsString) {
-        if (pauseAsString != null && pauseAsString.length() > 0) {
-            double pause = Double.parseDouble(pauseAsString.replace(",", "."));
-            event.setPause(pause / 1000);
+    private void handleGcTail(String line, String tail) {
+        if (!(tail == null)) {
+            getLogger().warning(String.format("Unexpected tail present in the end of line number %d (expected nothing to be present, tail=\"%s\"; line=\"%s\")", in.getLineNumber(), tail, line));
         }
-        if (PATTERN_ISO8601_DATE.matcher(dateOrTimeStampAsString).find()) {
-            ZonedDateTime dateTime = ZonedDateTime.parse(dateOrTimeStampAsString, AbstractDataReaderSun.DATE_TIME_FORMATTER);
-            event.setDateStamp(dateTime);
+    }
+
+    private void handleGcMemoryPauseTail(String line, AbstractGCEvent<?> event, String tail) {
+        Matcher memoryPauseMatcher = PATTERN_MEMORY_PAUSE.matcher(tail);
+        if (memoryPauseMatcher.find()) {
+            setPause(event, memoryPauseMatcher.group(GROUP_MEMORY_PAUSE));
+            setMemory(event, memoryPauseMatcher);
         } else {
-            double timestamp = Double.parseDouble(dateOrTimeStampAsString.replace(",", "."));
-            event.setTimestamp(timestamp);
+            getLogger().warning(String.format("Expected memory and pause in the end of line number %d (line=\"%s\")", in.getLineNumber(), line));
+        }
+    }
+
+    private void handleGcPauseTail(String line, AbstractGCEvent<?> event, String tail) {
+        // G1 and CMS algorithms have "gc" tagged concurrent events, that are actually the start of an event
+        // (I'd expect them to be tagged "gc,start", as this seems to be the case for the Shenandoah algorithm)
+        // G1: Concurrent Cycle (without pause -> start of event; with pause -> end of event)
+        // CMS: all concurrent events
+
+        // this is the reason, why a "null" tail is accepted here
+        if (tail != null) {
+            Matcher pauseMatcher = PATTERN_PAUSE.matcher(tail);
+            if (pauseMatcher.find()) {
+                setPause(event, pauseMatcher.group(GROUP_PAUSE));
+            } else {
+                getLogger().warning(String.format("Expected only pause in the end of line number %d  (line=\"%s\")", in.getLineNumber(), line));
+            }
         }
     }
 
     /**
-     * @param event        GC event to which the heap change information is added
-     * @param memoryString Memory changes in format 100M->80M(120M) where 100M-before, 80M-after, 120M-max
+     * Returns an instance of AbstractGcEvent (GCEvent or ConcurrentGcEvent) with all decorators present filled in
+     * or <code>null</code> if the line could not be matched.
+     * @param decoratorsMatcher matcher for decorators to be used for GcEvent creation
+     * @param line current line to be parsed
+     * @return Instance of <code>AbstractGcEvent</code> or <code>null</code> if the line could not be matched.
      */
-    private void addHeapDetailsToEvent(AbstractGCEvent<?> event, String memoryString) {
-        Matcher matcher = PATTERN_HEAP_CHANGES.matcher(memoryString);
-        if (matcher.find()) {
-            event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
-                    Integer.parseInt(matcher.group(HEAP_BEFORE)), matcher.group(HEAP_BEFORE_UNIT).charAt(0), memoryString));
-            event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
-                    Integer.parseInt(matcher.group(HEAP_AFTER)), matcher.group(HEAP_AFTER_UNIT).charAt(0), memoryString));
-            event.setTotal(getDataReaderTools().getMemoryInKiloByte(
-                    Integer.parseInt(matcher.group(HEAP_CURRENT_TOTAL)), matcher.group(HEAP_CURRENT_TOTAL_UNIT).charAt(0), memoryString));
-            event.setExtendedType(event.getExtendedType());
+    private AbstractGCEvent<?> createGcEventWithStandardDecorators(Matcher decoratorsMatcher, String line) throws UnknownGcTypeException {
+        if (decoratorsMatcher.find()) {
+            AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(decoratorsMatcher.group(GROUP_DECORATORS_GC_TYPE));
+
+            AbstractGCEvent<?> event = type.getConcurrency().equals(Concurrency.CONCURRENT) ? new ConcurrentGCEvent() : new GCEvent();
+            event.setExtendedType(type);
+            setDateStampIfPresent(event, decoratorsMatcher.group(GROUP_DECORATORS_TIME));
+            setTimeStampIfPresent(event, decoratorsMatcher.group(GROUP_DECORATORS_UPTIME));
+            return event;
         } else {
-            getLogger().warning("Failed to find heap details from string: \"" + memoryString + "\"");
+            getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
+            return null;
+        }
+    }
+
+    private void setPause(AbstractGCEvent event, String pauseAsString) {
+        // TODO remove code duplication with AbstractDataReaderSun -> move to DataReaderTools
+        if (pauseAsString != null && pauseAsString.length() > 0) {
+            event.setPause(NumberParser.parseDouble(pauseAsString) / 1000);
+        }
+    }
+
+    private void setMemory(AbstractGCEvent event, Matcher matcher) {
+        // TODO remove code duplication with AbstractDataReaderSun -> move to DataReaderTools
+        event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_BEFORE)), matcher.group(GROUP_MEMORY_BEFORE_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
+        event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_AFTER)), matcher.group(GROUP_MEMORY_AFTER_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
+        event.setTotal(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_CURRENT_TOTAL)), matcher.group(GROUP_MEMORY_CURRENT_TOTAL_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
+        event.setExtendedType(event.getExtendedType());
+    }
+
+    private void setDateStampIfPresent(AbstractGCEvent<?> event, String dateStampAsString) {
+        // TODO remove code duplication with AbstractDataReaderSun -> move to DataReaderTools
+        if (dateStampAsString != null) {
+            ZonedDateTime dateTime = ZonedDateTime.parse(dateStampAsString, AbstractDataReaderSun.DATE_TIME_FORMATTER);
+            event.setDateStamp(dateTime);
+        }
+    }
+
+    private void setTimeStampIfPresent(AbstractGCEvent<?> event, String timeStampAsString) {
+        if (timeStampAsString != null && timeStampAsString.length() > 0) {
+            event.setTimestamp(NumberParser.parseDouble(timeStampAsString));
         }
     }
 

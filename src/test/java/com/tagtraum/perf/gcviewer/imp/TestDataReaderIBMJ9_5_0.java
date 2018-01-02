@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
-
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Test;
 
 /**
  * Tests the implementation of {@link TestDataReaderIBMJ9_5_0} and {@link IBMJ9SAXHandler}. 
@@ -23,7 +23,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 public class TestDataReaderIBMJ9_5_0 {
 
     private InputStream getInputStream(String filename) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, filename);
+        return UnittestHelper.getResourceAsStream(FOLDER.IBM, filename);
     }
     
     private DataReader getDataReader(String fileName) throws UnsupportedEncodingException, IOException {

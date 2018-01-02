@@ -17,15 +17,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
-
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Test;
 
 /**
  * <p>Test DataReaderJRockit1_5_0 implementation.</p>
@@ -37,7 +37,7 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
 public class TestDataReaderJRockit1_5_0 {
 
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.JROCKIT, fileName);
     }
     
     private DataReader getDataReader1_5(GCResource gcResource) throws UnsupportedEncodingException, IOException {
