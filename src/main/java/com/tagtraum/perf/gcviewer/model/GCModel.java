@@ -1065,5 +1065,6 @@ public class GCModel implements Serializable {
         public static final Format IBM_VERBOSE_GC = new Format("IBM -verbose:gc");
         public static final Format SUN_1_2_2VERBOSE_GC = new Format("Sun 1.2.2 -verbose:gc");
         public static final Format UNIFIED_JVM_LOGGING = new Format("Unified jvm logging -Xlog:gc");
+        public static final Format GO = new Format("Go");
     }
 }

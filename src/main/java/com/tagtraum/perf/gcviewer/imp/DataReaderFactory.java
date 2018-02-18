@@ -207,6 +207,10 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM i5/OS 1.4.2");
             return new DataReaderIBMi5OS1_4_2(gcResource, in);
         }
+        else if (s.contains("\ngc ")) {
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Go");
+            return new DataReaderGo(gcResource, in);
+        }
         return null;
     }
 
