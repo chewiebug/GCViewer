@@ -35,7 +35,7 @@ public class UnittestHelper {
         IBM("ibm"),
         JROCKIT("jrockit"),
         OPENJDK(FOLDER_OPENJDK),
-        OPENJDK_UJL(OPENJDK + File.separator + "unified-jvm-logging"),
+        OPENJDK_UJL(OPENJDK.getFolderName() + File.separator + "unified-jvm-logging"),
         HTTP("http");
 
         private String folderName;
