@@ -24,6 +24,11 @@ public final class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> 
         return duration;
     }
 
+    @Override
+    public ConcurrentGCEvent cloneAndMerge(AbstractGCEvent<ConcurrentGCEvent> otherEvent) {
+        return (ConcurrentGCEvent)super.cloneAndMerge(otherEvent);
+    }
+
     /**
      * Set duration.
      * @see #getDuration()
@@ -40,6 +45,9 @@ public final class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> 
 	public void toStringBuffer(StringBuffer sb) {
         sb.append(getTimestamp());
         sb.append(": [");
+        if (getNumber() >= 0) {
+            sb.append(" GC(").append(getNumber()).append(") ");
+        }
         sb.append(getExtendedType().getName());
         if (hasMemoryInformation()) {
             sb.append(' ');

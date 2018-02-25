@@ -6,13 +6,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  * Tests the logic of the {@link DataReaderFactory}
@@ -29,15 +29,15 @@ public class TestDataReaderFactory {
     public TestName name = new TestName();
 
     private InputStream getInputStreamIBM(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.IBM, fileName);
     }
 
     private InputStream getInputStreamJRockit(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.JROCKIT, fileName);
     }
     
     private InputStream getInputStreamOpenJdk(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
     }
     
     private void assertDataReader(

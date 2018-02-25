@@ -120,7 +120,7 @@ public class GCViewerGuiMenuBar extends JMenuBar {
     
     /**
      * Remove a menuItem from the window menu including removal of the group. 
-     * @param menuItem
+     * @param menuItem menuItem to be removed
      */
     public void removeFromWindowMenuGroup(JMenuItem menuItem) {
         windowMenu.remove(menuItem);

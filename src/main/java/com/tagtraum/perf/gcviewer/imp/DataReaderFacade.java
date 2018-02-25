@@ -85,7 +85,7 @@ public class DataReaderFacade {
      *
      * @param gcResource the {@link GcResourceSeries} to load
      * @return a {@link GCModel} containing all events found in the given {@link GCResource}s that were readable
-     * @throws DataReaderException
+     * @throws DataReaderException thrown in case of some parser failure
      */
     protected GCModel loadModelFromSeries(GcResourceSeries gcResource) throws DataReaderException {
         GcSeriesLoader seriesLoader = new GcSeriesLoader(this);
@@ -106,12 +106,12 @@ public class DataReaderFacade {
         InputStream in = null;
         try {
             if (url.getProtocol().startsWith("http")) {
-                AtomicLong cl = new AtomicLong();
+                AtomicLong atomicContentLength = new AtomicLong();
                 URLConnection conn = url.openConnection();
                 in = HttpUrlConnectionHelper.openInputStream((HttpURLConnection) conn,
                         HttpUrlConnectionHelper.GZIP,
-                        cl);
-                contentLength = cl.get();
+                        atomicContentLength);
+                contentLength = atomicContentLength.get();
             }
             else {
                 in = url.openStream();

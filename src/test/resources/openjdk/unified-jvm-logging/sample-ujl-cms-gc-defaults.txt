@@ -11,7 +11,7 @@
 [0.714s][info][gc] GC(18) Concurrent Abortable Preclean 16.163ms
 [0.714s][info][gc] GC(18) Pause Remark 110M->110M(150M) 0.859ms
 [0.715s][info][gc] GC(18) Concurrent Sweep
-[0.715s][info][gc] GC(18) Concurrent Sweep 0.787ms
+[0.715s][info][gc] GC(18) Concurrent Sweep 1.111ms
 [0.715s][info][gc] GC(18) Concurrent Reset
 [0.716s][info][gc] GC(18) Concurrent Reset 0.134ms
 [0.799s][info][gc] GC(22) Pause Full (Allocation Failure) 125M->31M(150M) 9.775ms

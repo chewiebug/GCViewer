@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
@@ -17,6 +16,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
@@ -31,7 +31,6 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  */
 public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static final int LENGTH_OF_DATESTAMP = 29;
 
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
@@ -56,7 +55,9 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     protected GcLogType gcLogType;
 
     /**
-     * Create an instance of this class passing an inputStream an the type of the logfile.
+     * Create an instance of this class passing an inputStream and the type of the logfile.
+     *
+     * @param gcResource information about the resource to be parsed
      * @param in inputstream to the log file
      * @param gcLogType type of the logfile
      * @throws UnsupportedEncodingException if ASCII is not supported
@@ -301,8 +302,8 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     }
 
 
-    protected ExtendedType extractTypeFromParsedString(String typeName) throws UnknownGcTypeException {
-        return getDataReaderTools().extractTypeFromParsedString(typeName);
+    protected ExtendedType extractTypeFromParsedString(String typeName) {
+        return getDataReaderTools().parseTypeWithCause(typeName);
     }
 
     /**
@@ -433,7 +434,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         if (nextIsDatestamp(line, pos)) {
             try {
                 zonedDateTime = ZonedDateTime.parse(line.substring(pos.getIndex(), pos.getIndex() + LENGTH_OF_DATESTAMP - 1),
-                        DATE_TIME_FORMATTER);
+                        DateHelper.DATE_TIME_FORMATTER);
                 pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
                 if (pos.getFirstDateStamp() == null) {
                     pos.setFirstDateStamp(zonedDateTime);

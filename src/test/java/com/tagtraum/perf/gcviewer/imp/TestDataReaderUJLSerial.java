@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -22,16 +23,18 @@ import org.junit.Test;
  * Tests unified jvm logging parser for serial gc events.
  */
 public class TestDataReaderUJLSerial {
-    private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK_UJL, fileName);
+    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
+        return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
     public void parseGcDefaults() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-serial-gc-defaults.txt");
         assertThat("size", model.size(), is(11));
-        assertThat("amount gc events", model.getGcEventPauses().size(), is(1));
-        assertThat("amount full gc events", model.getFullGcEventPauses().size(), is(1));
+        assertThat("amount of gc event types", model.getGcEventPauses().size(), is(1));
+        assertThat("amount of gc events", model.getGCPause().getN(), is(8));
+        assertThat("amount of full gc events", model.getFullGcEventPauses().size(), is(1));
+        assertThat("amount of full gc events", model.getFullGCPause().getN(), is(3));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
         AbstractGCEvent<?> event1 = model.get(0);
@@ -40,6 +43,7 @@ public class TestDataReaderUJLSerial {
         assertThat("event1 heap before", event1.getPreUsed(), is(1024 * 25));
         assertThat("event1 heap after", event1.getPostUsed(), is(1024 * 23));
         assertThat("event1 total heap", event1.getTotal(), is(1024 * 92));
+        assertThat("event1 not isFull", event1.isFull(), is(false));
 
         AbstractGCEvent<?> event2 = model.get(2);
         assertThat("event2 type", event2.getTypeAsString(), startsWith(Type.UJL_PAUSE_FULL.getName()));
@@ -47,6 +51,7 @@ public class TestDataReaderUJLSerial {
         assertThat("event2 heap before", event2.getPreUsed(), is(1024 * 74));
         assertThat("event2 heap after", event2.getPostUsed(), is(1024 * 10));
         assertThat("event2 total heap", event2.getTotal(), is(1024 * 92));
+        assertThat("event2 isFull", event2.isFull(), is(true));
 
         // gc log says GC(10) for this event
         AbstractGCEvent<?> event3 = model.get(9);
@@ -62,7 +67,9 @@ public class TestDataReaderUJLSerial {
         GCModel model = getGCModelFromLogFile("sample-ujl-serial-gc-all,safepoint,os+cpu.txt");
         assertThat("size", model.size(), is(4));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(1));
+        assertThat("amount of STW GC pauses", model.getGCPause().getN(), is(3));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(1));
+        assertThat("amount of STW Full GC pauses", model.getFullGCPause().getN(), is(1));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
         AbstractGCEvent<?> event1 = model.get(0);
@@ -100,7 +107,7 @@ public class TestDataReaderUJLSerial {
         GCModel model = reader.read();
 
         assertThat("number of warnings", handler.getCount(), is(1));
-        assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Failed to parse line number"));
+        assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Expected memory and pause in the end of line number"));
     }
 
     @Test
@@ -120,20 +127,4 @@ public class TestDataReaderUJLSerial {
         assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Failed to parse gc event ("));
     }
 
-    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
-        TestLogHandler handler = new TestLogHandler();
-        handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GcResourceFile(fileName);
-        gcResource.getLogger().addHandler(handler);
-
-        try (InputStream in = getInputStream(gcResource.getResourceName())) {
-            DataReader reader = new DataReaderFactory().getDataReader(gcResource, in);
-            assertThat("reader from factory", reader.getClass().getName(), is(DataReaderUnifiedJvmLogging.class.getName()));
-
-            GCModel model = reader.read();
-            assertThat("model format", model.getFormat(), is(GCModel.Format.UNIFIED_JVM_LOGGING));
-            assertThat("number of errors", handler.getCount(), is(0));
-            return model;
-        }
-    }
 }

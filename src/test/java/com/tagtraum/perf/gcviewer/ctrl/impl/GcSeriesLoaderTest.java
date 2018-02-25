@@ -1,16 +1,7 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
-import com.tagtraum.perf.gcviewer.model.*;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +16,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GcSeriesLoaderTest {
@@ -182,6 +188,6 @@ public class GcSeriesLoaderTest {
     }
 
     private GcResourceFile getGcResource(String name) throws IOException {
-        return new GcResourceFile(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, name).getPath());
+        return new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, name).getPath());
     }
 }

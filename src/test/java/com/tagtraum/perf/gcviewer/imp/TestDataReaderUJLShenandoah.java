@@ -6,26 +6,24 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.ZonedDateTime;
-import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
 import org.junit.Test;
 
 /**
  * Created by Mart on 10/05/2017.
  */
 public class TestDataReaderUJLShenandoah {
-    private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK_UJL, fileName);
+    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
+        return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
@@ -111,10 +109,10 @@ public class TestDataReaderUJLShenandoah {
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(5));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_INIT_MARK.toString()));
+        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.UJL_SHEN_INIT_MARK.toString()));
 
         ConcurrentGCEvent event2 = (ConcurrentGCEvent) model.get(1);
-        assertThat("type", event2.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK.toString()));
+        assertThat("type", event2.getTypeAsString(), is(AbstractGCEvent.Type.UJL_SHEN_CONCURRENT_CONC_MARK.toString()));
         assertThat("preUsed heap size", event2.getPreUsed(), is(90 * 1024));
         assertThat("postUsed heap size", event2.getPostUsed(), is(90 * 1024));
         assertThat("total heap size", event2.getTotal(), is(128 * 1024));
@@ -163,35 +161,20 @@ public class TestDataReaderUJLShenandoah {
 
         GCEvent event = (GCEvent) model.get(0);
         assertThat("datestamp", event.getDatestamp(), is(ZonedDateTime.parse("2017-08-30T23:22:47.357+0300",
-                AbstractDataReaderSun.DATE_TIME_FORMATTER)));
+                DateHelper.DATE_TIME_FORMATTER)));
         assertThat("timestamp", event.getTimestamp(), is(0.0));
-        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_STW_INIT_MARK.toString()));
+        assertThat("type", event.getTypeAsString(), is(AbstractGCEvent.Type.UJL_SHEN_INIT_MARK.toString()));
         assertThat("generation", event.getGeneration(), is(AbstractGCEvent.Generation.TENURED));
 
         ConcurrentGCEvent event2 = (ConcurrentGCEvent) model.get(1);
         assertThat("datestamp", event.getDatestamp(), is(ZonedDateTime.parse("2017-08-30T23:22:47.357+0300",
-                AbstractDataReaderSun.DATE_TIME_FORMATTER)));
+                DateHelper.DATE_TIME_FORMATTER)));
         assertThat("timestamp", event2.getTimestamp(), closeTo(0.003, 0.001));
-        assertThat("type", event2.getTypeAsString(), is(AbstractGCEvent.Type.SHEN_CONCURRENT_CONC_MARK.toString()));
+        assertThat("type", event2.getTypeAsString(), is(AbstractGCEvent.Type.UJL_SHEN_CONCURRENT_CONC_MARK.toString()));
         assertThat("preUsed heap size", event2.getPreUsed(), is(90 * 1024));
         assertThat("postUsed heap size", event2.getPostUsed(), is(90 * 1024));
         assertThat("total heap size", event2.getTotal(), is(128 * 1024));
         assertThat("generation", event2.getGeneration(), is(AbstractGCEvent.Generation.TENURED));
     }
 
-
-    private GCModel getGCModelFromLogFile(String fileName) throws IOException {
-        TestLogHandler handler = new TestLogHandler();
-        handler.setLevel(Level.WARNING);
-        GCResource gcResource = new GcResourceFile(fileName);
-        gcResource.getLogger().addHandler(handler);
-
-        try (InputStream in = getInputStream(gcResource.getResourceName())) {
-            DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
-            GCModel model = reader.read();
-            assertThat("model format", model.getFormat(), is(GCModel.Format.UNIFIED_JVM_LOGGING));
-            assertThat("number of errors", handler.getCount(), is(0));
-            return model;
-        }
-    }
 }

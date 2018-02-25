@@ -1,11 +1,8 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
-import com.tagtraum.perf.gcviewer.math.DoubleData;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import org.junit.Test;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -15,9 +12,13 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.imp.DataReaderFacade;
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import org.junit.Test;
 
 /**
  * Specific tests for {@link GCModel} implementation.
@@ -43,7 +44,7 @@ public class TestGCModel {
     @Test
     public void testEquals_ForIdenticalModels() throws IOException, ExecutionException, InterruptedException, DataReaderException {
         // load model twice, should be identical
-        GCResource gcResource = new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+        GCResource gcResource = new GcResourceFile(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt"));
         DataReaderFacade dataReader = new DataReaderFacade();
 
         GCModel actual = dataReader.loadModel(gcResource);
@@ -59,7 +60,7 @@ public class TestGCModel {
     @Test
     public void testGetStartDate_WhenNeitherDateNorTimeStampsAreAvailable() throws Exception {
         GCModel model = new GCModel();
-        model.setURL(UnittestHelper.getResource(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+        model.setURL(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt"));
 
         assertThat(model.getStartDate(), is(ZonedDateTime.ofInstant(Instant.ofEpochMilli(model.getLastModified()), ZoneId.systemDefault())));
     }
@@ -67,7 +68,7 @@ public class TestGCModel {
     @Test
     public void testGetStartDate_WhenDateStampsAreAvailable() throws Exception {
         DataReaderFacade dataReader = new DataReaderFacade();
-        GCModel model = dataReader.loadModel(new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMSAdaptiveSizePolicy.txt")));
+        GCModel model = dataReader.loadModel(new GcResourceFile(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMSAdaptiveSizePolicy.txt")));
 
         ZonedDateTime expectedTime = ZonedDateTime.of(2012, 4, 18, 14, 23, 59, 890_000_000, ZoneId.ofOffset("", ZoneOffset.ofHours(2)));
         assertThat(model.getStartDate(), is(expectedTime));
@@ -76,7 +77,7 @@ public class TestGCModel {
     @Test
     public void testGetStartDate_WhenNoDateButTimestampsAreAvailable() throws Exception {
         DataReaderFacade dataReader = new DataReaderFacade();
-        GcResourceFile gcResource = new GcResourceFile(UnittestHelper.getResourceAsString(UnittestHelper.FOLDER_OPENJDK, "SampleSun1_6_0CMS.txt"));
+        GcResourceFile gcResource = new GcResourceFile(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt"));
         GCModel model = dataReader.loadModel(gcResource);
 
         ZonedDateTime expectedTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(model.getLastModified()), ZoneId.systemDefault());

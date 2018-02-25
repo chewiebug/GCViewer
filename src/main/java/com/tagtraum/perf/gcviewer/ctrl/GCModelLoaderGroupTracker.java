@@ -13,6 +13,7 @@ import java.beans.PropertyChangeListener;
   */
 public interface GCModelLoaderGroupTracker extends PropertyChangeListener {
     /**
+     * @param listener The PropertyChangeListener to be added
      * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
      */
     void addPropertyChangeListener(PropertyChangeListener listener);
@@ -36,6 +37,7 @@ public interface GCModelLoaderGroupTracker extends PropertyChangeListener {
     void propertyChange(PropertyChangeEvent evt);
 
     /**
+     * @param listener The PropertyChangeListener to be removed
      * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener)
      */
     void removePropertyChangeListener(PropertyChangeListener listener);

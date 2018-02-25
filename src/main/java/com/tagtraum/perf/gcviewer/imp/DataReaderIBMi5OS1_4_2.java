@@ -27,8 +27,9 @@ public class DataReaderIBMi5OS1_4_2 extends AbstractDataReader {
 
     /**
      * Constructor for the IBM i5/OS GC reader.
+     * @param gcResource information about the resource to be parsed
      * @param in InputStream delivering the GC data
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException thrown in case the desired encoding is not supported
      */
     public DataReaderIBMi5OS1_4_2(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
