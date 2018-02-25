@@ -16,7 +16,6 @@ import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 
 /**
  * <p>Holds a group of resource names (those displayed in the same GCDocument).</p>
- * <p>
  * <p>This class was refactored from "URLSet".</p>
  *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>

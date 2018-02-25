@@ -96,15 +96,14 @@ public class HttpUrlConnectionHelper {
     /**
      *  Sets request properties, connects and opens the input stream depending on the HTTP response.
      *
-     *  @param httpConn            The HTTP connection
-     *  @param acceptEncoding  Content-encoding (gzip,defate or null)
+     *  @param httpConn The HTTP connection
+     *  @param acceptEncoding Content-encoding (gzip, deflate or null)
+     *  @param contentLength length of content (output parameter)
      *  @return The input stream
      *  @throws IOException if problem occured.
      */
-    public static InputStream openInputStream(HttpURLConnection httpConn,
-            String acceptEncoding,
-            AtomicLong cl)
-                    throws IOException {
+    public static InputStream openInputStream(HttpURLConnection httpConn, String acceptEncoding, AtomicLong contentLength)
+            throws IOException {
 
         // set request properties
         httpConn.setRequestProperty(ACCEPT_ENCODING, acceptEncoding);
@@ -113,20 +112,20 @@ public class HttpUrlConnectionHelper {
         // from here we're reading the server's response
         String contentEncoding = httpConn.getContentEncoding();
         String contentType = httpConn.getContentType();
-        long contentLength = httpConn.getContentLengthLong();
+        long contentLengthLong = httpConn.getContentLengthLong();
         long lastModified = httpConn.getLastModified();
-        LOGGER.log(Level.INFO, "Reading " + (contentLength < 0L
+        LOGGER.log(Level.INFO, "Reading " + (contentLengthLong < 0L
                  ? "?"
-                 : Long.toString(contentLength) ) + " bytes from " + httpConn.getURL() +
+                 : Long.toString(contentLengthLong) ) + " bytes from " + httpConn.getURL() +
                    "; contentType = " + contentType +
                    "; contentEncoding = " + contentEncoding +
                    "; last modified = " + (lastModified <= 0L ? "-" : new Date(lastModified).toString()));
 
         final int responseCode = httpConn.getResponseCode();
         if (responseCode/100 == 2) {
-        	if (cl != null) {
+        	if (contentLength != null) {
         		// abuse of AtomicLong, but I need a pointer to long (or FileInformation)
-        		cl.set(contentLength);
+        		contentLength.set(contentLengthLong);
         	}
         } else {
             String responseMessage = httpConn.getResponseMessage();

@@ -55,7 +55,9 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     protected GcLogType gcLogType;
 
     /**
-     * Create an instance of this class passing an inputStream an the type of the logfile.
+     * Create an instance of this class passing an inputStream and the type of the logfile.
+     *
+     * @param gcResource information about the resource to be parsed
      * @param in inputstream to the log file
      * @param gcLogType type of the logfile
      * @throws UnsupportedEncodingException if ASCII is not supported

@@ -669,7 +669,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
      *     <li><code>GC</code>: just the name of the event type</li>
      *     <li><code>PAUSE</code>: length of a pause</li>
      *     <li><code>DURATION</code>: cycle time of a (usually concurrent) event</li>
-     *     <li><code>MEMORY</code>: information about heap changes</li></li>
+     *     <li><code>MEMORY</code>: information about heap changes</li>
      *     <li><code>REGION</code>: information about number of regions used (only G1 up to now)</li>
      * </ul>
      */

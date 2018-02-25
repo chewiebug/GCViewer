@@ -24,7 +24,7 @@ public class ViewMenuController implements ActionListener, PropertyChangeListene
     private GCViewerGui gui;
 
     /**
-     * @param gui
+     * @param gui gui to listen for actions
      */
     public ViewMenuController(GCViewerGui gui) {
         this.gui = gui;
