@@ -1,0 +1,15 @@
+[0.318s][info][gc,start      ] GC(12) Pause Young (G1 Evacuation Pause)
+[0.318s][info][gc,task       ] GC(12) Using 4 workers of 4 for evacuation
+[0.321s][info][gc            ] GC(12) To-space exhausted
+[0.321s][info][gc,phases     ] GC(12)   Pre Evacuate Collection Set: 0.0ms
+[0.321s][info][gc,phases     ] GC(12)   Evacuate Collection Set: 1.9ms
+[0.321s][info][gc,phases     ] GC(12)   Post Evacuate Collection Set: 0.6ms
+[0.321s][info][gc,phases     ] GC(12)   Other: 0.1ms
+[0.321s][info][gc,heap       ] GC(12) Eden regions: 1->0(1)
+[0.321s][info][gc,heap       ] GC(12) Survivor regions: 1->1(1)
+[0.321s][info][gc,heap       ] GC(12) Old regions: 13->14
+[0.321s][info][gc,heap       ] GC(12) Humongous regions: 0->0
+[0.321s][info][gc,metaspace  ] GC(12) Metaspace: 3648K->3648K(1056768K)
+[0.321s][info][gc            ] GC(12) Pause Young (G1 Evacuation Pause) 116M->119M(128M) 2.717ms
+[0.321s][info][gc,cpu        ] GC(12) User=0.00s Sys=0.00s Real=0.00s
+[0.321s][info][safepoint     ] Total time for which application threads were stopped: 0.0027879 seconds, Stopping threads took: 0.0000093 seconds

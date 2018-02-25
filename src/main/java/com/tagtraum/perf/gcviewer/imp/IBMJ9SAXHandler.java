@@ -13,15 +13,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Simple (only for the -Xgcpolicy:optthruput output) IBMJ9 verbose GC reader.
@@ -263,7 +262,6 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                     final GCEvent detailEvent = new GCEvent();
                     detailEvent.setTimestamp(currentAF.elapsedTime);
                     detailEvent.setType(AbstractGCEvent.Type.PS_YOUNG_GEN);
-                    detailEvent.setTenuredDetail(true);
                     detailEvent.setPreUsed(currentAF.getPreUsedSoaInKb());
                     detailEvent.setPostUsed(currentAF.getPostUsedSoaInKb());
                     detailEvent.setTotal(currentAF.getTotalSoaInKb());
@@ -278,7 +276,6 @@ public class IBMJ9SAXHandler extends DefaultHandler {
                     final GCEvent detailEvent = new GCEvent();
                     detailEvent.setTimestamp(currentAF.elapsedTime);
                     detailEvent.setType(AbstractGCEvent.Type.PS_OLD_GEN);
-                    detailEvent.setTenuredDetail(true);
                     detailEvent.setPreUsed(currentAF.getPreUsedLoaInKb());
                     detailEvent.setPostUsed(currentAF.getPostUsedLoaInKb());
                     detailEvent.setTotal(currentAF.getTotalLoaInKb());

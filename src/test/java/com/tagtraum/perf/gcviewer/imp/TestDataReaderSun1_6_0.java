@@ -19,11 +19,12 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
 import org.junit.Test;
 
 public class TestDataReaderSun1_6_0 {
 
-    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
+    private final DateTimeFormatter dateTimeFormatter = DateHelper.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);

@@ -1,12 +1,14 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for class {@link GCEvent}.
@@ -82,6 +84,17 @@ public class TestGcEvent {
         assertEquals("postused", 60292 - 5655, tenured.getPostUsed());
         assertEquals("total tenured", 506944 - 157376, tenured.getTotal());
         assertEquals("pause", 0.0543079, tenured.getPause(), 0.000001);
+    }
+
+    @Test
+    public void testCloneAndMerge() throws Exception {
+        // 87.707: [GC 87.707: [DefNew: 139904K->5655K(157376K), 0.0543079 secs] 194540K->60292K(506944K), 0.0544020 secs] [Times: user=0.03 sys=0.02, real=0.06 secs]
+        // 83.403: [Full GC 83.403: [Tenured: 38156K->54636K(349568K), 0.6013150 secs] 141564K->54636K(506944K), [Perm : 73727K->73727K(73728K)], 0.6014256 secs] [Times: user=0.58 sys=0.00, real=0.59 secs]
+        GCEvent detailEvent1 = new GCEvent(0.01, 100, 90, 1000, 0.25, Type.G1_YOUNG);
+        GCEvent detailEvent2 = new GCEvent(0.01, 500, 200, 1000, 0.29, Type.TENURED);
+        GCEvent clonedEvent = detailEvent1.cloneAndMerge(detailEvent2);
+        assertThat("name", clonedEvent.getTypeAsString(), Matchers.equalTo("GC pause (young)+Tenured"));
+        assertThat("heap before", clonedEvent.getPreUsed(), Matchers.is(100 + 500));
     }
 
 }

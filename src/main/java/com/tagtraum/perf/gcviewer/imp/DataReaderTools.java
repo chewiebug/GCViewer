@@ -78,9 +78,7 @@ public class DataReaderTools {
     public ExtendedType parseTypeWithCause(String typeName) {
         typeName = typeName.trim();
         ExtendedType extendedType = null;
-        String lookupTypeName = typeName.endsWith("--")
-                ? typeName.substring(0, typeName.length()-2)
-                : typeName;
+        String lookupTypeName = getLookupTypeName(typeName);
         AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
         // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
         if (gcType == null) {
@@ -96,6 +94,15 @@ public class DataReaderTools {
         }
 
         return extendedType;
+    }
+
+    private String getLookupTypeName(String typeName) {
+        typeName = typeName.endsWith(":")
+                ? typeName.substring(0, typeName.length()-1)
+                : typeName;
+        return typeName.endsWith("--")
+                    ? typeName.substring(0, typeName.length()-2)
+                    : typeName;
     }
 
 

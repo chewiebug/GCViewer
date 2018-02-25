@@ -19,9 +19,11 @@ When logfile rotation (-XX:+UseGCLogFileRotation) is enabled, the logfiles can b
 
 Supported verbose:gc formats are:
 
-- partial support for OpenJDK 9 unified logging format -Xlog:gc:<file>
-  - no heap information is evaluated, but all events with tag "gc" only should be recognised
-  - required decorations: tags,uptime (others will be ignored or parser might fail)
+- some support for OpenJDK 9 unified logging format -Xlog:gc:<file>, the following configurations will work
+  - -Xlog:gc:file="path-to-file" (uses defaults)
+  - -Xlog:gc=info:file="path-to-file":tags,uptime,level (minimum configuration needed)
+  - -Xlog:gc*=trace:file="path-to-file":tags,time,uptime,level
+    (maximum configuration supported, additional tags ok, but ignored; additional decorations will break parsing)
 - Oracle JDK 1.8 -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.7 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
 - Sun / Oracle JDK 1.6 with option -Xloggc:<file> [-XX:+PrintGCDetails] [-XX:+PrintGCDateStamps]
@@ -32,7 +34,7 @@ Supported verbose:gc formats are:
 - HP-UX JDK 1.2/1.3/1.4.x with the option -Xverbosegc
 - BEA JRockit 1.4.2/1.5/1.6 with the option -verbose:memory [-Xverbose:gcpause,gcreport] [-Xverbosetimestamp]
 
-Best results are achieved with: -Xloggc:<file> -XX:+PrintGCDetails -XX:+PrintGCDateStamps.
+Best results for non unified gc logging Oracle JDKs are achieved with: -Xloggc:<file> -XX:+PrintGCDetails -XX:+PrintGCDateStamps.
 A few other options are supported, but most of the information generated is ignored by GCViewer
 (the javadoc introduction of 
 https://github.com/chewiebug/GCViewer/blob/master/src/main/java/com/tagtraum/perf/gcviewer/imp/DataReaderSun1_6_0.java

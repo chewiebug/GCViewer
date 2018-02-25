@@ -1,6 +1,9 @@
 package com.tagtraum.perf.gcviewer.model;
 
+import java.util.Iterator;
 import java.util.Objects;
+
+import com.tagtraum.perf.gcviewer.util.DateHelper;
 
 /**
  * The GCEvent is the type of event that contains memory (preused, postused, total) and 
@@ -34,15 +37,19 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     public void add(GCEvent event) {
         super.add(event);
 
+        setReferencedEvent(event);
+    }
+
+    private void setReferencedEvent(GCEvent event) {
         switch (event.getExtendedType().getGeneration()) {
             case YOUNG:
-                young = event;
+                young = young == null ? event : young.cloneAndMerge(event);
                 break;
             case TENURED:
-                tenured = event;
+                tenured = tenured == null ? event : tenured.cloneAndMerge(event);
                 break;
             case PERM:
-                perm = event;
+                perm = perm == null ? event : perm.cloneAndMerge(event);
                 break;
             // ALL and OTHER are never read
             case ALL:
@@ -51,7 +58,33 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
                 break;
         }
     }
-    
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        GCEvent[] events = {young, tenured, perm};
+        young = null;
+        tenured = null;
+        perm = null;
+
+        GCEvent clonedEvent = (GCEvent)super.clone();
+
+        Iterator<GCEvent> eventIterator = clonedEvent.details();
+        while (eventIterator.hasNext()) {
+            clonedEvent.setReferencedEvent(eventIterator.next());
+        }
+
+        young = events[0];
+        tenured = events[1];
+        perm = events[2];
+
+        return clonedEvent;
+    }
+
+    @Override
+    public GCEvent cloneAndMerge(AbstractGCEvent<GCEvent> otherEvent) {
+        return (GCEvent)super.cloneAndMerge(otherEvent);
+    }
+
     /**
      * Returns information on young generation. If it was not present in the gc log, but 
      * tenured was, it is inferred from there (with -XX:+PrintGCDetails). Otherwise it is 
@@ -107,9 +140,14 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     }
 
     public void toStringBuffer(StringBuffer sb) {
-        sb.append(getTimestamp());
-        sb.append(": [");
-        sb.append(getExtendedType() != null ? getExtendedType().getName() : ExtendedType.UNDEFINED);
+        if (getDatestamp() != null) {
+            sb.append("[").append(DateHelper.formatDate(getDatestamp())).append("]");
+        }
+        sb.append("[").append(getTimestamp()).append("]");
+        if (getNumber() >= 0) {
+            sb.append(" GC(").append(getNumber()).append(")");
+        }
+        sb.append(" [").append(getExtendedType() != null ? getExtendedType().getName() : ExtendedType.UNDEFINED);
         if (details != null) {
             sb.append(' ');
             for (AbstractGCEvent event : details) {

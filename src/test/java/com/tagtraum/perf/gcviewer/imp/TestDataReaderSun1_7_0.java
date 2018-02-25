@@ -20,6 +20,7 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
 import org.junit.Test;
 
 /**
@@ -30,7 +31,7 @@ import org.junit.Test;
  */
 public class TestDataReaderSun1_7_0 {
 
-    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
+    private final DateTimeFormatter dateTimeFormatter = DateHelper.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
@@ -408,8 +409,8 @@ public class TestDataReaderSun1_7_0 {
 
         assertThat("GC count", model.size(), is(3));
         assertThat("event 1 pause", model.get(0).getPause(), closeTo(0.0030039, 0.00000001));
-        assertThat("event 2", model.get(1).isConcurrent(), is(true));
-        assertThat("event 3", model.get(2).isFull(), is(true));
+        assertThat("event 2 is concurrent", model.get(1).isConcurrent(), is(true));
+        assertThat("event 3 is full", model.get(2).isFull(), is(true));
         assertThat("event 3 pause", model.get(2).getPause(), closeTo(0.0339164, 0.00000001));
         assertThat("number of parse problems", handler.getCount(), is(0));
 
@@ -427,11 +428,11 @@ public class TestDataReaderSun1_7_0 {
 
         assertThat("GC count", model.size(), is(5));
         assertThat("event 1 pause", model.get(0).getPause(), closeTo(0.0054252, 0.00000001));
-        assertThat("event 2", model.get(1).isConcurrent(), is(true));
-        assertThat("event 3", model.get(2).isFull(), is(true));
+        assertThat("event 2 is concurrent", model.get(1).isConcurrent(), is(true));
+        assertThat("event 3 is full", model.get(2).isFull(), is(true));
         assertThat("event 3 pause", model.get(2).getPause(), closeTo(0.0356364, 0.00000001));
-        assertThat("event 4", model.get(3).isConcurrent(), is(true));
-        assertThat("event 5", model.get(4).isFull(), is(true));
+        assertThat("event 4 is concurrent", model.get(3).isConcurrent(), is(true));
+        assertThat("event 5 is full", model.get(4).isFull(), is(true));
         assertThat("event 5 pause", model.get(4).getPause(), closeTo(0.0264843, 0.00000001));
         assertThat("number of parse problems", handler.getCount(), is(0));
 
