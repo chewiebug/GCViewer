@@ -108,7 +108,7 @@ public class DataReaderFactory {
 
     private DataReader getDataReaderBySample(String s, GCResource gcResource, InputStream in) throws IOException {
         // if there is a [memory ] somewhere in the first chunk of the logs, it is JRockit
-        if (s.indexOf("[memory ]") != -1) {
+        if (s.contains("[memory ]")) {
             int startOfRealLog = s.lastIndexOf("<");
             // skip ahead of <start>-<end>: <type> <before>KB-><after>KB (<heap>KB
             String realLog;
@@ -123,7 +123,7 @@ public class DataReaderFactory {
                 return null; // No GC logs of format 1641728K->148365K (3145728K) yet, read next chunk
             }
             // JRockit 1.5 and 1.6 logs look like: [memory ][Tue Nov 13 08:39:01 2012][01684] [OC#1]
-            if ((realLog.indexOf("[YC#") != -1) ||(realLog.indexOf("[OC#") != -1)) {
+            if ((realLog.indexOf("[YC#") != -1) || (realLog.indexOf("[OC#") != -1)) {
                 if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: JRockit 1.6");
                 return new DataReaderJRockit1_6_0(gcResource, in);
             }
@@ -139,15 +139,15 @@ public class DataReaderFactory {
                 return new DataReaderJRockit1_5_0(gcResource, in);
             }
         }
-        else if (s.indexOf("since last AF or CON>") != -1) {
+        else if (s.contains("since last AF or CON>")) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM 1.4.2");
             return new DataReaderIBM1_4_2(gcResource, in);
         }
-        else if (s.indexOf("GC cycle started") != -1) {
+        else if (s.contains("GC cycle started")) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM 1.3.1");
             return new DataReaderIBM1_3_1(gcResource, in);
         }
-        else if (s.indexOf("<AF") != -1) {
+        else if (s.contains("<AF")) {
             // this should be an IBM JDK < 1.3.0
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM <1.3.0");
             return new DataReaderIBM1_3_0(gcResource, in);
@@ -157,41 +157,41 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Oracle / OpenJDK unified jvm logging");
             return new DataReaderUnifiedJvmLogging(gcResource, in);
         }
-        else if (s.indexOf(" (young)") > 0 || s.indexOf("G1Ergonomics") > 0) {
+        else if (s.contains(" (young)") || s.contains("G1Ergonomics") || s.contains(" (mixed)")) {
             // G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             // but can start with  <timestamp>: [G1Ergonomics (Heap Sizing) expand the heap...
             // with certain logging flaggs.
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x G1 collector");
             return new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_6G1);
         }
-        else if (s.indexOf("[Times:") > 0) {
+        else if (s.contains("[Times:")) {
             // all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x");
             return new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
         }
-        else if (s.indexOf("CMS-initial-mark") != -1 || s.indexOf("PSYoungGen") != -1) {
+        else if (s.contains("CMS-initial-mark") || s.contains("PSYoungGen")) {
             // format is 1.5, but datareader for 1_6_0 can handle it
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.5.x");
             return new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_5);
         }
-        else if (s.indexOf(": [GC") != -1) {
+        else if (s.contains(": [GC")) {
             // format is 1.4, but datareader for 1_6_0 can handle it
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.4.x");
             return new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_4);
         }
-        else if (s.indexOf("[GC") != -1 || s.indexOf("[Full GC") != -1 || s.indexOf("[Inc GC")!=-1) {
+        else if (s.contains("[GC") || s.contains("[Full GC") || s.contains("[Inc GC")) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.3.1");
             return new DataReaderSun1_3_1(gcResource, in, GcLogType.SUN1_3_1);
         }
-        else if (s.indexOf("<GC: managing allocation failure: need ") != -1) {
+        else if (s.contains("<GC: managing allocation failure: need ")) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.2.2");
             return new DataReaderSun1_2_2(gcResource, in);
         }
-        else if (s.indexOf("<GC: ") == 0 && s.indexOf('>') != -1 && new StringTokenizer(s.substring(0, s.indexOf('>')+1), " ").countTokens() == 20) {
+        else if (s.indexOf("<GC: ") == 0 && s.contains(">") && new StringTokenizer(s.substring(0, s.indexOf(">")+1), " ").countTokens() == 20) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: HP-UX 1.2/1.3/1.4.0");
             return new DataReaderHPUX1_2(gcResource, in);
         }
-        else if (s.indexOf("<GC: ") == 0 && s.indexOf('>') != -1 && new StringTokenizer(s.substring(0, s.indexOf('>')+1), " ").countTokens() == 22) {
+        else if (s.startsWith("<GC: ") && s.contains(">") && new StringTokenizer(s.substring(0, s.indexOf(">")+1), " ").countTokens() == 22) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: HP-UX 1.4.1/1.4.2");
             return new DataReaderHPUX1_4_1(gcResource, in);
         }
@@ -199,11 +199,11 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM J9 R26 / R27 / R28");
             return new DataReaderIBM_J9_R28(gcResource, in);
         }
-        else if (s.indexOf("<verbosegc version=\"") != -1) {
+        else if (s.contains("<verbosegc version=\"")) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM J9 5.0");
             return new DataReaderIBM_J9_5_0(gcResource, in);
         }
-        else if (s.indexOf("starting collection, threshold allocation reached.") != -1) {
+        else if (s.contains("starting collection, threshold allocation reached.")) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM i5/OS 1.4.2");
             return new DataReaderIBMi5OS1_4_2(gcResource, in);
         }
