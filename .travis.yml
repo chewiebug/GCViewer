@@ -6,6 +6,8 @@ sudo: false
 
 jdk:
   - oraclejdk8
+  - oraclejdk9
+  - openjdk8
 
 # enable cache to stop downloading all maven plugins every time
 cache:
