@@ -1,10 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.*;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.*;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
@@ -17,6 +12,20 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
+
 /**
  * Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7 / 1.8.
  * <p>
@@ -27,6 +36,7 @@ import java.util.regex.Pattern;
  * <li>-XX:+UseParNewGC</li>
  * <li>-XX:+UseParallelOldGC</li>
  * <li>-XX:+UseConcMarkSweepGC</li>
+ * <li>-XX:+UseShenandoahGC</li>
  * <li>-Xincgc (1.4 / 1.5)</li>
  * </ul>
  * <p>
@@ -102,6 +112,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
         EXCLUDE_STRINGS.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
         EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
+        EXCLUDE_STRINGS.add("Uncommitted"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS.add("Cancelling concurrent GC"); // -XX:+UseShenandoahGC
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -538,7 +550,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     }
 
     protected AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException {
-        AbstractGCEvent<?> ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
             // parse timestamp          "double:"
@@ -548,57 +559,46 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             ZonedDateTime datestamp = parseDatestamp(line, pos);
             double timestamp = getTimestamp(line, pos, datestamp);
             ExtendedType type = parseType(line, pos);
-            // special provision for CMS events
+            AbstractGCEvent<?> ae;
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 ae = new ConcurrentGCEvent();
-                ConcurrentGCEvent event = (ConcurrentGCEvent)ae;
-
-                // simple concurrent events (ending with -start) just are of type GcPattern.GC
-                event.setDateStamp(datestamp);
-                event.setTimestamp(timestamp);
-                event.setExtendedType(type);
-                if (type.getPattern() == GcPattern.GC_PAUSE_DURATION) {
-                    // the -end events contain a pause and duration as well
-                    int start = pos.getIndex();
-                    int end = line.indexOf('/', pos.getIndex());
-                    event.setPause(NumberParser.parseDouble(line.substring(start, end)));
-                    start = end + 1;
-                    end = line.indexOf(' ', start);
-                    event.setDuration(NumberParser.parseDouble(line.substring(start, end)));
-                }
-                // nothing more to parse...
-            }
-            else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
+            } else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
                 ae = new VmOperationEvent();
-                VmOperationEvent vmOpEvent = (VmOperationEvent) ae;
-
-                vmOpEvent.setDateStamp(datestamp);
-                vmOpEvent.setTimestamp(timestamp);
-                vmOpEvent.setExtendedType(type);
-                vmOpEvent.setPause(parsePause(line, pos));
-            }
-            else {
+            } else {
                 ae = new GCEvent();
-                GCEvent event = (GCEvent) ae;
-
-                event.setDateStamp(datestamp);
-                event.setTimestamp(timestamp);
-                event.setExtendedType(type);
-                // now add detail gcevents, should they exist
-                parseDetailEventsIfExist(line, pos, event);
-                if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE
-                    || event.getExtendedType().getPattern() == GcPattern.GC_MEMORY) {
-
-                    setMemory(event, line, pos);
-                }
-                // then more detail events follow (perm gen is usually here)
-                parseDetailEventsIfExist(line, pos, event);
-                if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE
-                        || event.getExtendedType().getPattern() == GcPattern.GC_PAUSE) {
-
-                    event.setPause(parsePause(line, pos));
-                }
             }
+
+            ae.setDateStamp(datestamp);
+            ae.setTimestamp(timestamp);
+            ae.setExtendedType(type);
+            // now add detail gcevents, should they exist
+            if (ae instanceof GCEvent) {
+                parseDetailEventsIfExist(line, pos, (GCEvent) ae);
+            }
+            if (type.getPattern() == GcPattern.GC_MEMORY_PAUSE
+                || type.getPattern() == GcPattern.GC_MEMORY) {
+
+                setMemory(ae, line, pos);
+            }
+            // then more detail events follow (perm gen is usually here)
+            if (ae instanceof GCEvent) {
+                parseDetailEventsIfExist(line, pos, (GCEvent)ae);
+            }
+            if (type.getPattern() == GcPattern.GC_MEMORY_PAUSE
+                    || type.getPattern() == GcPattern.GC_PAUSE) {
+
+                ae.setPause(parsePause(line, pos));
+            } else if (type.getPattern() == GcPattern.GC_PAUSE_DURATION) {
+                // special case only occurring with concurrent collections...
+                // the -end events contain a pause and duration as well
+                int start = pos.getIndex();
+                int end = line.indexOf('/', pos.getIndex());
+                ae.setPause(NumberParser.parseDouble(line.substring(start, end)));
+                start = end + 1;
+                end = line.indexOf(' ', start);
+                ((ConcurrentGCEvent) ae).setDuration(NumberParser.parseDouble(line.substring(start, end)));
+            }
+
             return ae;
         }
         catch (RuntimeException rte) {

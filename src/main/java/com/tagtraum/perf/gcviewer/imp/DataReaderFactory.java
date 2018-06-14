@@ -164,7 +164,7 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x G1 collector");
             return new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_6G1);
         }
-        else if (s.contains("[Times:")) {
+        else if (s.contains("[Times:") || s.contains("[Pause Init Mark") /* Shenandoah, -XX:-PrintGCDetails */) {
             // all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x");
             return new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
