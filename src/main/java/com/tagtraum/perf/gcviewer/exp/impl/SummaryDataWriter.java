@@ -135,8 +135,6 @@ public class SummaryDataWriter extends AbstractDataWriter {
     }
 
     private void exportOverallSummary(PrintWriter out, GCModel model) {
-        exportValue(out, "accumPause", gcTimeFormatter.format(model.getPause().getSum()), "s");
-
         FormattedValue formed = footprintFormatter.formatToFormatted(model.getFootprint());
         exportValue(out, "footprint", formed.getValue(), formed.getUnits());
 
@@ -183,6 +181,8 @@ public class SummaryDataWriter extends AbstractDataWriter {
         final boolean fullGCDataAvailable = model.getFullGCPause().getN() > 0;
 
         if (pauseDataAvailable) {
+            exportValue(out, "pauseCount", "" + model.getPause().getN(), "-");
+
             exportValue(out, "avgPauseIsSig", isSignificant(model.getPause().average(), model.getPause().standardDeviation()) );
             exportValue(out, "avgPause", pauseFormatter.format(model.getPause().average()), "s");
             exportValue(out, "avgPause\u03c3", pauseFormatter.format(model.getPause().standardDeviation()), "s");
@@ -191,6 +191,8 @@ public class SummaryDataWriter extends AbstractDataWriter {
             exportValue(out, "maxPause", pauseFormatter.format(model.getPause().getMax()), "s");
 
             if (gcDataAvailable) {
+                exportValue(out, "gcPauseCount", "" + model.getGCPause().getN(), "-");
+
                 exportValue(out, "avgGCPauseIsSig", isSignificant(model.getGCPause().average(), model.getGCPause().standardDeviation()) );
                 exportValue(out, "avgGCPause", pauseFormatter.format(model.getGCPause().average()), "s");
                 exportValue(out, "avgGCPause\u03c3", pauseFormatter.format(model.getGCPause().standardDeviation()), "s");
@@ -200,9 +202,12 @@ public class SummaryDataWriter extends AbstractDataWriter {
             }
 
             if (fullGCDataAvailable) {
+                exportValue(out, "fullGcPauseCount", "" + model.getFullGCPause().getN(), "-");
+
                 exportValue(out, "avgFullGCPauseIsSig", isSignificant(model.getFullGCPause().average(), model.getFullGCPause().standardDeviation()));
                 exportValue(out, "avgFullGCPause", pauseFormatter.format(model.getFullGCPause().average()), "s");
                 exportValue(out, "avgFullGCPause\u03c3", pauseFormatter.format(model.getFullGCPause().standardDeviation()), "s");
+
                 exportValue(out, "minFullGCPause", pauseFormatter.format(model.getFullGCPause().getMin()), "s");
                 exportValue(out, "maxFullGCPause", pauseFormatter.format(model.getFullGCPause().getMax()), "s");
             }
@@ -231,8 +236,35 @@ public class SummaryDataWriter extends AbstractDataWriter {
     }
 
     private void exportMemorySummary(PrintWriter out, GCModel model) {
-        FormattedValue formed = footprintFormatter.formatToFormatted(model.getFootprint());
-        exportValue(out, "footprint", formed.getValue(), formed.getUnits());
+        FormattedValue formed = footprintFormatter.formatToFormatted(model.getHeapAllocatedSizes().getMax());
+        exportValue(out, "totalHeapAllocMax", formed.getValue(), formed.getUnits());
+        formed = footprintFormatter.formatToFormatted(model.getHeapUsedSizes().getMax());
+        exportValue(out, "totalHeapUsedMax", formed.getValue(), formed.getUnits());
+        exportValue(out, "totalHeapUsedMaxpc", percentFormatter.format(model.getHeapUsedSizes().getMax() * 100.0 / model.getHeapAllocatedSizes().getMax()), "%");
+
+        if (model.getTenuredAllocatedSizes().getN() == 0) {
+            exportValue(out, "totalTenuredAllocMax", "n/a", "M");
+            exportValue(out, "totalTenuredUsedMax", "n/a", "M");
+            exportValue(out, "totalTenuredUsedMaxpc", "n/a", "%");
+        } else {
+            formed = footprintFormatter.formatToFormatted(model.getTenuredAllocatedSizes().getMax());
+            exportValue(out, "totalTenuredAllocMax", formed.getValue(), formed.getUnits());
+            formed = footprintFormatter.formatToFormatted(model.getTenuredUsedSizes().getMax());
+            exportValue(out, "totalTenuredUsedMax", formed.getValue(), formed.getUnits());
+            exportValue(out, "totalTenuredUsedMaxpc", percentFormatter.format(model.getTenuredUsedSizes().getMax() * 100.0 / model.getTenuredAllocatedSizes().getMax()), "%");
+        }
+
+        if (model.getYoungAllocatedSizes().getN() == 0) {
+            exportValue(out, "totalYoungAllocMax", "n/a", "M");
+            exportValue(out, "totalYoungUsedMax", "n/a", "M");
+            exportValue(out, "totalYoungUsedMaxpc", "n/a", "%");
+        } else {
+            formed = footprintFormatter.formatToFormatted(model.getYoungAllocatedSizes().getMax());
+            exportValue(out, "totalYoungAllocMax", formed.getValue(), formed.getUnits());
+            formed = footprintFormatter.formatToFormatted(model.getYoungUsedSizes().getMax());
+            exportValue(out, "totalYoungUsedMax", formed.getValue(), formed.getUnits());
+            exportValue(out, "totalYoungUsedMaxpc", percentFormatter.format(model.getYoungUsedSizes().getMax() * 100.0 / model.getYoungAllocatedSizes().getMax()), "%");
+        }
 
         // check whether we have full gc data at all
         final boolean fullGCDataVailable = model.getFootprintAfterFullGC().getN() != 0;
@@ -317,8 +349,6 @@ public class SummaryDataWriter extends AbstractDataWriter {
             exportValue(out, "avgFreedMemoryByGCisSig", isSignificant(model.getFreedMemoryByGC().average(),
                     model.getFreedMemoryByGC().standardDeviation()));
         }
-        formed = footprintFormatter.formatToFormatted(model.getFreedMemory());
-        exportValue(out, "freedMemory", formed.getValue(), formed.getUnits());
     }
 
     private FormattedValue sigmaMemoryFormat(double value) {
