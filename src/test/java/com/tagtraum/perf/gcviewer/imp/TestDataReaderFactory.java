@@ -323,4 +323,15 @@ public class TestDataReaderFactory {
         assertDataReader(DataReaderSun1_6_0G1.class, dr.getClass());
     }
 
+    @Test
+    public void testOracleShenandoahJ8Simple() throws Exception {
+        DataReaderFactory factory = new DataReaderFactory();
+        DataReader dr = factory.getDataReader(new GcResourceFile("byteArray"), new ByteArrayInputStream((
+                "OpenJDK 64-Bit Server VM (25.161-b14) for linux-amd64 JRE (1.8.0_161-b14), built on Jan  9 2018 19:54:33 by \"mockbuild\" with gcc 4.8.5 20150623 (Red Hat 4.8.5-16)\n" +
+                "Memory: 4k page, physical 8002012k(4357532k free), swap 2097148k(1656904k free)\n" +
+                "CommandLine flags: -XX:HeapDumpPath=/work -XX:InitialHeapSize=2147483648 -XX:LogFile=/log/jvm.log -XX:+LogVMOutput -XX:+ManagementServer -XX:MaxHeapSize=2147483648 -XX:+PrintGC -XX:+PrintGCTimeStamps -XX:+UnlockDiagnosticVMOptions -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:-UseNUMA -XX:+UseShenandoahGC \n" +
+                "13.976: [Pause Init Mark, 3.587 ms]\n").getBytes()));
+        assertDataReader(DataReaderSun1_6_0.class, dr.getClass());
+    }
+
 }

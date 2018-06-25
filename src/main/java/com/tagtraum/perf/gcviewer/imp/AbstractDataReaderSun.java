@@ -180,7 +180,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
                || character == ','; // some localised log files contain "," instead of "." in numbers
     }
 
-    protected void setMemory(GCEvent event, String line, ParseInformation pos) throws ParseException {
+    protected void setMemory(AbstractGCEvent<?> event, String line, ParseInformation pos) throws ParseException {
         int start = skipUntilNextDigit(line, pos);
         int end = line.indexOf("->", pos.getIndex()) - 1;
         if (end != -2) for (start = end-1; start >= 0 && Character.isDigit(line.charAt(start)); start--) {}
@@ -226,7 +226,12 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         if (end < 0) {
         	end = line.indexOf(']', begin);
         }
-        final double pause = NumberParser.parseDouble(line.substring(begin, end));
+        double pause = NumberParser.parseDouble(line.substring(begin, end));
+
+        // ms...
+        if (line.endsWith("ms]")) {
+            pause = pause / 1000;
+        }
 
         // skip "secs]"
         pos.setIndex(line.indexOf(']', end) + 1);

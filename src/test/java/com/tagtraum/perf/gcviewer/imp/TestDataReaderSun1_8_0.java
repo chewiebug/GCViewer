@@ -6,12 +6,14 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
@@ -131,5 +133,109 @@ public class TestDataReaderSun1_8_0 {
         assertThat("pause", model.get(1).getPause(), closeTo(218.6928810, 0.000000001));
 
         assertEquals("number of errors", 0, handler.getCount());
+    }
+
+    @Test
+    public void shenandoahPauseMark() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("13.976: [Pause Init Mark, 3.587 ms]" +
+                        "\n13.992: [Pause Final Mark 1447M->684M(2048M), 2.279 ms]")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(2));
+        assertThat("warnings", handler.getCount(), is(0));
+
+        AbstractGCEvent<?> initMarkEvent = model.get(0);
+        assertThat("Pause init mark: name", initMarkEvent.getTypeAsString(), equalTo("Pause Init Mark"));
+        assertThat("Pause init mark: duration", initMarkEvent.getPause(), closeTo(0.003587, 0.00001));
+
+        AbstractGCEvent<?> finalMarkEvent = model.get(1);
+        assertThat("Pause final mark: name", finalMarkEvent.getTypeAsString(), equalTo("Pause Final Mark"));
+        assertThat("Pause final mark: duration", finalMarkEvent.getPause(), closeTo(0.002279, 0.00001));
+        assertThat("Pause final mark: before", finalMarkEvent.getPreUsed(), is(1447 * 1024));
+    }
+
+    @Test
+    public void shenandoahPauseUpdateRefs() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("14.001: [Pause Init Update Refs, 0.073 ms]" +
+                        "\n14.016: [Pause Final Update Refs 726M->60M(2048M), 0.899 ms]")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(2));
+        assertThat("warnings", handler.getCount(), is(0));
+
+        AbstractGCEvent<?> initUpdateRefsEvent = model.get(0);
+        assertThat("Pause init update refs: name", initUpdateRefsEvent.getTypeAsString(), equalTo("Pause Init Update Refs"));
+        assertThat("Pause init update refs: duration", initUpdateRefsEvent.getPause(), closeTo(0.000073, 0.0000001));
+
+        AbstractGCEvent<?> finalUpdateRefsEvent = model.get(1);
+        assertThat("Pause Final Update Refs: name", finalUpdateRefsEvent.getTypeAsString(), equalTo("Pause Final Update Refs"));
+        assertThat("Pause Final Update Refs: duration", finalUpdateRefsEvent.getPause(), closeTo(0.000899, 0.00001));
+        assertThat("Pause Final Update Refs: before", finalUpdateRefsEvent.getPreUsed(), is(726 * 1024));
+    }
+
+    @Test
+    public void shehandoahConcurrentEvents() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("13.979: [Concurrent marking 1435M->1447M(2048M), 12.576 ms]" +
+                        "\n13.994: [Concurrent evacuation 684M->712M(2048M), 6.041 ms]" +
+                        "\n14.001: [Concurrent update references  713M->726M(2048M), 14.718 ms]" +
+                        "\n14.017: [Concurrent reset bitmaps 60M->62M(2048M), 0.294 ms]" +
+                        "\n626.259: [Cancel concurrent mark, 0.056 ms]\n")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(5));
+        assertThat("warnings", handler.getCount(), is(0));
+
+        AbstractGCEvent<?> concurrentMarking = model.get(0);
+        assertThat("Concurrent Marking: name", concurrentMarking.getTypeAsString(), equalTo("Concurrent marking"));
+        assertThat("Concurrent Marking: duration", concurrentMarking.getPause(), closeTo(0.012576, 0.0000001));
+        assertThat("Concurrent Marking: before", concurrentMarking.getPreUsed(), is(1435 * 1024));
+        assertThat("Concurrent Marking: after", concurrentMarking.getPostUsed(), is(1447 * 1024));
+        assertThat("Concurrent Marking: total", concurrentMarking.getTotal(), is(2048 * 1024));
+    }
+
+    @Test
+    public void shenandoahIgnoredLines() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("Uncommitted 87M. Heap: 2048M reserved, 1961M committed, 992M used" +
+                        "\nCancelling concurrent GC: Allocation Failure")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(0));
+        assertThat("warnings", handler.getCount(), is(0));
     }
 }

@@ -642,6 +642,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_SHEN_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_MARK = new Type("Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_EVAC = new Type("Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CANCEL_CONC_MARK = new Type("Cancel concurrent mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
