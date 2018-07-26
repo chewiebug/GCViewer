@@ -31,6 +31,7 @@ public class UnittestHelper {
 
     private static final String FOLDER_OPENJDK = "openjdk";
     public enum FOLDER {
+        GO("go"),
         HP("hp"),
         IBM("ibm"),
         JROCKIT("jrockit"),

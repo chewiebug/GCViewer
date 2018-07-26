@@ -64,6 +64,7 @@ public class TestDataReaderSun1_8_0G1 {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
 
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2014-07-24T13:49:45.090+0400: 92457.841: [Full GC (Allocation Failure)  5811M->3097M(12G), 8.9862292 secs]"
