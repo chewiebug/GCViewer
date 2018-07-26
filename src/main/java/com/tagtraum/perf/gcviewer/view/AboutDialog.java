@@ -10,7 +10,6 @@ import java.awt.Insets;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -48,6 +47,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Neil Gentleman",
         "Chris Grindstaff",
         "Michi Gysel",
+        "Roland Illig",
         "Johan Kaving",
         "Maciej Kwiecien",
         "Henry Lin",
