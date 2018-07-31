@@ -266,6 +266,18 @@ public class SummaryDataWriter extends AbstractDataWriter {
             exportValue(out, "totalYoungUsedMaxpc", percentFormatter.format(model.getYoungUsedSizes().getMax() * 100.0 / model.getYoungAllocatedSizes().getMax()), "%");
         }
 
+        if (model.getPermAllocatedSizes().getN() == 0) {
+            exportValue(out, "totalPermAllocMax", "n/a", "M");
+            exportValue(out, "totalPermUsedMax", "n/a", "M");
+            exportValue(out, "totalPermUsedMaxpc", "n/a", "%");
+        } else {
+            formed = footprintFormatter.formatToFormatted(model.getPermAllocatedSizes().getMax());
+            exportValue(out, "totalPermAllocMax", formed.getValue(), formed.getUnits());
+            formed = footprintFormatter.formatToFormatted(model.getPermUsedSizes().getMax());
+            exportValue(out, "totalPermUsedMax", formed.getValue(), formed.getUnits());
+            exportValue(out, "totalPermUsedMaxpc", percentFormatter.format(model.getPermUsedSizes().getMax() * 100.0 / model.getPermAllocatedSizes().getMax()), "%");
+        }
+
         // check whether we have full gc data at all
         final boolean fullGCDataVailable = model.getFootprintAfterFullGC().getN() != 0;
         final boolean fullGCSlopeDataVailable = model.getFootprintAfterFullGC().getN() > 1;
