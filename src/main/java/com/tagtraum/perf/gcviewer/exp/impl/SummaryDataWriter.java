@@ -349,6 +349,19 @@ public class SummaryDataWriter extends AbstractDataWriter {
             exportValue(out, "avgFreedMemoryByGCisSig", isSignificant(model.getFreedMemoryByGC().average(),
                     model.getFreedMemoryByGC().standardDeviation()));
         }
+
+        final boolean promotionDataAvailable = model.getPromotion().getN() != 0;
+
+        if (!promotionDataAvailable) {
+            exportValue(out, "avgPromotion", "n.a.", "M");
+            exportValue(out, "promotionTotal", "n.a.", "M");
+        }
+        else {
+            formed = footprintFormatter.formatToFormatted(model.getPromotion().average());
+            exportValue(out, "avgPromotion", formed.getValue(), formed.getUnits());
+            formed = footprintFormatter.formatToFormatted(model.getPromotion().getSum());
+            exportValue(out, "promotionTotal", formed.getValue(), formed.getUnits());
+        }
     }
 
     private FormattedValue sigmaMemoryFormat(double value) {

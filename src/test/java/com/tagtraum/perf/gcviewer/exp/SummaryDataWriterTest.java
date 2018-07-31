@@ -2,16 +2,25 @@ package com.tagtraum.perf.gcviewer.exp;
 
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.NumberFormat;
 
 import com.tagtraum.perf.gcviewer.exp.impl.SummaryDataWriter;
+import com.tagtraum.perf.gcviewer.imp.DataReader;
+import com.tagtraum.perf.gcviewer.imp.DataReaderSun1_6_0;
+import com.tagtraum.perf.gcviewer.imp.GcLogType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.util.MemoryFormat;
+
 import org.hamcrest.Matchers;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -20,6 +29,17 @@ import org.junit.Test;
  * <p>hint: don't use memory numbers > 999, because they are not formatted the same on all platforms -&gt; unstable tests</p>
  */
 public class SummaryDataWriterTest {
+
+    private static NumberFormat percentFormatter;
+    private static MemoryFormat memoryFormatter;
+
+    @BeforeClass
+	public static void setupClass() {
+        percentFormatter = NumberFormat.getInstance();
+        percentFormatter.setMaximumFractionDigits(1);
+        percentFormatter.setMinimumFractionDigits(1);
+        memoryFormatter = new MemoryFormat();
+    }
 
     private GCModel createGcModel() throws MalformedURLException {
         GCModel model = new GCModel();
@@ -72,5 +92,28 @@ public class SummaryDataWriterTest {
         String csv = output.toString();
 
         assertThat("totalHeapAllocMax", csv, Matchers.containsString("avgfootprintAfterFullGC; 724; K"));
+    }
+
+    @Test
+    public void testWriteWithPromotion() throws IOException {
+    	ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2011-01-25T17:10:16.889+0100: 12076.859: [GC 12076.859: [ParNew2011-01-25T17:10:16.896+0100: 12076.866: [CMS-concurrent-abortable-preclean: 0.929/4.899 secs] [Times: user=2.13 sys=0.04, real=4.90 secs]" +
+                		"\n" +
+                		"\nDesired survivor size 720896 bytes, new threshold 1 (max 4)" +
+                		"\n- age   1:    1058016 bytes,    1058016 total" +
+                		"\n: 13056K->1408K(13056K), 0.0128277 secs] 131480K->122757K(141328K), 0.0131346 secs] [Times: user=0.15 sys=0.00, real=0.01 secs]")
+                       .getBytes());
+        DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
+        GCModel model = reader.read();
+        model.setURL(new URL("file", "localhost", "test-file"));
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        SummaryDataWriter objectUnderTest = new SummaryDataWriter(output);
+
+        objectUnderTest.write(model);
+
+        String csv = output.toString();
+
+        assertThat("avgPromotion", csv, Matchers.containsString("avgPromotion; " + memoryFormatter.formatToFormatted(2925).getValue() + "; K"));
     }
 }
