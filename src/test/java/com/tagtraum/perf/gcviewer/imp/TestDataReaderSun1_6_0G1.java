@@ -91,7 +91,7 @@ public class TestDataReaderSun1_6_0G1 {
 
 		assertEquals("count", 1, model.size());
 		assertEquals("full gc pause", 0.1604955, model.getFullGCPause().getMax(), 0.000001);
-
+        assertThat("is system gc", model.get(0).isSystem(), is(true));
     }
     
     @Test

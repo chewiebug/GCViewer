@@ -13,7 +13,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
  */
 public class DataReaderTools {
 
-    private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
+    private static Pattern parenthesesPattern = Pattern.compile("\\([^)]*(\\))?\\) ?");
 
     private Logger logger;
 
