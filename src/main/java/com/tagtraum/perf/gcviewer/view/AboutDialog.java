@@ -10,7 +10,6 @@ import java.awt.Insets;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,6 +39,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Hans Bausewein",
         "Peter Bilstein",
         "Steve Boardwell",
+        "Krzysztof Burek",
         "Cka3o4Huk",
         "Frank Dietrich",
         "Bernd Eckenfels",
