@@ -19,7 +19,7 @@ When logfile rotation (-XX:+UseGCLogFileRotation) is enabled, the logfiles can b
 
 Supported verbose:gc formats are:
 
-- some support for OpenJDK 9 unified logging format -Xlog:gc:<file>, the following configurations will work
+- some support for OpenJDK 9 / 10 unified logging format -Xlog:gc:<file>, the following configurations will work
   - -Xlog:gc:file="path-to-file" (uses defaults)
   - -Xlog:gc=info:file="path-to-file":tags,uptime,level (minimum configuration needed)
   - -Xlog:gc*=trace:file="path-to-file":tags,time,uptime,level
