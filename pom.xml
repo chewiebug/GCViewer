@@ -19,7 +19,7 @@
         <developer>
             <name>Jörg Wüthrich</name>
             <email>gcviewer@gmx.ch</email>
-            <url>http://github.com/chewiebug/GCViewer</url>
+            <url>http://github.com/chewiebug</url>
         </developer>
         <developer>
             <name>Hans Bausewein</name>
@@ -85,6 +85,10 @@
         <developer>
             <name>Tony Mancill</name>
             <url>https://github.com/tmancill</url>
+        </developer>
+        <developer>
+            <name>Auston McReynolds</name>
+            <url>https://github.com/amcrn</url>
         </developer>
         <developer>
             <name>Samuel Mendenhall</name>

@@ -1,7 +1,7 @@
 GCViewer helps you to analyse java garbage collection log files. 
 
 Copyright (c) 2002-2008 tagtraum industries incorporated.
-Copyright (c) 2011-2017 Joerg Wuethrich and contributors
+Copyright (c) 2011-2018 Joerg Wuethrich and contributors
 
 LGPL
 ====
