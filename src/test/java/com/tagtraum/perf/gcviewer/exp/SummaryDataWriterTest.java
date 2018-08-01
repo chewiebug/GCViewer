@@ -6,12 +6,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.NumberFormat;
 
 import com.tagtraum.perf.gcviewer.exp.impl.SummaryDataWriter;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.MemoryFormat;
+
 import org.hamcrest.Matchers;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -20,6 +24,17 @@ import org.junit.Test;
  * <p>hint: don't use memory numbers > 999, because they are not formatted the same on all platforms -&gt; unstable tests</p>
  */
 public class SummaryDataWriterTest {
+
+    private static NumberFormat percentFormatter;
+    private static MemoryFormat memoryFormatter;
+
+    @BeforeClass
+	public static void setupClass() {
+        percentFormatter = NumberFormat.getInstance();
+        percentFormatter.setMaximumFractionDigits(1);
+        percentFormatter.setMinimumFractionDigits(1);
+        memoryFormatter = new MemoryFormat();
+    }
 
     private GCModel createGcModel() throws MalformedURLException {
         GCModel model = new GCModel();
@@ -72,5 +87,29 @@ public class SummaryDataWriterTest {
         String csv = output.toString();
 
         assertThat("totalHeapAllocMax", csv, Matchers.containsString("avgfootprintAfterFullGC; 724; K"));
+    }
+
+    @Test
+    public void testWriteWithPerm() throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        SummaryDataWriter objectUnderTest = new SummaryDataWriter(output);
+
+        // 83.403: [Full GC 83.403: [Tenured: 38156K->54636K(349568K), 0.6013150 secs] 141564K->54636K(506944K), [Perm : 73727K->73727K(73728K)], 0.6014256 secs] [Times: user=0.58 sys=0.00, real=0.59 secs]
+        GCEvent fullGcEvent = new GCEvent(83.403, 141564, 54636, 506944, 0.6014256, Type.FULL_GC);
+        GCEvent tenured = new GCEvent(83.403, 38156, 54636, 349568, 0.6013150, Type.TENURED);
+        GCEvent perm = new GCEvent(83.403, 73727, 73727, 73728, 0.6014256, Type.PERM);
+        fullGcEvent.add(tenured);
+        fullGcEvent.add(perm);
+
+        GCModel model = createGcModel();
+        model.add(fullGcEvent);
+
+        objectUnderTest.write(model);
+
+        String csv = output.toString();
+
+        assertThat("totalPermAllocMax", csv, Matchers.containsString("totalPermAllocMax; 72; M"));
+        assertThat("totalPermUsedMax", csv, Matchers.containsString("totalPermUsedMax; " + memoryFormatter.formatToFormatted(73727).getValue() + "; M"));
+        assertThat("totalPermUsedMaxpc", csv, Matchers.containsString("totalPermUsedMaxpc; " + percentFormatter.format(100.0) + "; %"));
     }
 }
