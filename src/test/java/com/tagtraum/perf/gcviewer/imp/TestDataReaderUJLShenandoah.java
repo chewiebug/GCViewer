@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -82,7 +83,8 @@ public class TestDataReaderUJLShenandoah {
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(5));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(Type.UJL_PAUSE_FULL_SYSTEM.toString()));
+        assertThat("type", event.getTypeAsString(), equalTo(Type.UJL_PAUSE_FULL + " (System.gc())"));
+        assertThat("is system gc", event.isSystem(), is(true));
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
@@ -129,7 +131,8 @@ public class TestDataReaderUJLShenandoah {
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(5));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(Type.UJL_PAUSE_FULL_SYSTEM.toString()));
+        assertThat("type", event.getTypeAsString(), equalTo(Type.UJL_PAUSE_FULL + " (System.gc())"));
+        assertThat("is system gc", event.isSystem(), is(true));
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));
@@ -146,7 +149,8 @@ public class TestDataReaderUJLShenandoah {
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
         GCEvent event = (GCEvent) model.get(0);
-        assertThat("type", event.getTypeAsString(), is(Type.UJL_PAUSE_FULL_SYSTEM.toString()));
+        assertThat("type", event.getTypeAsString(), equalTo(Type.UJL_PAUSE_FULL + " (System.gc())"));
+        assertThat("is system gc", event.isSystem(), is(true));
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
         assertThat("postUsed heap size", event.getPostUsed(), is(1 * 1024));
         assertThat("total heap size", event.getTotal(), is(128 * 1024));

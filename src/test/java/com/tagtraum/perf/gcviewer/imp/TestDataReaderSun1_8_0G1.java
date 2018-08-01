@@ -144,4 +144,35 @@ public class TestDataReaderSun1_8_0G1 {
         assertThat("number of errors", handler.getCount(), is(0));
         assertThat("pause duration", model.get(0).getPause(), closeTo(0.1005220, 0.00000001));
     }
+
+    @Test
+    public void youngInitialMarkSystemGc() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1SystemGcYoung.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("number of events", model.size(), is(1));
+        assertThat("number of errors", handler.getCount(), is(0));
+        assertThat("pause duration", model.get(0).getPause(), closeTo(0.2124664, 0.00000001));
+        assertThat("is system gc", model.get(0).isSystem(), is(true));
+    }
+
+    @Test
+    public void youngInitialMarkMetadataThreshold() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1YoungMetadataGcThreshold.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("number of events", model.size(), is(1));
+        assertThat("number of errors", handler.getCount(), is(0));
+        assertThat("pause duration", model.get(0).getPause(), closeTo(0.0229931, 0.00000001));
+    }
 }
