@@ -601,8 +601,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
 
             return ae;
         }
-        catch (RuntimeException rte) {
-            throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
+        catch (RuntimeException | UnknownGcTypeException e) {
+            throw new ParseException(e.toString(), line, pos);
         }
     }
 

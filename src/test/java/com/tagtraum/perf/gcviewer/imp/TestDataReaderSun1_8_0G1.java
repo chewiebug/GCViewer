@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -174,5 +175,26 @@ public class TestDataReaderSun1_8_0G1 {
         assertThat("number of events", model.size(), is(1));
         assertThat("number of errors", handler.getCount(), is(0));
         assertThat("pause duration", model.get(0).getPause(), closeTo(0.0229931, 0.00000001));
+    }
+
+    @Test
+    public void doubleTimeStamp() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("176020.306: 176020.306: [GC concurrent-root-region-scan-start]")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("size", model.size(), is(0));
+        assertThat("warnings", handler.getCount(), is(1));
+        assertThat("log message contains line number", handler.getLogRecords().get(0).getMessage(), containsString("Line"));
+        assertThat("log message contains log line", handler.getLogRecords().get(0).getMessage(), containsString("176020.306: 176020.306"));
+
     }
 }
