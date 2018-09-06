@@ -238,4 +238,75 @@ public class TestDataReaderSun1_8_0 {
         assertThat("gc count", model.size(), is(0));
         assertThat("warnings", handler.getCount(), is(0));
     }
+
+    @Test
+    public void shenandoaPauseInitMarkDetails() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("Capacity: 262144M, Peak Occupancy: 222063M, Lowest Free: 40080M, Free Threshold: 7864M\n" +
+                        "Uncommitted 1184M. Heap: 262144M reserved, 223616M committed, 213270M used\n" +
+                        "Periodic GC triggered. Time since last GC: 300004 ms, Guaranteed Interval: 300000 ms\n" +
+                        "347584.988: [Pause Init Mark, 3.942 ms]\n")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(1));
+        assertThat("warnings", handler.getCount(), is(0));
+
+        AbstractGCEvent<?> initMarkEvent = model.get(0);
+        assertThat("Pause init mark: duration", initMarkEvent.getPause(), closeTo(0.003942, 0.00001));
+    }
+
+    @Test
+    public void shenandoahPauseFinalMarkDetails() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("346363.391: [Pause Final MarkTotal Garbage: 54870M" +
+                        "\nImmediate Garbage: 0M, 0 regions (0% of total)" +
+                        "\nGarbage to be collected: 8900M (16% of total), 281 regions" +
+                        "\nLive objects to be evacuated: 85M" +
+                        "\nLive/garbage ratio in collected regions: 0%" +
+                        "\n 216G->216G(256G), 14.095 ms]")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(1));
+        assertThat("warnings", handler.getCount(), is(0));
+
+        AbstractGCEvent<?> finalMarkEvent = model.get(0);
+        assertThat("name", finalMarkEvent.getTypeAsString(), equalTo("Pause Final Mark"));
+        assertThat("duration", finalMarkEvent.getPause(), closeTo(0.014095, 0.000000001));
+        assertThat("before", finalMarkEvent.getPreUsed(), is(216 * 1024 * 1024));
+    }
+
+    @Test
+    public void shenandoahDetailsShutdown()  throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.INFO);
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0ShenandoahDetailsShutdown.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(0));
+        assertThat("number of errors",
+                handler.getLogRecords().stream().filter(logRecord -> !logRecord.getLevel().equals(Level.INFO)).count(),
+                is(0L));
+        assertThat("contains GC STATISTICS",
+                handler.getLogRecords().stream().filter(logRecord -> logRecord.getMessage().startsWith("GC STATISTICS")).count(),
+                is(1L));
+    }
 }

@@ -114,6 +114,12 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
         EXCLUDE_STRINGS.add("Uncommitted"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS.add("Cancelling concurrent GC"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS.add("Capacity"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS.add("Periodic GC triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS.add("Immediate Garbage"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS.add("Garbage to be collected"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS.add("Live"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS.add("Concurrent marking triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -201,6 +207,18 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE = 1;
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER = 2;
 
+    // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+    // 590327.714: [Pause Final MarkTotal Garbage: 57403M
+    // Immediate Garbage: 32M, 2 regions (1% of total)
+    // Garbage to be collected: 5134M (8% of total), 164 regions
+    // Live objects to be evacuated: 113M
+    // Live/garbage ratio in collected regions: 2%
+    // 219G->219G(256G), 5.000 ms]
+    private static final String SHENANDOAH_DETAILS_FINAL_MARK = "Final MarkTotal";
+    private static final String SHENANDOAH_DETAILS_FINAL_MARK_SPLIT_START = "Total";
+
+    private static final String SHENANDOAH_INTRODUCTION_TO_GC_STATISTICS = "Shenandoah Heap";
+
     // -XX:+PrintReferenceGC
     private static final String PRINT_REFERENCE_GC_INDICATOR = "Reference";
 
@@ -256,6 +274,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     }
 
+                    if (line.contains(SHENANDOAH_DETAILS_FINAL_MARK)) {
+                        beginningOfLine.addFirst(line.substring(0, line.indexOf(SHENANDOAH_DETAILS_FINAL_MARK_SPLIT_START)));
+                        continue;
+                    } else if (line.startsWith(SHENANDOAH_INTRODUCTION_TO_GC_STATISTICS)) {
+                        // Assumption: As soon as the shenandoah gc statistics block starts, the vm is shutting down
+                        skipAndLogToEndOfFile(in);
+                        continue;
+                    }
                     if (line.indexOf(CMS_ABORT_PRECLEAN) >= 0) {
                         // line contains like " CMS: abort preclean due to time "
                         // -> remove the text
@@ -426,6 +452,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
         finally {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
+        }
+    }
+
+    private void skipAndLogToEndOfFile(LineNumberReader in) throws IOException {
+        String line;
+        while ((line = in.readLine()) != null) {
+            getLogger().info(line);
         }
     }
 
