@@ -21,6 +21,7 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEventUJL;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 import com.tagtraum.perf.gcviewer.util.DateHelper;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
@@ -47,6 +48,24 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
  */
 public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
+    class LogEvent {
+
+        final String time;
+	final String uptime;
+	final String level;
+	final String tags;
+	final String message;
+
+	LogEvent(String time, String uptime, String level, String tags, String message) {
+	    this.time = time;
+	    this.uptime = uptime;
+	    this.level = level;
+	    this.tags = tags;
+	    this.message = message;
+        }
+
+    }
+
     // matches the whole line and extracts decorators from it (decorators always appear between [] and are independent of the gc algorithm being logged)
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
     // Group 1 / time: <empty> (optional group, no full timestamp present)
@@ -57,13 +76,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Group 6 / tail: Pause Init Mark 1.070ms
     // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
     //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
-    private static final Pattern PATTERN_DECORATORS = Pattern.compile(
-            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
-    );
+    
+    private static final Pattern PATTERN_DECORATORS = Pattern.compile("^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ](?<message>.*)");
+
+    private static final Pattern PATTERN_GC_MESSAGE = Pattern.compile("^GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)");
+
+    private static final Pattern PATTERN_APPLICATION_STOPPED = Pattern.compile("^Total time for which application threads were stopped: (?<applicationstopped>[0-9]+,[0-9]+) seconds, Stopping threads took: (?<threadsstopping>[0-9]+,[0-9]+) seconds$");
+    
     private static final String GROUP_DECORATORS_TIME = "time";
     private static final String GROUP_DECORATORS_UPTIME = "uptime";
     private static final String GROUP_DECORATORS_LEVEL = "level";
     private static final String GROUP_DECORATORS_TAGS = "tags";
+    private static final String GROUP_DECORATORS_MESSAGE = "message";
     private static final String GROUP_DECORATORS_GC_NUMBER = "gcnumber";
     private static final String GROUP_DECORATORS_GC_TYPE = "type";
     private static final String GROUP_DECORATORS_TAIL = "tail";
@@ -124,11 +148,12 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String TAG_GC_METASPACE = "gc,metaspace";
 
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[safepoint]","[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit");
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using", "Heap region size");
+
 
 
     protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
@@ -162,23 +187,63 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private ParseContext parseEvent(ParseContext context) {
         AbstractGCEvent<?> event = null;
-
-        Matcher decoratorsMatcher = PATTERN_DECORATORS.matcher(context.getLine());
-        try {
-            event = createGcEventWithStandardDecorators(decoratorsMatcher, context.getLine());
-            if (event != null) {
-                String tags = decoratorsMatcher.group(GROUP_DECORATORS_TAGS);
-                String tail = decoratorsMatcher.group(GROUP_DECORATORS_TAIL);
-                event = handleTail(context, event, tags, tail);
+        String line = context.getLine();
+        
+	// extract log decorators (like time stamp, up time, level, tags and message)
+        Matcher eventDecoratorsMatcher = PATTERN_DECORATORS.matcher(line );
+        LogEvent logEvent = createLogEvent(eventDecoratorsMatcher);
+        
+        if (logEvent==null) {
+            getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
+        } else {
+            String message = logEvent.message;
+            Matcher decoratorsMatcher = PATTERN_GC_MESSAGE.matcher(message);
+            try {
+                event = createGcEventWithStandardDecorators(logEvent, decoratorsMatcher, context.getLine());
+                if (event != null) {
+                    String tags = logEvent.tags;
+                    String tail = decoratorsMatcher.group(GROUP_DECORATORS_TAIL);
+                    event = handleTail(context, event, tags, tail);
+                } else {
+                    Matcher applicationStoppedMAtcher = PATTERN_APPLICATION_STOPPED.matcher(logEvent.message);
+                    event = parseSafepointEvent(logEvent,applicationStoppedMAtcher,line);
+                }
+            } catch (UnknownGcTypeException | NumberFormatException e) {
+                // prevent incomplete event from being added to the GCModel
+                event = null;
+                getLogger().warning(String.format("Failed to parse gc event (%s) on line number %d (line=\"%s\")", e.toString(), in.getLineNumber(), context.getLine()));
             }
-        } catch (UnknownGcTypeException | NumberFormatException e) {
-            // prevent incomplete event from being added to the GCModel
-            event = null;
-            getLogger().warning(String.format("Failed to parse gc event (%s) on line number %d (line=\"%s\")", e.toString(), in.getLineNumber(), context.getLine()));
         }
+        
 
         context.setCurrentEvent(event);
         return context;
+    }
+
+    private AbstractGCEvent<?> parseSafepointEvent(LogEvent logEvent, Matcher applicationStoppedMatcher, String line) {
+        if (applicationStoppedMatcher.matches()) {
+            AbstractGCEvent<?> event = new VmOperationEvent();
+            event.setType(Type.APPLICATION_STOPPED_TIME);
+            setPause(event, applicationStoppedMatcher.group("applicationstopped"));
+            setDateStampIfPresent(event, logEvent.time);
+            setTimeStampIfPresent(event, logEvent.uptime);
+            return event;
+        } else {
+            getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
+            return null;
+        }
+    }
+
+    private LogEvent createLogEvent(Matcher eventDecoratorsMatcher) {
+        if(eventDecoratorsMatcher.matches()) {
+            String time = eventDecoratorsMatcher.group( GROUP_DECORATORS_TIME );
+            String uptime = eventDecoratorsMatcher.group( GROUP_DECORATORS_UPTIME );            
+            String level = eventDecoratorsMatcher.group( GROUP_DECORATORS_LEVEL );
+            String tags = eventDecoratorsMatcher.group( GROUP_DECORATORS_TAGS );
+            String message = eventDecoratorsMatcher.group( GROUP_DECORATORS_MESSAGE );
+            return new LogEvent(time,uptime,level,tags,message);
+        }
+        return null;
     }
 
     private AbstractGCEvent<?> handleTail(ParseContext context, AbstractGCEvent<?> event, String tags, String tail) {
@@ -321,19 +386,20 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     /**
      * Returns an instance of AbstractGcEvent (GCEvent or ConcurrentGcEvent) with all decorators present filled in
      * or <code>null</code> if the line could not be matched.
+     * @param logEvent 
      * @param decoratorsMatcher matcher for decorators to be used for GcEvent creation
      * @param line current line to be parsed
      * @return Instance of <code>AbstractGcEvent</code> or <code>null</code> if the line could not be matched.
      */
-    private AbstractGCEvent<?> createGcEventWithStandardDecorators(Matcher decoratorsMatcher, String line) throws UnknownGcTypeException {
-        if (decoratorsMatcher.find()) {
+    private AbstractGCEvent<?> createGcEventWithStandardDecorators(LogEvent logEvent, Matcher decoratorsMatcher, String line) throws UnknownGcTypeException {
+        if (decoratorsMatcher.matches()) {
             AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(decoratorsMatcher.group(GROUP_DECORATORS_GC_TYPE));
 
             AbstractGCEvent<?> event = type.getConcurrency().equals(Concurrency.CONCURRENT) ? new ConcurrentGCEvent() : new GCEventUJL();
             event.setExtendedType(type);
             event.setNumber(Integer.parseInt(decoratorsMatcher.group(GROUP_DECORATORS_GC_NUMBER)));
-            setDateStampIfPresent(event, decoratorsMatcher.group(GROUP_DECORATORS_TIME));
-            setTimeStampIfPresent(event, decoratorsMatcher.group(GROUP_DECORATORS_UPTIME));
+            setDateStampIfPresent(event, logEvent.time);
+            setTimeStampIfPresent(event, logEvent.uptime);
             return event;
         } else {
             getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
