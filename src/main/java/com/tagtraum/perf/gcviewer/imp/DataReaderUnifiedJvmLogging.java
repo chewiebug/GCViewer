@@ -48,24 +48,6 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
  */
 public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
-    class LogEvent {
-
-        final String time;
-	final String uptime;
-	final String level;
-	final String tags;
-	final String message;
-
-	LogEvent(String time, String uptime, String level, String tags, String message) {
-	    this.time = time;
-	    this.uptime = uptime;
-	    this.level = level;
-	    this.tags = tags;
-	    this.message = message;
-        }
-
-    }
-
     // matches the whole line and extracts decorators from it (decorators always appear between [] and are independent of the gc algorithm being logged)
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
     // Group 1 / time: <empty> (optional group, no full timestamp present)
@@ -203,7 +185,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             try {
         	if("safepoint".equals(logEvent.tags)) {
         	    Matcher applicationStoppedMatcher = PATTERN_APPLICATION_STOPPED.matcher(logEvent.message);
-        	    event = parseSafepointEvent(context, logEvent, applicationStoppedMatcher);        	    
+        	    event = parseSafepointEvent(logEvent, applicationStoppedMatcher);        	    
         	} else {
         	    Matcher gcMatcher = PATTERN_GC_MESSAGE.matcher(message);
                     event = createGcEvent(context, logEvent, gcMatcher);        	    
@@ -220,7 +202,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         return context;
     }
 
-    private AbstractGCEvent<?> parseSafepointEvent(ParseContext context, LogEvent logEvent, Matcher applicationStoppedMatcher) { 
+    private AbstractGCEvent<?> parseSafepointEvent(LogEvent logEvent, Matcher applicationStoppedMatcher) { 
 	if (applicationStoppedMatcher.find()) {
             AbstractGCEvent<?> event = new VmOperationEvent();
             event.setType(Type.APPLICATION_STOPPED_TIME);
@@ -519,6 +501,24 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         @Override
         public String toString() {
             return line + (getRegionSize() > 0 ? "; regionsSize=" + getRegionSize() : "") + "; partialEventsMap.size()=" + partialEventsMap.size() + "currentEvent=" + getCurrentEvent();
+        }
+
+    }
+    
+    class LogEvent {
+
+        private final String time;
+	private final String uptime;
+	private final String level;
+	private final String tags;
+	private final String message;
+
+	LogEvent(String time, String uptime, String level, String tags, String message) {
+	    this.time = time;
+	    this.uptime = uptime;
+	    this.level = level;
+	    this.tags = tags;
+	    this.message = message;
         }
 
     }
