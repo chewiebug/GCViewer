@@ -77,11 +77,14 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
     //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
     
+    // matches log decorators (like time stamp, up time, level, tags and message)
     private static final Pattern PATTERN_DECORATORS = Pattern.compile("^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ](?<message>.*)");
 
+    // matches gc event
     private static final Pattern PATTERN_GC_MESSAGE = Pattern.compile("^GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)");
 
-    private static final Pattern PATTERN_APPLICATION_STOPPED = Pattern.compile("^Total time for which application threads were stopped: (?<applicationstopped>[0-9]+,[0-9]+) seconds, Stopping threads took: (?<threadsstopping>[0-9]+,[0-9]+) seconds$");
+    // matches application stopped time (entries with [safepoint] tag
+    private static final Pattern PATTERN_APPLICATION_STOPPED = Pattern.compile("Total time for which application threads were stopped: (?<applicationstopped>[0-9]+,[0-9]+) seconds, Stopping threads took: (?<threadsstopping>[0-9]+,[0-9]+) seconds");
     
     private static final String GROUP_DECORATORS_TIME = "time";
     private static final String GROUP_DECORATORS_UPTIME = "uptime";
@@ -150,7 +153,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     /** list of strings, that must be part of the gc log line to be considered for parsing */
     private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[safepoint]","[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
-    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit");
+    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit", "Application time:");
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using", "Heap region size");
 
@@ -191,23 +194,20 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         
 	// extract log decorators (like time stamp, up time, level, tags and message)
         Matcher eventDecoratorsMatcher = PATTERN_DECORATORS.matcher(line );
-        LogEvent logEvent = createLogEvent(eventDecoratorsMatcher);
+        LogEvent logEvent = parseLogEvent(eventDecoratorsMatcher);
         
         if (logEvent==null) {
             getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
         } else {
             String message = logEvent.message;
-            Matcher decoratorsMatcher = PATTERN_GC_MESSAGE.matcher(message);
             try {
-                event = createGcEventWithStandardDecorators(logEvent, decoratorsMatcher, context.getLine());
-                if (event != null) {
-                    String tags = logEvent.tags;
-                    String tail = decoratorsMatcher.group(GROUP_DECORATORS_TAIL);
-                    event = handleTail(context, event, tags, tail);
-                } else {
-                    Matcher applicationStoppedMAtcher = PATTERN_APPLICATION_STOPPED.matcher(logEvent.message);
-                    event = parseSafepointEvent(logEvent,applicationStoppedMAtcher,line);
-                }
+        	if("safepoint".equals(logEvent.tags)) {
+        	    Matcher applicationStoppedMatcher = PATTERN_APPLICATION_STOPPED.matcher(logEvent.message);
+        	    event = parseSafepointEvent(context, logEvent, applicationStoppedMatcher);        	    
+        	} else {
+        	    Matcher gcMatcher = PATTERN_GC_MESSAGE.matcher(message);
+                    event = createGcEvent(context, logEvent, gcMatcher);        	    
+        	}
             } catch (UnknownGcTypeException | NumberFormatException e) {
                 // prevent incomplete event from being added to the GCModel
                 event = null;
@@ -220,21 +220,19 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         return context;
     }
 
-    private AbstractGCEvent<?> parseSafepointEvent(LogEvent logEvent, Matcher applicationStoppedMatcher, String line) {
-        if (applicationStoppedMatcher.matches()) {
+    private AbstractGCEvent<?> parseSafepointEvent(ParseContext context, LogEvent logEvent, Matcher applicationStoppedMatcher) { 
+	if (applicationStoppedMatcher.find()) {
             AbstractGCEvent<?> event = new VmOperationEvent();
             event.setType(Type.APPLICATION_STOPPED_TIME);
             setPause(event, applicationStoppedMatcher.group("applicationstopped"));
             setDateStampIfPresent(event, logEvent.time);
             setTimeStampIfPresent(event, logEvent.uptime);
             return event;
-        } else {
-            getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
-            return null;
-        }
+        } 
+	return null;
     }
 
-    private LogEvent createLogEvent(Matcher eventDecoratorsMatcher) {
+    private LogEvent parseLogEvent(Matcher eventDecoratorsMatcher) {
         if(eventDecoratorsMatcher.matches()) {
             String time = eventDecoratorsMatcher.group( GROUP_DECORATORS_TIME );
             String uptime = eventDecoratorsMatcher.group( GROUP_DECORATORS_UPTIME );            
@@ -391,7 +389,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
      * @param line current line to be parsed
      * @return Instance of <code>AbstractGcEvent</code> or <code>null</code> if the line could not be matched.
      */
-    private AbstractGCEvent<?> createGcEventWithStandardDecorators(LogEvent logEvent, Matcher decoratorsMatcher, String line) throws UnknownGcTypeException {
+    private AbstractGCEvent<?> createGcEvent(ParseContext context, LogEvent logEvent, Matcher decoratorsMatcher) throws UnknownGcTypeException {
         if (decoratorsMatcher.matches()) {
             AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(decoratorsMatcher.group(GROUP_DECORATORS_GC_TYPE));
 
@@ -400,14 +398,15 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             event.setNumber(Integer.parseInt(decoratorsMatcher.group(GROUP_DECORATORS_GC_NUMBER)));
             setDateStampIfPresent(event, logEvent.time);
             setTimeStampIfPresent(event, logEvent.uptime);
+            String tags = logEvent.tags;
+            String tail = decoratorsMatcher.group(GROUP_DECORATORS_TAIL);
+            event = handleTail(context, event, tags, tail);
             return event;
-        } else {
-            getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
-            return null;
         }
+        return null;
     }
 
-    private void setPause(AbstractGCEvent event, String pauseAsString) {
+    private void setPause(AbstractGCEvent<?> event, String pauseAsString) {
         // TODO remove code duplication with AbstractDataReaderSun -> move to DataReaderTools
         if (pauseAsString != null && pauseAsString.length() > 0) {
             event.setPause(NumberParser.parseDouble(pauseAsString) / 1000);
@@ -418,7 +417,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         return event.getTotal() > 0;
     }
 
-    private void setMemory(AbstractGCEvent event, Matcher matcher) {
+    private void setMemory(AbstractGCEvent<?> event, Matcher matcher) {
         // TODO remove code duplication with AbstractDataReaderSun -> move to DataReaderTools
         event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
                 Integer.parseInt(matcher.group(GROUP_MEMORY_BEFORE)), matcher.group(GROUP_MEMORY_BEFORE_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
