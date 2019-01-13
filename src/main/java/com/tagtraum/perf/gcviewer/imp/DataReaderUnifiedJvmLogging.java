@@ -96,7 +96,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Group 4: M
     // Group 5: 4998
     // Group 6: M
-    // Group 7: 1.070 (optional group)
+    // Group 7: 2.872 (optional group)
     private static final Pattern PATTERN_MEMORY_PAUSE = Pattern.compile("^" + PATTERN_MEMORY_STRING + "(?:(?:[ ]" + PATTERN_PAUSE_STRING + ")|$)");
 
     private static final int GROUP_MEMORY = 1;
@@ -122,9 +122,10 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String TAG_GC_START = "gc,start";
     private static final String TAG_GC_HEAP = "gc,heap";
     private static final String TAG_GC_METASPACE = "gc,metaspace";
+    private static final String TAG_GC_PHASES = "gc,phases";
 
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE,  "[" + TAG_GC_PHASES);
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit");
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
@@ -193,6 +194,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 // fallthrough -> same handling as for METASPACE event
             case TAG_GC_METASPACE:
                 event = parseTail(context, event, tail);
+                System.out.println(tail);
                 // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
                 //   size after concurrent collection will be calculated by GCModel#add()
                 if (!event.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
@@ -218,6 +220,9 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                     returnEvent = parseTail(context, event, tail);
                 }
                 break;
+            case TAG_GC_PHASES:
+            	returnEvent = parseTail(context, event, tail);
+            	break;
             default:
                 getLogger().warning(String.format("Unexpected tail present in the end of line number %d (tail=\"%s\"; line=\"%s\")", in.getLineNumber(), tail, context.getLine()));
         }

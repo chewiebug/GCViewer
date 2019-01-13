@@ -649,6 +649,19 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
 
+        // unified jvm logging ZGC event types
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION = new Type("Garbage Collection", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_MEMORY);
+        public static final Type UJL_ZGC_PAUSE_MARK_START = new Type("Pause Mark Start", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_MARK_END = new Type("Pause Mark End", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_RELOCATE_START = new Type("Pause Relocate Start", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_MARK = new Type("Concurrent Mark", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_NONREF = new Type("Concurrent Process Non-Strong References", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RESET_RELOC_SET = new Type("Concurrent Reset Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_DETATCHED_PAGES = new Type("Concurrent Destroy Detached Pages", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_SELECT_RELOC_SET = new Type("Concurrent Select Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET = new Type("Concurrent Prepare Relocation Sets", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RELOCATE = new Type("Concurrent Relocate", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        
         // IBM Types
         // TODO: are scavenge always young only??
         public static final Type IBM_AF = new Type("af", Generation.YOUNG);
