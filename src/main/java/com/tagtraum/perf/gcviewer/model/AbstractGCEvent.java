@@ -659,7 +659,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_ZGC_CONCURRENT_RESET_RELOC_SET = new Type("Concurrent Reset Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type UJL_ZGC_CONCURRENT_DETATCHED_PAGES = new Type("Concurrent Destroy Detached Pages", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type UJL_ZGC_CONCURRENT_SELECT_RELOC_SET = new Type("Concurrent Select Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET = new Type("Concurrent Prepare Relocation Sets", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET = new Type("Concurrent Prepare Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type UJL_ZGC_CONCURRENT_RELOCATE = new Type("Concurrent Relocate", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         
         // IBM Types
