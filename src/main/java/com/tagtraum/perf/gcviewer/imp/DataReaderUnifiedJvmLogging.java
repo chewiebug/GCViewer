@@ -469,11 +469,11 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         return false;
     }
 
-    private boolean isParseablePhaseEvent(String line) {    	
+    private boolean isParseablePhaseEvent(String line) {
         Matcher phaseStringMatcher = line != null ? PATTERN_INCLUDE_STRINGS_PHASE.matcher(line) : null;
-        if(phaseStringMatcher.find()) {
+        if (phaseStringMatcher.find()) {
             String phaseType = phaseStringMatcher.group(GROUP_DECORATORS_GC_TYPE);
-            if(phaseType != null && AbstractGCEvent.Type.lookup(phaseType) != null) {
+            if (phaseType != null && AbstractGCEvent.Type.lookup(phaseType) != null) {
                 return true;
             }
         }
