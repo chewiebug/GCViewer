@@ -171,7 +171,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         getLogger().info("Reading Oracle / OpenJDK unified jvm logging format...");
 
         try {
-            // some information shared accross several lines of parsing...
+            // some information shared across several lines of parsing...
             Map<String, AbstractGCEvent<?>> partialEventsMap = new HashMap<>();
             Map<String, Object> infoMap = new HashMap<>();
 
