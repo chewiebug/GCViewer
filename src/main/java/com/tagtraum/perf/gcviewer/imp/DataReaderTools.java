@@ -79,13 +79,14 @@ public class DataReaderTools {
         typeName = typeName.trim();
         ExtendedType extendedType = null;
         String lookupTypeName = getLookupTypeName(typeName);
+        
         AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
         // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
         if (gcType == null) {
-            // try to parse it again with the parens removed
-            Matcher parenMatcher = parenthesesPattern.matcher(lookupTypeName);
-            if (parenMatcher.find()) {
-                gcType = AbstractGCEvent.Type.lookup(parenMatcher.replaceFirst(""));
+            // try to parse it again with the parents removed
+            Matcher parentMatcher = parenthesesPattern.matcher(lookupTypeName);
+            if (parentMatcher.find()) {
+                gcType = AbstractGCEvent.Type.lookup(parentMatcher.replaceFirst(""));
             }
         }
 

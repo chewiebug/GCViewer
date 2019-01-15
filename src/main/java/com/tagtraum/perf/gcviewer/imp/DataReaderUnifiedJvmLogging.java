@@ -123,15 +123,17 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String TAG_GC_HEAP = "gc,heap";
     private static final String TAG_GC_METASPACE = "gc,metaspace";
     private static final String TAG_GC_PHASES = "gc,phases";
-
+    
+    
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE,  "[" + TAG_GC_PHASES);
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit");
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using", "Heap region size");
-
-
+    /** Pattern - for ZGC phases - that are to be included for parsing */
+    private static final Pattern PATTERN_INCLUDE_STRINGS_PHASE = Pattern.compile("\\[(gc,phases[ ]*)][ ]GC\\(([0-9]+)\\)[ ](?<type>[a-zA-Z1 ()]+)(([ ]([0-9]{1}.*))|$)");
+   
     protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
     }
@@ -149,6 +151,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             model.setFormat(GCModel.Format.UNIFIED_JVM_LOGGING);
 
             Stream<String> lines = in.lines();
+            
             lines.map(line -> new ParseContext(line, partialEventsMap, infoMap))
                     .filter(this::lineContainsParseableEvent)
                     .map(this::parseEvent)
@@ -163,7 +166,6 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private ParseContext parseEvent(ParseContext context) {
         AbstractGCEvent<?> event = null;
-
         Matcher decoratorsMatcher = PATTERN_DECORATORS.matcher(context.getLine());
         try {
             event = createGcEventWithStandardDecorators(decoratorsMatcher, context.getLine());
@@ -333,7 +335,6 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private AbstractGCEvent<?> createGcEventWithStandardDecorators(Matcher decoratorsMatcher, String line) throws UnknownGcTypeException {
         if (decoratorsMatcher.find()) {
             AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(decoratorsMatcher.group(GROUP_DECORATORS_GC_TYPE));
-
             AbstractGCEvent<?> event = type.getConcurrency().equals(Concurrency.CONCURRENT) ? new ConcurrentGCEvent() : new GCEventUJL();
             event.setExtendedType(type);
             event.setNumber(Integer.parseInt(decoratorsMatcher.group(GROUP_DECORATORS_GC_NUMBER)));
@@ -393,7 +394,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     }
 
     private boolean lineContainsParseableEvent(ParseContext context) {
-        if (isCandidateForParseableEvent(context.getLine()) && !isExcludedLine(context.getLine())) {
+        if ((isCandidateForParseableEvent(context.getLine()) && !isExcludedLine(context.getLine())) || isParseablePhaseEvent(context.getLine())) {
             if (isLogOnlyLine(context.getLine())) {
                 String tail = context.getLine().substring(context.getLine().lastIndexOf("]")+1);
                 enrichContext(context, tail);
@@ -406,7 +407,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         return false;
     }
 
-    private void enrichContext(ParseContext context, String tail) {
+    private boolean isParseablePhaseEvent(String line) {    	
+        Matcher phaseStringMatcher = line != null ? PATTERN_INCLUDE_STRINGS_PHASE.matcher(line) : null;
+        if(phaseStringMatcher.find()) {
+            String phaseType = phaseStringMatcher.group(GROUP_DECORATORS_GC_TYPE);
+            if(phaseType != null && AbstractGCEvent.Type.lookup(phaseType) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+	private void enrichContext(ParseContext context, String tail) {
         Matcher regionSizeMatcher = tail != null ? PATTERN_HEAP_REGION_SIZE.matcher(tail.trim()) : null;
         if (regionSizeMatcher != null && regionSizeMatcher.find()) {
             try {
