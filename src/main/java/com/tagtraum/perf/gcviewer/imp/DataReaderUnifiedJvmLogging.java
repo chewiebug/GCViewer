@@ -196,7 +196,6 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 // fallthrough -> same handling as for METASPACE event
             case TAG_GC_METASPACE:
                 event = parseTail(context, event, tail);
-                System.out.println(tail);
                 // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
                 //   size after concurrent collection will be calculated by GCModel#add()
                 if (!event.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
