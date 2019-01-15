@@ -74,6 +74,9 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String PATTERN_PAUSE_STRING = "([0-9]+[.,][0-9]+)ms";
     private static final String PATTERN_MEMORY_STRING = "(([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\))";
 
+    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])[ ](\\([0-9]+%\\)))";
+    private static final String PATTERN_MEMORY_ZGC_STRING = "(([0-9]+)([BKMG])(\\([0-9]+%\\))->([0-9]+)([BKMG])(\\([0-9]+%\\)))";
+
     // Input: 1.070ms
     // Group 1: 1.070
     private static final Pattern PATTERN_PAUSE = Pattern.compile("^" + PATTERN_PAUSE_STRING);
@@ -118,12 +121,37 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final int GROUP_REGION_AFTER = 2;
     private static final int GROUP_REGION_TOTAL = 3;
 
+    // Input: 300M (1%)
+    // Group 1: 300M (1%)
+    // Group 2: 300
+    // Group 3: M
+    // Group 4: (1%)
+    private static final Pattern PATTERN_MEMORY_PERCENTAGE = Pattern.compile("^" + PATTERN_MEMORY_PERCENTAGE_STRING);
+
+    private static final int GROUP_MEMORY_TOTAL_ZGC = 2;
+    private static final int GROUP_MEMORY_TOTAL_UNIT_ZGC = 3;
+
+    // Input: 106M(0%)->88M(0%)
+    // Group 1: 106M(0%)->88M(0%)
+    // Group 2: 106
+    // Group 3: M
+    // Group 4: 0%
+    // Group 5: 88
+    // Group 6: M
+    // Group 7: 0%
+    private static final Pattern PATTERN_MEMORY_ZGC = Pattern.compile("^" + PATTERN_MEMORY_ZGC_STRING);
+
+    private static final int GROUP_MEMORY_ZGC = 1;
+    private static final int GROUP_MEMORY_BEFORE_ZGC = 2;
+    private static final int GROUP_MEMORY_BEFORE_UNIT_ZGC = 3;
+    private static final int GROUP_MEMORY_AFTER_ZGC = 5;
+    private static final int GROUP_MEMORY_AFTER_UNIT_ZGC = 6;
+
     private static final String TAG_GC = "gc";
     private static final String TAG_GC_START = "gc,start";
     private static final String TAG_GC_HEAP = "gc,heap";
     private static final String TAG_GC_METASPACE = "gc,metaspace";
     private static final String TAG_GC_PHASES = "gc,phases";
-    
     
     /** list of strings, that must be part of the gc log line to be considered for parsing */
     private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
@@ -186,6 +214,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private AbstractGCEvent<?> handleTail(ParseContext context, AbstractGCEvent<?> event, String tags, String tail) {
         AbstractGCEvent<?> returnEvent = event;
+        AbstractGCEvent<?> parentEvent;
         switch (tags) {
             case TAG_GC_START:
                 // here, the gc type is known, and the partial events will need to be added later
@@ -193,6 +222,14 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 returnEvent = null;
                 break;
             case TAG_GC_HEAP:
+                parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+                // if ZGC heap capacity, record total heap for this event, then pass it on to record pre and post used heap
+                if (event.getExtendedType().getType() == Type.UJL_ZGC_HEAP_CAPACITY && parentEvent != null) {
+                    returnEvent = parseTail(context, parentEvent, tail);
+                    context.partialEventsMap.put(event.getNumber() + "", returnEvent);
+                    returnEvent = null;
+                    break;
+                }
                 // fallthrough -> same handling as for METASPACE event
             case TAG_GC_METASPACE:
                 event = parseTail(context, event, tail);
@@ -204,7 +241,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 returnEvent = null;
                 break;
             case TAG_GC:
-                AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+                parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
                 if (parentEvent != null) {
                     if (parentEvent.getExtendedType().equals(returnEvent.getExtendedType())) {
                         // date- and timestamp are always end of event -> adjust the parent event
@@ -255,6 +292,8 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             parseGcMemoryPauseTail(context, event, tail);
         } else if (event.getExtendedType().getPattern().equals(GcPattern.GC) || event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION)) {
             parseGcTail(context, tail);
+        } else if (event.getExtendedType().getPattern().equals(GcPattern.ZGC_MEMORY)) {
+            parseZGCMemoryTail(context, event, tail);
         }
 
         return event;
@@ -324,6 +363,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         }
     }
 
+    private void parseZGCMemoryTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        Matcher memoryMatcher = tail != null ? PATTERN_MEMORY_ZGC.matcher(tail) : null;
+        Matcher totalMemoryMatcher = tail != null ? PATTERN_MEMORY_PERCENTAGE.matcher(tail) : null;
+        if (memoryMatcher != null && memoryMatcher.find()) {
+            setMemoryUsedZGC(event, memoryMatcher);
+        } else if (totalMemoryMatcher != null && totalMemoryMatcher.find()) {
+            setMemoryTotalZGC(event, totalMemoryMatcher);
+        } else {
+            getLogger().warning(String.format("Expected only memory in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
+        }
+    }
+
     /**
      * Returns an instance of AbstractGcEvent (GCEvent or ConcurrentGcEvent) with all decorators present filled in
      * or <code>null</code> if the line could not be matched.
@@ -365,6 +416,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 Integer.parseInt(matcher.group(GROUP_MEMORY_AFTER)), matcher.group(GROUP_MEMORY_AFTER_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
         event.setTotal(getDataReaderTools().getMemoryInKiloByte(
                 Integer.parseInt(matcher.group(GROUP_MEMORY_CURRENT_TOTAL)), matcher.group(GROUP_MEMORY_CURRENT_TOTAL_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
+    }
+
+    private void setMemoryUsedZGC(AbstractGCEvent<?> event, Matcher matcher) {
+        event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_BEFORE_ZGC)), matcher.group(GROUP_MEMORY_BEFORE_UNIT_ZGC).charAt(0), matcher.group(GROUP_MEMORY_ZGC)));
+        event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_AFTER_ZGC)), matcher.group(GROUP_MEMORY_AFTER_UNIT_ZGC).charAt(0), matcher.group(GROUP_MEMORY_ZGC)));
+    }
+
+    private void setMemoryTotalZGC(AbstractGCEvent<?> event, Matcher matcher) {
+        event.setTotal(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_TOTAL_ZGC)), matcher.group(GROUP_MEMORY_TOTAL_UNIT_ZGC).charAt(0), matcher.group(GROUP_MEMORY_ZGC)));
     }
 
     private void setDateStampIfPresent(AbstractGCEvent<?> event, String dateStampAsString) {

@@ -1,0 +1,6 @@
+[0.995s][info][gc] Using The Z Garbage Collector
+[1.221s][info][gc] GC(0) Garbage Collection (Metadata GC Threshold) 106M(0%)->88M(0%)
+[2,048s][info][gc] GC(1) Garbage Collection (Warmup) 208M(20%)->164M(16%)
+[2.607s][info][gc] GC(2) Garbage Collection (Proactive) 19804M(10%)->20212M(10%)
+[3,167s][info][gc] GC(3) Garbage Collection (Allocation Rate) 502M(49%)->716M(70%)
+[3,742s][info][gc] GC(4) Garbage Collection (System.gc()) 10124M(10%)->5020M(5%)
