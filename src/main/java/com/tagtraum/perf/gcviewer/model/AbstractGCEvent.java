@@ -650,11 +650,11 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
 
         // unified jvm logging ZGC event types
-        public static final Type UJL_ZGC_GARBAGE_COLLECTION_WARMUP = new Type("Garbage Collection (Warmup)", Generation.ALL, Concurrency.CONCURRENT, GcPattern.ZGC_MEMORY);
-        public static final Type UJL_ZGC_GARBAGE_COLLECTION_ALLOCATION_RATE = new Type("Garbage Collection (Allocation Rate)", Generation.ALL, Concurrency.CONCURRENT, GcPattern.ZGC_MEMORY);
-        public static final Type UJL_ZGC_GARBAGE_COLLECTION_METADATA_GC_THRESHOLD = new Type("Garbage Collection (Metadata GC Threshold)", Generation.ALL, Concurrency.CONCURRENT, GcPattern.ZGC_MEMORY);
-        public static final Type UJL_ZGC_GARBAGE_COLLECTION_PROACTIVE = new Type("Garbage Collection (Proactive)", Generation.ALL, Concurrency.CONCURRENT, GcPattern.ZGC_MEMORY);
-        public static final Type UJL_ZGC_GARBAGE_COLLECTION_SYSTEM_GC = new Type("Garbage Collection (System.gc())", Generation.ALL, Concurrency.CONCURRENT, GcPattern.ZGC_MEMORY);
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION_WARMUP = new Type("Garbage Collection (Warmup)", Generation.ALL, Concurrency.SERIAL, GcPattern.ZGC_MEMORY);
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION_ALLOCATION_RATE = new Type("Garbage Collection (Allocation Rate)", Generation.ALL, Concurrency.SERIAL, GcPattern.ZGC_MEMORY);
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION_METADATA_GC_THRESHOLD = new Type("Garbage Collection (Metadata GC Threshold)", Generation.ALL, Concurrency.SERIAL, GcPattern.ZGC_MEMORY);
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION_PROACTIVE = new Type("Garbage Collection (Proactive)", Generation.ALL, Concurrency.SERIAL, GcPattern.ZGC_MEMORY);
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION_SYSTEM_GC = new Type("Garbage Collection (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.ZGC_MEMORY);
 
         public static final Type UJL_ZGC_PAUSE_MARK_START = new Type("Pause Mark Start", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_ZGC_PAUSE_MARK_END = new Type("Pause Mark End", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);

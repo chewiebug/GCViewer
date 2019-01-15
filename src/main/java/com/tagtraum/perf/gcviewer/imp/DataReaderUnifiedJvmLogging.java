@@ -160,7 +160,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using", "Heap region size");
     /** Pattern - for ZGC phases - that are to be included for parsing */
-    private static final Pattern PATTERN_INCLUDE_STRINGS_PHASE = Pattern.compile("\\[(gc,phases[ ]*)][ ]GC\\(([0-9]+)\\)[ ](?<type>[a-zA-Z1 ()]+)(([ ]([0-9]{1}.*))|$)");
+    private static final Pattern PATTERN_INCLUDE_STRINGS_PHASE = Pattern.compile("\\[(gc,phases[ ]*)][ ]GC\\(([0-9]+)\\)[ ](?<type>[-a-zA-Z1 ()]+)(([ ]([0-9]{1}.*))|$)");
    
     protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
