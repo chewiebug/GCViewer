@@ -24,6 +24,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     private int preUsed;
     /** Used after GC in KB */
     private int postUsed;
+    /** Percentage used before GC */
+    private int preUsedPercent;
+    /** Percentage used after GC */
+    private int postUsedPercent;
     /** Capacity in KB */
     private int total;
     /** end of gc event (after pause) */
@@ -208,6 +212,14 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public void setPostUsed(int postUsed) {
         this.postUsed = postUsed;
     }
+    
+    public void setPreUsedPercent(int preUsedPercent) {
+		this.preUsedPercent = preUsedPercent;
+	}
+    
+    public void setPostUsedPercent(int postUsedPercent) {
+		this.postUsedPercent = postUsedPercent;
+	}
 
     public void setTotal(int total) {
         this.total = total;
@@ -220,6 +232,14 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public int getPostUsed() {
         return postUsed;
     }
+    
+    public int getPreUsedPercent() {
+		return preUsedPercent;
+	}
+    
+    public int getPostUsedPercent() {
+		return postUsedPercent;
+	}
 
     public int getTotal() {
         return total;
@@ -306,6 +326,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION);
     }
 
+    public boolean isCycleStart() {
+    	return Type.UJL_ZGC_GARBAGE_COLLECTION == getExtendedType().getType();
+    }
+    
     public double getPause() {
         return pause;
     }
@@ -650,17 +674,17 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
 
         // unified jvm logging ZGC event types
-        public static final Type UJL_ZGC_GARBAGE_COLLECTION = new Type("Garbage Collection", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_MEMORY);
-        public static final Type UJL_ZGC_PAUSE_MARK_START = new Type("Pause Mark Start", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_PAUSE_MARK_END = new Type("Pause Mark End", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_PAUSE_RELOCATE_START = new Type("Pause Relocate Start", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_MARK = new Type("Concurrent Mark", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_NONREF = new Type("Concurrent Process Non-Strong References", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_RESET_RELOC_SET = new Type("Concurrent Reset Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_DETATCHED_PAGES = new Type("Concurrent Destroy Detached Pages", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_SELECT_RELOC_SET = new Type("Concurrent Select Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET = new Type("Concurrent Prepare Relocation Set", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_ZGC_CONCURRENT_RELOCATE = new Type("Concurrent Relocate", Generation.ALL, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION = new Type("Garbage Collection", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PERCENTAGE);
+        public static final Type UJL_ZGC_PAUSE_MARK_START = new Type("Pause Mark Start", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_MARK_END = new Type("Pause Mark End", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_RELOCATE_START = new Type("Pause Relocate Start", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_MARK = new Type("Concurrent Mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_NONREF = new Type("Concurrent Process Non-Strong References", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RESET_RELOC_SET = new Type("Concurrent Reset Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_DETATCHED_PAGES = new Type("Concurrent Destroy Detached Pages", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_SELECT_RELOC_SET = new Type("Concurrent Select Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET = new Type("Concurrent Prepare Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RELOCATE = new Type("Concurrent Relocate", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         
         // IBM Types
         // TODO: are scavenge always young only??
@@ -702,7 +726,9 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     	GC_MEMORY_PAUSE,
         /** "GC type": "# regions before"-&gt;"# regions after"[("#total regions")] ("total regions" is optional; needs a region size to calculate memory usage)*/
         GC_REGION,
-    }
+        /** "GC type": "ZGC format memory before and memory after with percentage" */
+        GC_MEMORY_PERCENTAGE
+    };
 
     public enum Concurrency { CONCURRENT, SERIAL };
 

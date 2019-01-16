@@ -28,6 +28,7 @@ import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.math.IntData;
 import com.tagtraum.perf.gcviewer.math.RegressionLine;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
 /**
@@ -131,6 +132,7 @@ public class GCModel implements Serializable {
     private List<AbstractGCEvent<?>> allEvents;
     private List<AbstractGCEvent<?>> stopTheWorldEvents;
     private List<GCEvent> gcEvents;
+    private List<AbstractGCEvent<?>> gcCauses;
     private List<AbstractGCEvent<?>> vmOperationEvents;
     private List<ConcurrentGCEvent> concurrentGCEvents;
     private List<GCEvent> currentNoFullGCEvents;
@@ -139,6 +141,7 @@ public class GCModel implements Serializable {
 
     private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
     private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
+    private Map<String, DoubleData> gcEventCauses;
     private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
     private Map<String, DoubleData> vmOperationEventPauses; // pause information about vm operations ("application stopped")
 
@@ -163,6 +166,7 @@ public class GCModel implements Serializable {
     private double lastFullGcPauseTimeStamp = 0;
     private DoubleData fullGcPauseInterval; // interval between two stop the Full GC pauses
     private DoubleData gcPause; // not full gc but stop the world pause
+    private DoubleData gcCause;
     private DoubleData vmOperationPause; // "application stopped"
     private double lastGcPauseTimeStamp = 0;
     private DoubleData pauseInterval; // interval between two stop the world pauses
@@ -186,6 +190,7 @@ public class GCModel implements Serializable {
         this.stopTheWorldEvents = new ArrayList<AbstractGCEvent<?>>();
         this.gcEvents = new ArrayList<GCEvent>();
         this.vmOperationEvents = new ArrayList<AbstractGCEvent<?>>();
+        this.gcCauses = new ArrayList<AbstractGCEvent<?>>();
         this.concurrentGCEvents = new ArrayList<ConcurrentGCEvent>();
         this.fullGCEvents = new ArrayList<GCEvent>();
         this.currentNoFullGCEvents = new ArrayList<GCEvent>();
@@ -210,6 +215,7 @@ public class GCModel implements Serializable {
 
         this.fullGcEventPauses = new TreeMap<String, DoubleData>();
         this.gcEventPauses = new TreeMap<String, DoubleData>();
+        this.gcEventCauses = new TreeMap<String, DoubleData>();
         this.concurrentGcEventPauses = new TreeMap<String, DoubleData>();
         this.vmOperationEventPauses = new TreeMap<String, DoubleData>();
 
@@ -414,8 +420,19 @@ public class GCModel implements Serializable {
             // pause might be adjusted
             stopTheWorldEvents.add(abstractEvent);
         }
-
-        if (abstractEvent instanceof ConcurrentGCEvent) {
+        
+        // Event that denotes a cycle
+        if(abstractEvent.isCycleStart()) {
+        	this.gcCauses.add(abstractEvent);
+        	
+        	if(abstractEvent.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PERCENTAGE) {
+        		DoubleData memoryFreedInThisCycle = getDoubleData(abstractEvent.getExtendedType().getName(), gcEventCauses);
+        		Double preUsed = new Double(abstractEvent.getPreUsed());
+        		Double postUsed = new Double(abstractEvent.getPostUsed());
+        		memoryFreedInThisCycle.add(preUsed-postUsed);
+        	}
+        	
+        } else if (abstractEvent instanceof ConcurrentGCEvent) {
             ConcurrentGCEvent concEvent = (ConcurrentGCEvent) abstractEvent;
             concurrentGCEvents.add(concEvent);
 
@@ -838,6 +855,10 @@ public class GCModel implements Serializable {
     public Map<String, DoubleData> getGcEventPauses() {
         return gcEventPauses;
     }
+    
+    public Map<String, DoubleData> getGcEventCauses() {
+        return gcEventCauses;
+    }
 
     public Map<String, DoubleData> getFullGcEventPauses() {
         return fullGcEventPauses;
@@ -1044,7 +1065,7 @@ public class GCModel implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(allEvents, fileInformation, fullGcEventPauses, gcEventPauses, concurrentGcEventPauses, vmOperationEventPauses, heapAllocatedSizes, tenuredAllocatedSizes, youngAllocatedSizes, permAllocatedSizes, heapUsedSizes, tenuredUsedSizes, youngUsedSizes, permUsedSizes, postConcurrentCycleUsedTenuredSizes, postConcurrentCycleUsedHeapSizes, promotion, firstPauseTimeStamp, lastPauseTimeStamp, totalPause, fullGCPause, lastFullGcPauseTimeStamp, fullGcPauseInterval, gcPause, vmOperationPause, lastGcPauseTimeStamp, pauseInterval, initiatingOccupancyFraction, freedMemory, format, postGCUsedMemory, postFullGCUsedHeap, freedMemoryByGC, freedMemoryByFullGC, postGCSlope, currentPostGCSlope, currentRelativePostGCIncrease, relativePostGCIncrease, postFullGCSlope, relativePostFullGCIncrease, url);
+        return Objects.hash(allEvents, fileInformation, fullGcEventPauses, gcEventPauses, gcEventCauses, concurrentGcEventPauses, vmOperationEventPauses, heapAllocatedSizes, tenuredAllocatedSizes, youngAllocatedSizes, permAllocatedSizes, heapUsedSizes, tenuredUsedSizes, youngUsedSizes, permUsedSizes, postConcurrentCycleUsedTenuredSizes, postConcurrentCycleUsedHeapSizes, promotion, firstPauseTimeStamp, lastPauseTimeStamp, totalPause, fullGCPause, lastFullGcPauseTimeStamp, fullGcPauseInterval, gcPause, vmOperationPause, lastGcPauseTimeStamp, pauseInterval, initiatingOccupancyFraction, freedMemory, format, postGCUsedMemory, postFullGCUsedHeap, freedMemoryByGC, freedMemoryByFullGC, postGCSlope, currentPostGCSlope, currentRelativePostGCIncrease, relativePostGCIncrease, postFullGCSlope, relativePostFullGCIncrease, url);
     }
 
     public static class Format implements Serializable {

@@ -38,6 +38,10 @@ public class ModelDetailsPanel extends JPanel {
     private DoubleDataMapModel concurrentGcEventModel;
 
     private DoubleDataMapTable vmOperationTable;
+    
+    /** GC Causes Model and table */
+    private DoubleDataMapModel gcCausesModel;
+    private DoubleDataMapTable gcCausesTable;
 
     public ModelDetailsPanel() {
         super();
@@ -56,14 +60,19 @@ public class ModelDetailsPanel extends JPanel {
         fullGcEventModel = new DoubleDataMapModel();
         vmOperationEventModel = new DoubleDataMapModel();
         concurrentGcEventModel = new DoubleDataMapModel();
+        gcCausesModel = new DoubleDataMapModel();
 
         DoubleDataMapTable gcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_gc_pauses"), gcEventModel);
         DoubleDataMapTable fullGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_full_gc_pauses"), fullGcEventModel);
         vmOperationTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_vm_op_overhead"), vmOperationEventModel);
         DoubleDataMapTable concurrentGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_concurrent_gc_events"), concurrentGcEventModel);
+        gcCausesTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_gc_causes"), gcCausesModel);
 
         GridBagConstraints constraints = createGridBagConstraints();
         add(gcTable, constraints);
+        
+        constraints.gridy++;
+        add(gcCausesTable, constraints);
 
         constraints.gridy++;
         add(fullGcTable, constraints);
@@ -108,6 +117,13 @@ public class ModelDetailsPanel extends JPanel {
             vmOperationEventModel.setModel(model.getVmOperationEventPauses(), totalPause, true);
         }
         concurrentGcEventModel.setModel(model.getConcurrentEventPauses(), totalPause, false);
+
+        if (model.size() > 1 && model.getGcEventCauses().size() == 0) {
+            remove(gcCausesTable);
+        }
+        else {
+        	gcCausesModel.setModel(model.getGcEventCauses(), totalPause, true);
+        }
 
         repaint();
     }
