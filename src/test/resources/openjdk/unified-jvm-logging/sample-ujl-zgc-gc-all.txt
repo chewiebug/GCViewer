@@ -11,4 +11,4 @@
 [1.218s][info][gc,phases] GC(0) Pause Relocate Start 0.679ms
 [1.221s][info][gc,phases] GC(0) Concurrent Relocate 2.846ms
 [1.221s][info][gc,heap  ] GC(0)  Capacity:   194560M (100%)     194560M (100%)     194560M (100%)     194560M (100%)     194560M (100%)     194560M (100%)
-[1.221s][info][gc       ] GC(0) Garbage Collection (Metadata GC Threshold) 106M(0%)->88M(0%)
+[1.221s][info][gc       ] GC(0) Garbage Collection (Metadata GC Threshold) 10620M(5%)->8800M(4%)

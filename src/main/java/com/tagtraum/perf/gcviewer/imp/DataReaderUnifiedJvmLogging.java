@@ -74,8 +74,8 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String PATTERN_PAUSE_STRING = "([0-9]+[.,][0-9]+)ms";
     private static final String PATTERN_MEMORY_STRING = "(([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\))";
 
-    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])[ ](\\([0-9]+%\\)))";
-    private static final String PATTERN_MEMORY_ZGC_STRING = "(([0-9]+)([BKMG])(\\([0-9]+%\\))->([0-9]+)([BKMG])(\\([0-9]+%\\)))";
+    private static final String PATTERN_HEAP_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])[ ](\\([0-9]+%\\)))";
+    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])\\(([0-9]+)%\\)->([0-9]+)([BKMG])\\(([0-9]+)%\\))";
 
     // Input: 1.070ms
     // Group 1: 1.070
@@ -121,16 +121,6 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final int GROUP_REGION_AFTER = 2;
     private static final int GROUP_REGION_TOTAL = 3;
 
-    // Input: 300M (1%)
-    // Group 1: 300M (1%)
-    // Group 2: 300
-    // Group 3: M
-    // Group 4: (1%)
-    private static final Pattern PATTERN_MEMORY_PERCENTAGE = Pattern.compile("^" + PATTERN_MEMORY_PERCENTAGE_STRING);
-
-    private static final int GROUP_MEMORY_TOTAL_ZGC = 2;
-    private static final int GROUP_MEMORY_TOTAL_UNIT_ZGC = 3;
-
     // Input: 106M(0%)->88M(0%)
     // Group 1: 106M(0%)->88M(0%)
     // Group 2: 106
@@ -139,13 +129,26 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Group 5: 88
     // Group 6: M
     // Group 7: 0%
-    private static final Pattern PATTERN_MEMORY_ZGC = Pattern.compile("^" + PATTERN_MEMORY_ZGC_STRING);
+    private static final Pattern PATTERN_MEMORY_PERCENTAGE = Pattern.compile("^" + PATTERN_MEMORY_PERCENTAGE_STRING);
+    
+    private static final int GROUP_MEMORY_PERCENTAGE = 1;
+    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE = 2;
+    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT = 3;
+    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENT = 4;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER = 5;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_UNIT = 6;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_PERCENT = 7;
 
-    private static final int GROUP_MEMORY_ZGC = 1;
-    private static final int GROUP_MEMORY_BEFORE_ZGC = 2;
-    private static final int GROUP_MEMORY_BEFORE_UNIT_ZGC = 3;
-    private static final int GROUP_MEMORY_AFTER_ZGC = 5;
-    private static final int GROUP_MEMORY_AFTER_UNIT_ZGC = 6;
+    // Input: 300M (1%)
+    // Group 1: 300M (1%)
+    // Group 2: 300
+    // Group 3: M
+    // Group 4: (1%)
+    private static final Pattern PATTERN_HEAP_MEMORY_PERCENTAGE = Pattern.compile("^" + PATTERN_HEAP_MEMORY_PERCENTAGE_STRING);
+
+    private static final int GROUP_HEAP_MEMORY_PERCENTAGE = 1;
+    private static final int GROUP_HEAP_MEMORY_PERCENTAGE_VALUE = 2;
+    private static final int GROUP_HEAP_MEMORY_PERCENTAGE_UNIT = 3;
 
     private static final String TAG_GC = "gc";
     private static final String TAG_GC_START = "gc,start";
@@ -179,7 +182,6 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             model.setFormat(GCModel.Format.UNIFIED_JVM_LOGGING);
 
             Stream<String> lines = in.lines();
-            
             lines.map(line -> new ParseContext(line, partialEventsMap, infoMap))
                     .filter(this::lineContainsParseableEvent)
                     .map(this::parseEvent)
@@ -224,9 +226,11 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             case TAG_GC_HEAP:
                 parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
                 // if ZGC heap capacity, record total heap for this event, then pass it on to record pre and post used heap
-                if (event.getExtendedType().getType() == Type.UJL_ZGC_HEAP_CAPACITY && parentEvent != null) {
-                    returnEvent = parseTail(context, parentEvent, tail);
-                    context.partialEventsMap.put(event.getNumber() + "", returnEvent);
+                if (event.getExtendedType().getType().equals(Type.UJL_ZGC_HEAP_CAPACITY) && parentEvent != null) {
+                    // Parse with correct pattern and match the total memory
+                    returnEvent = parseTail(context, event, tail);
+                    parentEvent.setTotal(returnEvent.getTotal());
+                    context.partialEventsMap.put(event.getNumber() + "", parentEvent);
                     returnEvent = null;
                     break;
                 }
@@ -292,8 +296,10 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             parseGcMemoryPauseTail(context, event, tail);
         } else if (event.getExtendedType().getPattern().equals(GcPattern.GC) || event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION)) {
             parseGcTail(context, tail);
-        } else if (event.getExtendedType().getPattern().equals(GcPattern.ZGC_MEMORY)) {
-            parseZGCMemoryTail(context, event, tail);
+        } else if(event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PERCENTAGE)) {
+        	parseGcMemoryPercentageTail(context, event, tail);
+        } else if(event.getExtendedType().getPattern().equals(GcPattern.GC_HEAP_MEMORY_PERCENTAGE)) {
+            parseGcHeapMemoryPercentageTail(context, event, tail);
         }
 
         return event;
@@ -362,16 +368,27 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             getLogger().warning(String.format("Expected region information in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
         }
     }
-
-    private void parseZGCMemoryTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
-        Matcher memoryMatcher = tail != null ? PATTERN_MEMORY_ZGC.matcher(tail) : null;
-        Matcher totalMemoryMatcher = tail != null ? PATTERN_MEMORY_PERCENTAGE.matcher(tail) : null;
-        if (memoryMatcher != null && memoryMatcher.find()) {
-            setMemoryUsedZGC(event, memoryMatcher);
-        } else if (totalMemoryMatcher != null && totalMemoryMatcher.find()) {
-            setMemoryTotalZGC(event, totalMemoryMatcher);
+    
+    private void parseGcMemoryPercentageTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        Matcher memoryPercentageMatcher = tail != null ? PATTERN_MEMORY_PERCENTAGE.matcher(tail) : null;
+        if (memoryPercentageMatcher != null && memoryPercentageMatcher.find()) {
+            // the end Garbage Collection tags in ZGC contain details of memory cleaned up
+            // and the percentage of memory used before and after clean. The details can be used to 
+            // determine Allocation rate.
+        	setMemoryWithPercentage(event, memoryPercentageMatcher);
         } else {
-            getLogger().warning(String.format("Expected only memory in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
+            getLogger().warning(String.format("Expected memory percentage in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
+        }
+    }
+
+    private void parseGcHeapMemoryPercentageTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        Matcher memoryPercentageMatcher = tail != null ? PATTERN_HEAP_MEMORY_PERCENTAGE.matcher(tail) : null;
+        if (memoryPercentageMatcher != null && memoryPercentageMatcher.find()) {
+            // Heap section in ZGC logs provide heap stats during the GC cycle
+            // Currently using to get total heap size, percentage for total heap is not useful
+            setMemoryHeapWithPercentage(event, memoryPercentageMatcher);
+        } else {
+            getLogger().warning(String.format("Expected heap memory percentage in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
         }
     }
 
@@ -385,6 +402,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private AbstractGCEvent<?> createGcEventWithStandardDecorators(Matcher decoratorsMatcher, String line) throws UnknownGcTypeException {
         if (decoratorsMatcher.find()) {
             AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(decoratorsMatcher.group(GROUP_DECORATORS_GC_TYPE));
+
             AbstractGCEvent<?> event = type.getConcurrency().equals(Concurrency.CONCURRENT) ? new ConcurrentGCEvent() : new GCEventUJL();
             event.setExtendedType(type);
             event.setNumber(Integer.parseInt(decoratorsMatcher.group(GROUP_DECORATORS_GC_NUMBER)));
@@ -418,16 +436,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 Integer.parseInt(matcher.group(GROUP_MEMORY_CURRENT_TOTAL)), matcher.group(GROUP_MEMORY_CURRENT_TOTAL_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
     }
 
-    private void setMemoryUsedZGC(AbstractGCEvent<?> event, Matcher matcher) {
-        event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
-                Integer.parseInt(matcher.group(GROUP_MEMORY_BEFORE_ZGC)), matcher.group(GROUP_MEMORY_BEFORE_UNIT_ZGC).charAt(0), matcher.group(GROUP_MEMORY_ZGC)));
-        event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
-                Integer.parseInt(matcher.group(GROUP_MEMORY_AFTER_ZGC)), matcher.group(GROUP_MEMORY_AFTER_UNIT_ZGC).charAt(0), matcher.group(GROUP_MEMORY_ZGC)));
+    private void setMemoryHeapWithPercentage(AbstractGCEvent<?> event, Matcher matcher) {
+        event.setTotal(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE_VALUE)), matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE_UNIT).charAt(0), matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE)));
     }
 
-    private void setMemoryTotalZGC(AbstractGCEvent<?> event, Matcher matcher) {
-        event.setTotal(getDataReaderTools().getMemoryInKiloByte(
-                Integer.parseInt(matcher.group(GROUP_MEMORY_TOTAL_ZGC)), matcher.group(GROUP_MEMORY_TOTAL_UNIT_ZGC).charAt(0), matcher.group(GROUP_MEMORY_ZGC)));
+    private void setMemoryWithPercentage(AbstractGCEvent event, Matcher matcher) {
+        event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE)), matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
+        event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER)), matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
+        event.setPreUsedPercent(Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENT)));
+        event.setPostUsedPercent(Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_PERCENT)));
     }
 
     private void setDateStampIfPresent(AbstractGCEvent<?> event, String dateStampAsString) {
