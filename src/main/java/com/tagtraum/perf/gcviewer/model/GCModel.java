@@ -454,12 +454,14 @@ public class GCModel implements Serializable {
             freedMemory += event.getPreUsed() - event.getPostUsed();
 
             // Event that denotes a cycle
-            if (abstractEvent.isCycleStart()) {
-                gcCauses.add(abstractEvent);
+            if (event.isCycleStart()) {
+                gcCauses.add(event);
 
-                if (abstractEvent.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PERCENTAGE) {
-                    DoubleData memoryFreedInThisCycle = getDoubleData(abstractEvent.getExtendedType().getName(), gcEventCauses);
+                if (GcPattern.GC_MEMORY_PERCENTAGE.equals(event.getExtendedType().getPattern())) {
+                    DoubleData memoryFreedInThisCycle = getDoubleData(event.getExtendedType().getName(), gcEventCauses);
                     memoryFreedInThisCycle.add(event.getPreUsed() - event.getPostUsed());
+                    freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
+                    postGCUsedMemory.add(event.getPostUsed());
                 }
             }
             else if (!event.isFull()) {
