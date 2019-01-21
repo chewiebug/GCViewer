@@ -122,7 +122,7 @@ public class ModelDetailsPanel extends JPanel {
             remove(gcCausesTable);
         }
         else {
-        	gcCausesModel.setModel(model.getGcEventCauses(), totalPause, true);
+        	gcCausesModel.setModel(model.getGcEventCauses(), totalPause, false);
         }
 
         repaint();
