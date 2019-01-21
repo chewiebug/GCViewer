@@ -296,9 +296,9 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             parseGcMemoryPauseTail(context, event, tail);
         } else if (event.getExtendedType().getPattern().equals(GcPattern.GC) || event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION)) {
             parseGcTail(context, tail);
-        } else if(event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PERCENTAGE)) {
-        	parseGcMemoryPercentageTail(context, event, tail);
-        } else if(event.getExtendedType().getPattern().equals(GcPattern.GC_HEAP_MEMORY_PERCENTAGE)) {
+        } else if (event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PERCENTAGE)) {
+            parseGcMemoryPercentageTail(context, event, tail);
+        } else if (event.getExtendedType().getPattern().equals(GcPattern.GC_HEAP_MEMORY_PERCENTAGE)) {
             parseGcHeapMemoryPercentageTail(context, event, tail);
         }
 
@@ -500,7 +500,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         return false;
     }
 
-	private void enrichContext(ParseContext context, String tail) {
+    private void enrichContext(ParseContext context, String tail) {
         Matcher regionSizeMatcher = tail != null ? PATTERN_HEAP_REGION_SIZE.matcher(tail.trim()) : null;
         if (regionSizeMatcher != null && regionSizeMatcher.find()) {
             try {

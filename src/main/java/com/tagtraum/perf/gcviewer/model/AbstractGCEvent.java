@@ -327,7 +327,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     public boolean isCycleStart() {
-    	return Type.UJL_ZGC_GARBAGE_COLLECTION.equals(getExtendedType().getType());
+        return Type.UJL_ZGC_GARBAGE_COLLECTION.equals(getExtendedType().getType());
     }
     
     public double getPause() {
