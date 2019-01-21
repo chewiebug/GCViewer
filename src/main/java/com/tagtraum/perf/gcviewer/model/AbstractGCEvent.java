@@ -329,7 +329,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public boolean isCycleStart() {
         return Type.UJL_ZGC_GARBAGE_COLLECTION.equals(getExtendedType().getType());
     }
-    
+
     public double getPause() {
         return pause;
     }
@@ -727,7 +727,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     	GC_MEMORY_PAUSE,
         /** "GC type": "# regions before"-&gt;"# regions after"[("#total regions")] ("total regions" is optional; needs a region size to calculate memory usage)*/
         GC_REGION,
-        /** "Garbage Collection (Reason)" "memory before"("percentage of total")->"memory after"("percentage of total") */
+        /** "Garbage Collection (Reason)" "memory before"("percentage of total")-&gt;"memory after"("percentage of total") */
         GC_MEMORY_PERCENTAGE,
         /** "Heap memory type" "memory current"("memory percentage") */
         GC_HEAP_MEMORY_PERCENTAGE
