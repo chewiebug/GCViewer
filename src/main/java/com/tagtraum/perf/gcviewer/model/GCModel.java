@@ -478,53 +478,64 @@ public class GCModel implements Serializable {
 
         // Event that denotes a cycle
         if (event.isCycleStart()) {
-            gcCauses.add(event);
-
-            if (GcPattern.GC_MEMORY_PERCENTAGE.equals(event.getExtendedType().getPattern())) {
-                DoubleData memoryFreedInThisCycle = getDoubleData(event.getExtendedType().getName(), gcEventCauses);
-                memoryFreedInThisCycle.add(event.getPreUsed() - event.getPostUsed());
-                freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
-                postGCUsedMemory.add(event.getPostUsed());
-            }
+            addGcCause(event);
         }
         else if (!event.isFull()) {
-            // make a difference between stop the world events, which only collect from some generations...
-            DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
-            pauses.add(event.getPause());
-
-            gcEvents.add(event);
-            postGCUsedMemory.add(event.getPostUsed());
-            freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
-            currentNoFullGCEvents.add(event);
-            currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-            currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
-            gcPause.add(event.getPause());
-
+            addGcEventPause(event);
         }
         else {
-            // ... as opposed to all generations
-            DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
-            pauses.add(event.getPause());
+            addFullGcEventPauses(event);
+        }
+    }
 
-            updateFullGcPauseInterval(event);
-            fullGCEvents.add(event);
-            postFullGCUsedHeap.add(event.getPostUsed());
-            int freed = event.getPreUsed() - event.getPostUsed();
-            freedMemoryByFullGC.add(freed);
-            fullGCPause.add(event.getPause());
-            postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-            relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
+    private void addGcCause(GCEvent event) {
+        gcCauses.add(event);
 
-            // process no full-gc run data
-            if (currentPostGCSlope.hasPoints()) {
-                // make sure we have at least _two_ data points
-                if (currentPostGCSlope.isLine()) {
-                    postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
-                    relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
-                }
-                currentPostGCSlope.reset();
-                currentRelativePostGCIncrease.reset();
+        if (GcPattern.GC_MEMORY_PERCENTAGE.equals(event.getExtendedType().getPattern())) {
+            DoubleData memoryFreedInThisCycle = getDoubleData(event.getExtendedType().getName(), gcEventCauses);
+            memoryFreedInThisCycle.add(event.getPreUsed() - event.getPostUsed());
+            freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
+            postGCUsedMemory.add(event.getPostUsed());
+        }
+    }
+
+    private void addGcEventPause(GCEvent event) {
+        // make a difference between stop the world events, which only collect from some generations...
+        DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
+        pauses.add(event.getPause());
+
+        gcEvents.add(event);
+        postGCUsedMemory.add(event.getPostUsed());
+        freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
+        currentNoFullGCEvents.add(event);
+        currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+        currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
+        gcPause.add(event.getPause());
+    }
+
+    private void addFullGcEventPauses(GCEvent event) {
+        // ... as opposed to all generations
+        DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
+        pauses.add(event.getPause());
+
+        updateFullGcPauseInterval(event);
+        fullGCEvents.add(event);
+        postFullGCUsedHeap.add(event.getPostUsed());
+        int freed = event.getPreUsed() - event.getPostUsed();
+        freedMemoryByFullGC.add(freed);
+        fullGCPause.add(event.getPause());
+        postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+        relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
+
+        // process no full-gc run data
+        if (currentPostGCSlope.hasPoints()) {
+            // make sure we have at least _two_ data points
+            if (currentPostGCSlope.isLine()) {
+                postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
+                relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
             }
+            currentPostGCSlope.reset();
+            currentRelativePostGCIncrease.reset();
         }
     }
 
