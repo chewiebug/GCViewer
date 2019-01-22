@@ -216,51 +216,22 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private AbstractGCEvent<?> handleTail(ParseContext context, AbstractGCEvent<?> event, String tags, String tail) {
         AbstractGCEvent<?> returnEvent = event;
-        AbstractGCEvent<?> parentEvent;
         switch (tags) {
             case TAG_GC_START:
-                // here, the gc type is known, and the partial events will need to be added later
-                context.getPartialEventsMap().put(event.getNumber() + "", event);
-                returnEvent = null;
+                returnEvent = handleTagGcStartTail(context, event);
                 break;
             case TAG_GC_HEAP:
-                parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
-                // if ZGC heap capacity, record total heap for this event, then pass it on to record pre and post used heap
-                if (event.getExtendedType().getType().equals(Type.UJL_ZGC_HEAP_CAPACITY) && parentEvent != null) {
-                    // Parse with correct pattern and match the total memory
-                    returnEvent = parseTail(context, event, tail);
-                    parentEvent.setTotal(returnEvent.getTotal());
-                    context.partialEventsMap.put(event.getNumber() + "", parentEvent);
-                    returnEvent = null;
+                returnEvent = handleTagGcHeapTail(context, event, tail);
+                // ZGC heap capacity, break out and handle next event
+                if (returnEvent == null) {
                     break;
                 }
                 // fallthrough -> same handling as for METASPACE event
             case TAG_GC_METASPACE:
-                event = parseTail(context, event, tail);
-                // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
-                //   size after concurrent collection will be calculated by GCModel#add()
-                if (!event.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
-                    updateEventDetails(context, event);
-                }
-                returnEvent = null;
+                returnEvent = handleTagGcMetaspaceTail(context, event, tail);
                 break;
             case TAG_GC:
-                parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
-                if (parentEvent != null) {
-                    if (parentEvent.getExtendedType().equals(returnEvent.getExtendedType())) {
-                        // date- and timestamp are always end of event -> adjust the parent event
-                        parentEvent.setDateStamp(event.getDatestamp());
-                        parentEvent.setTimestamp(event.getTimestamp());
-                        returnEvent = parseTail(context, parentEvent, tail);
-                        context.partialEventsMap.remove(event.getNumber() + "");
-                    } else {
-                        // more detail information is provided for the parent event
-                        updateEventDetails(context, returnEvent);
-                        returnEvent = null;
-                    }
-                } else {
-                    returnEvent = parseTail(context, event, tail);
-                }
+                returnEvent = handleTagGcTail(context, event, tail);
                 break;
             case TAG_GC_PHASES:
             	returnEvent = parseTail(context, event, tail);
@@ -269,6 +240,58 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 getLogger().warning(String.format("Unexpected tail present in the end of line number %d (tail=\"%s\"; line=\"%s\")", in.getLineNumber(), tail, context.getLine()));
         }
 
+        return returnEvent;
+    }
+
+    private AbstractGCEvent<?> handleTagGcStartTail(ParseContext context, AbstractGCEvent<?> event) {
+        // here, the gc type is known, and the partial events will need to be added later
+        context.getPartialEventsMap().put(event.getNumber() + "", event);
+        return null;
+    }
+
+    private AbstractGCEvent<?> handleTagGcMetaspaceTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        event = parseTail(context, event, tail);
+        // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
+        //   size after concurrent collection will be calculated by GCModel#add()
+        if (!event.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
+            updateEventDetails(context, event);
+        }
+        return null;
+    }
+
+    private AbstractGCEvent<?> handleTagGcTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        AbstractGCEvent<?> returnEvent = event;
+        AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+        if (parentEvent != null) {
+            if (parentEvent.getExtendedType().equals(returnEvent.getExtendedType())) {
+                // date- and timestamp are always end of event -> adjust the parent event
+                parentEvent.setDateStamp(event.getDatestamp());
+                parentEvent.setTimestamp(event.getTimestamp());
+                returnEvent = parseTail(context, parentEvent, tail);
+                context.partialEventsMap.remove(event.getNumber() + "");
+            } else {
+                // more detail information is provided for the parent event
+                updateEventDetails(context, returnEvent);
+                returnEvent = null;
+            }
+        } else {
+            returnEvent = parseTail(context, event, tail);
+        }
+
+        return returnEvent;
+    }
+
+    private AbstractGCEvent<?> handleTagGcHeapTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        AbstractGCEvent<?> returnEvent = event;
+        AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+        // if ZGC heap capacity, record total heap for this event, then pass it on to record pre and post used heap
+        if (event.getExtendedType().getType().equals(Type.UJL_ZGC_HEAP_CAPACITY) && parentEvent != null) {
+            // Parse with correct pattern and match the total memory
+            returnEvent = parseTail(context, event, tail);
+            parentEvent.setTotal(returnEvent.getTotal());
+            context.partialEventsMap.put(event.getNumber() + "", parentEvent);
+            returnEvent = null;
+        }
         return returnEvent;
     }
 
