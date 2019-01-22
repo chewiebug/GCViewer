@@ -250,11 +250,11 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     }
 
     private AbstractGCEvent<?> handleTagGcMetaspaceTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
-        event = parseTail(context, event, tail);
+        AbstractGCEvent<?> returnEvent = parseTail(context, event, tail);
         // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
         //   size after concurrent collection will be calculated by GCModel#add()
-        if (!event.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
-            updateEventDetails(context, event);
+        if (!returnEvent.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
+            updateEventDetails(context, returnEvent);
         }
         return null;
     }

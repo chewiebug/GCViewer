@@ -28,20 +28,28 @@ public class TestDataReaderUJLZGC {
         assertThat("amount of full gc events", model.getFullGCPause().getN(), is(0));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(7));
 
+        testGcAllPause(model);
+
+        testGcAllConcurrent(model);
+
+        AbstractGCEvent<?> garbageCollectionEvent = model.get(10);
+        UnittestHelper.testMemoryPauseEvent(garbageCollectionEvent,
+                "Garbage Collection",
+                AbstractGCEvent.Type.UJL_ZGC_GARBAGE_COLLECTION,
+                0,
+                1024 * 10620, 1024 * 8800, 1024 * 194560,
+                AbstractGCEvent.Generation.TENURED,
+                false);
+        assertThat("preused heap percentage", garbageCollectionEvent.getPreUsedPercent(), is(5));
+        assertThat("postused heap percentage", garbageCollectionEvent.getPostUsedPercent(), is(4));
+    }
+
+    public void testGcAllPause(GCModel model) {
         AbstractGCEvent<?> pauseMarkStartEvent = model.get(0);
         UnittestHelper.testMemoryPauseEvent(pauseMarkStartEvent,
                 "Pause Mark Start",
                 AbstractGCEvent.Type.UJL_ZGC_PAUSE_MARK_START,
                 0.001279,
-                0, 0, 0,
-                AbstractGCEvent.Generation.TENURED,
-                false);
-
-        AbstractGCEvent<?> concurrentMarkEvent = model.get(1);
-        UnittestHelper.testMemoryPauseEvent(concurrentMarkEvent,
-                "Concurrent Mark",
-                AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_MARK,
-                0.005216,
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
@@ -54,6 +62,27 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+
+        AbstractGCEvent<?> pauseRelocateStartEvent = model.get(8);
+        UnittestHelper.testMemoryPauseEvent(pauseRelocateStartEvent,
+                "Pause Relocate Start",
+                AbstractGCEvent.Type.UJL_ZGC_PAUSE_RELOCATE_START,
+                0.000679,
+                0, 0, 0,
+                AbstractGCEvent.Generation.TENURED,
+                false);
+    }
+
+    public void testGcAllConcurrent(GCModel model) {
+        AbstractGCEvent<?> concurrentMarkEvent = model.get(1);
+        UnittestHelper.testMemoryPauseEvent(concurrentMarkEvent,
+                "Concurrent Mark",
+                AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_MARK,
+                0.005216,
+                0, 0, 0,
+                AbstractGCEvent.Generation.TENURED,
+                false);
+
 
         AbstractGCEvent<?> concurrentNonrefEvent = model.get(3);
         UnittestHelper.testMemoryPauseEvent(concurrentNonrefEvent,
@@ -100,15 +129,6 @@ public class TestDataReaderUJLZGC {
                 AbstractGCEvent.Generation.TENURED,
                 false);
 
-        AbstractGCEvent<?> pauseRelocateStartEvent = model.get(8);
-        UnittestHelper.testMemoryPauseEvent(pauseRelocateStartEvent,
-                "Pause Relocate Start",
-                AbstractGCEvent.Type.UJL_ZGC_PAUSE_RELOCATE_START,
-                0.000679,
-                0, 0, 0,
-                AbstractGCEvent.Generation.TENURED,
-                false);
-
         AbstractGCEvent<?> concurrentRelocateEvent = model.get(9);
         UnittestHelper.testMemoryPauseEvent(concurrentRelocateEvent,
                 "Concurrent Relocate",
@@ -117,17 +137,6 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
-
-        AbstractGCEvent<?> garbageCollectionEvent = model.get(10);
-        UnittestHelper.testMemoryPauseEvent(garbageCollectionEvent,
-                "Garbage Collection",
-                AbstractGCEvent.Type.UJL_ZGC_GARBAGE_COLLECTION,
-                0,
-                1024 * 10620, 1024 * 8800, 1024 * 194560,
-                AbstractGCEvent.Generation.TENURED,
-                false);
-        assertThat("preused heap percentage", garbageCollectionEvent.getPreUsedPercent(), is(5));
-        assertThat("postused heap percentage", garbageCollectionEvent.getPostUsedPercent(), is(4));
     }
 
     @Test

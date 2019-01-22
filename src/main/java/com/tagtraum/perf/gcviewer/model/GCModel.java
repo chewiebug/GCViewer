@@ -40,6 +40,63 @@ public class GCModel implements Serializable {
 
     private static final long serialVersionUID = -6479685723904770990L;
 
+    private static final Logger LOG = Logger.getLogger(GCModel.class.getName());
+
+    private List<AbstractGCEvent<?>> allEvents;
+    private List<AbstractGCEvent<?>> stopTheWorldEvents;
+    private List<GCEvent> gcEvents;
+    private List<AbstractGCEvent<?>> gcCauses;
+    private List<AbstractGCEvent<?>> vmOperationEvents;
+    private List<ConcurrentGCEvent> concurrentGCEvents;
+    private List<GCEvent> currentNoFullGCEvents;
+    private List<GCEvent> fullGCEvents;
+    private FileInformation fileInformation = new FileInformation();
+
+    private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
+    private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
+    private Map<String, DoubleData> gcEventCauses;
+    private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
+    private Map<String, DoubleData> vmOperationEventPauses; // pause information about vm operations ("application stopped")
+
+    private IntData heapAllocatedSizes; // allocated heap size of every event
+    private IntData tenuredAllocatedSizes; // allocated tenured size of every event that has this information
+    private IntData youngAllocatedSizes; // allocated young size of every event that has this information
+    private IntData permAllocatedSizes; // allocated perm size of every event that has this information
+    private IntData heapUsedSizes; // used heap of every event
+    private IntData tenuredUsedSizes; // used tenured size of every event that has this information
+    private IntData youngUsedSizes; // used young size of every event that has this information
+    private IntData permUsedSizes; // used perm size of every event that has this information
+
+    private IntData postConcurrentCycleUsedTenuredSizes; // used tenured heap after concurrent collections
+    private IntData postConcurrentCycleUsedHeapSizes; // used heap after concurrent collections
+
+    private IntData promotion; // promotion from young to tenured generation during young collections
+
+    private double firstPauseTimeStamp = Double.MAX_VALUE;
+    private double lastPauseTimeStamp = 0;
+    private DoubleData totalPause;
+    private DoubleData fullGCPause;
+    private double lastFullGcPauseTimeStamp = 0;
+    private DoubleData fullGcPauseInterval; // interval between two stop the Full GC pauses
+    private DoubleData gcPause; // not full gc but stop the world pause
+    private DoubleData vmOperationPause; // "application stopped"
+    private double lastGcPauseTimeStamp = 0;
+    private DoubleData pauseInterval; // interval between two stop the world pauses
+    private DoubleData initiatingOccupancyFraction; // all concurrent collectors; start of concurrent collection
+    private long freedMemory;
+    private Format format;
+    private IntData postGCUsedMemory;
+    private IntData postFullGCUsedHeap;
+    private IntData freedMemoryByGC;
+    private IntData freedMemoryByFullGC;
+    private DoubleData postGCSlope;
+    private RegressionLine currentPostGCSlope;
+    private RegressionLine currentRelativePostGCIncrease;
+    private DoubleData relativePostGCIncrease;
+    private RegressionLine postFullGCSlope;
+    private RegressionLine relativePostFullGCIncrease;
+    private URL url;
+
     /**
      * Contains information about a file.
      *
@@ -126,63 +183,6 @@ public class GCModel implements Serializable {
             return FileInformation.class.toString() + "; lastModified=" + lastModified + ", length=" + length;
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(GCModel.class.getName());
-
-    private List<AbstractGCEvent<?>> allEvents;
-    private List<AbstractGCEvent<?>> stopTheWorldEvents;
-    private List<GCEvent> gcEvents;
-    private List<AbstractGCEvent<?>> gcCauses;
-    private List<AbstractGCEvent<?>> vmOperationEvents;
-    private List<ConcurrentGCEvent> concurrentGCEvents;
-    private List<GCEvent> currentNoFullGCEvents;
-    private List<GCEvent> fullGCEvents;
-    private FileInformation fileInformation = new FileInformation();
-
-    private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
-    private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
-    private Map<String, DoubleData> gcEventCauses;
-    private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
-    private Map<String, DoubleData> vmOperationEventPauses; // pause information about vm operations ("application stopped")
-
-    private IntData heapAllocatedSizes; // allocated heap size of every event
-    private IntData tenuredAllocatedSizes; // allocated tenured size of every event that has this information
-    private IntData youngAllocatedSizes; // allocated young size of every event that has this information
-    private IntData permAllocatedSizes; // allocated perm size of every event that has this information
-    private IntData heapUsedSizes; // used heap of every event
-    private IntData tenuredUsedSizes; // used tenured size of every event that has this information
-    private IntData youngUsedSizes; // used young size of every event that has this information
-    private IntData permUsedSizes; // used perm size of every event that has this information
-
-    private IntData postConcurrentCycleUsedTenuredSizes; // used tenured heap after concurrent collections
-    private IntData postConcurrentCycleUsedHeapSizes; // used heap after concurrent collections
-
-    private IntData promotion; // promotion from young to tenured generation during young collections
-
-    private double firstPauseTimeStamp = Double.MAX_VALUE;
-    private double lastPauseTimeStamp = 0;
-    private DoubleData totalPause;
-    private DoubleData fullGCPause;
-    private double lastFullGcPauseTimeStamp = 0;
-    private DoubleData fullGcPauseInterval; // interval between two stop the Full GC pauses
-    private DoubleData gcPause; // not full gc but stop the world pause
-    private DoubleData vmOperationPause; // "application stopped"
-    private double lastGcPauseTimeStamp = 0;
-    private DoubleData pauseInterval; // interval between two stop the world pauses
-    private DoubleData initiatingOccupancyFraction; // all concurrent collectors; start of concurrent collection
-    private long freedMemory;
-    private Format format;
-    private IntData postGCUsedMemory;
-    private IntData postFullGCUsedHeap;
-    private IntData freedMemoryByGC;
-    private IntData freedMemoryByFullGC;
-    private DoubleData postGCSlope;
-    private RegressionLine currentPostGCSlope;
-    private RegressionLine currentRelativePostGCIncrease;
-    private DoubleData relativePostGCIncrease;
-    private RegressionLine postFullGCSlope;
-    private RegressionLine relativePostFullGCIncrease;
-    private URL url;
 
     public GCModel() {
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
