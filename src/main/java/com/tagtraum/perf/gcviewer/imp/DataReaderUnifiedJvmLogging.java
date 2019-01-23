@@ -465,7 +465,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 Integer.parseInt(matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE_VALUE)), matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE_UNIT).charAt(0), matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE)));
     }
 
-    private void setMemoryWithPercentage(AbstractGCEvent event, Matcher matcher) {
+    private void setMemoryWithPercentage(AbstractGCEvent<?> event, Matcher matcher) {
         event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
                 Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE)), matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
         event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
