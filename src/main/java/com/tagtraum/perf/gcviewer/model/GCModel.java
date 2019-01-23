@@ -477,7 +477,7 @@ public class GCModel implements Serializable {
         freedMemory += event.getPreUsed() - event.getPostUsed();
 
         // Event that denotes a cycle
-        if (event.isCycleStart()) {
+        if (event.isGcCycleIndicator()) {
             addGcCause(event);
         }
         else if (!event.isFull()) {
