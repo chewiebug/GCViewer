@@ -55,6 +55,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Pause Mark Start preused heap percentage", pauseMarkStartEvent.getPreUsedPercent(), is(0));
+        assertThat("Pause Mark Start postused heap percentage", pauseMarkStartEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -67,6 +69,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Concurrent Mark preused heap percentage", concurrentMarkEvent.getPreUsedPercent(), is(0));
+        assertThat("Concurrent Mark postused heap percentage", concurrentMarkEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -79,6 +83,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Pause Mark End preused heap percentage", pauseMarkEndEvent.getPreUsedPercent(), is(0));
+        assertThat("Pause Mark End postused heap percentage", pauseMarkEndEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -91,6 +97,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Concurrent Nonref preused heap percentage", concurrentNonrefEvent.getPreUsedPercent(), is(0));
+        assertThat("Concurrent Nonref postused heap percentage", concurrentNonrefEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -103,6 +111,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Concurrent Reset Relocation preused heap percentage", concurrentResetRelocSetEvent.getPreUsedPercent(), is(0));
+        assertThat("Concurrent Reset Relocation postused heap percentage", concurrentResetRelocSetEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -115,6 +125,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Concurrent Detached Pages preused heap percentage", concurrentDetachedPagesEvent.getPreUsedPercent(), is(0));
+        assertThat("Concurrent Detached Pages postused heap percentage", concurrentDetachedPagesEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -127,6 +139,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Concurrent Select Relocation Set preused heap percentage", concurrentSelectRelocSetEvent.getPreUsedPercent(), is(0));
+        assertThat("Concurrent Select Relocation Set postused heap percentage", concurrentSelectRelocSetEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -139,6 +153,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Concurrent Prepare Relocation Set preused heap percentage", concurrentPrepareRelocSetEvent.getPreUsedPercent(), is(0));
+        assertThat("Concurrent Prepare Relocation Set postused heap percentage", concurrentPrepareRelocSetEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -151,6 +167,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Pause Relocate Start preused heap percentage", pauseRelocateStartEvent.getPreUsedPercent(), is(0));
+        assertThat("Pause Relocate Start postused heap percentage", pauseRelocateStartEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -163,6 +181,8 @@ public class TestDataReaderUJLZGC {
                 0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
+        assertThat("Concurrent Relocate preused heap percentage", concurrentRelocateEvent.getPreUsedPercent(), is(0));
+        assertThat("Concurrent Relocate postused heap percentage", concurrentRelocateEvent.getPostUsedPercent(), is(0));
     }
 
     @Test
@@ -175,8 +195,8 @@ public class TestDataReaderUJLZGC {
                 1024 * 10620, 1024 * 8800, 1024 * 194560,
                 AbstractGCEvent.Generation.TENURED,
                 false);
-        assertThat("preused heap percentage", garbageCollectionEvent.getPreUsedPercent(), is(5));
-        assertThat("postused heap percentage", garbageCollectionEvent.getPostUsedPercent(), is(4));
+        assertThat("Garbage Collection preused heap percentage", garbageCollectionEvent.getPreUsedPercent(), is(5));
+        assertThat("Garbage Collection postused heap percentage", garbageCollectionEvent.getPostUsedPercent(), is(4));
     }
 
 
