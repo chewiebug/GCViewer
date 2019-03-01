@@ -338,7 +338,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     }
 
     private void parseGcTail(ParseContext context, String tail) {
-        if (!(tail == null)) {
+        if (tail != null) {
             getLogger().warning(String.format("Unexpected tail present in the end of line number %d (expected nothing to be present, tail=\"%s\"; line=\"%s\")", in.getLineNumber(), tail, context.getLine()));
         }
     }
