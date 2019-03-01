@@ -81,12 +81,12 @@ public class DataReaderTools {
         String lookupTypeName = getLookupTypeName(typeName);
         
         AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
-        // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
+        // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first parentheses set stripped
         if (gcType == null) {
-            // try to parse it again with the parents removed
-            Matcher parentMatcher = parenthesesPattern.matcher(lookupTypeName);
-            if (parentMatcher.find()) {
-                gcType = AbstractGCEvent.Type.lookup(parentMatcher.replaceFirst(""));
+            // try to parse it again with the parentheses removed
+            Matcher parenthesesMatcher = parenthesesPattern.matcher(lookupTypeName);
+            if (parenthesesMatcher.find()) {
+                gcType = AbstractGCEvent.Type.lookup(parenthesesMatcher.replaceFirst(""));
             }
         }
 
