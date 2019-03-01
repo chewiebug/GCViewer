@@ -120,7 +120,7 @@ public class TestAbstractGCEvent {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testZgcAddNullPhase() {
+    public void testAddNullPhase() {
         AbstractGCEvent event = getNewAbstractEvent();
         event.addPhases(null);
 
@@ -128,7 +128,7 @@ public class TestAbstractGCEvent {
     }
 
     @Test
-    public void testZgcAddValidPhase() {
+    public void testAddValidPhase() {
         AbstractGCEvent event = getNewAbstractEvent();
 
         GCEvent phaseEvent = new GCEvent();
