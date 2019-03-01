@@ -75,7 +75,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String PATTERN_MEMORY_STRING = "(([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\))";
 
     private static final String PATTERN_HEAP_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])[ ](\\([0-9]+%\\)))";
-    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])\\(([0-9]+)%\\)->([0-9]+)([BKMG])\\(([0-9]+)%\\))";
+    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])\\([0-9]+%\\)->([0-9]+)([BKMG])\\([0-9]+%\\))";
 
     // Input: 1.070ms
     // Group 1: 1.070
@@ -134,10 +134,8 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final int GROUP_MEMORY_PERCENTAGE = 1;
     private static final int GROUP_MEMORY_PERCENTAGE_BEFORE = 2;
     private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT = 3;
-    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENT = 4;
-    private static final int GROUP_MEMORY_PERCENTAGE_AFTER = 5;
-    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_UNIT = 6;
-    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_PERCENT = 7;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER = 4;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_UNIT = 5;
 
     // Input: 300M (1%)
     // Group 1: 300M (1%)
@@ -159,7 +157,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     /** list of strings, that must be part of the gc log line to be considered for parsing */
     private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES);
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
-    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit");
+    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit", "[gc,phases,start");
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using", "Heap region size");
 
@@ -480,8 +478,6 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE)), matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
         event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
                 Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER)), matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
-        event.setPreUsedPercent(Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENT)));
-        event.setPostUsedPercent(Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_PERCENT)));
     }
 
     private void setDateStampIfPresent(AbstractGCEvent<?> event, String dateStampAsString) {

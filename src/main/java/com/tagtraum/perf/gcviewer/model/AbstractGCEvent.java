@@ -24,10 +24,6 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     private int preUsed;
     /** Used after GC in KB */
     private int postUsed;
-    /** Percentage used before GC */
-    private int preUsedPercent;
-    /** Percentage used after GC */
-    private int postUsedPercent;
     /** Capacity in KB */
     private int total;
     /** end of gc event (after pause) */
@@ -213,14 +209,6 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         this.postUsed = postUsed;
     }
 
-    public void setPreUsedPercent(int preUsedPercent) {
-        this.preUsedPercent = preUsedPercent;
-    }
-
-    public void setPostUsedPercent(int postUsedPercent) {
-        this.postUsedPercent = postUsedPercent;
-    }
-
     public void setTotal(int total) {
         this.total = total;
     }
@@ -231,14 +219,6 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     public int getPostUsed() {
         return postUsed;
-    }
-
-    public int getPreUsedPercent() {
-        return preUsedPercent;
-    }
-
-    public int getPostUsedPercent() {
-        return postUsedPercent;
     }
 
     public int getTotal() {
