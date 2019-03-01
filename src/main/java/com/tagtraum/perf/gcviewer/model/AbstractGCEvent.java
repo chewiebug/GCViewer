@@ -724,7 +724,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         /** "GC type": "memory current"("memory total") */
         GC_MEMORY,
         /** "GC type": "memory before"-&gt;"memory after"("memory total"), "pause" */
-    	GC_MEMORY_PAUSE,
+        GC_MEMORY_PAUSE,
         /** "GC type": "# regions before"-&gt;"# regions after"[("#total regions")] ("total regions" is optional; needs a region size to calculate memory usage)*/
         GC_REGION,
         /** "Garbage Collection (Reason)" "memory before"("percentage of total")-&gt;"memory after"("percentage of total") */

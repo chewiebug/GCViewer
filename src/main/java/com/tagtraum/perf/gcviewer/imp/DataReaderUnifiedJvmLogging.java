@@ -157,14 +157,12 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String TAG_GC_PHASES = "gc,phases";
     
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES);
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit");
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using", "Heap region size");
-    /** Pattern - for ZGC phases - that are to be included for parsing */
-    private static final Pattern PATTERN_INCLUDE_STRINGS_PHASE = Pattern.compile("\\[(gc,phases[ ]*)][ ]GC\\(([0-9]+)\\)[ ](?<type>[-a-zA-Z1 ()]+)(([ ]([0-9]{1}.*))|$)");
-   
+
     protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
     }
@@ -234,7 +232,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 returnEvent = handleTagGcTail(context, event, tail);
                 break;
             case TAG_GC_PHASES:
-            	returnEvent = parseTail(context, event, tail);
+            	returnEvent = handleTagGcPhasesTail(context, event, tail);
             	break;
             default:
                 getLogger().warning(String.format("Unexpected tail present in the end of line number %d (tail=\"%s\"; line=\"%s\")", in.getLineNumber(), tail, context.getLine()));
@@ -247,6 +245,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         // here, the gc type is known, and the partial events will need to be added later
         context.getPartialEventsMap().put(event.getNumber() + "", event);
         return null;
+    }
+
+    private AbstractGCEvent<?> handleTagGcPhasesTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        AbstractGCEvent<?> returnEvent = event;
+
+        // Add phases for ZGC events
+        if (event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE))
+        {
+            returnEvent = parseTail(context, returnEvent, tail);
+        }
+
+        return returnEvent;
     }
 
     private AbstractGCEvent<?> handleTagGcMetaspaceTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
@@ -500,24 +510,13 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     }
 
     private boolean lineContainsParseableEvent(ParseContext context) {
-        if ((isCandidateForParseableEvent(context.getLine()) && !isExcludedLine(context.getLine())) || isParseablePhaseEvent(context.getLine())) {
+        if ((isCandidateForParseableEvent(context.getLine()) && !isExcludedLine(context.getLine()))) {
             if (isLogOnlyLine(context.getLine())) {
                 String tail = context.getLine().substring(context.getLine().lastIndexOf("]")+1);
                 enrichContext(context, tail);
                 getLogger().info(tail);
                 return false;
             } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isParseablePhaseEvent(String line) {
-        Matcher phaseStringMatcher = line != null ? PATTERN_INCLUDE_STRINGS_PHASE.matcher(line) : null;
-        if (phaseStringMatcher != null && phaseStringMatcher.find()) {
-            String phaseType = phaseStringMatcher.group(GROUP_DECORATORS_GC_TYPE);
-            if (phaseType != null && AbstractGCEvent.Type.lookup(phaseType) != null) {
                 return true;
             }
         }
