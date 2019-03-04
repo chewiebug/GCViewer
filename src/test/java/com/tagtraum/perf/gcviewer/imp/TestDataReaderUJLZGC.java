@@ -37,17 +37,30 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAll() {
-        assertThat("size", gcAllModel.size(), is(11));
-        assertThat("amount of gc event types", gcAllModel.getGcEventPauses().size(), is(3));
-        assertThat("amount of gc events", gcAllModel.getGCPause().getN(), is(3));
+        assertThat("size", gcAllModel.size(), is(1));
+        assertThat("amount of gc event types", gcAllModel.getGcEventPauses().size(), is(1));
+        assertThat("amount of gc events", gcAllModel.getGCPause().getN(), is(1));
         assertThat("amount of full gc event types", gcAllModel.getFullGcEventPauses().size(), is(0));
+        assertThat("amount of gc phases event types", gcAllModel.getGcEventPhases().size(), is(10));
         assertThat("amount of full gc events", gcAllModel.getFullGCPause().getN(), is(0));
-        assertThat("amount of concurrent pause types", gcAllModel.getConcurrentEventPauses().size(), is(7));
+        assertThat("amount of concurrent pause types", gcAllModel.getConcurrentEventPauses().size(), is(0));
+    }
+
+    @Test
+    public void testGcAllGarbageCollection() {
+        AbstractGCEvent<?> garbageCollectionEvent = gcAllModel.get(0);
+        UnittestHelper.testMemoryPauseEvent(garbageCollectionEvent,
+                "Garbage Collection",
+                AbstractGCEvent.Type.UJL_ZGC_GARBAGE_COLLECTION,
+                0.002653,
+                1024 * 10620, 1024 * 8800, 1024 * 194560,
+                AbstractGCEvent.Generation.TENURED,
+                false);
     }
 
     @Test
     public void testGcAllPauseMarkStart() {
-        AbstractGCEvent<?> pauseMarkStartEvent = gcAllModel.get(0);
+        AbstractGCEvent<?> pauseMarkStartEvent = gcAllModel.get(0).getPhases().get(0);
         UnittestHelper.testMemoryPauseEvent(pauseMarkStartEvent,
                 "Pause Mark Start",
                 AbstractGCEvent.Type.UJL_ZGC_PAUSE_MARK_START,
@@ -59,7 +72,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllConcurrentMark() {
-        AbstractGCEvent<?> concurrentMarkEvent = gcAllModel.get(1);
+        AbstractGCEvent<?> concurrentMarkEvent = gcAllModel.get(0).getPhases().get(1);
         UnittestHelper.testMemoryPauseEvent(concurrentMarkEvent,
                 "Concurrent Mark",
                 AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_MARK,
@@ -71,7 +84,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllPauseMarkEnd() {
-        AbstractGCEvent<?> pauseMarkEndEvent = gcAllModel.get(2);
+        AbstractGCEvent<?> pauseMarkEndEvent = gcAllModel.get(0).getPhases().get(2);
         UnittestHelper.testMemoryPauseEvent(pauseMarkEndEvent,
                 "Pause Mark End",
                 AbstractGCEvent.Type.UJL_ZGC_PAUSE_MARK_END,
@@ -83,7 +96,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllConcurrentNonref() {
-        AbstractGCEvent<?> concurrentNonrefEvent = gcAllModel.get(3);
+        AbstractGCEvent<?> concurrentNonrefEvent = gcAllModel.get(0).getPhases().get(3);
         UnittestHelper.testMemoryPauseEvent(concurrentNonrefEvent,
                 "Concurrent Process Non-Strong References",
                 AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_NONREF,
@@ -95,7 +108,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllConcurrentResetRelocSet() {
-        AbstractGCEvent<?> concurrentResetRelocSetEvent = gcAllModel.get(4);
+        AbstractGCEvent<?> concurrentResetRelocSetEvent = gcAllModel.get(0).getPhases().get(4);
         UnittestHelper.testMemoryPauseEvent(concurrentResetRelocSetEvent,
                 "Concurrent Reset Relocation Set",
                 AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_RESET_RELOC_SET,
@@ -107,7 +120,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllConcurrentDetachedPages() {
-        AbstractGCEvent<?> concurrentDetachedPagesEvent = gcAllModel.get(5);
+        AbstractGCEvent<?> concurrentDetachedPagesEvent = gcAllModel.get(0).getPhases().get(5);
         UnittestHelper.testMemoryPauseEvent(concurrentDetachedPagesEvent,
                 "Concurrent Destroy Detached Pages",
                 AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_DETATCHED_PAGES,
@@ -119,7 +132,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllConcurrentSelectRelocSet() {
-        AbstractGCEvent<?> concurrentSelectRelocSetEvent = gcAllModel.get(6);
+        AbstractGCEvent<?> concurrentSelectRelocSetEvent = gcAllModel.get(0).getPhases().get(6);
         UnittestHelper.testMemoryPauseEvent(concurrentSelectRelocSetEvent,
                 "Concurrent Select Relocation Set",
                 AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_SELECT_RELOC_SET,
@@ -131,7 +144,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllConcurrentPrepareRelocSet() {
-        AbstractGCEvent<?> concurrentPrepareRelocSetEvent = gcAllModel.get(7);
+        AbstractGCEvent<?> concurrentPrepareRelocSetEvent = gcAllModel.get(0).getPhases().get(7);
         UnittestHelper.testMemoryPauseEvent(concurrentPrepareRelocSetEvent,
                 "Concurrent Prepare Relocation Set",
                 AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET,
@@ -143,7 +156,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllPauseRelocateStart() {
-        AbstractGCEvent<?> pauseRelocateStartEvent = gcAllModel.get(8);
+        AbstractGCEvent<?> pauseRelocateStartEvent = gcAllModel.get(0).getPhases().get(8);
         UnittestHelper.testMemoryPauseEvent(pauseRelocateStartEvent,
                 "Pause Relocate Start",
                 AbstractGCEvent.Type.UJL_ZGC_PAUSE_RELOCATE_START,
@@ -155,7 +168,7 @@ public class TestDataReaderUJLZGC {
 
     @Test
     public void testGcAllConcurrentRelocate() {
-        AbstractGCEvent<?> concurrentRelocateEvent = gcAllModel.get(9);
+        AbstractGCEvent<?> concurrentRelocateEvent = gcAllModel.get(0).getPhases().get(9);
         UnittestHelper.testMemoryPauseEvent(concurrentRelocateEvent,
                 "Concurrent Relocate",
                 AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_RELOCATE,
@@ -166,22 +179,9 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllGarbageCollection() {
-        AbstractGCEvent<?> garbageCollectionEvent = gcAllModel.get(10);
-        UnittestHelper.testMemoryPauseEvent(garbageCollectionEvent,
-                "Garbage Collection",
-                AbstractGCEvent.Type.UJL_ZGC_GARBAGE_COLLECTION,
-                0,
-                1024 * 10620, 1024 * 8800, 1024 * 194560,
-                AbstractGCEvent.Generation.TENURED,
-                false);
-    }
-
-
-    @Test
     public void testGcDefault() {
         assertThat("size", gcDefaultModel.size(), is(5));
-        assertThat("amount of STW GC pause types", gcDefaultModel.getGcEventPauses().size(), is(0));
+        assertThat("amount of STW GC pause types", gcDefaultModel.getGcEventPauses().size(), is(5));
         assertThat("amount of STW Full GC pause types", gcDefaultModel.getFullGcEventPauses().size(), is(0));
         assertThat("amount of concurrent pause types", gcDefaultModel.getConcurrentEventPauses().size(), is(0));
     }

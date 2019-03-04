@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer.model;
 
+import java.util.ArrayList;
+
 /**
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 03.01.2018</p>
@@ -24,4 +26,13 @@ public class GCEventUJL extends GCEvent {
         return generation == null ? Generation.YOUNG : generation;
     }
 
+    @Override
+    public void addPhase(AbstractGCEvent<?> phase) {
+        super.addPhase(phase);
+
+        // If it is a stop-the-world event, increase pause time for parent GC event
+        if (Concurrency.SERIAL.equals(phase.getExtendedType().getConcurrency())) {
+            setPause(getPause() + phase.getPause());
+        }
+    }
 }

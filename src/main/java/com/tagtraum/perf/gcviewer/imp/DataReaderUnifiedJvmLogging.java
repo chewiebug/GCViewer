@@ -248,13 +248,13 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private AbstractGCEvent<?> handleTagGcPhasesTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
         AbstractGCEvent<?> returnEvent = event;
 
-        // Add phases for ZGC events
-        if (event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE))
-        {
+        AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+        if (parentEvent instanceof GCEventUJL) {
             returnEvent = parseTail(context, returnEvent, tail);
+            parentEvent.addPhase(returnEvent);
         }
 
-        return returnEvent;
+        return null;
     }
 
     private AbstractGCEvent<?> handleTagGcMetaspaceTail(ParseContext context, AbstractGCEvent<?> event, String tail) {

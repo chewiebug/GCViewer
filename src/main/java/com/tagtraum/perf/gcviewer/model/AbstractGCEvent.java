@@ -36,7 +36,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     protected List<T> details;
     private double pause;
     private int number = -1;
-    private List<T> phases;
+    protected List<AbstractGCEvent<?>> phases;
 
     public Iterator<T> details() {
         if (details == null) return Collections.emptyIterator();
@@ -60,19 +60,19 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 && details.size() > 0;
     }
 
-    public List<T> getPhases() {
-        if (this.phases == null) {
+    public List<AbstractGCEvent<?>> getPhases() {
+        if (phases == null) {
             return new ArrayList<>();
         }
         return phases;
     }
 
-    public void addPhases(T phase) {
+    public void addPhase(AbstractGCEvent<?> phase) {
         if (phase == null) {
             throw new IllegalArgumentException("Cannot add null phase to an event");
         }
-        if (this.phases == null) {
-            this.phases = new ArrayList<>();
+        if (phases == null) {
+            phases = new ArrayList<>();
         }
 
         phases.add(phase);
@@ -323,10 +323,6 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         return getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE)
                 || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE)
                 || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION);
-    }
-
-    public boolean isGcCycleIndicator() {
-        return Type.UJL_ZGC_GARBAGE_COLLECTION.equals(getExtendedType().getType());
     }
 
     public double getPause() {

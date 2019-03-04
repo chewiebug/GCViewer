@@ -105,7 +105,7 @@ public class TestAbstractGCEvent {
     }
 
     @Test
-    public void isFullShenandoah() throws Exception {
+    public void isFullShenandoah() {
         AbstractGCEvent event = getNewAbstractEvent();
 
         event.setType(Type.UJL_PAUSE_FULL);
@@ -122,19 +122,16 @@ public class TestAbstractGCEvent {
     @Test(expected = IllegalArgumentException.class)
     public void testAddNullPhase() {
         AbstractGCEvent event = getNewAbstractEvent();
-        event.addPhases(null);
-
-        assertTrue("phases list is empty", event.getPhases().isEmpty());
+        event.addPhase(null);
     }
 
     @Test
     public void testAddValidPhase() {
         AbstractGCEvent event = getNewAbstractEvent();
 
-        GCEvent phaseEvent = new GCEvent();
-        phaseEvent.setType(Type.UJL_ZGC_PAUSE_MARK_START);
+        GCEvent phaseEvent = new GCEvent(161.23, 0, 0, 0, 0.0004235, Type.UJL_ZGC_PAUSE_MARK_START);
 
-        event.addPhases(phaseEvent);
+        event.addPhase(phaseEvent);
 
         assertEquals("number of phase events", 1, event.getPhases().size());
         assertEquals("get phase event", phaseEvent, event.getPhases().get(0));
