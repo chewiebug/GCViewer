@@ -506,7 +506,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     }
 
     private boolean lineContainsParseableEvent(ParseContext context) {
-        if ((isCandidateForParseableEvent(context.getLine()) && !isExcludedLine(context.getLine()))) {
+        if (isCandidateForParseableEvent(context.getLine()) && !isExcludedLine(context.getLine())) {
             if (isLogOnlyLine(context.getLine())) {
                 String tail = context.getLine().substring(context.getLine().lastIndexOf("]")+1);
                 enrichContext(context, tail);

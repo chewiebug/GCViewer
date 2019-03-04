@@ -53,7 +53,7 @@ public class GCModel implements Serializable {
 
     private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
     private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
-    private Map<String, DoubleData> gcEventPhases;
+    private Map<String, DoubleData> gcEventPhases; // pause information about all phases for garbage collection events
     private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
     private Map<String, DoubleData> vmOperationEventPauses; // pause information about vm operations ("application stopped")
 

@@ -36,7 +36,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     protected List<T> details;
     private double pause;
     private int number = -1;
-    protected List<AbstractGCEvent<?>> phases;
+    private List<AbstractGCEvent<?>> phases;
 
     public Iterator<T> details() {
         if (details == null) return Collections.emptyIterator();

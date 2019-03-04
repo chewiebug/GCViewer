@@ -1,7 +1,5 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import java.util.ArrayList;
-
 /**
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 03.01.2018</p>
