@@ -1,0 +1,73 @@
+[2018-10-10T17:09:33.823+0200][0.022s][info][gc] Using G1
+[2018-10-10T17:09:33.877+0200][0,077s][info][safepoint] Total time for which application threads were stopped: 0,0000235 seconds, Stopping threads took: 0,0000015 seconds
+[2018-10-10T17:09:33.889+0200][0,089s][info][safepoint] Application time: 0,0118190 seconds
+[2018-10-10T17:09:33.889+0200][0,089s][info][safepoint] Total time for which application threads were stopped: 0,0000495 seconds, Stopping threads took: 0,0000022 seconds
+[2018-10-10T17:09:33.891+0200][0,091s][info][safepoint] Application time: 0,0020922 seconds
+[2018-10-10T17:09:33.891+0200][0,091s][info][safepoint] Total time for which application threads were stopped: 0,0000211 seconds, Stopping threads took: 0,0000022 seconds
+[2018-10-10T17:09:33.892+0200][0,092s][info][safepoint] Application time: 0,0008629 seconds
+[2018-10-10T17:09:33.892+0200][0,092s][info][safepoint] Total time for which application threads were stopped: 0,0001209 seconds, Stopping threads took: 0,0001051 seconds
+[2018-10-10T17:09:33.948+0200][0,147s][info][safepoint] Application time: 0,0550227 seconds
+[2018-10-10T17:09:33.952+0200][0,151s][info][gc       ] GC(0) Pause Young (G1 Evacuation Pause) 24M->4M(250M) 3,496ms
+[2018-10-10T17:09:33.952+0200][0,151s][info][safepoint] Total time for which application threads were stopped: 0,0036337 seconds, Stopping threads took: 0,0000452 seconds
+[2018-10-10T17:09:33.958+0200][0,157s][info][safepoint] Application time: 0,0062028 seconds
+[2018-10-10T17:09:33.958+0200][0,157s][info][safepoint] Total time for which application threads were stopped: 0,0001133 seconds, Stopping threads took: 0,0000901 seconds
+[2018-10-10T17:09:33.958+0200][0,157s][info][safepoint] Application time: 0,0000222 seconds
+[2018-10-10T17:09:33.958+0200][0,158s][info][safepoint] Total time for which application threads were stopped: 0,0000353 seconds, Stopping threads took: 0,0000221 seconds
+[2018-10-10T17:09:33.966+0200][0,165s][info][safepoint] Application time: 0,0076620 seconds
+[2018-10-10T17:09:33.976+0200][0,176s][info][gc       ] GC(1) Pause Young (G1 Evacuation Pause) 151M->27M(250M) 10,363ms
+[2018-10-10T17:09:33.976+0200][0,176s][info][safepoint] Total time for which application threads were stopped: 0,0104689 seconds, Stopping threads took: 0,0000132 seconds
+[2018-10-10T17:09:33.978+0200][0,178s][info][safepoint] Application time: 0,0019993 seconds
+[2018-10-10T17:09:33.986+0200][0,185s][info][gc       ] GC(2) Pause Young (G1 Evacuation Pause) 74M->35M(250M) 7,049ms
+[2018-10-10T17:09:33.986+0200][0,185s][info][safepoint] Total time for which application threads were stopped: 0,0072140 seconds, Stopping threads took: 0,0000628 seconds
+[2018-10-10T17:09:33.991+0200][0,190s][info][safepoint] Application time: 0,0055349 seconds
+[2018-10-10T17:09:33.998+0200][0,197s][info][gc       ] GC(3) Pause Young (G1 Evacuation Pause) 149M->62M(250M) 6,491ms
+[2018-10-10T17:09:33.998+0200][0,197s][info][safepoint] Total time for which application threads were stopped: 0,0065900 seconds, Stopping threads took: 0,0000232 seconds
+[2018-10-10T17:09:34.001+0200][0,201s][info][safepoint] Application time: 0,0036755 seconds
+[2018-10-10T17:09:34.010+0200][0,209s][info][gc       ] GC(4) Pause Young (G1 Evacuation Pause) 152M->78M(528M) 8,153ms
+[2018-10-10T17:09:34.010+0200][0,209s][info][safepoint] Total time for which application threads were stopped: 0,0082641 seconds, Stopping threads took: 0,0000321 seconds
+[2018-10-10T17:09:34.050+0200][0,250s][info][safepoint] Application time: 0,0404274 seconds
+[2018-10-10T17:09:34.056+0200][0,255s][info][gc       ] GC(5) Pause Young (G1 Evacuation Pause) 364M->105M(528M) 5,773ms
+[2018-10-10T17:09:34.056+0200][0,255s][info][safepoint] Total time for which application threads were stopped: 0,0058898 seconds, Stopping threads took: 0,0000181 seconds
+[2018-10-10T17:09:34.067+0200][0,267s][info][safepoint] Application time: 0,0113116 seconds
+[2018-10-10T17:09:34.077+0200][0,277s][info][gc       ] GC(6) Pause Young (G1 Evacuation Pause) 378M->134M(528M) 9,668ms
+[2018-10-10T17:09:34.077+0200][0,277s][info][safepoint] Total time for which application threads were stopped: 0,0098035 seconds, Stopping threads took: 0,0000481 seconds
+[2018-10-10T17:09:34.087+0200][0,286s][info][safepoint] Application time: 0,0098326 seconds
+[2018-10-10T17:09:34.095+0200][0,294s][info][gc       ] GC(7) Pause Young (G1 Evacuation Pause) 355M->160M(528M) 7,487ms
+[2018-10-10T17:09:34.095+0200][0,294s][info][safepoint] Total time for which application threads were stopped: 0,0076406 seconds, Stopping threads took: 0,0000551 seconds
+[2018-10-10T17:09:34.108+0200][0,307s][info][safepoint] Application time: 0,0128880 seconds
+[2018-10-10T17:09:34.125+0200][0,324s][info][gc       ] GC(8) Pause Young (G1 Evacuation Pause) 346M->188M(1391M) 16,934ms
+[2018-10-10T17:09:34.125+0200][0,324s][info][safepoint] Total time for which application threads were stopped: 0,0170773 seconds, Stopping threads took: 0,0000110 seconds
+[2018-10-10T17:09:34.199+0200][0,398s][info][safepoint] Application time: 0,0740680 seconds
+[2018-10-10T17:09:34.211+0200][0,410s][info][gc       ] GC(9) Pause Young (G1 Evacuation Pause) 820M->260M(1391M) 11,688ms
+[2018-10-10T17:09:34.211+0200][0,410s][info][safepoint] Total time for which application threads were stopped: 0,0118661 seconds, Stopping threads took: 0,0000682 seconds
+[2018-10-10T17:09:34.247+0200][0,446s][info][safepoint] Application time: 0,0357840 seconds
+[2018-10-10T17:09:34.265+0200][0,465s][info][gc       ] GC(10) Pause Young (G1 Evacuation Pause) 976M->270M(1391M) 18,726ms
+[2018-10-10T17:09:34.265+0200][0,465s][info][safepoint] Total time for which application threads were stopped: 0,0188810 seconds, Stopping threads took: 0,0000239 seconds
+[2018-10-10T17:09:34.297+0200][0,496s][info][safepoint] Application time: 0,0310386 seconds
+[2018-10-10T17:09:34.311+0200][0,511s][info][gc       ] GC(11) Pause Young (G1 Evacuation Pause) 990M->314M(1391M) 14,837ms
+[2018-10-10T17:09:34.312+0200][0,511s][info][safepoint] Total time for which application threads were stopped: 0,0149630 seconds, Stopping threads took: 0,0000093 seconds
+[2018-10-10T17:09:34.340+0200][0,539s][info][safepoint] Application time: 0,0282094 seconds
+[2018-10-10T17:09:34.372+0200][0,571s][info][gc       ] GC(12) Pause Young (G1 Evacuation Pause) 984M->419M(2428M) 31,622ms
+[2018-10-10T17:09:34.372+0200][0,571s][info][safepoint] Total time for which application threads were stopped: 0,0317558 seconds, Stopping threads took: 0,0000101 seconds
+[2018-10-10T17:09:34.528+0200][0,727s][info][safepoint] Application time: 0,1560104 seconds
+[2018-10-10T17:09:34.548+0200][0,748s][info][gc       ] GC(13) Pause Young (G1 Evacuation Pause) 1778M->473M(2428M) 20,424ms
+[2018-10-10T17:09:34.548+0200][0,748s][info][safepoint] Total time for which application threads were stopped: 0,0206292 seconds, Stopping threads took: 0,0000112 seconds
+[2018-10-10T17:09:34.604+0200][0,804s][info][safepoint] Application time: 0,0559395 seconds
+[2018-10-10T17:09:34.637+0200][0,837s][info][gc       ] GC(14) Pause Young (G1 Evacuation Pause) 1769M->537M(2428M) 32,996ms
+[2018-10-10T17:09:34.637+0200][0,837s][info][safepoint] Total time for which application threads were stopped: 0,0331996 seconds, Stopping threads took: 0,0000114 seconds
+[2018-10-10T17:09:34.695+0200][0,895s][info][safepoint] Application time: 0,0580040 seconds
+[2018-10-10T17:09:34.729+0200][0,928s][info][gc       ] GC(15) Pause Young (G1 Evacuation Pause) 1746M->590M(2428M) 33,492ms
+[2018-10-10T17:09:34.729+0200][0,929s][info][safepoint] Total time for which application threads were stopped: 0,0336745 seconds, Stopping threads took: 0,0000104 seconds
+[2018-10-10T17:09:34.781+0200][0,981s][info][safepoint] Application time: 0,0519908 seconds
+[2018-10-10T17:09:34.817+0200][1,017s][info][gc       ] GC(16) Pause Young (G1 Evacuation Pause) 1749M->626M(3050M) 35,972ms
+[2018-10-10T17:09:34.817+0200][1,017s][info][safepoint] Total time for which application threads were stopped: 0,0362033 seconds, Stopping threads took: 0,0000112 seconds
+[2018-10-10T17:09:34.933+0200][1,132s][info][safepoint] Application time: 0,1150617 seconds
+[2018-10-10T17:09:34.961+0200][1,161s][info][gc       ] GC(17) Pause Young (G1 Evacuation Pause) 2066M->675M(3050M) 28,515ms
+[2018-10-10T17:09:34.961+0200][1,161s][info][safepoint] Total time for which application threads were stopped: 0,0287366 seconds, Stopping threads took: 0,0000249 seconds
+[2018-10-10T17:09:35.030+0200][1,229s][info][safepoint] Application time: 0,0688478 seconds
+[2018-10-10T17:09:35.068+0200][1,267s][info][gc       ] GC(18) Pause Young (G1 Evacuation Pause) 2124M->730M(3050M) 37,778ms
+[2018-10-10T17:09:35.068+0200][1,267s][info][safepoint] Total time for which application threads were stopped: 0,0379313 seconds, Stopping threads took: 0,0000207 seconds
+[2018-10-10T17:09:35.126+0200][1,326s][info][safepoint] Application time: 0,0583244 seconds
+[2018-10-10T17:09:35.158+0200][1,357s][info][gc       ] GC(19) Pause Young (G1 Evacuation Pause) 2103M->778M(3050M) 31,486ms
+[2018-10-10T17:09:35.158+0200][1,357s][info][safepoint] Total time for which application threads were stopped: 0,0316063 seconds, Stopping threads took: 0,0000080 seconds
+[2018-10-10T17:09:35.191+0200][1,390s][info][safepoint] Application time: 0,0326633 seconds
