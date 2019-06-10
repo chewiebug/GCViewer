@@ -46,6 +46,7 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
  * For more information about Shenandoah see: <a href="https://wiki.openjdk.java.net/display/shenandoah/Main">Shenandoah Wiki at OpenJDK</a>
  */
 public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
+    // TODO also parse "Allocation Stall (main)" events
 
     // matches the whole line and extracts decorators from it (decorators always appear between [] and are independent of the gc algorithm being logged)
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
@@ -58,7 +59,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
     //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
     private static final Pattern PATTERN_DECORATORS = Pattern.compile(
-            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
+            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
     );
     private static final String GROUP_DECORATORS_TIME = "time";
     private static final String GROUP_DECORATORS_UPTIME = "uptime";
@@ -73,6 +74,9 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private static final String PATTERN_PAUSE_STRING = "([0-9]+[.,][0-9]+)ms";
     private static final String PATTERN_MEMORY_STRING = "(([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\))";
+
+    private static final String PATTERN_HEAP_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])[ ](\\([0-9]+%\\)))";
+    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])\\(([0-9]+)%\\)->([0-9]+)([BKMG])\\(([0-9]+)%\\))";
 
     // Input: 1.070ms
     // Group 1: 1.070
@@ -96,7 +100,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Group 4: M
     // Group 5: 4998
     // Group 6: M
-    // Group 7: 1.070 (optional group)
+    // Group 7: 2.872 (optional group)
     private static final Pattern PATTERN_MEMORY_PAUSE = Pattern.compile("^" + PATTERN_MEMORY_STRING + "(?:(?:[ ]" + PATTERN_PAUSE_STRING + ")|$)");
 
     private static final int GROUP_MEMORY = 1;
@@ -118,18 +122,47 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final int GROUP_REGION_AFTER = 2;
     private static final int GROUP_REGION_TOTAL = 3;
 
+    // Input: 106M(0%)->88M(0%)
+    // Group 1: 106M(0%)->88M(0%)
+    // Group 2: 106
+    // Group 3: M
+    // Group 4: 0%
+    // Group 5: 88
+    // Group 6: M
+    // Group 7: 0%
+    private static final Pattern PATTERN_MEMORY_PERCENTAGE = Pattern.compile("^" + PATTERN_MEMORY_PERCENTAGE_STRING);
+    
+    private static final int GROUP_MEMORY_PERCENTAGE = 1;
+    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE = 2;
+    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT = 3;
+    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENTAGE = 4;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER = 5;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_UNIT = 6;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_PERCENTAGE = 7;
+
+    // Input: 300M (1%)
+    // Group 1: 300M (1%)
+    // Group 2: 300
+    // Group 3: M
+    // Group 4: (1%)
+    private static final Pattern PATTERN_HEAP_MEMORY_PERCENTAGE = Pattern.compile("^" + PATTERN_HEAP_MEMORY_PERCENTAGE_STRING);
+
+    private static final int GROUP_HEAP_MEMORY_PERCENTAGE = 1;
+    private static final int GROUP_HEAP_MEMORY_PERCENTAGE_VALUE = 2;
+    private static final int GROUP_HEAP_MEMORY_PERCENTAGE_UNIT = 3;
+
     private static final String TAG_GC = "gc";
     private static final String TAG_GC_START = "gc,start";
     private static final String TAG_GC_HEAP = "gc,heap";
     private static final String TAG_GC_METASPACE = "gc,metaspace";
-
+    private static final String TAG_GC_PHASES = "gc,phases";
+    
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE);
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES);
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
-    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit");
+    private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC", "[debug", "[trace", "gc,heap,coops", "gc,heap,exit", "[gc,phases,start");
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using", "Heap region size");
-
 
     protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
@@ -140,7 +173,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         getLogger().info("Reading Oracle / OpenJDK unified jvm logging format...");
 
         try {
-            // some information shared accross several lines of parsing...
+            // some information shared across several lines of parsing...
             Map<String, AbstractGCEvent<?>> partialEventsMap = new HashMap<>();
             Map<String, Object> infoMap = new HashMap<>();
 
@@ -162,7 +195,6 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private ParseContext parseEvent(ParseContext context) {
         AbstractGCEvent<?> event = null;
-
         Matcher decoratorsMatcher = PATTERN_DECORATORS.matcher(context.getLine());
         try {
             event = createGcEventWithStandardDecorators(decoratorsMatcher, context.getLine());
@@ -185,43 +217,102 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         AbstractGCEvent<?> returnEvent = event;
         switch (tags) {
             case TAG_GC_START:
-                // here, the gc type is known, and the partial events will need to be added later
-                context.getPartialEventsMap().put(event.getNumber() + "", event);
-                returnEvent = null;
+                returnEvent = handleTagGcStartTail(context, event);
                 break;
             case TAG_GC_HEAP:
+                returnEvent = handleTagGcHeapTail(context, event, tail);
+                // ZGC heap capacity, break out and handle next event
+                if (returnEvent == null) {
+                    break;
+                }
                 // fallthrough -> same handling as for METASPACE event
             case TAG_GC_METASPACE:
-                event = parseTail(context, event, tail);
-                // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
-                //   size after concurrent collection will be calculated by GCModel#add()
-                if (!event.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
-                    updateEventDetails(context, event);
-                }
-                returnEvent = null;
+                returnEvent = handleTagGcMetaspaceTail(context, event, tail);
                 break;
             case TAG_GC:
-                AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
-                if (parentEvent != null) {
-                    if (parentEvent.getExtendedType().equals(returnEvent.getExtendedType())) {
-                        // date- and timestamp are always end of event -> adjust the parent event
-                        parentEvent.setDateStamp(event.getDatestamp());
-                        parentEvent.setTimestamp(event.getTimestamp());
-                        returnEvent = parseTail(context, parentEvent, tail);
-                        context.partialEventsMap.remove(event.getNumber() + "");
-                    } else {
-                        // more detail information is provided for the parent event
-                        updateEventDetails(context, returnEvent);
-                        returnEvent = null;
-                    }
-                } else {
-                    returnEvent = parseTail(context, event, tail);
-                }
+                returnEvent = handleTagGcTail(context, event, tail);
                 break;
+            case TAG_GC_PHASES:
+            	returnEvent = handleTagGcPhasesTail(context, event, tail);
+            	break;
             default:
                 getLogger().warning(String.format("Unexpected tail present in the end of line number %d (tail=\"%s\"; line=\"%s\")", in.getLineNumber(), tail, context.getLine()));
         }
 
+        return returnEvent;
+    }
+
+    private AbstractGCEvent<?> handleTagGcStartTail(ParseContext context, AbstractGCEvent<?> event) {
+        // here, the gc type is known, and the partial events will need to be added later
+        context.getPartialEventsMap().put(event.getNumber() + "", event);
+        return null;
+    }
+
+    private AbstractGCEvent<?> handleTagGcPhasesTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        AbstractGCEvent<?> returnEvent = event;
+
+        AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+        if (parentEvent instanceof GCEventUJL) {
+            returnEvent = parseTail(context, returnEvent, tail);
+            // ZGC logs concurrent events as phases of one gc event -> don't add them to the phases list
+            // to comply with the current GCViewer implementation, which expects concurrent events in a separate list.
+            // If later insights suggest keeping the concurrent events as part of one gc event, GCModel#add and
+            // maybe some renderers need to be adjusted
+            if (returnEvent.isConcurrent()) {
+                return returnEvent;
+            } else {
+                parentEvent.addPhase(returnEvent);
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private AbstractGCEvent<?> handleTagGcMetaspaceTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        AbstractGCEvent<?> returnEvent = event;
+        returnEvent = parseTail(context, returnEvent, tail);
+        // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
+        //   size after concurrent collection will be calculated by GCModel#add()
+        if (!returnEvent.getExtendedType().getType().equals(Type.UJL_CMS_CONCURRENT_OLD)) {
+            updateEventDetails(context, returnEvent);
+        }
+        return null;
+    }
+
+    private AbstractGCEvent<?> handleTagGcTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        AbstractGCEvent<?> returnEvent = event;
+        AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+        if (parentEvent != null) {
+            if (parentEvent.getExtendedType().equals(returnEvent.getExtendedType())) {
+                // date- and timestamp are always end of event -> adjust the parent event
+                parentEvent.setDateStamp(event.getDatestamp());
+                parentEvent.setTimestamp(event.getTimestamp());
+                returnEvent = parseTail(context, parentEvent, tail);
+                context.partialEventsMap.remove(event.getNumber() + "");
+            } else {
+                // more detail information is provided for the parent event
+                updateEventDetails(context, returnEvent);
+                returnEvent = null;
+            }
+        } else {
+            returnEvent = parseTail(context, event, tail);
+        }
+
+        return returnEvent;
+    }
+
+    private AbstractGCEvent<?> handleTagGcHeapTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        AbstractGCEvent<?> returnEvent = event;
+        AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
+        // if ZGC heap capacity, record total heap for this event, then pass it on to record pre and post used heap
+        if (event.getExtendedType().getType().equals(Type.UJL_ZGC_HEAP_CAPACITY) && parentEvent != null) {
+            // Parse with correct pattern and match the total memory
+            returnEvent = parseTail(context, event, tail);
+            parentEvent.setTotal(returnEvent.getTotal());
+            context.partialEventsMap.put(event.getNumber() + "", parentEvent);
+            returnEvent = null;
+        }
         return returnEvent;
     }
 
@@ -249,13 +340,17 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             parseGcMemoryPauseTail(context, event, tail);
         } else if (event.getExtendedType().getPattern().equals(GcPattern.GC) || event.getExtendedType().getPattern().equals(GcPattern.GC_PAUSE_DURATION)) {
             parseGcTail(context, tail);
+        } else if (event.getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PERCENTAGE)) {
+            parseGcMemoryPercentageTail(context, event, tail);
+        } else if (event.getExtendedType().getPattern().equals(GcPattern.GC_HEAP_MEMORY_PERCENTAGE)) {
+            parseGcHeapMemoryPercentageTail(context, event, tail);
         }
 
         return event;
     }
 
     private void parseGcTail(ParseContext context, String tail) {
-        if (!(tail == null)) {
+        if (tail != null) {
             getLogger().warning(String.format("Unexpected tail present in the end of line number %d (expected nothing to be present, tail=\"%s\"; line=\"%s\")", in.getLineNumber(), tail, context.getLine()));
         }
     }
@@ -317,6 +412,29 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             getLogger().warning(String.format("Expected region information in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
         }
     }
+    
+    private void parseGcMemoryPercentageTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        Matcher memoryPercentageMatcher = tail != null ? PATTERN_MEMORY_PERCENTAGE.matcher(tail) : null;
+        if (memoryPercentageMatcher != null && memoryPercentageMatcher.find()) {
+            // the end Garbage Collection tags in ZGC contain details of memory cleaned up
+            // and the percentage of memory used before and after clean. The details can be used to 
+            // determine Allocation rate.
+        	setMemoryWithPercentage(event, memoryPercentageMatcher);
+        } else {
+            getLogger().warning(String.format("Expected memory percentage in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
+        }
+    }
+
+    private void parseGcHeapMemoryPercentageTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        Matcher memoryPercentageMatcher = tail != null ? PATTERN_HEAP_MEMORY_PERCENTAGE.matcher(tail) : null;
+        if (memoryPercentageMatcher != null && memoryPercentageMatcher.find()) {
+            // Heap section in ZGC logs provide heap stats during the GC cycle
+            // Currently using to get total heap size, percentage for total heap is not useful
+            setMemoryHeapWithPercentage(event, memoryPercentageMatcher);
+        } else {
+            getLogger().warning(String.format("Expected heap memory percentage in the end of line number %d (line=\"%s\")", in.getLineNumber(), context.getLine()));
+        }
+    }
 
     /**
      * Returns an instance of AbstractGcEvent (GCEvent or ConcurrentGcEvent) with all decorators present filled in
@@ -360,6 +478,22 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 Integer.parseInt(matcher.group(GROUP_MEMORY_AFTER)), matcher.group(GROUP_MEMORY_AFTER_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
         event.setTotal(getDataReaderTools().getMemoryInKiloByte(
                 Integer.parseInt(matcher.group(GROUP_MEMORY_CURRENT_TOTAL)), matcher.group(GROUP_MEMORY_CURRENT_TOTAL_UNIT).charAt(0), matcher.group(GROUP_MEMORY)));
+    }
+
+    private void setMemoryHeapWithPercentage(AbstractGCEvent<?> event, Matcher matcher) {
+        event.setTotal(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE_VALUE)), matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE_UNIT).charAt(0), matcher.group(GROUP_HEAP_MEMORY_PERCENTAGE)));
+    }
+
+    private void setMemoryWithPercentage(AbstractGCEvent<?> event, Matcher matcher) {
+        event.setPreUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE)), matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
+        event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
+                Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER)), matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
+
+        if (event.getTotal() == 0 && Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENTAGE)) != 0) {
+            event.setTotal(event.getPostUsed() / Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_PERCENTAGE)) * 100);
+        }
     }
 
     private void setDateStampIfPresent(AbstractGCEvent<?> event, String dateStampAsString) {

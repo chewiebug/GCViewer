@@ -1,9 +1,13 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
@@ -11,6 +15,8 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 /**
@@ -136,6 +142,39 @@ public class TestDataReaderUJLCMS {
 
         AbstractGCEvent<?> concurrentMarkWithPauseEvent = model.get(5);
         assertThat("event is start of concurrent collection", concurrentMarkWithPauseEvent.isConcurrentCollectionStart(), is(true));
+    }
+
+    @Test
+    public void testParseFullGcWithPhases() throws Exception  {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[0.315s][info][gc,start     ] GC(5) Pause Full (Allocation Failure)\n" +
+                "[0.315s][info][gc           ] GC(3) Concurrent Sweep 0.817ms\n" +
+                "[0.315s][info][gc,cpu       ] GC(3) User=0.00s Sys=0.00s Real=0.00s\n" +
+                "[0.315s][info][gc,phases,start] GC(5) Phase 1: Mark live objects\n" +
+                "[0.316s][info][gc,phases      ] GC(5) Phase 1: Mark live objects 1.154ms\n" +
+                "[0.316s][info][gc,phases,start] GC(5) Phase 2: Compute new object addresses\n" +
+                "[0.317s][info][gc,phases      ] GC(5) Phase 2: Compute new object addresses 0.391ms\n" +
+                "[0.317s][info][gc,phases,start] GC(5) Phase 3: Adjust pointers\n" +
+                "[0.317s][info][gc,phases      ] GC(5) Phase 3: Adjust pointers 0.575ms\n" +
+                "[0.317s][info][gc,phases,start] GC(5) Phase 4: Move objects\n" +
+                "[0.324s][info][gc,phases      ] GC(5) Phase 4: Move objects 6.493ms\n" +
+                "[0.324s][info][gc             ] GC(5) Pause Full (Allocation Failure) 119M->33M(150M) 9.509ms\n"
+                ).getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(2));
+        assertThat("event type", model.get(1).getExtendedType().getType(), is(Type.UJL_PAUSE_FULL));
+        assertThat("event pause", model.get(1).getPause(), closeTo(0.009509, 0.0000001));
+
+        assertThat("phases", model.getGcEventPhases().size(), is(4));
+        assertThat("phase 1", model.getGcEventPhases().get(Type.UJL_SERIAL_PHASE_MARK_LIFE_OBJECTS.getName()).getSum(), closeTo(0.001154, 0.0000001));
     }
 
 }

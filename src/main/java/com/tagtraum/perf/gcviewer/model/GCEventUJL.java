@@ -24,4 +24,13 @@ public class GCEventUJL extends GCEvent {
         return generation == null ? Generation.YOUNG : generation;
     }
 
+    @Override
+    public void addPhase(AbstractGCEvent<?> phase) {
+        super.addPhase(phase);
+
+        // If it is a stop-the-world event, increase pause time for parent GC event
+        if (Concurrency.SERIAL.equals(phase.getExtendedType().getConcurrency())) {
+            setPause(getPause() + phase.getPause());
+        }
+    }
 }

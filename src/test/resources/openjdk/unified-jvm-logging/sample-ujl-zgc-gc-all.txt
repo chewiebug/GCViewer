@@ -1,0 +1,14 @@
+[0.995s][info][gc] Using The Z Garbage Collector
+[1.205s][info][gc,start] GC(0) Garbage Collection (Metadata GC Threshold)
+[1.206s][info][gc,phases] GC(0) Pause Mark Start 1.279ms
+[1.211s][info][gc,phases] GC(0) Concurrent Mark 5.216ms
+[1.212s][info][gc,phases] GC(0) Pause Mark End 0.695ms
+[1.212s][info][gc,phases] GC(0) Concurrent Process Non-Strong References 0.258ms
+[1.212s][info][gc,phases] GC(0) Concurrent Reset Relocation Set 0.001ms
+[1.212s][info][gc,phases] GC(0) Concurrent Destroy Detached Pages 0.001ms
+[1.216s][info][gc,phases] GC(0) Concurrent Select Relocation Set 3.822ms
+[1.217s][info][gc,phases] GC(0) Concurrent Prepare Relocation Set 0.865ms
+[1.218s][info][gc,phases] GC(0) Pause Relocate Start 0.679ms
+[1.221s][info][gc,phases] GC(0) Concurrent Relocate 2.846ms
+[1.221s][info][gc,heap  ] GC(0)  Capacity:   194560M (100%)     194560M (100%)     194560M (100%)     194560M (100%)     194560M (100%)     194560M (100%)
+[1.221s][info][gc       ] GC(0) Garbage Collection (Metadata GC Threshold) 10620M(5%)->8800M(4%)

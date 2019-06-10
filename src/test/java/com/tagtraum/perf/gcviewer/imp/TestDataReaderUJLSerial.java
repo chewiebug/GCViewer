@@ -127,4 +127,35 @@ public class TestDataReaderUJLSerial {
         assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Failed to parse gc event ("));
     }
 
+    @Test
+    public void testParseFullGcWithPhases() throws Exception  {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[1.145s][info][gc,start     ] GC(4) Pause Full (Allocation Failure)"
+                + "\n[1.145s][info][gc,phases,start] GC(4) Phase 1: Mark live objects"
+                + "\n[1.149s][info][gc,phases      ] GC(4) Phase 1: Mark live objects 3.978ms"
+                + "\n[1.149s][info][gc,phases,start] GC(4) Phase 2: Compute new object addresses"
+                + "\n[1.151s][info][gc,phases      ] GC(4) Phase 2: Compute new object addresses 1.245ms"
+                + "\n[1.151s][info][gc,phases,start] GC(4) Phase 3: Adjust pointers"
+                + "\n[1.153s][info][gc,phases      ] GC(4) Phase 3: Adjust pointers 2.388ms"
+                + "\n[1.153s][info][gc,phases,start] GC(4) Phase 4: Move objects"
+                + "\n[1.156s][info][gc,phases      ] GC(4) Phase 4: Move objects 3.136ms"
+                + "\n[1.157s][info][gc             ] GC(4) Pause Full (Allocation Failure) 81M->17M(92M) 11.537ms"
+                ).getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_FULL));
+        assertThat("event pause", model.get(0).getPause(), closeTo(0.011537, 0.0000001));
+
+        assertThat("phases", model.getGcEventPhases().size(), is(4));
+        assertThat("phase 1", model.getGcEventPhases().get(Type.UJL_SERIAL_PHASE_MARK_LIFE_OBJECTS.getName()).getSum(), closeTo(0.003978, 0.0000001));
+    }
+
 }

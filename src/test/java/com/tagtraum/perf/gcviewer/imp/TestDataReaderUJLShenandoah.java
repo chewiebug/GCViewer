@@ -6,8 +6,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.ZonedDateTime;
+import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
@@ -16,6 +19,8 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.util.DateHelper;
 import org.junit.Test;
 
@@ -179,6 +184,40 @@ public class TestDataReaderUJLShenandoah {
         assertThat("postUsed heap size", event2.getPostUsed(), is(90 * 1024));
         assertThat("total heap size", event2.getTotal(), is(128 * 1024));
         assertThat("generation", event2.getGeneration(), is(AbstractGCEvent.Generation.TENURED));
+    }
+
+    @Test
+    public void testParseFullGcWithPhases() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[1,331s][info][gc,start          ] GC(0) Pause Full (System.gc())\n" +
+                "[1,332s][info][gc,phases,start   ] GC(0) Phase 1: Mark live objects\n" +
+                "[1,334s][info][gc,stringtable    ] GC(0) Cleaned string and symbol table, strings: 1755 processed, 19 removed, symbols: 23807 processed, 0 removed\n" +
+                "[1,334s][info][gc,phases         ] GC(0) Phase 1: Mark live objects 2,911ms\n" +
+                "[1,334s][info][gc,phases,start   ] GC(0) Phase 2: Compute new object addresses\n" +
+                "[1,335s][info][gc,phases         ] GC(0) Phase 2: Compute new object addresses 0,501ms\n" +
+                "[1,335s][info][gc,phases,start   ] GC(0) Phase 3: Adjust pointers\n" +
+                "[1,336s][info][gc,phases         ] GC(0) Phase 3: Adjust pointers 1,430ms\n" +
+                "[1,336s][info][gc,phases,start   ] GC(0) Phase 4: Move objects\n" +
+                "[1,337s][info][gc,phases         ] GC(0) Phase 4: Move objects 0,619ms\n" +
+                "[1,337s][info][gc                ] GC(0) Pause Full (System.gc()) 10M->1M(128M) 5,636ms\n"
+                ).getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_FULL));
+        assertThat("event pause", model.get(0).getPause(), closeTo(0.005636, 0.0000001));
+
+        assertThat("phases", model.getGcEventPhases().size(), is(4));
+        assertThat("phase 1",
+                model.getGcEventPhases().get(Type.UJL_SERIAL_PHASE_MARK_LIFE_OBJECTS.getName()).getSum(),
+                closeTo(0.002911, 0.0000001));
     }
 
 }

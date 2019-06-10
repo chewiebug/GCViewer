@@ -36,6 +36,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     protected List<T> details;
     private double pause;
     private int number = -1;
+    private List<AbstractGCEvent<?>> phases;
 
     public Iterator<T> details() {
         if (details == null) return Collections.emptyIterator();
@@ -57,6 +58,24 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public boolean hasDetails() {
         return details != null
                 && details.size() > 0;
+    }
+
+    public List<AbstractGCEvent<?>> getPhases() {
+        if (phases == null) {
+            return new ArrayList<>();
+        }
+        return phases;
+    }
+
+    public void addPhase(AbstractGCEvent<?> phase) {
+        if (phase == null) {
+            throw new IllegalArgumentException("Cannot add null phase to an event");
+        }
+        if (phases == null) {
+            phases = new ArrayList<>();
+        }
+
+        phases.add(phase);
     }
 
     @Override
@@ -615,6 +634,19 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_PAUSE_YOUNG = new Type("Pause Young", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_PAUSE_FULL = new Type("Pause Full", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
 
+        // unified jvm logging serial / cms event phase types
+        public static final Type UJL_SERIAL_PHASE_MARK_LIFE_OBJECTS = new Type("Phase 1: Mark live objects", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_COMPUTE_NEW_OBJECT_ADDRESSES = new Type("Phase 2: Compute new object addresses", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_ADJUST_POINTERS = new Type("Phase 3: Adjust pointers", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_MOVE_OBJECTS = new Type("Phase 4: Move objects", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
+        // unified jvm logging parallel event phase types
+        public static final Type UJL_PARALLEL_PHASE_MARKING = new Type("Marking Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_SUMMARY = new Type("Summary Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_ADJUST_ROOTS = new Type("Adjust Roots", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_COMPACTION = new Type("Compaction Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_POST_COMPACT = new Type("Post Compact", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
         // unified jvm logging cms / g1 event types
         public static final Type UJL_PAUSE_INITIAL_MARK = new Type("Pause Initial Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
         public static final Type UJL_PAUSE_REMARK = new Type("Pause Remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
@@ -637,6 +669,11 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_G1_OLD = new Type("Old regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
         public static final Type UJL_G1_HUMongous = new Type("Humongous regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
 
+        public static final Type UJL_G1_PHASE_PRE_EVACUATE_COLLECTION_SET = new Type("Pre Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_EVACUATE_COLLECTION_SET = new Type("Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_POST_EVACUATE_COLLECTION_SET = new Type("Post Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_OTHER = new Type("Other", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
         // unified jvm logging shenandoah event types
         public static final Type UJL_SHEN_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_SHEN_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
@@ -648,6 +685,20 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+
+        // unified jvm logging ZGC event types
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION = new Type("Garbage Collection", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PERCENTAGE);
+        public static final Type UJL_ZGC_PAUSE_MARK_START = new Type("Pause Mark Start", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_MARK_END = new Type("Pause Mark End", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_RELOCATE_START = new Type("Pause Relocate Start", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_MARK = new Type("Concurrent Mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_NONREF = new Type("Concurrent Process Non-Strong References", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RESET_RELOC_SET = new Type("Concurrent Reset Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_DETATCHED_PAGES = new Type("Concurrent Destroy Detached Pages", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_SELECT_RELOC_SET = new Type("Concurrent Select Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET = new Type("Concurrent Prepare Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RELOCATE = new Type("Concurrent Relocate", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_HEAP_CAPACITY = new Type("Capacity", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_HEAP_MEMORY_PERCENTAGE);
 
         // IBM Types
         // TODO: are scavenge always young only??
@@ -686,12 +737,16 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         /** "GC type": "memory current"("memory total") */
         GC_MEMORY,
         /** "GC type": "memory before"-&gt;"memory after"("memory total"), "pause" */
-    	GC_MEMORY_PAUSE,
+        GC_MEMORY_PAUSE,
         /** "GC type": "# regions before"-&gt;"# regions after"[("#total regions")] ("total regions" is optional; needs a region size to calculate memory usage)*/
         GC_REGION,
+        /** "Garbage Collection (Reason)" "memory before"("percentage of total")-&gt;"memory after"("percentage of total") */
+        GC_MEMORY_PERCENTAGE,
+        /** "Heap memory type" "memory current"("memory percentage") */
+        GC_HEAP_MEMORY_PERCENTAGE
     }
 
-    public enum Concurrency { CONCURRENT, SERIAL };
+    public enum Concurrency { CONCURRENT, SERIAL }
 
     public enum Generation { YOUNG,
         TENURED,
@@ -699,7 +754,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         PERM,
         ALL,
         /** special value for vm operations that are not collections */
-        OTHER };
+        OTHER }
 
     public enum CollectionType {
         /** plain GC pause collection garbage */
@@ -712,5 +767,5 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
          */
         VM_OPERATION,
         /** stop the world pause but used to prepare concurrent collection, might not collect garbage */
-        CONCURRENCY_HELPER };
+        CONCURRENCY_HELPER }
 }
