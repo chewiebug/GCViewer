@@ -1,11 +1,15 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
@@ -14,6 +18,8 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEventUJL;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
 
 /**
@@ -187,6 +193,40 @@ public class TestDataReaderUJLG1 {
         testHeapSizing(gcEventUJL.getYoung(), "young", 0, 0, 0);
         testHeapSizing(gcEventUJL.getTenured(), "tenured", 0, 0, 0);
         testHeapSizing(gcEventUJL.getPerm(), "metaspace", 3648, 3648, 1056768);
+    }
+
+    @Test
+    public void testParseGcWithPhases() throws Exception  {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[0.200s][info][gc,start     ] GC(0) Pause Young (G1 Evacuation Pause)\n" +
+                "[0.200s][info][gc,task      ] GC(0) Using 4 workers of 4 for evacuation\n" +
+                "[0.207s][info][gc,phases    ] GC(0)   Pre Evacuate Collection Set: 0.0ms\n" +
+                "[0.207s][info][gc,phases    ] GC(0)   Evacuate Collection Set: 6.4ms\n" +
+                "[0.207s][info][gc,phases    ] GC(0)   Post Evacuate Collection Set: 0.3ms\n" +
+                "[0.207s][info][gc,phases    ] GC(0)   Other: 0.3ms\n" +
+                "[0.207s][info][gc,heap      ] GC(0) Eden regions: 14->0(8)\n" +
+                "[0.207s][info][gc,heap      ] GC(0) Survivor regions: 0->2(2)\n" +
+                "[0.207s][info][gc,heap      ] GC(0) Old regions: 0->11\n" +
+                "[0.207s][info][gc,heap      ] GC(0) Humongous regions: 0->0\n" +
+                "[0.207s][info][gc,metaspace ] GC(0) Metaspace: 3644K->3644K(1056768K)\n" +
+                "[0.207s][info][gc           ] GC(0) Pause Young (G1 Evacuation Pause) 14M->12M(128M) 7.033ms\n"
+                ).getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
+        assertThat("event pause", model.get(0).getPause(), closeTo(0.007033, 0.0000001));
+
+        assertThat("phases", model.getGcEventPhases().size(), is(4));
+        assertThat("phase 1", model.getGcEventPhases().get(Type.UJL_G1_PHASE_PRE_EVACUATE_COLLECTION_SET.getName() + ":").getSum(), closeTo(0.0, 0.00001));
+        assertThat("phase 2", model.getGcEventPhases().get(Type.UJL_G1_PHASE_EVACUATE_COLLECTION_SET.getName() + ":").getSum(), closeTo(0.0064, 0.00001));
     }
 
     private void testHeapSizing(AbstractGCEvent<?> event, String testName, int expectedBefore, int expectedAfter, int expectedTotal) {

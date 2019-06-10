@@ -634,6 +634,19 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_PAUSE_YOUNG = new Type("Pause Young", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_PAUSE_FULL = new Type("Pause Full", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
 
+        // unified jvm logging serial / cms event phase types
+        public static final Type UJL_SERIAL_PHASE_MARK_LIFE_OBJECTS = new Type("Phase 1: Mark live objects", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_COMPUTE_NEW_OBJECT_ADDRESSES = new Type("Phase 2: Compute new object addresses", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_ADJUST_POINTERS = new Type("Phase 3: Adjust pointers", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_MOVE_OBJECTS = new Type("Phase 4: Move objects", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
+        // unified jvm logging parallel event phase types
+        public static final Type UJL_PARALLEL_PHASE_MARKING = new Type("Marking Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_SUMMARY = new Type("Summary Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_ADJUST_ROOTS = new Type("Adjust Roots", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_COMPACTION = new Type("Compaction Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_POST_COMPACT = new Type("Post Compact", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
         // unified jvm logging cms / g1 event types
         public static final Type UJL_PAUSE_INITIAL_MARK = new Type("Pause Initial Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
         public static final Type UJL_PAUSE_REMARK = new Type("Pause Remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
@@ -655,6 +668,11 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_G1_SURVIVOR = new Type("Survivor regions", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_REGION);
         public static final Type UJL_G1_OLD = new Type("Old regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
         public static final Type UJL_G1_HUMongous = new Type("Humongous regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
+
+        public static final Type UJL_G1_PHASE_PRE_EVACUATE_COLLECTION_SET = new Type("Pre Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_EVACUATE_COLLECTION_SET = new Type("Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_POST_EVACUATE_COLLECTION_SET = new Type("Post Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_OTHER = new Type("Other", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
 
         // unified jvm logging shenandoah event types
         public static final Type UJL_SHEN_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);

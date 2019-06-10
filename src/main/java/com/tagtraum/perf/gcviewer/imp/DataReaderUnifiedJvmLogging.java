@@ -46,6 +46,7 @@ import com.tagtraum.perf.gcviewer.util.NumberParser;
  * For more information about Shenandoah see: <a href="https://wiki.openjdk.java.net/display/shenandoah/Main">Shenandoah Wiki at OpenJDK</a>
  */
 public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
+    // TODO also parse "Allocation Stall (main)" events
 
     // matches the whole line and extracts decorators from it (decorators always appear between [] and are independent of the gc algorithm being logged)
     // Input: [0.693s][info][gc           ] GC(0) Pause Init Mark 1.070ms
@@ -58,7 +59,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
     //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
     private static final Pattern PATTERN_DECORATORS = Pattern.compile(
-            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
+            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
     );
     private static final String GROUP_DECORATORS_TIME = "time";
     private static final String GROUP_DECORATORS_UPTIME = "uptime";
@@ -75,7 +76,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String PATTERN_MEMORY_STRING = "(([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\))";
 
     private static final String PATTERN_HEAP_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])[ ](\\([0-9]+%\\)))";
-    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])\\([0-9]+%\\)->([0-9]+)([BKMG])\\([0-9]+%\\))";
+    private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])\\(([0-9]+)%\\)->([0-9]+)([BKMG])\\(([0-9]+)%\\))";
 
     // Input: 1.070ms
     // Group 1: 1.070
@@ -134,8 +135,10 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final int GROUP_MEMORY_PERCENTAGE = 1;
     private static final int GROUP_MEMORY_PERCENTAGE_BEFORE = 2;
     private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT = 3;
-    private static final int GROUP_MEMORY_PERCENTAGE_AFTER = 4;
-    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_UNIT = 5;
+    private static final int GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENTAGE = 4;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER = 5;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_UNIT = 6;
+    private static final int GROUP_MEMORY_PERCENTAGE_AFTER_PERCENTAGE = 7;
 
     // Input: 300M (1%)
     // Group 1: 300M (1%)
@@ -251,7 +254,16 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         AbstractGCEvent<?> parentEvent = context.getPartialEventsMap().get(event.getNumber() + "");
         if (parentEvent instanceof GCEventUJL) {
             returnEvent = parseTail(context, returnEvent, tail);
-            parentEvent.addPhase(returnEvent);
+            // ZGC logs concurrent events as phases of one gc event -> don't add them to the phases list
+            // to comply with the current GCViewer implementation, which expects concurrent events in a separate list.
+            // If later insights suggest keeping the concurrent events as part of one gc event, GCModel#add and
+            // maybe some renderers need to be adjusted
+            if (returnEvent.isConcurrent()) {
+                return returnEvent;
+            } else {
+                parentEvent.addPhase(returnEvent);
+                return null;
+            }
         }
 
         return null;
@@ -478,6 +490,10 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
                 Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE)), matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
         event.setPostUsed(getDataReaderTools().getMemoryInKiloByte(
                 Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER)), matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_UNIT).charAt(0), matcher.group(GROUP_MEMORY_PERCENTAGE)));
+
+        if (event.getTotal() == 0 && Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_BEFORE_PERCENTAGE)) != 0) {
+            event.setTotal(event.getPostUsed() / Integer.parseInt(matcher.group(GROUP_MEMORY_PERCENTAGE_AFTER_PERCENTAGE)) * 100);
+        }
     }
 
     private void setDateStampIfPresent(AbstractGCEvent<?> event, String dateStampAsString) {
