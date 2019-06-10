@@ -51,6 +51,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Roland Illig",
         "Johan Kaving",
         "Maciej Kwiecien",
+        "Yanqi Li",
         "Henry Lin",
         "James Livingston",
         "Mart Mägi",
@@ -170,7 +171,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
                      width ? 0 : preferredSize);
 
         float w = view.getPreferredSpan(View.X_AXIS);
-        float h = view.getPreferredSpan(View.Y_AXIS);
+        float h = view.getPreferredSpan(View.Y_AXIS) * (float)1.1; // add 10% to compensate for high dpi screens with jdk 11
 
         return new Dimension((int) Math.ceil(w),
                 (int) Math.ceil(h));
