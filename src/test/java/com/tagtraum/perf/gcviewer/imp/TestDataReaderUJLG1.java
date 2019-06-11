@@ -221,7 +221,7 @@ public class TestDataReaderUJLG1 {
 
         assertThat("number of warnings", handler.getCount(), is(0));
         assertThat("number of events", model.size(), is(1));
-        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_G1_PAUSE_YOUNG));
         assertThat("event pause", model.get(0).getPause(), closeTo(0.007033, 0.0000001));
 
         assertThat("phases", model.getGcEventPhases().size(), is(4));

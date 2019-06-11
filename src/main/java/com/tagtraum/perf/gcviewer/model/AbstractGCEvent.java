@@ -674,6 +674,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_G1_PHASE_EVACUATE_COLLECTION_SET = new Type("Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_G1_PHASE_POST_EVACUATE_COLLECTION_SET = new Type("Post Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_G1_PHASE_OTHER = new Type("Other", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_PREPARE_FOR_COMPACTION = new Type("Phase 2: Prepare for compaction", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_COMPACT_HEAP = new Type("Phase 4: Compact heap", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
 
         // unified jvm logging shenandoah event types
         public static final Type UJL_SHEN_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
