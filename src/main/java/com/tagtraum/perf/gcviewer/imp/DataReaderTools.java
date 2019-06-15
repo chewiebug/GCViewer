@@ -82,11 +82,15 @@ public class DataReaderTools {
         
         AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
         // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first parentheses set stripped
-        if (gcType == null) {
+        while (gcType == null && (lookupTypeName.contains("(") && lookupTypeName.contains(")"))) {
             // try to parse it again with the parentheses removed
             Matcher parenthesesMatcher = parenthesesPattern.matcher(lookupTypeName);
             if (parenthesesMatcher.find()) {
-                gcType = AbstractGCEvent.Type.lookup(parenthesesMatcher.replaceFirst(""));
+                lookupTypeName = parenthesesMatcher.replaceFirst("");
+                gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
+            } else {
+                // is expected to never happen...
+                logger.warning("parenthesisMatcher does not match for '" + lookupTypeName + "', allthough string contains '(' + ')'");
             }
         }
 

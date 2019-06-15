@@ -11,6 +11,7 @@ import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
@@ -131,7 +132,36 @@ public class TestDataReaderUJLG1JDK11 {
         assertThat("number of warnings", handler.getCount(), is(0));
         assertThat("number of events", model.size(), is(1));
         assertThat("total heap", model.get(0).getTotal(), is(128 * 1024));
-
     }
 
+    @Test
+    public void testPauseYoungConcurrentStartMetadataGcThreshold() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[1.459s][info][gc,start      ] GC(1) Pause Young (Concurrent Start) (Metadata GC Threshold)\n" +
+                "[1.459s][info][gc,task       ] GC(1) Using 8 workers of 8 for evacuation\n" +
+                "[1.464s][info][gc,phases     ] GC(1)   Pre Evacuate Collection Set: 0.0ms\n" +
+                "[1.464s][info][gc,phases     ] GC(1)   Evacuate Collection Set: 4.1ms\n" +
+                "[1.464s][info][gc,phases     ] GC(1)   Post Evacuate Collection Set: 1.1ms\n" +
+                "[1.464s][info][gc,phases     ] GC(1)   Other: 0.4ms\n" +
+                "[1.464s][info][gc,heap       ] GC(1) Eden regions: 8->0(38)\n" +
+                "[1.465s][info][gc,heap       ] GC(1) Survivor regions: 3->1(3)\n" +
+                "[1.465s][info][gc,heap       ] GC(1) Old regions: 4->7\n" +
+                "[1.465s][info][gc,heap       ] GC(1) Humongous regions: 5->5\n" +
+                "[1.465s][info][gc,metaspace  ] GC(1) Metaspace: 20599K->20599K(1069056K)\n" +
+                "[1.465s][info][gc            ] GC(1) Pause Young (Concurrent Start) (Metadata GC Threshold) 19M->12M(256M) 5.774ms\n" +
+                "[1.465s][info][gc,cpu        ] GC(1) User=0.03s Sys=0.00s Real=0.00s\n")
+                    .getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
+        assertThat("total heap", model.get(0).getTotal(), is(256 * 1024));
+    }
 }
