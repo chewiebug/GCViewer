@@ -375,6 +375,10 @@ data.
 **CSV_TS** Comma Separated Values
 CSV format using unix timestamp and one line per gc event.
 
+**CSV_FULL** Comma Separated Values
+CSV format using unix timestamp and one line per gc event. It contains a lot of data.
+
+
 **PLAIN** Plain Data
 Plain text representation of the gc log. If written from Sun / Oracle gc log
 it is usually compatible with HPjmeter.

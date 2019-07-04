@@ -1,15 +1,5 @@
 package com.tagtraum.perf.gcviewer.ctrl.action;
 
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.io.File;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileFilter;
-
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.exp.impl.DataWriterFactory;
@@ -21,6 +11,12 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.util.ExtensionFileFilter;
 import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
+
 
 /**
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
@@ -66,7 +62,7 @@ public class Export extends AbstractAction {
                     fileFilter = (ExportExtensionFileFilter) saveDialog.getChoosableFileFilters()[0];
                 }
                 exportFile(chartPanelView.getGCResource().getModel(),
-                        saveDialog.getSelectedFile(), 
+                        saveDialog.getSelectedFile(),
                         fileFilter.getExtension(),
                         fileFilter.getDataWriterType());
             }
@@ -100,11 +96,12 @@ public class Export extends AbstractAction {
 
         public static final ExportExtensionFileFilter[] EXT_FILE_FILTERS = {
             new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_csv"), DataWriterType.CSV),
+            new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_csv_full"), DataWriterType.CSV_FULL),
             new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_csv_ts"), DataWriterType.CSV_TS),
             new ExportExtensionFileFilter("txt", LocalisationHelper.getString("fileexport_dialog_txt"), DataWriterType.PLAIN),
             new ExportExtensionFileFilter("simple.log", LocalisationHelper.getString("fileexport_dialog_simplelog"), DataWriterType.SIMPLE),
             new ExportExtensionFileFilter("csv", LocalisationHelper.getString("fileexport_dialog_summarylog"), DataWriterType.SUMMARY),
-            new ExportExtensionFileFilter("png", LocalisationHelper.getString("fileexport_dialog_png"), DataWriterType.PNG)        
+            new ExportExtensionFileFilter("png", LocalisationHelper.getString("fileexport_dialog_png"), DataWriterType.PNG)
         };
 
         private final String description;
@@ -128,14 +125,14 @@ public class Export extends AbstractAction {
         public DataWriterType getDataWriterType() {
             return dataWriterType;
         }
-        
+
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(super.toString());
             sb.append("\ntype=").append(dataWriterType);
             sb.append("; extension=").append(extension);
             sb.append("; description=").append(description);
-            
+
             return sb.toString();
         }
     }
