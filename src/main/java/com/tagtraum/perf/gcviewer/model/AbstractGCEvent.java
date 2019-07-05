@@ -302,6 +302,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || (getExtendedType().getName().equals(Type.UJL_CMS_CONCURRENT_RESET.getName()) && getPause() > 0.0000001) // Universal jvm logging, CMS
                 || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()) // G1
                 || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_CYCLE.getName()) && getPause() > 0.0000001) // Universal jvm logging, G1
+                || getExtendedType().getName().equals(Type.UJL_SHEN_CONCURRENT_CONC_RESET.getName())
+                || getExtendedType().getName().equals(Type.UJL_SHEN_CONCURRENT_CONC_CLEANUP.getName())
                 || getExtendedType().getName().equals(Type.UJL_SHEN_CONCURRENT_CONC_RESET_BITMAPS.getName()); // Universal jvm logging, Shenandoah
     }
 
@@ -678,12 +680,16 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
         // unified jvm logging shenandoah event types
         public static final Type UJL_SHEN_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_SHEN_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_FINAL_EVAC = new Type("Pause Final Evac", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_SHEN_INIT_UPDATE_REFS = new Type("Pause Init Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_SHEN_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_DEGENERATED_UPDATE_REFS = new Type("Pause Degenerated GC (Update Refs)", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_MARK = new Type("Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_EVAC = new Type("Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CANCEL_CONC_MARK = new Type("Cancel concurrent mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CONC_CLEANUP = new Type("Concurrent cleanup", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CONC_RESET = new Type("Concurrent reset", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
