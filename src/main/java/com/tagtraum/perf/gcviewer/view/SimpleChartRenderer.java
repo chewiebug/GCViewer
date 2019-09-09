@@ -22,6 +22,10 @@ public class SimpleChartRenderer {
     public void render(GCModel model, FileOutputStream outputStream) throws IOException {
         GCPreferences gcPreferences = new GCPreferences();
         gcPreferences.load();
+        render(model, outputStream, gcPreferences);
+    }
+
+    public void render(GCModel model, FileOutputStream outputStream, GCPreferences gcPreferences) throws IOException {
         Dimension d = new Dimension(gcPreferences.getWindowWidth(), gcPreferences.getWindowHeight());
 
         BufferedImage image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);

@@ -3,12 +3,13 @@ package com.tagtraum.perf.gcviewer.ctrl.action;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileFilter;
 
 import com.tagtraum.perf.gcviewer.exp.DataWriter;
 import com.tagtraum.perf.gcviewer.exp.DataWriterType;
@@ -86,7 +87,9 @@ public class Export extends AbstractAction {
                         LocalisationHelper.getString("fileexport_dialog_title"),
                         JOptionPane.YES_NO_OPTION)) {
 
-            try (DataWriter writer = DataWriterFactory.getDataWriter(file, dataWriterType)) {
+            Map<String, Object> configuration = new HashMap<>();
+            configuration.put(DataWriterFactory.GC_PREFERENCES, gcViewer.getSelectedGCDocument().getPreferences());
+            try (DataWriter writer = DataWriterFactory.getDataWriter(file, dataWriterType, configuration)) {
                 writer.write(model);
             }
             catch (Exception ioe) {
