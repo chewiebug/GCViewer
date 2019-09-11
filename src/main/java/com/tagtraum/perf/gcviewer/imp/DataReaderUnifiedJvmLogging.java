@@ -59,7 +59,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
     //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
     private static final Pattern PATTERN_DECORATORS = Pattern.compile(
-            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
+            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)m?s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
     );
     private static final String GROUP_DECORATORS_TIME = "time";
     private static final String GROUP_DECORATORS_UPTIME = "uptime";
@@ -505,7 +505,13 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private void setTimeStampIfPresent(AbstractGCEvent<?> event, String timeStampAsString) {
         if (timeStampAsString != null && timeStampAsString.length() > 0) {
-            event.setTimestamp(NumberParser.parseDouble(timeStampAsString));
+            double ts;
+            if (timeStampAsString.endsWith("m")) {
+                ts = NumberParser.parseDouble(timeStampAsString.substring(0, timeStampAsString.length()-1)) / 1000;
+            } else {
+                ts = NumberParser.parseDouble(timeStampAsString);
+            }
+            event.setTimestamp(ts);
         }
     }
 
