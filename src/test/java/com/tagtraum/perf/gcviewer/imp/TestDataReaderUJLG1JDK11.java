@@ -44,6 +44,22 @@ public class TestDataReaderUJLG1JDK11 {
     }
 
     @Test
+    public void testNewUptimestamp() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[113ms][info][gc] GC(4) Pause Young (Normal) (G1 Evacuation Pause) 70M->70M(128M) 12.615ms")
+                        .getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat(model.getEvents().next().getTimestamp(), is(0.113));
+    }
+
+    @Test
     public void testDefaultsPauseYoungConcurrentStart() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
