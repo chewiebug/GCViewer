@@ -5,10 +5,13 @@ language: java
 sudo: false
 
 jdk:
-  - oraclejdk8
   - oraclejdk11
+  - oraclejdk12
+  - oraclejdk13
   - openjdk8
   - openjdk11
+  - openjdk12
+  - openjdk13
 
 # enable cache to stop downloading all maven plugins every time
 cache:
@@ -21,7 +24,7 @@ before_install:
   - pip install --user codecov
 
 # No need to run mvn install, so skip this step
-install: true
+install: skip
 
 # emulate a display for the gui tests
 before_script:
