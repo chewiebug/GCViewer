@@ -52,6 +52,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Mary Sunitha Joseph",
         "Johan Kaving",
         "Maciej Kwiecien",
+        "Dennis Lawler",
         "Yanqi Li",
         "Henry Lin",
         "James Livingston",
