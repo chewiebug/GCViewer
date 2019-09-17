@@ -59,10 +59,11 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
     //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
     private static final Pattern PATTERN_DECORATORS = Pattern.compile(
-            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^s]*)s])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
+            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^ms]*)(?<uptimeunit>m?s)])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\\((?<gcnumber>[0-9]+)\\)[ ](?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
     );
     private static final String GROUP_DECORATORS_TIME = "time";
     private static final String GROUP_DECORATORS_UPTIME = "uptime";
+    private static final String GROUP_DECORATORS_UPTIME_UNIT = "uptimeunit";
     private static final String GROUP_DECORATORS_LEVEL = "level";
     private static final String GROUP_DECORATORS_TAGS = "tags";
     private static final String GROUP_DECORATORS_GC_NUMBER = "gcnumber";
@@ -451,7 +452,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             event.setExtendedType(type);
             event.setNumber(Integer.parseInt(decoratorsMatcher.group(GROUP_DECORATORS_GC_NUMBER)));
             setDateStampIfPresent(event, decoratorsMatcher.group(GROUP_DECORATORS_TIME));
-            setTimeStampIfPresent(event, decoratorsMatcher.group(GROUP_DECORATORS_UPTIME));
+            setTimeStampIfPresent(event, decoratorsMatcher.group(GROUP_DECORATORS_UPTIME), decoratorsMatcher.group(GROUP_DECORATORS_UPTIME_UNIT));
             return event;
         } else {
             getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
@@ -503,9 +504,13 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         }
     }
 
-    private void setTimeStampIfPresent(AbstractGCEvent<?> event, String timeStampAsString) {
+    private void setTimeStampIfPresent(AbstractGCEvent<?> event, String timeStampAsString, String timeUnit) {
         if (timeStampAsString != null && timeStampAsString.length() > 0) {
-            event.setTimestamp(NumberParser.parseDouble(timeStampAsString));
+            double timestamp = NumberParser.parseDouble(timeStampAsString);
+            if ("ms".equals(timeUnit)) {
+                timestamp = timestamp / 1000;
+            }
+            event.setTimestamp(timestamp);
         }
     }
 
