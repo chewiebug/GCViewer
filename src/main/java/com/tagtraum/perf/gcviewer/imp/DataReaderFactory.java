@@ -57,7 +57,7 @@ public class DataReaderFactory {
                     break;
                 }
             }
-            byte[] buf = new byte[ONE_KB * 3];
+            byte[] buf = new byte[FOUR_KB];
             int length = in.read(buf);
             in.reset();
 
@@ -161,7 +161,7 @@ public class DataReaderFactory {
             // G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             // but can start with  <timestamp>: [G1Ergonomics (Heap Sizing) expand the heap...
             // with certain logging flaggs.
-            if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x G1 collector");
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x .. 1.8.x G1 collector");
             return new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_6G1);
         }
         else if (s.contains("[Times:") || s.contains("[Pause Init Mark") /* Shenandoah, -XX:-PrintGCDetails */) {

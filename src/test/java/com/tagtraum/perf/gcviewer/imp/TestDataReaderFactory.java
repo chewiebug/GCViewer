@@ -324,6 +324,14 @@ public class TestDataReaderFactory {
     }
 
     @Test
+    public void testOracleG1J8_StringDeduplication() throws Exception {
+        DataReaderFactory factory = new DataReaderFactory();
+        DataReader dr = factory.getDataReader(new GcResourceFile("byteArray"),
+                getInputStreamOpenJdk("SampleSun1_8_0G1StringDeduplication.txt"));
+        assertDataReader(DataReaderSun1_6_0G1.class, dr.getClass());
+    }
+
+    @Test
     public void testOracleShenandoahJ8Simple() throws Exception {
         DataReaderFactory factory = new DataReaderFactory();
         DataReader dr = factory.getDataReader(new GcResourceFile("byteArray"), new ByteArrayInputStream((
