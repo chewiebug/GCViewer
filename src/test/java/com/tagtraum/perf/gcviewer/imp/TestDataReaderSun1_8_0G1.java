@@ -14,6 +14,7 @@ import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
@@ -195,6 +196,20 @@ public class TestDataReaderSun1_8_0G1 {
         assertThat("warnings", handler.getCount(), is(1));
         assertThat("log message contains line number", handler.getLogRecords().get(0).getMessage(), containsString("Line"));
         assertThat("log message contains log line", handler.getLogRecords().get(0).getMessage(), containsString("176020.306: 176020.306"));
+    }
 
+    @Test
+    public void ignorePrintStringDeduplicationStatistics() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1StringDeduplication.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("warnings", handler.getCount(), is(0));
+        assertThat("size", model.size(), is(1));
+        assertThat("type", model.get(0).getExtendedType().getType(), is(Type.G1_YOUNG));
     }
 }

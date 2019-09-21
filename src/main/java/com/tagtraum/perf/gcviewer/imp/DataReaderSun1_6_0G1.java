@@ -47,6 +47,7 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+PrintGCApplicationConcurrentTime (output ignored)</li>
  * <li>-XX:+PrintAdaptiveSizePolicy (output ignored)</li>
  * <li>-XX:+PrintReferenceGC (output ignored)</li>
+ * <li>-XX:+PrintStringDeduplicationStatistics (output ignored)</li>
  * </ul>
  *
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
@@ -66,6 +67,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
     private static final String SETTING_ABORT_IN = "Setting abort in CSMarkOopClosure";
     private static final String G1_ERGONOMICS = "G1Ergonomics";
     private static final String SOFT_REFERENCE = "SoftReference";
+    private static final String GC_CONCURRENT_STRING_DEDUPLICATION = "GC concurrent-string-deduplication";
     private static final List<String> EXCLUDE_STRINGS = new LinkedList<>();
 
     static {
@@ -97,6 +99,34 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS.add("      [Humongous");
         EXCLUDE_STRINGS.add("      [Free CSet");
         EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
+        EXCLUDE_STRINGS.add("   [Last Exec:"); // -XX:+PrintStringDeduplicationStatistics ...
+        EXCLUDE_STRINGS.add("      [Inspected");
+        EXCLUDE_STRINGS.add("         [Skipped");
+        EXCLUDE_STRINGS.add("         [Hashed");
+        EXCLUDE_STRINGS.add("         [Known");
+        EXCLUDE_STRINGS.add("         [New");
+        EXCLUDE_STRINGS.add("      [Deduplicated");
+        EXCLUDE_STRINGS.add("         [Young");
+        EXCLUDE_STRINGS.add("         [Old");
+        EXCLUDE_STRINGS.add("   [Total Exec");
+        EXCLUDE_STRINGS.add("      [Inspected");
+        EXCLUDE_STRINGS.add("         [Skipped");
+        EXCLUDE_STRINGS.add("         [Hashed");
+        EXCLUDE_STRINGS.add("         [Known");
+        EXCLUDE_STRINGS.add("         [New");
+        EXCLUDE_STRINGS.add("      [Deduplicated");
+        EXCLUDE_STRINGS.add("         [Young");
+        EXCLUDE_STRINGS.add("         [Old");
+        EXCLUDE_STRINGS.add("   [Table]");
+        EXCLUDE_STRINGS.add("      [Memory Usage");
+        EXCLUDE_STRINGS.add("      [Size");
+        EXCLUDE_STRINGS.add("      [Entries");
+        EXCLUDE_STRINGS.add("      [Resize Count");
+        EXCLUDE_STRINGS.add("      [Rehash Count");
+        EXCLUDE_STRINGS.add("      [Age Threshold");
+        EXCLUDE_STRINGS.add("   [Queue]");
+        EXCLUDE_STRINGS.add("      [Dropped"); // ... -XX:+PrintStringDeduplicationStatistics
+
     }
 
     // the following pattern is specific for G1 with -XX:+PrintGCDetails
@@ -147,7 +177,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
     @Override
     public GCModel read() throws IOException {
-        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.6.x / 1.7.x G1 format...");
+        if (getLogger().isLoggable(Level.INFO)) getLogger().info("Reading Sun 1.6.x .. 1.8.x G1 format...");
 
         try (LineNumberReader in = this.in) {
             GCModel model = new GCModel();
@@ -170,6 +200,9 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                 try {
                     // filter out lines that don't need to be parsed
                     if (startsWith(line, EXCLUDE_STRINGS, false)) {
+                        continue;
+                    }
+                    else if (line.contains(GC_CONCURRENT_STRING_DEDUPLICATION)) {
                         continue;
                     }
                     else if (line.indexOf(APPLICATION_TIME) > 0) {
