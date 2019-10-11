@@ -7,7 +7,6 @@ import java.awt.Polygon;
 import java.util.Iterator;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
 import com.tagtraum.perf.gcviewer.view.ModelChartImpl;
@@ -35,22 +34,19 @@ public class TotalHeapRenderer extends PolygonChartRenderer {
         ScaledPolygon polygon = createMemoryScaledPolygon();
         polygon.addPoint(0.0d, 0.0d);
         int lastTotal = 0;
-        for (Iterator<AbstractGCEvent<?>> i = model.getStopTheWorldEvents(); i.hasNext();) {
-            AbstractGCEvent<?> abstractGCEvent = i.next();
-            if (abstractGCEvent instanceof GCEvent) {
-                GCEvent event = (GCEvent) abstractGCEvent;
-                if (event.getTotal() > 0) {
-                    // there are events that don't have a heap size associated (like "GC remark" of G1)
-                    // -> skip them
-                    if (polygon.npoints == 1) {
-                        // first point needs to be treated different from the rest,
-                        // because otherwise the polygon would not start with a vertical line at 0,
-                        // but with a slanting line between 0 and after the first pause
-                        polygon.addPoint(0, (double)event.getTotal());
-                    }
-                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), event.getTotal());
-                    lastTotal = event.getTotal();
+        for (Iterator<AbstractGCEvent<?>> i = model.getEvents(); i.hasNext();) {
+            AbstractGCEvent<?> event = i.next();
+            if (event.getTotal() > 0) {
+                // there are events that don't have a heap size associated (like "GC remark" of G1)
+                // -> skip them
+                if (polygon.npoints == 1) {
+                    // first point needs to be treated different from the rest,
+                    // because otherwise the polygon would not start with a vertical line at 0,
+                    // but with a slanting line between 0 and after the first pause
+                    polygon.addPoint(0, (double)event.getTotal());
                 }
+                polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), event.getTotal());
+                lastTotal = event.getTotal();
             }
         }
         polygon.addPointNotOptimised(model.getRunningTime(), lastTotal);

@@ -8,9 +8,9 @@ import java.awt.RenderingHints;
 import java.util.Iterator;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 import com.tagtraum.perf.gcviewer.view.ChartRenderer;
 import com.tagtraum.perf.gcviewer.view.ModelChartImpl;
-import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 
 /**
  * Renders all stop the world event pauses as rectangles.
@@ -56,7 +56,7 @@ public class GCRectanglesRenderer extends ChartRenderer {
             double pause = event.getPause();
             int width = (int) Math.max(Math.abs(scaleFactor * pause), 1.0d);
             int height = (int) (pause * scaledHeight);
-            int x = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
+            int x = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp() - event.getPause()));
             int y = getHeight() - (int) (pause * scaledHeight);
             if (lastX != x || lastY != y || lastWidth != width || lastHeight != height) {
                 if ((x + width) > leftBoundary && x < rightBoundary) {
