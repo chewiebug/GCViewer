@@ -75,51 +75,85 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final String TIMES = " [Times";
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
 
-    private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
+    /** lines to be excluded, if they start with a string of this list */
+    private static final List<String> EXCLUDE_STRINGS_LINE_START = new LinkedList<String>();
+    /** lines to be excluded, if they contain a string of this list */
+    private static final List<String> EXCLUDE_STRINGS_LINE_CONTAIN = new LinkedList<String>();
 
     static {
-        EXCLUDE_STRINGS.add(UNLOADING_CLASS);
-        EXCLUDE_STRINGS.add(APPLICATION_TIME); // -XX:+PrintGCApplicationConcurrentTime
+        EXCLUDE_STRINGS_LINE_START.add(UNLOADING_CLASS);
+        EXCLUDE_STRINGS_LINE_START.add(APPLICATION_TIME); // -XX:+PrintGCApplicationConcurrentTime
         //EXCLUDE_STRINGS.add(Type.APPLICATION_STOPPED_TIME.getName());  // -XX:+PrintGCApplicationStoppedTime
-        EXCLUDE_STRINGS.add("Desired survivor"); // -XX:+PrintTenuringDistribution
-        EXCLUDE_STRINGS.add("- age"); // -XX:+PrintTenuringDistribution
-        EXCLUDE_STRINGS.add(TIMES);
-        EXCLUDE_STRINGS.add("Finished"); // -XX:PrintCmsStatistics=2
-        EXCLUDE_STRINGS.add(" (cardTable: "); // -XX:PrintCmsStatistics=2
-        EXCLUDE_STRINGS.add("GC locker: Trying a full collection because scavenge failed");
-        EXCLUDE_STRINGS.add("CMSCollector"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("time_until_cms_gen_full"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("free"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("contiguous_available"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("promotion_rate"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("cms_allocation_rate"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("occupancy"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("initiating"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("Statistics"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("----------------"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Total Free Space:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Max   Chunk Size:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Number of Blocks:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Av.  Block  Size:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Tree      Height:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(BEFORE_GC); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(AFTER_GC); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(CMS_LARGE_BLOCK); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(" free"); // -XX:+PrintFLSStatistics=2
-        EXCLUDE_STRINGS.add(SIZE); // -XX:+PrintFLSStatistics=2
-        EXCLUDE_STRINGS.add("demand"); // -XX:+PrintFLSStatistics=2
-        EXCLUDE_STRINGS.add(ADAPTIVE_PATTERN); // -XX:+PrintAdaptiveSizePolicy
-        EXCLUDE_STRINGS.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
-        EXCLUDE_STRINGS.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
-        EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
-        EXCLUDE_STRINGS.add("Uncommitted"); // -XX:+UseShenandoahGC
-        EXCLUDE_STRINGS.add("Cancelling concurrent GC"); // -XX:+UseShenandoahGC
-        EXCLUDE_STRINGS.add("Capacity"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
-        EXCLUDE_STRINGS.add("Periodic GC triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
-        EXCLUDE_STRINGS.add("Immediate Garbage"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
-        EXCLUDE_STRINGS.add("Garbage to be collected"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
-        EXCLUDE_STRINGS.add("Live"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
-        EXCLUDE_STRINGS.add("Concurrent marking triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Desired survivor"); // -XX:+PrintTenuringDistribution
+        EXCLUDE_STRINGS_LINE_START.add("- age"); // -XX:+PrintTenuringDistribution
+        EXCLUDE_STRINGS_LINE_START.add(TIMES);
+        EXCLUDE_STRINGS_LINE_START.add("Finished"); // -XX:PrintCmsStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add(" (cardTable: "); // -XX:PrintCmsStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add("GC locker: Trying a full collection because scavenge failed");
+        EXCLUDE_STRINGS_LINE_START.add("CMSCollector"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("time_until_cms_gen_full"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("free"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("contiguous_available"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("promotion_rate"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("cms_allocation_rate"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("occupancy"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("initiating"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("Statistics"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("----------------"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Total Free Space:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Max   Chunk Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Number of Blocks:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Av.  Block  Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Tree      Height:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(BEFORE_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(AFTER_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(CMS_LARGE_BLOCK); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(" free"); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add(SIZE); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add("demand"); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add(ADAPTIVE_PATTERN); // -XX:+PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS_LINE_START.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS_LINE_START.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS_LINE_START.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
+        EXCLUDE_STRINGS_LINE_START.add("Uncommitted"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Cancelling concurrent GC"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Capacity"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Periodic GC triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Immediate Garbage"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Garbage to be collected"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Live"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Concurrent marking triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Adjusting free threshold"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Predicted cset threshold"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Trigger"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Free"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Evacuation Reserve"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Pacer for "); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Using"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Pacer for "); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Adaptive CSet Selection"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Collectable Garbage"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Immediate Garbage"); // -XX:+UseShenandoahGC
+
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(LOGFILE_ROLLING_BEGIN);
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(LOGFILE_ROLLING_END);
+        // when it occurs including timestamp (since about jdk1.7.0_50) it should still be ignored
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(APPLICATION_TIME); // -XX:+PrintGCApplicationConcurrentTime
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(", start"); // -XX:+UseShenandoahGC
+
+        LOG_INFORMATION_STRINGS.add("Region"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Humongous threshold"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Number of regions"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Shenandoah heuristics"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Parallel GC threads");// -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Concurrent GC threads"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Parallel reference processing"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Humongous object threshold"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Max TLAB size"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("GC threads"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Reference processing"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Heuristics ergonomically sets"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Initialize Shenandoah heap"); // -XX:+UseShenandoahGC
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -258,19 +292,14 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 try {
                     printTenuringDistributionOn = false;
                     // filter out lines that don't need to be parsed
-                    if (startsWith(line, EXCLUDE_STRINGS, false)) {
+                    if (startsWith(line, EXCLUDE_STRINGS_LINE_START, false)) {
                         continue;
                     }
-                    else if (line.indexOf(APPLICATION_TIME) > 0) {
-                        // -XX:+PrintGCApplicationConcurrentTime
-                        // when it occurs including timestamp (since about jdk1.7.0_50) it should still be ignored
+                    else if (contains(line, EXCLUDE_STRINGS_LINE_CONTAIN, false)) {
                         continue;
                     }
                     else if (startsWith(line, LOG_INFORMATION_STRINGS, false)) {
                         getLogger().info(line);
-                        continue;
-                    }
-                    else if (line.indexOf(LOGFILE_ROLLING_BEGIN) > 0 || line.indexOf(LOGFILE_ROLLING_END) > 0) {
                         continue;
                     }
 

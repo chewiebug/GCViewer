@@ -1,0 +1,27 @@
+OpenJDK 64-Bit Server VM (25.71-b433-20190907-aarch64-shenandoah-jdk8u232-05) for linux-amd64 JRE (1.8.0-builds.shipilev.net-openjdk-shenandoah-jdk8-b433-20190907-aarch64-shenandoah-jdk8u232-b05), built on Sep  7 2019 03:47:42 by "buildbot" with gcc 6.3.0 20170516
+Memory: 4k page, physical 2047012k(883308k free), swap 1048572k(1048572k free)
+CommandLine flags: -XX:InitialHeapSize=32752192 -XX:MaxHeapSize=134217728 -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UnlockDiagnosticVMOptions -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseShenandoahGC -XX:+UseTransparentHugePages
+Regions: 64 x 2048K
+Humongous object threshold: 2048K
+Max TLAB size: 256K
+GC threads: 2 parallel, 2 concurrent
+Reference processing: parallel
+Heuristics ergonomically sets -XX:+ExplicitGCInvokesConcurrent
+Heuristics ergonomically sets -XX:+ShenandoahImplicitGCInvokesConcurrent
+Shenandoah heuristics: adaptive
+Pacer for Idle. Initial: 2M, Alloc Tax Rate: 1.0x
+Initialize Shenandoah heap: 32768K initial, 8192K min, 128M max
+Trigger: Learning 1 of 5. Free (87M) is below initial threshold (89M)
+Free: 87M (44 regions), Max regular: 2048K, Max humongous: 88064K, External frag: 2%, Internal frag: 0%
+Evacuation Reserve: 8M (4 regions), Max regular: 2048K
+0.233: [Concurrent reset, start]
+    Using 2 of 2 workers for concurrent reset
+0.234: [Concurrent reset 32854K->32983K(34816K), 0.401 ms]
+0.234: [Pause Init Mark (process weakrefs), start]
+    Using 2 of 2 workers for init marking
+    Pacer for Mark. Expected Live: 12M, Free: 87M, Non-Taxable: 8M, Alloc Tax Rate: 0.5x
+0.239: [Pause Final Mark (process weakrefs), start]
+    Using 2 of 2 workers for final marking
+    Adaptive CSet Selection. Target Free: 12M, Actual Free: 92M, Max CSet: 5M, Min Garbage: 0M
+    Collectable Garbage: 0M (0% of total), 0M CSet, 0 CSet regions
+    Immediate Garbage: 0M (0% of total), 0 regions

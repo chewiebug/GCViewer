@@ -414,6 +414,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      * @param trimLine if <code>true</code> then trim <code>line</code>
      * @return <code>true</code>, if <code>line</code> starts with one of the strings in
      * <code>lineStartStrings</code>
+     * @see #contains(String, List, boolean)
      */
     protected boolean startsWith(String line, List<String> lineStartStrings, boolean trimLine) {
         String lineToTest = trimLine ? line.trim() : line;
@@ -424,6 +425,24 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
 
         return false;
+    }
+
+    /**
+     * Tests if <code>line</code> starts with one of the strings in <code>lineStartStrings</code>.
+     * If <code>trimLine</code> is <code>true</code>, then <code>line</code> is trimmed first.
+     *
+     * @param line line to be checked against
+     * @param lineContainsStrings list of strings to check
+     * @param trimLine if <code>true</code> then trim <code>line</code>
+     * @return <code>true</code>, if <code>line</code> contains  one of the strings in
+     * <code>lineContainsStrings</code>
+     * @see #startsWith(String, List, boolean)
+     */
+    protected boolean contains(String line, List<String> lineContainsStrings, boolean trimLine) {
+        String lineToTest = trimLine ? line.trim() : line;
+        return lineContainsStrings.stream()
+                .filter(entry -> lineToTest.contains(entry))
+                .count() > 0;
     }
 
     /**

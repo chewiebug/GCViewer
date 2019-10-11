@@ -1,0 +1,34 @@
+[2019-09-28T14:32:59.988+0000][8.707s][info][gc,ergo       ] Free: 51M (42 regions), Max regular: 2048K, Max humongous: 40960K, External frag: 23%, Internal frag: 38%
+[2019-09-28T14:32:59.991+0000][8.710s][info][gc,ergo       ] Evacuation Reserve: 8M (4 regions), Max regular: 2048K
+[2019-09-28T14:32:59.992+0000][8.711s][info][gc,ergo       ] Pacer for Idle. Initial: 2M, Alloc Tax Rate: 1.0x
+[2019-09-28T14:33:00.053+0000][8.772s][info][gc            ] Trigger: Average GC time (27.84 ms) is above the time for allocation rate (686.09 MB/s) to deplete free headroom (11M)
+[2019-09-28T14:33:00.056+0000][8.775s][info][gc            ] Failed to allocate 1232K
+[2019-09-28T14:33:00.058+0000][8.777s][info][gc,ergo       ] Free headroom: 17M (free) - 6M (spike) - 0M (penalties) = 11M
+[2019-09-28T14:33:00.065+0000][8.784s][info][gc,ergo       ] Free: 0M (0 regions), Max regular: 0K, Max humongous: 0K, External frag: 0%, Internal frag: 0%
+[2019-09-28T14:33:00.064+0000][8.784s][info][gc            ] Cancelling GC: Allocation Failure
+[2019-09-28T14:33:00.065+0000][8.784s][info][gc,ergo       ] Evacuation Reserve: 8M (4 regions), Max regular: 2048K
+[2019-09-28T14:33:00.066+0000][8.785s][info][gc,ergo       ] Free: 0M (0 regions), Max regular: 0K, Max humongous: 0K, External frag: 0%, Internal frag: 0%
+[2019-09-28T14:33:00.067+0000][8.787s][info][gc,ergo       ] Evacuation Reserve: 8M (4 regions), Max regular: 2048K
+[2019-09-28T14:33:00.068+0000][8.787s][info][gc,ergo       ] Pacer for Idle. Initial: 2M, Alloc Tax Rate: 1.0x
+[2019-09-28T14:33:00.069+0000][8.789s][info][gc            ] Trigger: Handle Allocation Failure
+[2019-09-28T14:33:00.071+0000][8.790s][info][gc,ergo       ] Free: 0M (0 regions), Max regular: 0K, Max humongous: 0K, External frag: 0%, Internal frag: 0%
+[2019-09-28T14:33:00.072+0000][8.792s][info][gc,ergo       ] Evacuation Reserve: 8M (4 regions), Max regular: 2048K
+[2019-09-28T14:33:00.073+0000][8.792s][info][safepoint     ] Application time: 0.0869252 seconds
+[2019-09-28T14:33:00.073+0000][8.793s][info][safepoint     ] Entering safepoint region: ShenandoahDegeneratedGC
+[2019-09-28T14:33:00.074+0000][8.793s][info][gc,start      ] GC(165) Pause Degenerated GC (Outside of Cycle)
+[2019-09-28T14:33:00.074+0000][8.793s][info][gc,task       ] GC(165) Using 1 of 1 workers for stw degenerated gc
+[2019-09-28T14:33:00.074+0000][8.794s][info][gc,ergo       ] GC(165) Pacer for Mark. Expected Live: 34M, Free: 0M, Non-Taxable: 0M, Alloc Tax Rate: infx
+[2019-09-28T14:33:00.078+0000][8.798s][info][gc,stringtable] GC(165) Cleaned string and symbol table, strings: 1391 processed, 0 removed, symbols: 17429 processed, 0 removed
+[2019-09-28T14:33:00.079+0000][8.799s][info][gc,ergo       ] GC(165) Adaptive CSet Selection. Target Free: 12M, Actual Free: 65M, Max CSet: 5M, Min Garbage: 0M
+[2019-09-28T14:33:00.080+0000][8.800s][info][gc,ergo       ] GC(165) Collectable Garbage: 5M (8% of total), 0M CSet, 3 CSet regions
+[2019-09-28T14:33:00.081+0000][8.800s][info][gc,ergo       ] GC(165) Immediate Garbage: 57M (84% of total), 29 regions
+[2019-09-28T14:33:00.081+0000][8.801s][info][gc,ergo       ] GC(165) Pacer for Evacuation. Used CSet: 6M, Free: 58M, Non-Taxable: 5M, Alloc Tax Rate: 1.1x
+[2019-09-28T14:33:00.082+0000][8.801s][info][gc,ergo       ] GC(165) Pacer for Update Refs. Used: 62M, Free: 58M, Non-Taxable: 5M, Alloc Tax Rate: 1.3x
+[2019-09-28T14:33:00.084+0000][8.803s][info][gc,ergo       ] GC(165) Good progress for free space: 65034K, need 1310K
+[2019-09-28T14:33:00.085+0000][8.804s][info][gc,ergo       ] GC(165) Good progress for used space: 64577K, need 2048K
+[2019-09-28T14:33:00.085+0000][8.804s][info][gc            ] GC(165) Pause Degenerated GC (Outside of Cycle) 119M->56M(124M) 11.373ms
+[2019-09-28T14:33:00.086+0000][8.805s][info][safepoint     ] Leaving safepoint region
+[2019-09-28T14:33:00.086+0000][8.805s][info][safepoint     ] Total time for which application threads were stopped: 0.0128948 seconds, Stopping threads took: 0.0002622 seconds
+[2019-09-28T14:33:00.087+0000][8.806s][info][gc,ergo       ] Free: 63M (34 regions), Max regular: 2048K, Max humongous: 34816K, External frag: 47%, Internal frag: 6%
+[2019-09-28T14:33:00.087+0000][8.806s][info][gc,ergo       ] Evacuation Reserve: 8M (4 regions), Max regular: 2048K
+[2019-09-28T14:33:00.087+0000][8.806s][info][gc,ergo       ] Pacer for Idle. Initial: 2M, Alloc Tax Rate: 1.0x
