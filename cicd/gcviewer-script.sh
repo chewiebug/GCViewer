@@ -37,7 +37,7 @@ function merge_with_develop_branch() {
   # since travis did a shallow clone (git clone --depth=50 ...), we need to fetch the develop branch first
   git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
   git fetch --depth=10
-  git checkout -t -b develop origin/develop
+  git checkout develop
   git merge ${TRAVIS_BRANCH}
 }
 
