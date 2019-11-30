@@ -1,6 +1,9 @@
 package com.tagtraum.perf.gcviewer.model;
 
+import java.util.Iterator;
 import java.util.Objects;
+
+import com.tagtraum.perf.gcviewer.util.DateHelper;
 
 /**
  * The GCEvent is the type of event that contains memory (preused, postused, total) and 
@@ -13,15 +16,6 @@ import java.util.Objects;
  */
 public class GCEvent extends AbstractGCEvent<GCEvent> {
 
-    /** Used before GC in KB */
-    private int preUsed;
-    
-    /** Used after GC in KB */
-    private int postUsed;
-    
-    /** Capacity in KB */
-    private int total;
-    
     /** store references to related/inferred events */
     private GCEvent young;
     private GCEvent tenured;
@@ -32,9 +26,9 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
 
     public GCEvent(double timestamp, int preUsed, int postUsed, int total, double pause, Type type) {
         this.setTimestamp(timestamp);
-        this.preUsed = preUsed;
-        this.postUsed = postUsed;
-        this.total = total;
+        this.setPreUsed(preUsed);
+        this.setPostUsed(postUsed);
+        this.setTotal(total);
         this.setPause(pause);
         this.setType(type);
     }
@@ -43,15 +37,19 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     public void add(GCEvent event) {
         super.add(event);
 
+        setReferencedEvent(event);
+    }
+
+    private void setReferencedEvent(GCEvent event) {
         switch (event.getExtendedType().getGeneration()) {
             case YOUNG:
-                young = event;
+                young = young == null ? event : young.cloneAndMerge(event);
                 break;
             case TENURED:
-                tenured = event;
+                tenured = tenured == null ? event : tenured.cloneAndMerge(event);
                 break;
             case PERM:
-                perm = event;
+                perm = perm == null ? event : perm.cloneAndMerge(event);
                 break;
             // ALL and OTHER are never read
             case ALL:
@@ -60,7 +58,33 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
                 break;
         }
     }
-    
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        GCEvent[] events = {young, tenured, perm};
+        young = null;
+        tenured = null;
+        perm = null;
+
+        GCEvent clonedEvent = (GCEvent)super.clone();
+
+        Iterator<GCEvent> eventIterator = clonedEvent.details();
+        while (eventIterator.hasNext()) {
+            clonedEvent.setReferencedEvent(eventIterator.next());
+        }
+
+        young = events[0];
+        tenured = events[1];
+        perm = events[2];
+
+        return clonedEvent;
+    }
+
+    @Override
+    public GCEvent cloneAndMerge(AbstractGCEvent<GCEvent> otherEvent) {
+        return (GCEvent)super.cloneAndMerge(otherEvent);
+    }
+
     /**
      * Returns information on young generation. If it was not present in the gc log, but 
      * tenured was, it is inferred from there (with -XX:+PrintGCDetails). Otherwise it is 
@@ -73,9 +97,9 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
             if (tenured != null) {
                 young = new GCEvent();
                 young.setTimestamp(tenured.getTimestamp());
-                young.setPreUsed(preUsed - tenured.getPreUsed());
-                young.setPostUsed(postUsed - tenured.getPostUsed());
-                young.setTotal(total - tenured.getTotal());
+                young.setPreUsed(getPreUsed() - tenured.getPreUsed());
+                young.setPostUsed(getPostUsed() - tenured.getPostUsed());
+                young.setTotal(getTotal() - tenured.getTotal());
                 young.setPause(tenured.getPause());
             }
         }
@@ -95,9 +119,9 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
             if (young != null) {
                 tenured = new GCEvent();
                 tenured.setTimestamp(young.getTimestamp());
-                tenured.setPreUsed(preUsed - young.getPreUsed());
-                tenured.setPostUsed(postUsed - young.getPostUsed());
-                tenured.setTotal(total - young.getTotal());
+                tenured.setPreUsed(getPreUsed() - young.getPreUsed());
+                tenured.setPostUsed(getPostUsed() - young.getPostUsed());
+                tenured.setTotal(getTotal() - young.getTotal());
                 tenured.setPause(young.getPause());
             }
         }
@@ -114,35 +138,16 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
     public GCEvent getPerm() {
         return perm;
     }
-    
-    public void setPreUsed(int preUsed) {
-        this.preUsed = preUsed;
-    }
-
-    public void setPostUsed(int postUsed) {
-        this.postUsed = postUsed;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public int getPreUsed() {
-        return preUsed;
-    }
-
-    public int getPostUsed() {
-        return postUsed;
-    }
-
-    public int getTotal() {
-        return total;
-    }
 
     public void toStringBuffer(StringBuffer sb) {
-        sb.append(getTimestamp());
-        sb.append(": [");
-        sb.append(getExtendedType() != null ? getExtendedType().getName() : ExtendedType.UNDEFINED);
+        if (getDatestamp() != null) {
+            sb.append("[").append(DateHelper.formatDate(getDatestamp())).append("]");
+        }
+        sb.append("[").append(getTimestamp()).append("]");
+        if (getNumber() >= 0) {
+            sb.append(" GC(").append(getNumber()).append(")");
+        }
+        sb.append(" [").append(getExtendedType() != null ? getExtendedType().getName() : ExtendedType.UNDEFINED);
         if (details != null) {
             sb.append(' ');
             for (AbstractGCEvent event : details) {
@@ -153,11 +158,11 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
         else {
             sb.append(": ");
         }
-        sb.append(preUsed);
+        sb.append(getPreUsed());
         sb.append("K->");
-        sb.append(postUsed);
+        sb.append(getPostUsed());
         sb.append("K(");
-        sb.append(total);
+        sb.append(getTotal());
         sb.append("K), ");
         sb.append(getPause());
         sb.append(" secs]");
@@ -172,13 +177,13 @@ public class GCEvent extends AbstractGCEvent<GCEvent> {
         if (!super.equals(o))
             return false;
         GCEvent gcEvent = (GCEvent) o;
-        return preUsed == gcEvent.preUsed &&
-               postUsed == gcEvent.postUsed &&
-               total == gcEvent.total;
+        return getPreUsed() == gcEvent.getPreUsed() &&
+               getPostUsed() == gcEvent.getPostUsed() &&
+               getTotal() == gcEvent.getTotal();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), preUsed, postUsed, total);
+        return Objects.hash(super.hashCode(), getPreUsed(), getPostUsed(), getTotal());
     }
 }

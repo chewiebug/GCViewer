@@ -1,0 +1,38 @@
+OpenJDK 64-Bit Server VM (25.171-b10) for linux-amd64 JRE (1.8.0_171-b10), built on May 16 2018 12:43:10 by "mockbuild" with gcc 4.8.5 20150623 (Red Hat 4.8.5-28)
+Memory: 4k page, physical 528158808k(281795048k free), swap 2097148k(2097148k free)
+CommandLine flags: -XX:GCLogFileSize=1048576 -XX:InitialHeapSize=274877906944 -XX:InitialTenuringThreshold=2 -XX:+LogVMOutput -XX:+ManagementServer -XX:MaxHeapSize=274877906944 -XX:MaxTenuringThreshold=2 -XX:NumberOfGCLogFiles=10 -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UnlockDiagnosticVMOptions -XX:+UseGCLogFileRotation -XX:+UseNUMA -XX:+UseNUMAInterleaving -XX:+UseShenandoahGC
+Heap region size: 32M
+Region size in bytes: 33554432
+Region size byte shift: 25
+Humongous threshold in bytes: 33554432
+Number of regions: 8192
+Shenandoah heuristics: adaptive
+Parallel GC threads: 33
+Concurrent GC threads: 33
+Parallel reference processing enabled: true
+Initialize Shenandoah heap with initial size 274877906944 bytes
+Concurrent marking triggered. Free: 78624M, Free Threshold: 78643M; Allocated: 78624M, Alloc Threshold: 0M
+25.465: [Pause Init Mark, 43.460 ms]
+25.508: [Concurrent marking 178G->184G(256G), 3685.818 ms]
+29.197: [Pause Final MarkTotal Garbage: 44620M
+Immediate Garbage: 3296M, 103 regions (20% of total)
+Garbage to be collected: 12532M (28% of total), 396 regions
+Live objects to be evacuated: 139M
+Live/garbage ratio in collected regions: 1%
+ 184G->181G(256G), 4.730 ms]
+29.202: [Concurrent evacuation 181G->182G(256G), 19.154 ms]
+29.222: [Pause Init Update Refs, 0.314 ms]
+29.222: [Concurrent update references  182G->184G(256G), 2188.225 ms]
+31.417: [Pause Final Update Refs 184G->172G(256G), 3.659 ms]
+31.420: [Concurrent reset bitmaps 172G->172G(256G), 1.735 ms]
+Capacity: 262144M, Peak Occupancy: 188928M, Lowest Free: 73215M, Free Threshold: 7864M
+Concurrent marking triggered. Free: 78624M, Free Threshold: 78643M; Allocated: 78624M, Alloc Threshold: 0M
+53.071: [Concurrent reset bitmaps 190G->190G(256G), 99.589 ms]
+Capacity: 262144M, Peak Occupancy: 196064M, Lowest Free: 66079M, Free Threshold: 7864M
+Adjusting free threshold to: 25% (65536M)
+Concurrent marking triggered. Free: 65504M, Free Threshold: 65536M; Allocated: 65504M, Alloc Threshold: 0M
+58.663: [Concurrent reset bitmaps 194G->194G(256G), 105.318 ms]
+Capacity: 262144M, Peak Occupancy: 199040M, Lowest Free: 63103M, Free Threshold: 7864M
+Concurrent marking triggered. Free: 63360M, Free Threshold: 170393M; Allocated: 63360M, Alloc Threshold: 0M
+Predicted cset threshold: 40, 1114112K CSet (0%)
+58.770: [Pause Init Mark, 8.571 ms]

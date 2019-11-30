@@ -1,11 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import org.junit.Test;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,16 +13,21 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
+import org.junit.Test;
 
 public class TestDataReaderSun1_6_0 {
 
-    private final DateTimeFormatter dateTimeFormatter = AbstractDataReaderSun.DATE_TIME_FORMATTER;
+    private final DateTimeFormatter dateTimeFormatter = DateHelper.DATE_TIME_FORMATTER;
 
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
     }
 
     @Test
@@ -123,6 +127,7 @@ public class TestDataReaderSun1_6_0 {
 		assertEquals("count", 1, model.getPause().getN());
 
 		assertEquals("full gc pause", 0.0089351, model.getFullGCPause().getSum(), 0.00000001);
+		assertThat("is system gc", model.get(0).isSystem(), is(true));
 	}
 
     @Test
@@ -489,6 +494,7 @@ public class TestDataReaderSun1_6_0 {
 
         assertEquals("GC count", 1, model.size());
         assertEquals("Full GC pause", 0.0070749, model.getFullGCPause().getMax(), 0.00000001);
+        assertThat("is system gc", model.get(0).isSystem(), is(true));
     }
 
     @Test

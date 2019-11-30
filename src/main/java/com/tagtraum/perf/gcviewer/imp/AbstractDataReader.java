@@ -43,6 +43,16 @@ public abstract class AbstractDataReader implements DataReader {
         return gcResource.getLogger();
     }
 
+    private DataReaderTools dataReaderTools;
+
+    protected DataReaderTools getDataReaderTools() {
+        if (dataReaderTools == null) {
+            dataReaderTools = new DataReaderTools(getLogger());
+        }
+
+        return dataReaderTools;
+    }
+
     @Override
     public abstract GCModel read() throws IOException;
 

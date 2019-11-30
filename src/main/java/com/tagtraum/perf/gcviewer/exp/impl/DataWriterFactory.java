@@ -17,6 +17,7 @@ import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class DataWriterFactory {
+    public static final String GC_PREFERENCES = "gcPreferences";
 
     /**
      * Standard factory method to retrieve one of the <code>DataWriter</code> implementations.
@@ -53,7 +54,7 @@ public class DataWriterFactory {
             case CSV_TS  : return new CSVTSDataWriter(outputStream);
             case SIMPLE  : return new SimpleGcWriter(outputStream);
             case SUMMARY : return new SummaryDataWriter(outputStream, configuration);
-            case PNG     : return new PNGDataWriter(outputStream);
+            case PNG     : return new PNGDataWriter(outputStream, configuration);
             default : throw new IOException(LocalisationHelper.getString("datawriterfactory_instantiation_failed") + " " + file);
         }
     }

@@ -48,7 +48,7 @@ public class TotalTenuredRenderer extends PolygonChartRenderer {
                         // but with a slanting line between 0 and after the first pause
                         polygon.addPoint(0, (double)tenured.getTotal());
                     }
-                    polygon.addPoint(tenured.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(),
+                    polygon.addPoint(tenured.getTimestamp() - model.getFirstPauseTimeStamp(),
                             tenured.getTotal());
                     lastTotal = tenured.getTotal();
                 }

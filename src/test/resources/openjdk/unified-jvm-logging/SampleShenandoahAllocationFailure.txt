@@ -1,0 +1,13 @@
+[0.401s][info][gc     ] Using Shenandoah
+[29.628s][info][gc            ] Cancelling concurrent GC: Allocation Failure
+[29.657s][info][gc,start      ] GC(831) Pause Full (Allocation Failure)
+[29.658s][info][gc,phases,start] GC(831) Phase 1: Mark live objects
+[29.675s][info][gc,stringtable ] GC(831) Cleaned string and symbol table, strings: 2736 processed, 110 removed, symbols: 18126 processed, 0 removed
+[29.675s][info][gc,phases      ] GC(831) Phase 1: Mark live objects 17.256ms
+[29.675s][info][gc,phases,start] GC(831) Phase 2: Compute new object addresses
+[29.699s][info][gc,phases      ] GC(831) Phase 2: Compute new object addresses 23.568ms
+[29.699s][info][gc,phases,start] GC(831) Phase 3: Adjust pointers
+[29.725s][info][gc,phases      ] GC(831) Phase 3: Adjust pointers 26.061ms
+[29.725s][info][gc,phases,start] GC(831) Phase 4: Move objects
+[43.914s][info][gc,phases      ] GC(831) Phase 4: Move objects 14078.141ms
+[43.948s][info][gc             ] GC(831) Pause Full (Allocation Failure) 7943M->6013M(8192M) 14289.335ms

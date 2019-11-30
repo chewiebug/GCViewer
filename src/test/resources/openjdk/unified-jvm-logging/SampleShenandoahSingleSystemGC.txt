@@ -1,0 +1,19 @@
+[1,474s][info][gc                ] Cancelling concurrent GC: System.gc()
+[1,474s][info][safepoint         ] Application time: 0,0423040 seconds
+[1,474s][info][safepoint,cleanup ] deflating idle monitors, 0,0000030 secs
+[1,475s][info][safepoint,cleanup ] updating inline caches, 0,0000290 secs
+[1,475s][info][safepoint,cleanup ] compilation policy safepoint handler, 0,0000000 secs
+[1,475s][info][safepoint,cleanup ] mark nmethods, 0,0000050 secs
+[1,475s][info][safepoint,cleanup ] purging class loader data graph, 0,0000010 secs
+[1,475s][info][gc,start          ] GC(0) Pause Full (System.gc())
+[1,475s][info][gc,phases,start   ] GC(0) Phase 1: Mark live objects
+[1,478s][info][gc,stringtable    ] GC(0) Cleaned string and symbol table, strings: 1755 processed, 19 removed, symbols: 23807 processed, 0 removed
+[1,478s][info][gc,phases         ] GC(0) Phase 1: Mark live objects 3,635ms
+[1,478s][info][gc,phases,start   ] GC(0) Phase 2: Compute new object addresses
+[1,479s][info][gc,phases         ] GC(0) Phase 2: Compute new object addresses 0,542ms
+[1,479s][info][gc,phases,start   ] GC(0) Phase 3: Adjust pointers
+[1,480s][info][gc,phases         ] GC(0) Phase 3: Adjust pointers 1,565ms
+[1,481s][info][gc,phases,start   ] GC(0) Phase 4: Move objects
+[1,481s][info][gc,phases         ] GC(0) Phase 4: Move objects 0,613ms
+[1,481s][info][gc                ] GC(0) Pause Full (System.gc()) 10M->1M(128M) 6,572ms
+[1,481s][info][safepoint         ] Total time for which application threads were stopped: 0,0067930 seconds, Stopping threads took: 0,0000270 seconds

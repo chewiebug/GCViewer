@@ -1,25 +1,17 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.util.MemoryFormat;
 import com.tagtraum.perf.gcviewer.util.TimeFormat;
 
+import javax.swing.*;
+import java.awt.*;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * Panel that contains characteristic data about the gc file.
  *
@@ -394,7 +386,7 @@ public class ModelMetricsPanel extends JTabbedPane {
             boolean fullGcPauseIntervalAvailable = model.getFullGCPauseInterval().getN() > 0;
             boolean pauseIntervalDataAvailable = model.getPauseInterval().getN() > 0; // fix for "Exception if only one GC log line in file"
             boolean vmOperationsAvailable = model.getVmOperationPause().getN() > 0;
-            
+
             updateValue(LocalisationHelper.getString("data_panel_acc_pauses"), 
             		gcTimeFormatter.format(model.getPause().getSum()) + "s", 
             		true);
@@ -455,7 +447,7 @@ public class ModelMetricsPanel extends JTabbedPane {
             updateValue(LocalisationHelper.getString("data_panel_min_max_gc_pause"), 
             		gcDataAvailable ? pauseFormatter.format(model.getGCPause().getMin()) + "s / " + pauseFormatter.format(model.getGCPause().getMax()) + "s": "n/a", 
             		gcDataAvailable);
-            
+
         }
     }
 
@@ -529,7 +521,7 @@ public class ModelMetricsPanel extends JTabbedPane {
                     Integer.toString(model.getGCPause().getN()), 
                     true);
         	updateValue(LocalisationHelper.getString("data_panel_performance_gc"),
-        			model.getGCPause().getN() > 0 
+        			model.getGCPause().getN() > 0 && model.getFreedMemoryByGC().getN() > 0
         				? footprintFormatter.format(model.getFreedMemoryByGC().getSum()/model.getGCPause().getSum()) + "/s"
         				: "n/a",
         			model.getGCPause().getN() > 0);

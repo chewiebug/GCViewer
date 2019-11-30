@@ -1,10 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.*;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.*;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
@@ -17,6 +12,20 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
+
 /**
  * Parses log output from Sun / Oracle Java 1.4 / 1.5 / 1.6. / 1.7 / 1.8.
  * <p>
@@ -27,6 +36,7 @@ import java.util.regex.Pattern;
  * <li>-XX:+UseParNewGC</li>
  * <li>-XX:+UseParallelOldGC</li>
  * <li>-XX:+UseConcMarkSweepGC</li>
+ * <li>-XX:+UseShenandoahGC</li>
  * <li>-Xincgc (1.4 / 1.5)</li>
  * </ul>
  * <p>
@@ -65,43 +75,85 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final String TIMES = " [Times";
     private static final String ADAPTIVE_PATTERN = "AdaptiveSize";
 
-    private static final List<String> EXCLUDE_STRINGS = new LinkedList<String>();
+    /** lines to be excluded, if they start with a string of this list */
+    private static final List<String> EXCLUDE_STRINGS_LINE_START = new LinkedList<String>();
+    /** lines to be excluded, if they contain a string of this list */
+    private static final List<String> EXCLUDE_STRINGS_LINE_CONTAIN = new LinkedList<String>();
 
     static {
-        EXCLUDE_STRINGS.add(UNLOADING_CLASS);
-        EXCLUDE_STRINGS.add(APPLICATION_TIME); // -XX:+PrintGCApplicationConcurrentTime
+        EXCLUDE_STRINGS_LINE_START.add(UNLOADING_CLASS);
+        EXCLUDE_STRINGS_LINE_START.add(APPLICATION_TIME); // -XX:+PrintGCApplicationConcurrentTime
         //EXCLUDE_STRINGS.add(Type.APPLICATION_STOPPED_TIME.getName());  // -XX:+PrintGCApplicationStoppedTime
-        EXCLUDE_STRINGS.add("Desired survivor"); // -XX:+PrintTenuringDistribution
-        EXCLUDE_STRINGS.add("- age"); // -XX:+PrintTenuringDistribution
-        EXCLUDE_STRINGS.add(TIMES);
-        EXCLUDE_STRINGS.add("Finished"); // -XX:PrintCmsStatistics=2
-        EXCLUDE_STRINGS.add(" (cardTable: "); // -XX:PrintCmsStatistics=2
-        EXCLUDE_STRINGS.add("GC locker: Trying a full collection because scavenge failed");
-        EXCLUDE_STRINGS.add("CMSCollector"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("time_until_cms_gen_full"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("free"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("contiguous_available"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("promotion_rate"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("cms_allocation_rate"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("occupancy"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("initiating"); // -XX:+PrintCMSInitiationStatistics
-        EXCLUDE_STRINGS.add("Statistics"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("----------------"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Total Free Space:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Max   Chunk Size:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Number of Blocks:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Av.  Block  Size:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add("Tree      Height:"); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(BEFORE_GC); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(AFTER_GC); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(CMS_LARGE_BLOCK); // -XX:+PrintFLSStatistics=1
-        EXCLUDE_STRINGS.add(" free"); // -XX:+PrintFLSStatistics=2
-        EXCLUDE_STRINGS.add(SIZE); // -XX:+PrintFLSStatistics=2
-        EXCLUDE_STRINGS.add("demand"); // -XX:+PrintFLSStatistics=2
-        EXCLUDE_STRINGS.add(ADAPTIVE_PATTERN); // -XX:+PrintAdaptiveSizePolicy
-        EXCLUDE_STRINGS.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
-        EXCLUDE_STRINGS.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
-        EXCLUDE_STRINGS.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
+        EXCLUDE_STRINGS_LINE_START.add("Desired survivor"); // -XX:+PrintTenuringDistribution
+        EXCLUDE_STRINGS_LINE_START.add("- age"); // -XX:+PrintTenuringDistribution
+        EXCLUDE_STRINGS_LINE_START.add(TIMES);
+        EXCLUDE_STRINGS_LINE_START.add("Finished"); // -XX:PrintCmsStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add(" (cardTable: "); // -XX:PrintCmsStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add("GC locker: Trying a full collection because scavenge failed");
+        EXCLUDE_STRINGS_LINE_START.add("CMSCollector"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("time_until_cms_gen_full"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("free"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("contiguous_available"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("promotion_rate"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("cms_allocation_rate"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("occupancy"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("initiating"); // -XX:+PrintCMSInitiationStatistics
+        EXCLUDE_STRINGS_LINE_START.add("Statistics"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("----------------"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Total Free Space:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Max   Chunk Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Number of Blocks:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Av.  Block  Size:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add("Tree      Height:"); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(BEFORE_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(AFTER_GC); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(CMS_LARGE_BLOCK); // -XX:+PrintFLSStatistics=1
+        EXCLUDE_STRINGS_LINE_START.add(" free"); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add(SIZE); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add("demand"); // -XX:+PrintFLSStatistics=2
+        EXCLUDE_STRINGS_LINE_START.add(ADAPTIVE_PATTERN); // -XX:+PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS_LINE_START.add("PS" + ADAPTIVE_PATTERN); // -XX:PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS_LINE_START.add("  avg_survived_padded_avg"); // -XX:PrintAdaptiveSizePolicy
+        EXCLUDE_STRINGS_LINE_START.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
+        EXCLUDE_STRINGS_LINE_START.add("Uncommitted"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Cancelling concurrent GC"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Capacity"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Periodic GC triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Immediate Garbage"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Garbage to be collected"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Live"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Concurrent marking triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+        EXCLUDE_STRINGS_LINE_START.add("Adjusting free threshold"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Predicted cset threshold"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Trigger"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Free"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Evacuation Reserve"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Pacer for "); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Using"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Pacer for "); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Adaptive CSet Selection"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Collectable Garbage"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Immediate Garbage"); // -XX:+UseShenandoahGC
+
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(LOGFILE_ROLLING_BEGIN);
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(LOGFILE_ROLLING_END);
+        // when it occurs including timestamp (since about jdk1.7.0_50) it should still be ignored
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(APPLICATION_TIME); // -XX:+PrintGCApplicationConcurrentTime
+        EXCLUDE_STRINGS_LINE_CONTAIN.add(", start"); // -XX:+UseShenandoahGC
+
+        LOG_INFORMATION_STRINGS.add("Region"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Humongous threshold"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Number of regions"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Shenandoah heuristics"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Parallel GC threads");// -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Concurrent GC threads"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Parallel reference processing"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Humongous object threshold"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Max TLAB size"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("GC threads"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Reference processing"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Heuristics ergonomically sets"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Initialize Shenandoah heap"); // -XX:+UseShenandoahGC
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -189,6 +241,18 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_BEFORE = 1;
     private static final int PRINT_TENURING_DISTRIBUTION_PATTERN_GROUP_AFTER = 2;
 
+    // -XX:+UseShenandoahGC -XX:+PrintGCDetails
+    // 590327.714: [Pause Final MarkTotal Garbage: 57403M
+    // Immediate Garbage: 32M, 2 regions (1% of total)
+    // Garbage to be collected: 5134M (8% of total), 164 regions
+    // Live objects to be evacuated: 113M
+    // Live/garbage ratio in collected regions: 2%
+    // 219G->219G(256G), 5.000 ms]
+    private static final String SHENANDOAH_DETAILS_FINAL_MARK = "Final MarkTotal";
+    private static final String SHENANDOAH_DETAILS_FINAL_MARK_SPLIT_START = "Total";
+
+    private static final String SHENANDOAH_INTRODUCTION_TO_GC_STATISTICS = "Shenandoah Heap";
+
     // -XX:+PrintReferenceGC
     private static final String PRINT_REFERENCE_GC_INDICATOR = "Reference";
 
@@ -228,22 +292,25 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                 try {
                     printTenuringDistributionOn = false;
                     // filter out lines that don't need to be parsed
-                    if (startsWith(line, EXCLUDE_STRINGS, false)) {
+                    if (startsWith(line, EXCLUDE_STRINGS_LINE_START, false)) {
                         continue;
                     }
-                    else if (line.indexOf(APPLICATION_TIME) > 0) {
-                        // -XX:+PrintGCApplicationConcurrentTime
-                        // when it occurs including timestamp (since about jdk1.7.0_50) it should still be ignored
+                    else if (contains(line, EXCLUDE_STRINGS_LINE_CONTAIN, false)) {
                         continue;
                     }
                     else if (startsWith(line, LOG_INFORMATION_STRINGS, false)) {
                         getLogger().info(line);
                         continue;
                     }
-                    else if (line.indexOf(LOGFILE_ROLLING_BEGIN) > 0 || line.indexOf(LOGFILE_ROLLING_END) > 0) {
+
+                    if (line.contains(SHENANDOAH_DETAILS_FINAL_MARK)) {
+                        beginningOfLine.addFirst(line.substring(0, line.indexOf(SHENANDOAH_DETAILS_FINAL_MARK_SPLIT_START)));
+                        continue;
+                    } else if (line.startsWith(SHENANDOAH_INTRODUCTION_TO_GC_STATISTICS)) {
+                        // Assumption: As soon as the shenandoah gc statistics block starts, the vm is shutting down
+                        skipAndLogToEndOfFile(in);
                         continue;
                     }
-
                     if (line.indexOf(CMS_ABORT_PRECLEAN) >= 0) {
                         // line contains like " CMS: abort preclean due to time "
                         // -> remove the text
@@ -417,6 +484,13 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
     }
 
+    private void skipAndLogToEndOfFile(LineNumberReader in) throws IOException {
+        String line;
+        while ((line = in.readLine()) != null) {
+            getLogger().info(line);
+        }
+    }
+
     private boolean isPrintHeapAtGcStarting(String line) {
         return line.startsWith(HEAP) // jdk 6 and before
                 || line.indexOf(HEAP_SIZING_BEFORE) >= 0 // jdk 7 and after
@@ -538,7 +612,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     }
 
     protected AbstractGCEvent<?> parseLine(String line, ParseInformation pos) throws ParseException {
-        AbstractGCEvent<?> ae = null;
         try {
             // parse datestamp          "yyyy-MM-dd'T'hh:mm:ssZ:"
             // parse timestamp          "double:"
@@ -548,61 +621,50 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             ZonedDateTime datestamp = parseDatestamp(line, pos);
             double timestamp = getTimestamp(line, pos, datestamp);
             ExtendedType type = parseType(line, pos);
-            // special provision for CMS events
+            AbstractGCEvent<?> ae;
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
                 ae = new ConcurrentGCEvent();
-                ConcurrentGCEvent event = (ConcurrentGCEvent)ae;
-
-                // simple concurrent events (ending with -start) just are of type GcPattern.GC
-                event.setDateStamp(datestamp);
-                event.setTimestamp(timestamp);
-                event.setExtendedType(type);
-                if (type.getPattern() == GcPattern.GC_PAUSE_DURATION) {
-                    // the -end events contain a pause and duration as well
-                    int start = pos.getIndex();
-                    int end = line.indexOf('/', pos.getIndex());
-                    event.setPause(NumberParser.parseDouble(line.substring(start, end)));
-                    start = end + 1;
-                    end = line.indexOf(' ', start);
-                    event.setDuration(NumberParser.parseDouble(line.substring(start, end)));
-                }
-                // nothing more to parse...
-            }
-            else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
+            } else if (type.getCollectionType().equals(CollectionType.VM_OPERATION)) {
                 ae = new VmOperationEvent();
-                VmOperationEvent vmOpEvent = (VmOperationEvent) ae;
-
-                vmOpEvent.setDateStamp(datestamp);
-                vmOpEvent.setTimestamp(timestamp);
-                vmOpEvent.setExtendedType(type);
-                vmOpEvent.setPause(parsePause(line, pos));
-            }
-            else {
+            } else {
                 ae = new GCEvent();
-                GCEvent event = (GCEvent) ae;
-
-                event.setDateStamp(datestamp);
-                event.setTimestamp(timestamp);
-                event.setExtendedType(type);
-                // now add detail gcevents, should they exist
-                parseDetailEventsIfExist(line, pos, event);
-                if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE
-                    || event.getExtendedType().getPattern() == GcPattern.GC_MEMORY) {
-
-                    setMemory(event, line, pos);
-                }
-                // then more detail events follow (perm gen is usually here)
-                parseDetailEventsIfExist(line, pos, event);
-                if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE
-                        || event.getExtendedType().getPattern() == GcPattern.GC_PAUSE) {
-
-                    event.setPause(parsePause(line, pos));
-                }
             }
+
+            ae.setDateStamp(datestamp);
+            ae.setTimestamp(timestamp);
+            ae.setExtendedType(type);
+            // now add detail gcevents, should they exist
+            if (ae instanceof GCEvent) {
+                parseDetailEventsIfExist(line, pos, (GCEvent) ae);
+            }
+            if (type.getPattern() == GcPattern.GC_MEMORY_PAUSE
+                || type.getPattern() == GcPattern.GC_MEMORY) {
+
+                setMemory(ae, line, pos);
+            }
+            // then more detail events follow (perm gen is usually here)
+            if (ae instanceof GCEvent) {
+                parseDetailEventsIfExist(line, pos, (GCEvent)ae);
+            }
+            if (type.getPattern() == GcPattern.GC_MEMORY_PAUSE
+                    || type.getPattern() == GcPattern.GC_PAUSE) {
+
+                ae.setPause(parsePause(line, pos));
+            } else if (type.getPattern() == GcPattern.GC_PAUSE_DURATION) {
+                // special case only occurring with concurrent collections...
+                // the -end events contain a pause and duration as well
+                int start = pos.getIndex();
+                int end = line.indexOf('/', pos.getIndex());
+                ae.setPause(NumberParser.parseDouble(line.substring(start, end)));
+                start = end + 1;
+                end = line.indexOf(' ', start);
+                ((ConcurrentGCEvent) ae).setDuration(NumberParser.parseDouble(line.substring(start, end)));
+            }
+
             return ae;
         }
-        catch (RuntimeException rte) {
-            throw new ParseException("Error parsing entry (" + rte.toString() + ")", line, pos);
+        catch (RuntimeException | UnknownGcTypeException e) {
+            throw new ParseException(e.toString(), line, pos);
         }
     }
 

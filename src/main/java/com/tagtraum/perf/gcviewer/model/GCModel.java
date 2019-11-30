@@ -1,11 +1,5 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import com.tagtraum.perf.gcviewer.math.DoubleData;
-import com.tagtraum.perf.gcviewer.math.IntData;
-import com.tagtraum.perf.gcviewer.math.RegressionLine;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,9 +14,21 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.tagtraum.perf.gcviewer.math.DoubleData;
+import com.tagtraum.perf.gcviewer.math.IntData;
+import com.tagtraum.perf.gcviewer.math.RegressionLine;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
 /**
  * Collection of GCEvents.
@@ -32,6 +38,63 @@ import java.util.logging.Logger;
 public class GCModel implements Serializable {
 
     private static final long serialVersionUID = -6479685723904770990L;
+
+    private static final Logger LOG = Logger.getLogger(GCModel.class.getName());
+
+    private List<AbstractGCEvent<?>> allEvents;
+    private List<AbstractGCEvent<?>> stopTheWorldEvents;
+    private List<GCEvent> gcEvents;
+    private List<AbstractGCEvent<?>> gcPhases;
+    private List<AbstractGCEvent<?>> vmOperationEvents;
+    private List<ConcurrentGCEvent> concurrentGCEvents;
+    private List<GCEvent> currentNoFullGCEvents;
+    private List<GCEvent> fullGCEvents;
+    private FileInformation fileInformation = new FileInformation();
+
+    private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
+    private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
+    private Map<String, DoubleData> gcEventPhases; // pause information about all phases for garbage collection events
+    private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
+    private Map<String, DoubleData> vmOperationEventPauses; // pause information about vm operations ("application stopped")
+
+    private IntData heapAllocatedSizes; // allocated heap size of every event
+    private IntData tenuredAllocatedSizes; // allocated tenured size of every event that has this information
+    private IntData youngAllocatedSizes; // allocated young size of every event that has this information
+    private IntData permAllocatedSizes; // allocated perm size of every event that has this information
+    private IntData heapUsedSizes; // used heap of every event
+    private IntData tenuredUsedSizes; // used tenured size of every event that has this information
+    private IntData youngUsedSizes; // used young size of every event that has this information
+    private IntData permUsedSizes; // used perm size of every event that has this information
+
+    private IntData postConcurrentCycleUsedTenuredSizes; // used tenured heap after concurrent collections
+    private IntData postConcurrentCycleUsedHeapSizes; // used heap after concurrent collections
+
+    private IntData promotion; // promotion from young to tenured generation during young collections
+
+    private double firstPauseTimeStamp = Double.MAX_VALUE;
+    private double lastPauseTimeStamp = 0;
+    private DoubleData totalPause;
+    private DoubleData fullGCPause;
+    private double lastFullGcPauseTimeStamp = 0;
+    private DoubleData fullGcPauseInterval; // interval between two stop the Full GC pauses
+    private DoubleData gcPause; // not full gc but stop the world pause
+    private DoubleData vmOperationPause; // "application stopped"
+    private double lastGcPauseTimeStamp = 0;
+    private DoubleData pauseInterval; // interval between two stop the world pauses
+    private DoubleData initiatingOccupancyFraction; // all concurrent collectors; start of concurrent collection
+    private long freedMemory;
+    private Format format;
+    private IntData postGCUsedMemory;
+    private IntData postFullGCUsedHeap;
+    private IntData freedMemoryByGC;
+    private IntData freedMemoryByFullGC;
+    private DoubleData postGCSlope;
+    private RegressionLine currentPostGCSlope;
+    private RegressionLine currentRelativePostGCIncrease;
+    private DoubleData relativePostGCIncrease;
+    private RegressionLine postFullGCSlope;
+    private RegressionLine relativePostFullGCIncrease;
+    private URL url;
 
     /**
      * Contains information about a file.
@@ -101,7 +164,7 @@ public class GCModel implements Serializable {
                 return false;
             }
 
-            FileInformation fileInfo = (FileInformation)other;
+            FileInformation fileInfo = (FileInformation) other;
 
             return fileInfo.lastModified == lastModified && fileInfo.creationTime == creationTime && fileInfo.length == length;
         }
@@ -120,66 +183,12 @@ public class GCModel implements Serializable {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(GCModel.class.getName());
-
-    private List<AbstractGCEvent<?>> allEvents;
-    private List<AbstractGCEvent<?>> stopTheWorldEvents;
-    private List<GCEvent> gcEvents;
-    private List<AbstractGCEvent<?>> vmOperationEvents;
-    private List<ConcurrentGCEvent> concurrentGCEvents;
-    private List<GCEvent> currentNoFullGCEvents;
-    private List<GCEvent> fullGCEvents;
-    private FileInformation fileInformation = new FileInformation();
-
-    private Map<String, DoubleData> fullGcEventPauses; // pause information about all full gc events for detailed output
-    private Map<String, DoubleData> gcEventPauses; // pause information about all stw events for detailed output
-    private Map<String, DoubleData> concurrentGcEventPauses; // pause information about all concurrent events
-    private Map<String, DoubleData> vmOperationEventPauses; // pause information about vm operations ("application stopped")
-
-    private IntData heapAllocatedSizes; // allocated heap size of every event
-    private IntData tenuredAllocatedSizes; // allocated tenured size of every event that has this information
-    private IntData youngAllocatedSizes; // allocated young size of every event that has this information
-    private IntData permAllocatedSizes; // allocated perm size of every event that has this information
-    private IntData heapUsedSizes; // used heap of every event
-    private IntData tenuredUsedSizes; // used tenured size of every event that has this information
-    private IntData youngUsedSizes; // used young size of every event that has this information
-    private IntData permUsedSizes; // used perm size of every event that has this information
-
-    private IntData postConcurrentCycleUsedTenuredSizes; // used tenured heap after concurrent collections
-    private IntData postConcurrentCycleUsedHeapSizes; // used heap after concurrent collections
-
-    private IntData promotion; // promotion from young to tenured generation during young collections
-
-    private double firstPauseTimeStamp = Double.MAX_VALUE;
-    private double lastPauseTimeStamp = 0;
-    private DoubleData totalPause;
-    private DoubleData fullGCPause;
-    private double lastFullGcPauseTimeStamp = 0;
-    private DoubleData fullGcPauseInterval; // interval between two stop the Full GC pauses
-    private DoubleData gcPause; // not full gc but stop the world pause
-    private DoubleData vmOperationPause; // "application stopped"
-    private double lastGcPauseTimeStamp = 0;
-    private DoubleData pauseInterval; // interval between two stop the world pauses
-    private DoubleData initiatingOccupancyFraction; // all concurrent collectors; start of concurrent collection
-    private long freedMemory;
-    private Format format;
-    private IntData postGCUsedMemory;
-    private IntData postFullGCUsedHeap;
-    private IntData freedMemoryByGC;
-    private IntData freedMemoryByFullGC;
-    private DoubleData postGCSlope;
-    private RegressionLine currentPostGCSlope;
-    private RegressionLine currentRelativePostGCIncrease;
-    private DoubleData relativePostGCIncrease;
-    private RegressionLine postFullGCSlope;
-    private RegressionLine relativePostFullGCIncrease;
-    private URL url;
-
-	public GCModel() {
+    public GCModel() {
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
         this.stopTheWorldEvents = new ArrayList<AbstractGCEvent<?>>();
         this.gcEvents = new ArrayList<GCEvent>();
         this.vmOperationEvents = new ArrayList<AbstractGCEvent<?>>();
+        this.gcPhases = new ArrayList<AbstractGCEvent<?>>();
         this.concurrentGCEvents = new ArrayList<ConcurrentGCEvent>();
         this.fullGCEvents = new ArrayList<GCEvent>();
         this.currentNoFullGCEvents = new ArrayList<GCEvent>();
@@ -204,6 +213,7 @@ public class GCModel implements Serializable {
 
         this.fullGcEventPauses = new TreeMap<String, DoubleData>();
         this.gcEventPauses = new TreeMap<String, DoubleData>();
+        this.gcEventPhases = new TreeMap<String, DoubleData>();
         this.concurrentGcEventPauses = new TreeMap<String, DoubleData>();
         this.vmOperationEventPauses = new TreeMap<String, DoubleData>();
 
@@ -236,7 +246,7 @@ public class GCModel implements Serializable {
     }
 
     private void printPauseMap(Map<String, DoubleData> pauseMap) {
-        for (Map.Entry<String, DoubleData> entry: pauseMap.entrySet()) {
+        for (Map.Entry<String, DoubleData> entry : pauseMap.entrySet()) {
             System.out.println(entry.getKey() + " [n, avg, sum, min, max]:\t" + entry.getValue().getN() + "\t" + entry.getValue().average() + "\t" + entry.getValue().getSum() + "\t" + entry.getValue().getMin() + "\t" + entry.getValue().getMax());
         }
     }
@@ -326,7 +336,7 @@ public class GCModel implements Serializable {
      */
     public AbstractGCEvent<?> getLastEventAdded() {
         if (allEvents.size() > 0) {
-            return allEvents.get(allEvents.size()-1);
+            return allEvents.get(allEvents.size() - 1);
         }
         else {
             return null;
@@ -410,83 +420,17 @@ public class GCModel implements Serializable {
         }
 
         if (abstractEvent instanceof ConcurrentGCEvent) {
-        	ConcurrentGCEvent concEvent = (ConcurrentGCEvent)abstractEvent;
-            concurrentGCEvents.add(concEvent);
-
-            DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
-            pauses.add(concEvent.getPause());
+            ConcurrentGCEvent concEvent = (ConcurrentGCEvent) abstractEvent;
+            addConcurrentGcEvent(concEvent);
         }
         else if (abstractEvent instanceof GCEvent) {
-
             // collect statistics about all stop the world events
             GCEvent event = (GCEvent) abstractEvent;
-
-            updateHeapSizes(event);
-
-            updateGcPauseInterval(event);
-
-            updatePromotion(event);
-
-            if (event.isInitialMark()) {
-                updateInitiatingOccupancyFraction(event);
-            }
-            if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd()) {
-                updatePostConcurrentCycleUsedSizes(event);
-            }
-
-            freedMemory += event.getPreUsed() - event.getPostUsed();
-
-            if (!event.isFull()) {
-            	// make a difference between stop the world events, which only collect from some generations...
-                DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
-                pauses.add(event.getPause());
-
-                gcEvents.add(event);
-                postGCUsedMemory.add(event.getPostUsed());
-                freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
-                currentNoFullGCEvents.add(event);
-                currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-                currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
-                gcPause.add(event.getPause());
-
-            }
-            else {
-            	// ... as opposed to all generations
-                DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
-                pauses.add(event.getPause());
-
-                updateFullGcPauseInterval(event);
-                fullGCEvents.add(event);
-                postFullGCUsedHeap.add(event.getPostUsed());
-                int freed = event.getPreUsed() - event.getPostUsed();
-                freedMemoryByFullGC.add(freed);
-                fullGCPause.add(event.getPause());
-                postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
-                relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
-
-                // process no full-gc run data
-                if (currentPostGCSlope.hasPoints()) {
-                    // make sure we have at least _two_ data points
-                    if (currentPostGCSlope.isLine()) {
-                        postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
-                        relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
-                    }
-                    currentPostGCSlope.reset();
-                    currentRelativePostGCIncrease.reset();
-                }
-
-            }
-
+            addGcEvent(event);
         }
         else if (abstractEvent instanceof VmOperationEvent) {
-            adjustPause((VmOperationEvent) abstractEvent);
-            if (abstractEvent.getTimestamp() < 0.000001) {
-                setTimeStamp((VmOperationEvent) abstractEvent);
-            }
-            vmOperationPause.add(abstractEvent.getPause());
-            vmOperationEvents.add(abstractEvent);
-            DoubleData vmOpPauses = getDoubleData(abstractEvent.getTypeAsString(), vmOperationEventPauses);
-            vmOpPauses.add(abstractEvent.getPause());
+            VmOperationEvent vmOperationEvent = (VmOperationEvent) abstractEvent;
+            addVmOperationEvent(vmOperationEvent);
         }
 
         if (size() == 1 || (size() > 1 && abstractEvent.getTimestamp() > 0.0)) {
@@ -502,6 +446,111 @@ public class GCModel implements Serializable {
         }
     }
 
+    private void addConcurrentGcEvent(ConcurrentGCEvent concEvent) {
+        concurrentGCEvents.add(concEvent);
+
+        DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
+        pauses.add(concEvent.getPause());
+
+        if (concEvent.hasMemoryInformation() && concEvent.isConcurrentCollectionEnd()) {
+            // register postConcurrentCycleUsedSizes, if event contains memory information. Otherwise deduce it (see in handling of GCEvent)
+            updatePostConcurrentCycleUsedSizes(concEvent);
+        }
+    }
+
+    private void addGcEvent(GCEvent event) {
+        updateHeapSizes(event);
+
+        updateGcPauseInterval(event);
+
+        updatePromotion(event);
+
+        if (event.isInitialMark()) {
+            updateInitiatingOccupancyFraction(event);
+        }
+        if (size() > 1 && allEvents.get(allEvents.size() - 2).isConcurrentCollectionEnd() && !allEvents.get(allEvents.size() - 2).hasMemoryInformation()) {
+            // only deduce postConcurrentCycleUsedSizes, if concurrent event itself does not contain memory information
+            updatePostConcurrentCycleUsedSizes(event);
+        }
+
+        freedMemory += event.getPreUsed() - event.getPostUsed();
+
+        if (!event.isFull()) {
+            addGcEventPause(event);
+        }
+        else {
+            addFullGcEventPauses(event);
+        }
+
+        if (!event.getPhases().isEmpty()) {
+            addGcEventPhases(event);
+        }
+    }
+
+    private void addGcEventPause(GCEvent event) {
+        // make a difference between stop the world events, which only collect from some generations...
+        DoubleData pauses = getDoubleData(event.getTypeAsString(), gcEventPauses);
+        pauses.add(event.getPause());
+
+        gcEvents.add(event);
+        postGCUsedMemory.add(event.getPostUsed());
+        freedMemoryByGC.add(event.getPreUsed() - event.getPostUsed());
+        currentNoFullGCEvents.add(event);
+        currentPostGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+        currentRelativePostGCIncrease.addPoint(currentRelativePostGCIncrease.getPointCount(), event.getPostUsed());
+        gcPause.add(event.getPause());
+    }
+
+    private void addFullGcEventPauses(GCEvent event) {
+        // ... as opposed to all generations
+        DoubleData pauses = getDoubleData(event.getTypeAsString(), fullGcEventPauses);
+        pauses.add(event.getPause());
+
+        updateFullGcPauseInterval(event);
+        fullGCEvents.add(event);
+        postFullGCUsedHeap.add(event.getPostUsed());
+        int freed = event.getPreUsed() - event.getPostUsed();
+        freedMemoryByFullGC.add(freed);
+        fullGCPause.add(event.getPause());
+        postFullGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+        relativePostFullGCIncrease.addPoint(relativePostFullGCIncrease.getPointCount(), event.getPostUsed());
+
+        // process no full-gc run data
+        if (currentPostGCSlope.hasPoints()) {
+            // make sure we have at least _two_ data points
+            if (currentPostGCSlope.isLine()) {
+                postGCSlope.add(currentPostGCSlope.slope(), currentPostGCSlope.getPointCount());
+                relativePostGCIncrease.add(currentRelativePostGCIncrease.slope(), currentRelativePostGCIncrease.getPointCount());
+            }
+            currentPostGCSlope.reset();
+            currentRelativePostGCIncrease.reset();
+        }
+    }
+
+    private void addGcEventPhases(GCEvent event) {
+        DoubleData phases;
+        AbstractGCEvent<?> phaseEvent;
+
+        for (int i = 0; i < event.getPhases().size(); i++) {
+            phaseEvent = event.getPhases().get(i);
+            phases = getDoubleData(phaseEvent.getTypeAsString(), gcEventPhases);
+            phases.add(phaseEvent.getPause());
+        }
+
+        gcPhases.addAll(event.getPhases());
+    }
+
+    private void addVmOperationEvent(VmOperationEvent vmOperationEvent) {
+        adjustPause(vmOperationEvent);
+        if (vmOperationEvent.getTimestamp() < 0.000001) {
+            setTimeStamp(vmOperationEvent);
+        }
+        vmOperationPause.add(vmOperationEvent.getPause());
+        vmOperationEvents.add(vmOperationEvent);
+        DoubleData vmOpPauses = getDoubleData(vmOperationEvent.getTypeAsString(), vmOperationEventPauses);
+        vmOpPauses.add(vmOperationEvent.getPause());
+    }
+
     private void makeSureHasTimeStamp(AbstractGCEvent<?> abstractEvent) {
         if (size() >= 1 && abstractEvent.getTimestamp() < 0.000001 && abstractEvent.getDatestamp() != null) {
             // looks like there is no timestamp set -> set one, because a lot depends on the timestamps
@@ -509,11 +558,16 @@ public class GCModel implements Serializable {
         }
     }
 
+    private void updatePostConcurrentCycleUsedSizes(ConcurrentGCEvent event) {
+        postConcurrentCycleUsedTenuredSizes.add(event.getPreUsed());
+        postConcurrentCycleUsedHeapSizes.add(event.getPreUsed());
+    }
+
     private void updatePostConcurrentCycleUsedSizes(GCEvent event) {
-        // Most interesting is the size of the life objects immediately after a concurrent cycle.
-        // Since the "concurrent-end" events don't have the heap size information, the next event
-        // after is taken to get the information. Young generation, that has already filled up
-        // again since the concurrent-end should not be counted, so take tenured size, if available.
+            // Most interesting is the size of the life objects immediately after a concurrent cycle.
+            // Since the "concurrent-end" events don't have the heap size information, the next event
+            // after is taken to get the information. Young generation, that has already filled up
+            // again since the concurrent-end should not be counted, so take tenured size, if available.
         GCEvent afterConcurrentEvent = event;
         if (event.hasDetails()) {
             afterConcurrentEvent = event.getTenured();
@@ -553,7 +607,7 @@ public class GCModel implements Serializable {
      * pause duration of <code>previousEvent</code>.
      *
      * @param previousEvent event just before <code>vmOpEvent</code>
-     * @param vmOpEvent event to be adjusted
+     * @param vmOpEvent     event to be adjusted
      */
     private void adjustTimeStamp(AbstractGCEvent<?> previousEvent, VmOperationEvent vmOpEvent) {
         if (previousEvent.getTimestamp() + previousEvent.getPause() > vmOpEvent.getTimestamp()) {
@@ -598,8 +652,8 @@ public class GCModel implements Serializable {
 
             if (youngEvent != null) {
                 promotion.add((youngEvent.getPreUsed() - youngEvent.getPostUsed())
-                              - (event.getPreUsed() - event.getPostUsed())
-                             );
+                        - (event.getPreUsed() - event.getPostUsed())
+                );
             }
         }
     }
@@ -655,7 +709,7 @@ public class GCModel implements Serializable {
         // getTotal() returns 0 only if just the memory information could not be parsed
         // which can be the case with java 7 G1 algorithm (mixed with concurrent event)
         if (initialMarkEvent != null && initialMarkEvent.getTotal() > 0) {
-            initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double)initialMarkEvent.getTotal());
+            initiatingOccupancyFraction.add(initialMarkEvent.getPreUsed() / (double) initialMarkEvent.getTotal());
         }
     }
 
@@ -822,6 +876,10 @@ public class GCModel implements Serializable {
         return gcEventPauses;
     }
 
+    public Map<String, DoubleData> getGcEventPhases() {
+        return gcEventPhases;
+    }
+
     public Map<String, DoubleData> getFullGcEventPauses() {
         return fullGcEventPauses;
     }
@@ -936,8 +994,8 @@ public class GCModel implements Serializable {
     public double getRunningTime() {
         return lastPauseTimeStamp - firstPauseTimeStamp
                 + (stopTheWorldEvents.size() > 0
-                        ? stopTheWorldEvents.get(stopTheWorldEvents.size() - 1).getPause()
-                        : 0);
+                ? stopTheWorldEvents.get(stopTheWorldEvents.size() - 1).getPause()
+                : 0);
     }
 
     /**
@@ -970,22 +1028,23 @@ public class GCModel implements Serializable {
     }
 
     public boolean hasCorrectTimestamp() {
-        return format == Format.IBM_VERBOSE_GC || format == Format.SUN_X_LOG_GC || format == Format.SUN_1_2_2VERBOSE_GC;
+        return format == Format.IBM_VERBOSE_GC || format == Format.SUN_X_LOG_GC || format == Format.SUN_1_2_2VERBOSE_GC || format == Format.UNIFIED_JVM_LOGGING;
     }
 
     public boolean hasDateStamp() {
         return allEvents.size() > 0
-                 ? get(0).getDatestamp() != null
-                 : false;
+                ? get(0).getDatestamp() != null
+                : false;
     }
 
     public ZonedDateTime getFirstDateStamp() {
         return allEvents.size() > 0
-                 ? get(0).getDatestamp()
-                 : null;
+                ? get(0).getDatestamp()
+                : null;
     }
+
     public Optional<Double> getFirstTimeStamp() {
-        if(allEvents.size() > 0)
+        if (allEvents.size() > 0)
             return Optional.of(get(0).getTimestamp());
         else
             return Optional.empty();
@@ -1000,8 +1059,7 @@ public class GCModel implements Serializable {
         ZonedDateTime suggestedStartDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(getLastModified()), ZoneId.systemDefault());
         if (hasDateStamp()) {
             suggestedStartDate = getFirstDateStamp();
-        }
-        else if (hasCorrectTimestamp()) {
+        } else if (hasCorrectTimestamp()) {
             double runningTimeInSeconds = getRunningTime();
             long runningTimeInMillis = (long) (runningTimeInSeconds * 1000d);
             suggestedStartDate = suggestedStartDate.minus(runningTimeInMillis, ChronoUnit.MILLIS);
@@ -1027,13 +1085,13 @@ public class GCModel implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(allEvents, fileInformation, fullGcEventPauses, gcEventPauses, concurrentGcEventPauses, vmOperationEventPauses, heapAllocatedSizes, tenuredAllocatedSizes, youngAllocatedSizes, permAllocatedSizes, heapUsedSizes, tenuredUsedSizes, youngUsedSizes, permUsedSizes, postConcurrentCycleUsedTenuredSizes, postConcurrentCycleUsedHeapSizes, promotion, firstPauseTimeStamp, lastPauseTimeStamp, totalPause, fullGCPause, lastFullGcPauseTimeStamp, fullGcPauseInterval, gcPause, vmOperationPause, lastGcPauseTimeStamp, pauseInterval, initiatingOccupancyFraction, freedMemory, format, postGCUsedMemory, postFullGCUsedHeap, freedMemoryByGC, freedMemoryByFullGC, postGCSlope, currentPostGCSlope, currentRelativePostGCIncrease, relativePostGCIncrease, postFullGCSlope, relativePostFullGCIncrease, url);
+        return Objects.hash(allEvents, fileInformation, fullGcEventPauses, gcEventPauses, gcEventPhases, concurrentGcEventPauses, vmOperationEventPauses, heapAllocatedSizes, tenuredAllocatedSizes, youngAllocatedSizes, permAllocatedSizes, heapUsedSizes, tenuredUsedSizes, youngUsedSizes, permUsedSizes, postConcurrentCycleUsedTenuredSizes, postConcurrentCycleUsedHeapSizes, promotion, firstPauseTimeStamp, lastPauseTimeStamp, totalPause, fullGCPause, lastFullGcPauseTimeStamp, fullGcPauseInterval, gcPause, vmOperationPause, lastGcPauseTimeStamp, pauseInterval, initiatingOccupancyFraction, freedMemory, format, postGCUsedMemory, postFullGCUsedHeap, freedMemoryByGC, freedMemoryByFullGC, postGCSlope, currentPostGCSlope, currentRelativePostGCIncrease, relativePostGCIncrease, postFullGCSlope, relativePostFullGCIncrease, url);
     }
 
-	public static class Format implements Serializable {
-		private static final long serialVersionUID = 483615745336894207L;
+    public static class Format implements Serializable {
+        private static final long serialVersionUID = 483615745336894207L;
 
-		private String format;
+        private String format;
 
         private Format(String format) {
             this.format = format;
@@ -1047,5 +1105,7 @@ public class GCModel implements Serializable {
         public static final Format SUN_X_LOG_GC = new Format("Sun -Xloggc:<file>");
         public static final Format IBM_VERBOSE_GC = new Format("IBM -verbose:gc");
         public static final Format SUN_1_2_2VERBOSE_GC = new Format("Sun 1.2.2 -verbose:gc");
-	}
+        public static final Format UNIFIED_JVM_LOGGING = new Format("Unified jvm logging -Xlog:gc");
+        public static final Format GO = new Format("Go");
+    }
 }

@@ -111,12 +111,6 @@ public class DataReaderIBM1_3_1 extends AbstractDataReader {
             return model;
         }
         finally {
-            if (in != null)
-                try {
-                    in.close();
-                }
-                catch (IOException ioe) {
-                }
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("Done reading.");
         }
     }

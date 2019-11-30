@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 
+import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.tagtraum.perf.gcviewer.UnittestHelper;
-import com.tagtraum.perf.gcviewer.model.GCModel;
 
 /**
  *
@@ -25,7 +25,7 @@ public class TestDataReaderSun1_3_1_19 {
     	// does not seem to be implemented at all
     	
         String fileName = "SampleSun1_3_1_19SunOS.txt";
-    	final InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_OPENJDK, fileName);
+    	final InputStream in = UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
         final DataReader reader = new DataReaderSun1_3_1(new GcResourceFile(fileName), in, GcLogType.SUN1_3_1);
         GCModel model = reader.read();
         

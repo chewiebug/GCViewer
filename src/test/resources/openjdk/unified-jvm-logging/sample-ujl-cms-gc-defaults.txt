@@ -1,0 +1,17 @@
+[0.020s][info][gc] Using Concurrent Mark Sweep
+[0.209s][info][gc] GC(0) Pause Young (Allocation Failure) 41M->38M(150M) 8.822ms
+[0.695s][info][gc] GC(18) Pause Initial Mark 61M->61M(150M) 0.136ms
+[0.695s][info][gc] GC(18) Concurrent Mark
+[0.697s][info][gc] GC(18) Concurrent Mark 2.299ms
+[0.697s][info][gc] GC(18) Concurrent Preclean
+[0.697s][info][gc] GC(18) Concurrent Preclean 0.188ms
+[0.697s][info][gc] GC(18) Concurrent Abortable Preclean
+[0.701s][info][gc] GC(19) Pause Young (Allocation Failure) 101M->67M(150M) 2.554ms
+[0.713s][info][gc] GC(20) Pause Young (Allocation Failure) 108M->108M(150M) 9.269ms
+[0.714s][info][gc] GC(18) Concurrent Abortable Preclean 16.163ms
+[0.714s][info][gc] GC(18) Pause Remark 110M->110M(150M) 0.859ms
+[0.715s][info][gc] GC(18) Concurrent Sweep
+[0.715s][info][gc] GC(18) Concurrent Sweep 1.111ms
+[0.715s][info][gc] GC(18) Concurrent Reset
+[0.716s][info][gc] GC(18) Concurrent Reset 0.134ms
+[0.799s][info][gc] GC(22) Pause Full (Allocation Failure) 125M->31M(150M) 9.775ms

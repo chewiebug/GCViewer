@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
-
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import org.junit.Test;
 
 /**
  * Date: Jan 30, 2002
@@ -23,7 +23,7 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 public class TestDataReaderJRockit1_4_2 {
 
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_JROCKIT, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.JROCKIT, fileName);
     }
     
     private DataReader getDataReader1_4(String fileName) throws UnsupportedEncodingException, IOException {

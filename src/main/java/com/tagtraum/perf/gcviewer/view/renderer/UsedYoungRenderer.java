@@ -54,7 +54,7 @@ public class UsedYoungRenderer extends PolygonChartRenderer {
                     }
                     // e.g. "GC remark" of G1 algorithm does not contain memory information
                     if (youngEvent.getTotal() > 0) {
-                        final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp();
+                        final double timestamp = event.getTimestamp() - model.getFirstPauseTimeStamp() - event.getPause();
                         polygon.addPoint(timestamp, lastTenuredTotal + youngEvent.getPreUsed());
                         polygon.addPoint(timestamp + event.getPause(), tenuredTotal + youngEvent.getPostUsed());
                     }

@@ -1,0 +1,40 @@
+[2019-09-28T14:32:51.296+0000][0.015s][info][gc] Consider -XX:+ClassUnloadingWithConcurrentMark if large pause times are observed on class-unloading sensitive workloads
+[2019-09-28T14:32:51.316+0000][0.035s][info][gc,init] Regions: 64 x 2048K
+[2019-09-28T14:32:51.316+0000][0.035s][info][gc,init] Humongous object threshold: 2048K
+[2019-09-28T14:32:51.316+0000][0.035s][info][gc,init] Max TLAB size: 2048K
+[2019-09-28T14:32:51.317+0000][0.036s][info][gc,init] GC threads: 1 parallel, 1 concurrent
+[2019-09-28T14:32:51.317+0000][0.036s][info][gc,init] Reference processing: parallel
+[2019-09-28T14:32:51.318+0000][0.037s][info][gc     ] Heuristics ergonomically sets -XX:+ExplicitGCInvokesConcurrent
+[2019-09-28T14:32:51.318+0000][0.037s][info][gc     ] Heuristics ergonomically sets -XX:+ShenandoahImplicitGCInvokesConcurrent
+[2019-09-28T14:32:51.318+0000][0.037s][info][gc,init] Shenandoah heuristics: adaptive
+[2019-09-28T14:32:51.319+0000][0.038s][info][gc,ergo] Pacer for Idle. Initial: 2M, Alloc Tax Rate: 1.0x
+[2019-09-28T14:32:51.319+0000][0.039s][info][gc,init] Initialize Shenandoah heap: 32768K initial, 8192K min, 128M max
+[2019-09-28T14:32:51.319+0000][0.039s][info][gc,init] Safepointing mechanism: global-page poll
+[2019-09-28T14:32:51.319+0000][0.039s][info][gc     ] Using Shenandoah
+[2019-09-28T14:32:51.319+0000][0.039s][info][gc,heap,coops] Heap address: 0x00000000f8000000, size: 128 MB, Compressed Oops mode: 32-bit
+[2019-09-28T14:32:51.414+0000][0.133s][info][safepoint    ] Entering safepoint region: EnableBiasedLocking
+[2019-09-28T14:32:51.414+0000][0.133s][info][safepoint    ] Leaving safepoint region
+[2019-09-28T14:32:51.414+0000][0.133s][info][safepoint    ] Total time for which application threads were stopped: 0.0023004 seconds, Stopping threads took: 0.0022242 seconds
+[2019-09-28T14:32:51.424+0000][0.143s][info][safepoint    ] Application time: 0.0079336 seconds
+[2019-09-28T14:32:51.424+0000][0.144s][info][safepoint    ] Entering safepoint region: RevokeBias
+[2019-09-28T14:32:51.425+0000][0.144s][info][safepoint    ] Leaving safepoint region
+[2019-09-28T14:32:51.425+0000][0.144s][info][safepoint    ] Total time for which application threads were stopped: 0.0005411 seconds, Stopping threads took: 0.0001322 seconds
+[2019-09-28T14:32:51.441+0000][0.160s][info][safepoint    ] Application time: 0.0161291 seconds
+[2019-09-28T14:32:51.441+0000][0.160s][info][safepoint    ] Entering safepoint region: Deoptimize
+[2019-09-28T14:32:51.441+0000][0.161s][info][safepoint    ] Leaving safepoint region
+[2019-09-28T14:32:51.441+0000][0.161s][info][safepoint    ] Total time for which application threads were stopped: 0.0004990 seconds, Stopping threads took: 0.0000687 seconds
+[2019-09-28T14:32:51.442+0000][0.161s][info][safepoint    ] Application time: 0.0006917 seconds
+[2019-09-28T14:32:51.442+0000][0.161s][info][safepoint    ] Entering safepoint region: RevokeBias
+[2019-09-28T14:32:51.442+0000][0.162s][info][safepoint    ] Leaving safepoint region
+[2019-09-28T14:32:51.442+0000][0.162s][info][safepoint    ] Total time for which application threads were stopped: 0.0004727 seconds, Stopping threads took: 0.0002080 seconds
+[2019-09-28T14:32:51.443+0000][0.162s][info][safepoint    ] Application time: 0.0001670 seconds
+[2019-09-28T14:32:51.443+0000][0.162s][info][safepoint    ] Entering safepoint region: RevokeBias
+[2019-09-28T14:32:51.443+0000][0.162s][info][safepoint    ] Leaving safepoint region
+[2019-09-28T14:32:51.443+0000][0.162s][info][safepoint    ] Total time for which application threads were stopped: 0.0002535 seconds, Stopping threads took: 0.0001694 seconds
+[2019-09-28T14:32:51.558+0000][0.277s][info][gc           ] Trigger: Learning 1 of 5. Free (88M) is below initial threshold (89M)
+[2019-09-28T14:32:51.558+0000][0.277s][info][gc,ergo      ] Free: 88M (44 regions), Max regular: 2048K, Max humongous: 88064K, External frag: 3%, Internal frag: 0%
+[2019-09-28T14:32:51.558+0000][0.277s][info][gc,ergo      ] Evacuation Reserve: 8M (4 regions), Max regular: 2048K
+[2019-09-28T14:32:51.558+0000][0.277s][info][gc,start     ] GC(0) Concurrent reset
+[2019-09-28T14:32:51.558+0000][0.277s][info][gc,task      ] GC(0) Using 1 of 1 workers for concurrent reset
+[2019-09-28T14:32:51.558+0000][0.277s][info][gc           ] GC(0) Concurrent reset 32M->32M(32M) 0.081ms
+[2019-09-28T14:32:51.558+0000][0.277s][info][safepoint    ] Application time: 0.1149181 seconds

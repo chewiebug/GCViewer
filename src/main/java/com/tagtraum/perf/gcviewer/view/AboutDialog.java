@@ -10,7 +10,6 @@ import java.awt.Insets;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,6 +39,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Hans Bausewein",
         "Peter Bilstein",
         "Steve Boardwell",
+        "Krzysztof Burek",
         "Cka3o4Huk",
         "Frank Dietrich",
         "Bernd Eckenfels",
@@ -48,11 +48,17 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Neil Gentleman",
         "Chris Grindstaff",
         "Michi Gysel",
+        "Roland Illig",
+        "Mary Sunitha Joseph",
         "Johan Kaving",
         "Maciej Kwiecien",
+        "Dennis Lawler",
+        "Yanqi Li",
         "Henry Lin",
         "James Livingston",
+        "Mart Mägi",
         "Tony Mancill",
+        "Auston McReynolds",
         "Samuel Mendenhall",
         "Carl Meyer",
         "Ondrej Mihályi",
@@ -62,6 +68,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Thomas Peyrard",
         "Rupesh Ramachandran",
         "Fred Rolland",
+        "Sandro Rossi",
         "Heiko W. Rupp",
         "Stephan Schroevers",
         "François Secherre",
@@ -85,7 +92,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         versionPanel.setLayout(new GridBagLayout());
 
-        JLabel copyright = new JLabel("\u00A9" + " 2011-2017: Joerg Wuethrich and contributors", JLabel.CENTER);
+        JLabel copyright = new JLabel("\u00A9" + " 2011-2019: Joerg Wuethrich and contributors", JLabel.CENTER);
 
         JLabel contributorsLabel = new JLabel("contributors (alphabetically ordered):", JLabel.CENTER);
         contributorsLabel.setForeground(Color.GRAY);
@@ -167,7 +174,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
                      width ? 0 : preferredSize);
 
         float w = view.getPreferredSpan(View.X_AXIS);
-        float h = view.getPreferredSpan(View.Y_AXIS);
+        float h = view.getPreferredSpan(View.Y_AXIS) * (float)1.1; // add 10% to compensate for high dpi screens with jdk 11
 
         return new Dimension((int) Math.ceil(w),
                 (int) Math.ceil(h));

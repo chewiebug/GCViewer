@@ -1,26 +1,24 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
-import com.tagtraum.perf.gcviewer.util.ParseInformation;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+import com.tagtraum.perf.gcviewer.util.ParseInformation;
 
 /**
  * The AbstractDataReaderSun is the base class of most Sun / Oracle parser implementations.
@@ -33,12 +31,9 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static final int LENGTH_OF_DATESTAMP = 29;
 
     private static final String CMS_PRINT_PROMOTION_FAILURE = "promotion failure size";
-
-    private static Pattern parenthesesPattern = Pattern.compile("\\([^()]*\\) ?");
 
     // java 8 log output
     protected static final String LOG_INFORMATION_OPENJDK = "OpenJDK";
@@ -60,7 +55,9 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
     protected GcLogType gcLogType;
 
     /**
-     * Create an instance of this class passing an inputStream an the type of the logfile.
+     * Create an instance of this class passing an inputStream and the type of the logfile.
+     *
+     * @param gcResource information about the resource to be parsed
      * @param in inputstream to the log file
      * @param gcLogType type of the logfile
      * @throws UnsupportedEncodingException if ASCII is not supported
@@ -79,24 +76,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      * @return amount of memory in kilobyte
      */
     private int getMemoryInKiloByte(double memoryValue, char memUnit, String line) {
-        if ('B' == memUnit) {
-            return (int) Math.rint(memoryValue / 1024);
-        }
-        else if ('K' == memUnit) {
-            return (int) Math.rint(memoryValue);
-        }
-        else if ('M' == memUnit) {
-            return (int) Math.rint(memoryValue * 1024);
-        }
-        else if ('G' == memUnit) {
-            return (int) Math.rint(memoryValue * 1024*1024);
-        }
-        else {
-            if (getLogger().isLoggable(Level.WARNING)) {
-                getLogger().warning("unknown memoryunit '" + memUnit + "' in line " + line);
-            }
-            return 1;
-        }
+        return getDataReaderTools().getMemoryInKiloByte(memoryValue, memUnit, line);
     }
 
     /**
@@ -200,7 +180,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
                || character == ','; // some localised log files contain "," instead of "." in numbers
     }
 
-    protected void setMemory(GCEvent event, String line, ParseInformation pos) throws ParseException {
+    protected void setMemory(AbstractGCEvent<?> event, String line, ParseInformation pos) throws ParseException {
         int start = skipUntilNextDigit(line, pos);
         int end = line.indexOf("->", pos.getIndex()) - 1;
         if (end != -2) for (start = end-1; start >= 0 && Character.isDigit(line.charAt(start)); start--) {}
@@ -246,7 +226,12 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         if (end < 0) {
         	end = line.indexOf(']', begin);
         }
-        final double pause = NumberParser.parseDouble(line.substring(begin, end));
+        double pause = NumberParser.parseDouble(line.substring(begin, end));
+
+        // ms...
+        if (line.endsWith("ms]")) {
+            pause = pause / 1000;
+        }
 
         // skip "secs]"
         pos.setIndex(line.indexOf(']', end) + 1);
@@ -318,35 +303,12 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
     protected ExtendedType parseType(String line, ParseInformation pos) throws ParseException {
         String typeString = parseTypeString(line, pos);
-        ExtendedType gcType = extractTypeFromParsedString(typeString);
-        if (gcType == null) {
-            throw new UnknownGcTypeException(typeString, line, pos);
-        }
-
-        return gcType;
+        return getDataReaderTools().parseType(typeString);
     }
 
 
-    protected ExtendedType extractTypeFromParsedString(String typeName) throws UnknownGcTypeException {
-        ExtendedType extendedType = null;
-        String lookupTypeName = typeName.endsWith("--")
-                ? typeName.substring(0, typeName.length()-2)
-                        : typeName;
-        AbstractGCEvent.Type gcType = AbstractGCEvent.Type.lookup(lookupTypeName);
-        // the gcType may be null because there was a PrintGCCause flag enabled - if so, reparse it with the first paren set stripped
-        if (gcType == null) {
-            // try to parse it again with the parens removed
-            Matcher parenMatcher = parenthesesPattern.matcher(lookupTypeName);
-            if (parenMatcher.find()) {
-                gcType = AbstractGCEvent.Type.lookup(parenMatcher.replaceFirst(""));
-            }
-        }
-
-        if (gcType != null) {
-            extendedType = ExtendedType.lookup(gcType, typeName);
-        }
-
-        return extendedType;
+    protected ExtendedType extractTypeFromParsedString(String typeName) {
+        return getDataReaderTools().parseTypeWithCause(typeName);
     }
 
     /**
@@ -452,6 +414,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
      * @param trimLine if <code>true</code> then trim <code>line</code>
      * @return <code>true</code>, if <code>line</code> starts with one of the strings in
      * <code>lineStartStrings</code>
+     * @see #contains(String, List, boolean)
      */
     protected boolean startsWith(String line, List<String> lineStartStrings, boolean trimLine) {
         String lineToTest = trimLine ? line.trim() : line;
@@ -462,6 +425,24 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
 
         return false;
+    }
+
+    /**
+     * Tests if <code>line</code> starts with one of the strings in <code>lineStartStrings</code>.
+     * If <code>trimLine</code> is <code>true</code>, then <code>line</code> is trimmed first.
+     *
+     * @param line line to be checked against
+     * @param lineContainsStrings list of strings to check
+     * @param trimLine if <code>true</code> then trim <code>line</code>
+     * @return <code>true</code>, if <code>line</code> contains  one of the strings in
+     * <code>lineContainsStrings</code>
+     * @see #startsWith(String, List, boolean)
+     */
+    protected boolean contains(String line, List<String> lineContainsStrings, boolean trimLine) {
+        String lineToTest = trimLine ? line.trim() : line;
+        return lineContainsStrings.stream()
+                .filter(entry -> lineToTest.contains(entry))
+                .count() > 0;
     }
 
     /**
@@ -477,7 +458,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         if (nextIsDatestamp(line, pos)) {
             try {
                 zonedDateTime = ZonedDateTime.parse(line.substring(pos.getIndex(), pos.getIndex() + LENGTH_OF_DATESTAMP - 1),
-                        DATE_TIME_FORMATTER);
+                        DateHelper.DATE_TIME_FORMATTER);
                 pos.setIndex(pos.getIndex() + LENGTH_OF_DATESTAMP);
                 if (pos.getFirstDateStamp() == null) {
                     pos.setFirstDateStamp(zonedDateTime);

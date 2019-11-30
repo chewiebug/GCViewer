@@ -1,11 +1,15 @@
 package com.tagtraum.perf.gcviewer.view.renderer;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.util.Iterator;
+
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.view.ChartRenderer;
 import com.tagtraum.perf.gcviewer.view.ModelChartImpl;
-
-import java.awt.*;
-import java.util.Iterator;
 
 /**
  * FullGCLineRenderer.
@@ -34,7 +38,7 @@ public class FullGCLineRenderer extends ChartRenderer {
         int lastScaledTimestamp = Integer.MIN_VALUE;
         for (Iterator<GCEvent> i = getModelChart().getModel().getFullGCEvents(); i.hasNext();) {
             GCEvent event = i.next();
-            int scaledTimestamp = (int)(scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
+            int scaledTimestamp = (int)(scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp() - event.getPause()));
             if (scaledTimestamp != lastScaledTimestamp && scaledTimestamp >= minX && scaledTimestamp <= maxX) {
                 g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
                 lastScaledTimestamp = scaledTimestamp;

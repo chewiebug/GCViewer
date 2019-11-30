@@ -38,6 +38,7 @@ public class StayOpenCheckBoxMenuItem extends JCheckBoxMenuItem {
     }
 
     /**
+     * @param a action, where properties are taken from to create MenuItem
      * @see JCheckBoxMenuItem#JCheckBoxMenuItem(Action)
      */
     public StayOpenCheckBoxMenuItem(Action a) {
@@ -45,6 +46,7 @@ public class StayOpenCheckBoxMenuItem extends JCheckBoxMenuItem {
     }
 
     /**
+     * @param icon icon for menu item
      * @see JCheckBoxMenuItem#JCheckBoxMenuItem(Icon)
      */
     public StayOpenCheckBoxMenuItem(Icon icon) {
@@ -52,6 +54,7 @@ public class StayOpenCheckBoxMenuItem extends JCheckBoxMenuItem {
     }
 
     /**
+     * @param text text for menu item
      * @see JCheckBoxMenuItem#JCheckBoxMenuItem(String)
      */
     public StayOpenCheckBoxMenuItem(String text) {
@@ -59,6 +62,8 @@ public class StayOpenCheckBoxMenuItem extends JCheckBoxMenuItem {
     }
 
     /**
+     * @param text text for menu item
+     * @param selected initial state of checkbox
      * @see JCheckBoxMenuItem#JCheckBoxMenuItem(String, boolean)
      */
     public StayOpenCheckBoxMenuItem(String text, boolean selected) {
@@ -66,6 +71,8 @@ public class StayOpenCheckBoxMenuItem extends JCheckBoxMenuItem {
     }
 
     /**
+     * @param text text for menu item
+     * @param icon icon for menu item
      * @see JCheckBoxMenuItem#JCheckBoxMenuItem(String, Icon)
      */
     public StayOpenCheckBoxMenuItem(String text, Icon icon) {
@@ -73,6 +80,9 @@ public class StayOpenCheckBoxMenuItem extends JCheckBoxMenuItem {
     }
 
     /**
+     * @param text text for menu item
+     * @param icon icon for the menu item
+     * @param selected initial state for checkbox
      * @see JCheckBoxMenuItem#JCheckBoxMenuItem(String, Icon, boolean)
      */
     public StayOpenCheckBoxMenuItem(String text, Icon icon, boolean selected) {

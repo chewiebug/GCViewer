@@ -38,6 +38,9 @@ public class ModelDetailsPanel extends JPanel {
     private DoubleDataMapModel concurrentGcEventModel;
 
     private DoubleDataMapTable vmOperationTable;
+    
+    private DoubleDataMapModel gcPhasesModel;
+    private DoubleDataMapTable gcPhasesTable;
 
     public ModelDetailsPanel() {
         super();
@@ -56,14 +59,19 @@ public class ModelDetailsPanel extends JPanel {
         fullGcEventModel = new DoubleDataMapModel();
         vmOperationEventModel = new DoubleDataMapModel();
         concurrentGcEventModel = new DoubleDataMapModel();
+        gcPhasesModel = new DoubleDataMapModel();
 
         DoubleDataMapTable gcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_gc_pauses"), gcEventModel);
         DoubleDataMapTable fullGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_full_gc_pauses"), fullGcEventModel);
         vmOperationTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_vm_op_overhead"), vmOperationEventModel);
         DoubleDataMapTable concurrentGcTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_concurrent_gc_events"), concurrentGcEventModel);
+        gcPhasesTable = new DoubleDataMapTable(LocalisationHelper.getString("data_panel_group_gc_phases"), gcPhasesModel);
 
         GridBagConstraints constraints = createGridBagConstraints();
         add(gcTable, constraints);
+        
+        constraints.gridy++;
+        add(gcPhasesTable, constraints);
 
         constraints.gridy++;
         add(fullGcTable, constraints);
@@ -108,6 +116,13 @@ public class ModelDetailsPanel extends JPanel {
             vmOperationEventModel.setModel(model.getVmOperationEventPauses(), totalPause, true);
         }
         concurrentGcEventModel.setModel(model.getConcurrentEventPauses(), totalPause, false);
+
+        if (model.size() > 1 && model.getGcEventPhases().size() == 0) {
+            remove(gcPhasesTable);
+        }
+        else {
+            gcPhasesModel.setModel(model.getGcEventPhases(), totalPause, false);
+        }
 
         repaint();
     }

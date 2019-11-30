@@ -57,7 +57,7 @@ public class TotalYoungRenderer extends PolygonChartRenderer {
                         // but with a slanting line between 0 and after the first pause
                         polygon.addPoint(0, tenuredSize + youngSize);
                     }
-                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp() + event.getPause(), tenuredSize + youngSize);
+                    polygon.addPoint(event.getTimestamp() - model.getFirstPauseTimeStamp(), tenuredSize + youngSize);
                     lastYoung = youngSize;
                     lastTenured = tenuredSize;
                 }

@@ -1,7 +1,7 @@
 package com.tagtraum.perf.gcviewer.view.util;
 
-import javax.swing.filechooser.FileFilter;
 import java.io.File;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * ExtensionFileFilter.
@@ -22,7 +22,6 @@ public class ExtensionFileFilter extends FileFilter {
     }
 
     public boolean accept(File f) {
-        // TODO: Can probably be refactored; seems to be the same as in Export class
         try {
             return f.isDirectory() || f.toString().toLowerCase().endsWith("." + extension);
         }

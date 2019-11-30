@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
+import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
@@ -25,7 +26,7 @@ import org.junit.Test;
 public class TestDataReaderIBM_J9_R28 {
 
     private InputStream getInputStream(String fileName) throws IOException {
-        return UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER_IBM, fileName);
+        return UnittestHelper.getResourceAsStream(FOLDER.IBM, fileName);
     }
 
     private DataReader getDataReader(GCResource gcResource) throws IOException {

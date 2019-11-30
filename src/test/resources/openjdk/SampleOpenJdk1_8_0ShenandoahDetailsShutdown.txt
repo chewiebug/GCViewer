@@ -1,0 +1,98 @@
+Cancelling concurrent GC: Stopping VM
+Heap
+Shenandoah Heap
+ 268435456K total, 261685248K committed, 226747245K used
+ 8192 x 32768K regions
+Status: idle cancelled
+Reserved region:
+ - [0x00007f4ba8000000, 0x00007f8ba8000000)
+
+GC STATISTICS:
+  "(G)" (gross) pauses include VM time: time to notify and block threads, do the pre-
+        and post-safepoint housekeeping. Use -XX:+PrintSafepointStatistics to dissect.
+  "(N)" (net) pauses are the times spent in the actual GC code.
+  "a" is average time for each phase, look at levels to see if average makes sense.
+  "lvls" are quantiles: 0% (minimum), 25%, 50% (median), 75%, 100% (maximum).
+
+Total Pauses (G)            =    60.47 s (a =     7786 us) (n =  7766) (lvls, us =      689,     4746,     7109,     9609,    85448)
+Total Pauses (N)            =    31.31 s (a =     4031 us) (n =  7766) (lvls, us =      158,     2539,     3613,     4922,    81166)
+Pause Init Mark (G)         =    14.90 s (a =     7662 us) (n =  1945) (lvls, us =     3691,     6641,     7109,     7812,    37445)
+Pause Init Mark (N)         =     8.29 s (a =     4264 us) (n =  1945) (lvls, us =     2441,     3672,     4043,     4551,    35342)
+  Accumulate Stats          =     0.33 s (a =      172 us) (n =  1945) (lvls, us =       71,      158,      164,      176,     2534)
+  Make Parsable             =     0.10 s (a =       52 us) (n =  1945) (lvls, us =        5,       39,       51,       58,     1048)
+  Clear Liveness            =     1.59 s (a =      818 us) (n =  1945) (lvls, us =      426,      730,      797,      885,     2195)
+  Scan Roots                =     5.82 s (a =     2990 us) (n =  1945) (lvls, us =     1543,     2441,     2754,     3223,    34120)
+    S: Thread Roots         =     0.61 s (a =      314 us) (n =  1945) (lvls, us =       56,      215,      244,      297,    22527)
+    S: String Table Roots   =     1.08 s (a =      554 us) (n =  1945) (lvls, us =        0,      357,      488,      744,     3173)
+    S: Universe Roots       =     0.01 s (a =        5 us) (n =  1945) (lvls, us =        1,        2,        2,        2,     2351)
+    S: JNI Roots            =     0.02 s (a =       11 us) (n =  1945) (lvls, us =        3,        6,        7,        8,     1717)
+    S: JNI Weak Roots       =     0.04 s (a =       22 us) (n =  1945) (lvls, us =        0,       14,       18,       25,     1471)
+    S: Synchronizer Roots   =     0.00 s (a =        2 us) (n =  1945) (lvls, us =        0,        1,        2,        2,       63)
+    S: Flat Profiler Roots  =     0.05 s (a =       24 us) (n =  1945) (lvls, us =        1,       18,       20,       23,      754)
+    S: Management Roots     =     0.01 s (a =        3 us) (n =  1945) (lvls, us =        1,        2,        2,        3,      384)
+    S: System Dict Roots    =     0.20 s (a =      101 us) (n =  1945) (lvls, us =       10,       16,       21,       45,     1488)
+    S: CLDG Roots           =     0.14 s (a =       73 us) (n =  1945) (lvls, us =       30,       54,       60,       68,     7618)
+    S: JVMTI Roots          =     0.00 s (a =        1 us) (n =  1945) (lvls, us =        0,        0,        1,        1,      209)
+  Resize TLABs              =     0.24 s (a =      123 us) (n =  1945) (lvls, us =        9,      107,      113,      125,      858)
+Pause Final Mark (G)        =    25.04 s (a =    12876 us) (n =  1945) (lvls, us =     6074,     9082,    11719,    15625,    85442)
+Pause Final Mark (N)        =    15.58 s (a =     8011 us) (n =  1945) (lvls, us =     3906,     5117,     6074,    10938,    81164)
+  Update Roots              =     0.02 s (a =     2195 us) (n =     7) (lvls, us =     1680,     1680,     2109,     2207,     2579)
+    U: Thread Roots         =     0.00 s (a =      303 us) (n =     7) (lvls, us =      240,      240,      289,      318,      367)
+    U: String Table Roots   =     0.00 s (a =      532 us) (n =     7) (lvls, us =      301,      301,      480,      602,      726)
+    U: Universe Roots       =     0.00 s (a =        1 us) (n =     7) (lvls, us =        1,        1,        1,        1,        2)
+    U: JNI Roots            =     0.00 s (a =        6 us) (n =     7) (lvls, us =        4,        4,        5,        6,        9)
+    U: JNI Weak Roots       =     0.00 s (a =       20 us) (n =     7) (lvls, us =        3,        3,       16,       26,       33)
+    U: Synchronizer Roots   =     0.00 s (a =        1 us) (n =     7) (lvls, us =        1,        1,        1,        2,        2)
+    U: Flat Profiler Roots  =     0.00 s (a =       18 us) (n =     7) (lvls, us =       13,       13,       17,       19,       24)
+    U: Management Roots     =     0.00 s (a =        8 us) (n =     7) (lvls, us =        5,        5,        7,        9,       12)
+    U: System Dict Roots    =     0.00 s (a =       30 us) (n =     7) (lvls, us =        8,        8,       27,       33,       48)
+    U: CLDG Roots           =     0.00 s (a =       45 us) (n =     7) (lvls, us =       22,       22,       45,       47,       59)
+    U: JVMTI Roots          =     0.00 s (a =        1 us) (n =     7) (lvls, us =        0,        0,        1,        1,        1)
+  Finish Queues             =     3.49 s (a =     1792 us) (n =  1945) (lvls, us =     1074,     1602,     1758,     1914,     3164)
+  Weak References           =     1.32 s (a =     3398 us) (n =   389) (lvls, us =      885,     2129,     3242,     3926,    74072)
+    Process                 =     0.79 s (a =     2033 us) (n =   389) (lvls, us =       25,      953,     1973,     2461,    72472)
+    Enqueue                 =     0.52 s (a =     1349 us) (n =   389) (lvls, us =      580,     1074,     1270,     1562,     2544)
+  System Purge              =     2.87 s (a =     7381 us) (n =   389) (lvls, us =     6367,     6992,     7227,     7656,     9396)
+    Unload Classes          =     0.46 s (a =     1173 us) (n =   389) (lvls, us =      832,      982,     1035,     1211,     2371)
+    Parallel Cleanup        =     2.41 s (a =     6193 us) (n =   389) (lvls, us =     5371,     5918,     6113,     6387,     7774)
+      Code Cache            =     0.29 s (a =      758 us) (n =   389) (lvls, us =      396,      729,      754,      783,     1441)
+      String/Symbol Tables  =     0.58 s (a =     1480 us) (n =   389) (lvls, us =     1055,     1270,     1387,     1602,     2794)
+      Clean Classes         =     1.05 s (a =     2709 us) (n =   389) (lvls, us =     1309,     2656,     2695,     2754,     2915)
+      Synchronization       =     0.01 s (a =       16 us) (n =   389) (lvls, us =        0,        8,       12,       18,      386)
+    CLDG                    =     0.00 s (a =        6 us) (n =   389) (lvls, us =        3,        4,        5,        5,      277)
+  Prepare Evacuation        =     1.53 s (a =      788 us) (n =  1945) (lvls, us =      607,      707,      752,      811,     1793)
+  Initial Evacuation        =     6.05 s (a =     3113 us) (n =  1945) (lvls, us =     1348,     2246,     2441,     2715,    17740)
+    E: Thread Roots         =     1.38 s (a =      708 us) (n =  1945) (lvls, us =       15,      248,      293,      371,     9000)
+    E: Code Cache Roots     =     1.10 s (a =      567 us) (n =  1945) (lvls, us =      211,      496,      602,      625,      904)
+Pause Init  Update Refs (G) =     3.45 s (a =     1780 us) (n =  1938) (lvls, us =      686,     1602,     1719,     1895,     4542)
+Pause Init  Update Refs (N) =     0.78 s (a =      402 us) (n =  1938) (lvls, us =      158,      352,      402,      443,     1097)
+Pause Final Update Refs (G) =    17.00 s (a =     8772 us) (n =  1938) (lvls, us =     3145,     6582,     7090,     9590,    48756)
+Pause Final Update Refs (N) =     6.62 s (a =     3415 us) (n =  1938) (lvls, us =     2441,     3164,     3340,     3574,     5330)
+  Update Roots              =     4.88 s (a =     2519 us) (n =  1938) (lvls, us =     1680,     2305,     2461,     2637,     4525)
+    UR: Thread Roots        =     0.53 s (a =      276 us) (n =  1938) (lvls, us =       12,      230,      258,      297,     1466)
+    UR: String Table Roots  =     1.27 s (a =      655 us) (n =  1938) (lvls, us =      311,      600,      660,      709,     1327)
+    UR: Universe Roots      =     0.00 s (a =        1 us) (n =  1938) (lvls, us =        1,        1,        1,        1,       10)
+    UR: JNI Roots           =     0.01 s (a =        6 us) (n =  1938) (lvls, us =        3,        4,        5,        6,       53)
+    UR: JNI Weak Roots      =     0.02 s (a =       12 us) (n =  1938) (lvls, us =        5,        8,        9,       13,      134)
+    UR: Synchronizer Roots  =     0.00 s (a =        2 us) (n =  1938) (lvls, us =        0,        1,        2,        2,       10)
+    UR: Flat Profiler Roots =     0.04 s (a =       20 us) (n =  1938) (lvls, us =        1,       17,       20,       22,       49)
+    UR: Management Roots    =     0.01 s (a =        8 us) (n =  1938) (lvls, us =        1,        5,        6,        8,       90)
+    UR: System Dict Roots   =     0.04 s (a =       18 us) (n =  1938) (lvls, us =        8,       10,       12,       19,      214)
+    UR: CLDG Roots          =     0.09 s (a =       45 us) (n =  1938) (lvls, us =       27,       42,       44,       46,      138)
+    UR: JVMTI Roots         =     0.00 s (a =        1 us) (n =  1938) (lvls, us =        0,        1,        1,        1,        9)
+  Recycle                   =     1.59 s (a =      822 us) (n =  1938) (lvls, us =      617,      754,      801,      863,     1455)
+Concurrent Marking          =  8083.29 s (a =  4155932 us) (n =  1945) (lvls, us =  3183594,  4121094,  4140625,  4179688,  4427827)
+Concurrent Precleaning      =     0.65 s (a =     1666 us) (n =   389) (lvls, us =     1328,     1504,     1582,     1660,    24655)
+Concurrent Evacuation       =    27.23 s (a =    14002 us) (n =  1945) (lvls, us =     1914,     8750,    13477,    17383,   173985)
+Concurrent Update Refs      =  4110.85 s (a =  2121183 us) (n =  1938) (lvls, us =  2050781,  2070312,  2089844,  2128906,  2758746)
+Concurrent Reset Bitmaps    =   244.91 s (a =   125916 us) (n =  1945) (lvls, us =     1367,   119141,   125000,   130859,   140241)
+
+0 allocation failure and 0 user requested GCs
+1945 successful and 0 degenerated concurrent markings
+1938 successful and 0 degenerated update references
+
+ALLOCATION TRACING
+  These are the slow-path allocations, including TLAB/GCLAB refills, and out-of-TLAB allocations.
+  In-TLAB/GCLAB allocations happen orders of magnitude more frequently, and without delays.
+
+  Allocation tracing is disabled, use -XX:+ShenandoahAllocationTrace to enable.

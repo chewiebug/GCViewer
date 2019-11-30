@@ -2,7 +2,15 @@ package com.tagtraum.perf.gcviewer.model;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The abstract gc event is the base class for all types of events. All sorts of general
@@ -11,15 +19,24 @@ import java.util.*;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
-public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable {
+public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements Serializable, Cloneable {
+    /** Used before GC in KB */
+    private int preUsed;
+    /** Used after GC in KB */
+    private int postUsed;
+    /** Capacity in KB */
+    private int total;
+    /** end of gc event (after pause) */
     private ZonedDateTime datestamp;
+    /** end of gc event (after pause) */
     private double timestamp;
     private ExtendedType extendedType = ExtendedType.UNDEFINED;
-    private boolean tenuredDetail;
     private String typeAsString;
-    private Generation generation;
+    protected Generation generation;
     protected List<T> details;
     private double pause;
+    private int number = -1;
+    private List<AbstractGCEvent<?>> phases;
 
     public Iterator<T> details() {
         if (details == null) return Collections.emptyIterator();
@@ -33,11 +50,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         }
         details.add(detail);
         typeAsString += "; " + detail.getExtendedType().getName();
-        if (detail.getExtendedType().getGeneration() == Generation.TENURED) {
-        	tenuredDetail = true;
-        }
 
-        // will be calculated upon call to "getGeneration()"
+        // reset cached value, which will be recalculated upon call to "getGeneration()"
         generation = null;
     }
 
@@ -46,12 +60,66 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 && details.size() > 0;
     }
 
-    public boolean hasTenuredDetail() {
-        return tenuredDetail;
+    public List<AbstractGCEvent<?>> getPhases() {
+        if (phases == null) {
+            return new ArrayList<>();
+        }
+        return phases;
+    }
+
+    public void addPhase(AbstractGCEvent<?> phase) {
+        if (phase == null) {
+            throw new IllegalArgumentException("Cannot add null phase to an event");
+        }
+        if (phases == null) {
+            phases = new ArrayList<>();
+        }
+
+        phases.add(phase);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        AbstractGCEvent<T> clonedEvent = (AbstractGCEvent<T>)super.clone();
+        if (getDatestamp() != null) {
+            clonedEvent.setDateStamp(ZonedDateTime.from(this.getDatestamp()));
+        }
+        if (getExtendedType() != null) {
+            clonedEvent.setExtendedType(new ExtendedType(getExtendedType().getType(), getExtendedType().fullName));
+        }
+        if (details != null) {
+            List<T> detailClones = new ArrayList<>();
+            for (T t : details) {
+                detailClones.add((T)t.clone());
+            }
+            clonedEvent.details = detailClones;
+        }
+
+        // don't need to do anything with "generation", because that value is reset by the "add()" method
+
+        return clonedEvent;
+    }
+
+    public AbstractGCEvent<T> cloneAndMerge(AbstractGCEvent<T> otherEvent) {
+        try {
+            AbstractGCEvent<T> clonedEvent = (AbstractGCEvent<T>)otherEvent.clone();
+            clonedEvent.setExtendedType(new ExtendedType(getExtendedType().getType(), getExtendedType().fullName + "+" + clonedEvent.getExtendedType().fullName));
+            clonedEvent.setPreUsed(clonedEvent.getPreUsed() + getPreUsed());
+            clonedEvent.setPostUsed(clonedEvent.getPostUsed() + getPostUsed());
+            clonedEvent.setTotal(clonedEvent.getTotal() + getTotal());
+            clonedEvent.setPause(clonedEvent.getPause() + getPause());
+            return clonedEvent;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("hmm, clone was not supported, that's unexpected...", e);
+        }
     }
 
     public void setDateStamp(ZonedDateTime datestamp) {
     	this.datestamp = datestamp;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public void setTimestamp(double timestamp) {
@@ -83,6 +151,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     public ExtendedType getExtendedType() {
         return extendedType;
+    }
+
+    public int getNumber() {
+        return number;
     }
 
     public String getTypeAsString() {
@@ -142,16 +214,39 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         return datestamp;
     }
 
+    public boolean hasMemoryInformation() {
+        return getPreUsed() > 0
+                || getPostUsed() > 0
+                || getTotal() > 0;
+    }
+
+    public void setPreUsed(int preUsed) {
+        this.preUsed = preUsed;
+    }
+
+    public void setPostUsed(int postUsed) {
+        this.postUsed = postUsed;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getPreUsed() {
+        return preUsed;
+    }
+
+    public int getPostUsed() {
+        return postUsed;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
     public abstract void toStringBuffer(StringBuffer sb);
 
-    public boolean isTenuredDetail() {
-        return tenuredDetail;
-    }
-
-    public void setTenuredDetail(boolean tenuredDetail) {
-        this.tenuredDetail = tenuredDetail;
-    }
-
+    @Override
 	public String toString() {
         StringBuffer sb = new StringBuffer(128);
         toStringBuffer(sb);
@@ -172,6 +267,14 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         return false;
     }
 
+    /**
+     * Returns true, if this event was triggered by a call to "System.gc()"
+     * @return <code>true</code> if triggered by "System.gc()"
+     */
+    public boolean isSystem() {
+        return getExtendedType().getName().contains("System");
+    }
+
     public boolean isInc() {
         return getExtendedType().getType() == GCEvent.Type.INC_GC;
     }
@@ -187,23 +290,33 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public boolean isConcurrentCollectionStart() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_MARK_START.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_MARK_START.getName()) // CMS AdaptiveSizePolicy
-                || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName());// G1
+                || (getExtendedType().getName().equals(Type.UJL_CMS_CONCURRENT_MARK.getName()) && getPause() > 0.000001) // Universal jvm logging, CMS
+                || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName()) // G1
+                || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_CYCLE.getName()) && getPause() < 0.00001) // Universal jvm logging, G1
+                || getExtendedType().getName().equals(Type.UJL_SHEN_CONCURRENT_RESET.getName()); // Universal Jvm logging, Shenandoah
     }
 
     public boolean isConcurrentCollectionEnd() {
         return getExtendedType().getName().equals(Type.CMS_CONCURRENT_RESET.getName()) // CMS
                 || getExtendedType().getName().equals(Type.ASCMS_CONCURRENT_RESET.getName()) // CMS AdaptiveSizePolicy
-                || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()); // G1
+                || (getExtendedType().getName().equals(Type.UJL_CMS_CONCURRENT_RESET.getName()) && getPause() > 0.0000001) // Universal jvm logging, CMS
+                || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()) // G1
+                || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_CYCLE.getName()) && getPause() > 0.0000001) // Universal jvm logging, G1
+                || getExtendedType().getName().equals(Type.UJL_SHEN_CONCURRENT_CLEANUP.getName()); // Universal jvm logging, Shenandoah
     }
 
     public boolean isInitialMark() {
-        return getTypeAsString().indexOf("initial-mark") >= 0;
+        return getTypeAsString().indexOf("initial-mark") >= 0      // all others
+                || getTypeAsString().indexOf("Initial Mark") >= 0 // Unified jvm logging, CMS + G1
+                || getTypeAsString().indexOf("Init Mark") >= 0; // Unified jvm logging, Shenandoah
     }
 
     public boolean isRemark() {
         return getTypeAsString().indexOf(Type.CMS_REMARK.getName()) >= 0
                 || getTypeAsString().indexOf(Type.ASCMS_REMARK.getName()) >= 0
-                || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0;
+                || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0
+                || getTypeAsString().indexOf(Type.UJL_PAUSE_REMARK.getName()) >= 0
+                || getTypeAsString().indexOf(Type.UJL_SHEN_FINAL_MARK.getName()) >= 0;
     }
 
     public boolean hasPause() {
@@ -228,7 +341,6 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
             return false;
         AbstractGCEvent<?> that = (AbstractGCEvent<?>) o;
         return Double.compare(that.timestamp, timestamp) == 0 &&
-                tenuredDetail == that.tenuredDetail &&
                 Double.compare(that.pause, pause) == 0 &&
                 Objects.equals(datestamp, that.datestamp) &&
                 Objects.equals(extendedType, that.extendedType) &&
@@ -239,7 +351,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     @Override
     public int hashCode() {
-        return Objects.hash(datestamp, timestamp, extendedType, tenuredDetail, typeAsString, generation, details);
+        return Objects.hash(datestamp, timestamp, extendedType, typeAsString, generation, details);
     }
 
     /**
@@ -279,6 +391,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 WRAPPER_MAP.put(fullName, extType);
             }
 
+
             return extType;
         }
 
@@ -304,6 +417,24 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
         public Concurrency getConcurrency() {
             return type.getConcurrency();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ExtendedType that = (ExtendedType) o;
+            return Objects.equals(fullName, that.fullName);
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(fullName);
         }
 
         @Override
@@ -390,9 +521,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type SCAVENGE_BEFORE_REMARK = new Type("Scavenge-Before-Remark", Generation.ALL);
 
         public static final Type FULL_GC = new Type("Full GC", Generation.ALL);
-        public static final Type FULL_GC_SYSTEM = new Type("Full GC (System)", Generation.ALL);
         public static final Type GC = new Type("GC", Generation.YOUNG);
-        public static final Type GC_SYSTEM = new Type("GC (System.gc())", Generation.YOUNG);
         public static final Type DEF_NEW = new Type("DefNew", Generation.YOUNG, Concurrency.SERIAL); // single threaded
         public static final Type PAR_NEW = new Type("ParNew", Generation.YOUNG); // parallel
         public static final Type ASPAR_NEW = new Type("ASParNew", Generation.YOUNG); // parallel (CMS AdaptiveSizePolicy)
@@ -415,11 +544,11 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type CMS_PERM = new Type("CMS Perm", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
 
         // Parnew (promotion failed)
-        public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
+         public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
 
         // CMS (concurrent mode failure / interrupted)
-        public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
-        public static final Type CMS_CMI = new Type("CMS (concurrent mode interrupted)", Generation.TENURED, Concurrency.SERIAL);
+         public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
+         public static final Type CMS_CMI = new Type("CMS (concurrent mode interrupted)", Generation.TENURED, Concurrency.SERIAL);
 
         // CMS (Concurrent Mark Sweep) Event Types
         public static final Type CMS_CONCURRENT_MARK_START = new Type("CMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
@@ -440,7 +569,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type ASCMS = new Type("ASCMS", Generation.TENURED);
 
         // Parnew (promotion failed) AdaptiveSizePolicy
-        public static final Type ASPAR_NEW_PROMOTION_FAILED = new Type("ASParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
+         public static final Type ASPAR_NEW_PROMOTION_FAILED = new Type("ASParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
 
         // CMS (concurrent mode failure / interrupted) AdaptiveSizePolicy
         public static final Type ASCMS_CMF = new Type("ASCMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
@@ -459,9 +588,6 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
         public static final Type ASCMS_INITIAL_MARK = new Type("ASCMS-initial-mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE, CollectionType.CONCURRENCY_HELPER);
         public static final Type ASCMS_REMARK = new Type("ASCMS-remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY, CollectionType.CONCURRENCY_HELPER);
-
-        // G1 stop the world types
-        public static final Type G1_FULL_GC_SYSTEM = new Type("Full GC (System.gc())", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
 
         // only young collection
         public static final Type G1_YOUNG = new Type("GC pause (young)", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
@@ -503,7 +629,84 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type G1_CONCURRENT_COUNT_END = new Type("GC concurrent-count-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type G1_CONCURRENT_CLEANUP_START = new Type("GC concurrent-cleanup-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
         public static final Type G1_CONCURRENT_CLEANUP_END = new Type("GC concurrent-cleanup-end", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        
+
+        // unified jvm logging generic event types
+        public static final Type UJL_PAUSE_YOUNG = new Type("Pause Young", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_PAUSE_FULL = new Type("Pause Full", Generation.ALL, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+
+        // unified jvm logging serial / cms event phase types
+        public static final Type UJL_SERIAL_PHASE_MARK_LIFE_OBJECTS = new Type("Phase 1: Mark live objects", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_COMPUTE_NEW_OBJECT_ADDRESSES = new Type("Phase 2: Compute new object addresses", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_ADJUST_POINTERS = new Type("Phase 3: Adjust pointers", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SERIAL_PHASE_MOVE_OBJECTS = new Type("Phase 4: Move objects", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
+        // unified jvm logging parallel event phase types
+        public static final Type UJL_PARALLEL_PHASE_MARKING = new Type("Marking Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_SUMMARY = new Type("Summary Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_ADJUST_ROOTS = new Type("Adjust Roots", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_COMPACTION = new Type("Compaction Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_POST_COMPACT = new Type("Post Compact", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
+        // unified jvm logging cms / g1 event types
+        public static final Type UJL_PAUSE_INITIAL_MARK = new Type("Pause Initial Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        public static final Type UJL_PAUSE_REMARK = new Type("Pause Remark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+
+        // unified jvm logging cms event types
+        public static final Type UJL_CMS_CONCURRENT_MARK = new Type("Concurrent Mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_PRECLEAN = new Type("Concurrent Preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_ABORTABLE_PRECLEAN = new Type("Concurrent Abortable Preclean", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_SWEEP = new Type("Concurrent Sweep", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_RESET = new Type("Concurrent Reset", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_CMS_CONCURRENT_OLD = new Type("Old", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY);
+
+        // unified jvm logging g1 event types
+        public static final Type UJL_G1_PAUSE_MIXED = new Type("Pause Mixed", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_G1_TO_SPACE_EXHAUSTED = new Type("To-space exhausted", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC);
+        public static final Type UJL_G1_CONCURRENT_CYCLE = new Type("Concurrent Cycle", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PAUSE_CLEANUP = new Type("Pause Cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
+        public static final Type UJL_G1_EDEN = new Type("Eden regions", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_REGION);
+        public static final Type UJL_G1_SURVIVOR = new Type("Survivor regions", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_REGION);
+        public static final Type UJL_G1_OLD = new Type("Old regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
+        public static final Type UJL_G1_HUMongous = new Type("Humongous regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
+        public static final Type UJL_G1_ARCHIVE = new Type("Archive regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
+
+        public static final Type UJL_G1_PHASE_PRE_EVACUATE_COLLECTION_SET = new Type("Pre Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_EVACUATE_COLLECTION_SET = new Type("Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_POST_EVACUATE_COLLECTION_SET = new Type("Post Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_OTHER = new Type("Other", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_PREPARE_FOR_COMPACTION = new Type("Phase 2: Prepare for compaction", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_COMPACT_HEAP = new Type("Phase 4: Compact heap", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+
+        // unified jvm logging shenandoah event types
+        public static final Type UJL_SHEN_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_INIT_UPDATE_REFS = new Type("Pause Init Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_DEGENERATED_GC = new Type("Pause Degenerated GC", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CONC_MARK = new Type("Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CONC_EVAC = new Type("Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CANCEL_CONC_MARK = new Type("Cancel concurrent mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_RESET = new Type("Concurrent reset", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CLEANUP = new Type("Concurrent cleanup", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_UNCOMMIT = new Type("Concurrent uncommit", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+
+        // unified jvm logging ZGC event types
+        public static final Type UJL_ZGC_GARBAGE_COLLECTION = new Type("Garbage Collection", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PERCENTAGE);
+        public static final Type UJL_ZGC_PAUSE_MARK_START = new Type("Pause Mark Start", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_MARK_END = new Type("Pause Mark End", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_PAUSE_RELOCATE_START = new Type("Pause Relocate Start", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_MARK = new Type("Concurrent Mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_NONREF = new Type("Concurrent Process Non-Strong References", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RESET_RELOC_SET = new Type("Concurrent Reset Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_DETATCHED_PAGES = new Type("Concurrent Destroy Detached Pages", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_SELECT_RELOC_SET = new Type("Concurrent Select Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_PREPARE_RELOC_SET = new Type("Concurrent Prepare Relocation Set", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_CONCURRENT_RELOCATE = new Type("Concurrent Relocate", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_ZGC_HEAP_CAPACITY = new Type("Capacity", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_HEAP_MEMORY_PERCENTAGE);
+
         // IBM Types
         // TODO: are scavenge always young only??
         public static final Type IBM_AF = new Type("af", Generation.YOUNG);
@@ -521,29 +724,46 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     }
 
-    public static enum GcPattern {
-        // <timestamp>: [<GC type>]
+    /**
+     * Patterns of additional information for gc events.
+     * <ul>
+     *     <li><code>GC</code>: just the name of the event type</li>
+     *     <li><code>PAUSE</code>: length of a pause</li>
+     *     <li><code>DURATION</code>: cycle time of a (usually concurrent) event</li>
+     *     <li><code>MEMORY</code>: information about heap changes</li>
+     *     <li><code>REGION</code>: information about number of regions used (only G1 up to now)</li>
+     * </ul>
+     */
+    public enum GcPattern {
+        /** "GC type" (just the name, no additional information) */
         GC,
-        // <timestamp>: [<GC type>, <pause>]
+        /** "GC type": "pause" */
         GC_PAUSE,
-        // <timestamp>: [<GC type>, <pause>/<duration>]
+        /** "GC type": "pause"/"duration" */
         GC_PAUSE_DURATION,
-        // [<GC type>, <mem current>(<mem total>)]
+        /** "GC type": "memory current"("memory total") */
         GC_MEMORY,
-        // <timestamp>: [<GC type> <mem before>-><mem after>(<mem total>), <pause>]
-    	GC_MEMORY_PAUSE}
+        /** "GC type": "memory before"-&gt;"memory after"("memory total"), "pause" */
+        GC_MEMORY_PAUSE,
+        /** "GC type": "# regions before"-&gt;"# regions after"[("#total regions")] ("total regions" is optional; needs a region size to calculate memory usage)*/
+        GC_REGION,
+        /** "Garbage Collection (Reason)" "memory before"("percentage of total")-&gt;"memory after"("percentage of total") */
+        GC_MEMORY_PERCENTAGE,
+        /** "Heap memory type" "memory current"("memory percentage") */
+        GC_HEAP_MEMORY_PERCENTAGE
+    }
 
-    public static enum Concurrency { CONCURRENT, SERIAL };
+    public enum Concurrency { CONCURRENT, SERIAL }
 
-    public static enum Generation { YOUNG,
+    public enum Generation { YOUNG,
         TENURED,
         /** also used for "metaspace" that is introduced with java 8 */
         PERM,
         ALL,
         /** special value for vm operations that are not collections */
-        OTHER };
+        OTHER }
 
-    public static enum CollectionType {
+    public enum CollectionType {
         /** plain GC pause collection garbage */
         COLLECTION,
         /**
@@ -554,5 +774,5 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
          */
         VM_OPERATION,
         /** stop the world pause but used to prepare concurrent collection, might not collect garbage */
-        CONCURRENCY_HELPER };
+        CONCURRENCY_HELPER }
 }
