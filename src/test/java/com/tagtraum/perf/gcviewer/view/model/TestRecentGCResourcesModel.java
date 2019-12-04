@@ -1,18 +1,17 @@
 package com.tagtraum.perf.gcviewer.view.model;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.net.MalformedURLException;
 import java.util.Arrays;
 
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class {@link RecentGCResourcesModel}.
  */
-public class TestRecentGCResourcesModel {
+class TestRecentGCResourcesModel {
     /**
      * Return the missing part of a relative path compared to its absolute path.
      */
@@ -22,29 +21,29 @@ public class TestRecentGCResourcesModel {
     }
 
     @Test
-    public void addString() throws MalformedURLException {
+    void addString() {
         RecentGCResourcesModel model = new RecentGCResourcesModel();
         model.add("temp/test.log");
-        Assert.assertThat("add first entry", model.getResourceNameGroups().size(), is(1));
+        assertThat("add first entry", model.getResourceNameGroups().size(), is(1));
 
         model.add("temp/test.log");
-        Assert.assertThat("add identical entry", model.getResourceNameGroups().size(), is(1));
+        assertThat("add identical entry", model.getResourceNameGroups().size(), is(1));
 
         model.add("file:/" + getPathExpansion() + "temp/test.log");
-        Assert.assertThat("add url entry of same file", model.getResourceNameGroups().size(), is(1));
+        assertThat("add url entry of same file", model.getResourceNameGroups().size(), is(1));
     }
 
     @Test
-    public void addList() {
+    void addList() {
         RecentGCResourcesModel model = new RecentGCResourcesModel();
         model.add(Arrays.asList(new GcResourceFile("temp/test.log")));
-        Assert.assertThat("add first entry", model.getResourceNameGroups().size(), is(1));
+        assertThat("add first entry", model.getResourceNameGroups().size(), is(1));
 
         model.add(Arrays.asList(new GcResourceFile("temp/test.log")));
-        Assert.assertThat("add identical entry", model.getResourceNameGroups().size(), is(1));
+        assertThat("add identical entry", model.getResourceNameGroups().size(), is(1));
 
         model.add(Arrays.asList(new GcResourceFile("file:/" + getPathExpansion() + "temp/test.log")));
-        Assert.assertThat("add url entry of same file", model.getResourceNameGroups().size(), is(1));
+        assertThat("add url entry of same file", model.getResourceNameGroups().size(), is(1));
     }
 
 }

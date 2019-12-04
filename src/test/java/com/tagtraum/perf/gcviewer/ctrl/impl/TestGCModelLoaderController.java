@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -21,8 +21,8 @@ import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
@@ -33,12 +33,13 @@ import org.mockito.Mockito;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  *         <p>created on: 05.01.2014</p>
  */
-public class TestGCModelLoaderController {
+class TestGCModelLoaderController {
+
     private GCModelLoaderControllerImpl controller;
     private GCViewerGui gcViewerGui;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() {
         gcViewerGui = new GCViewerGui();
         controller = new GCModelLoaderControllerImpl(gcViewerGui);
         new GCViewerGuiBuilder().initGCViewerGui(gcViewerGui, controller);
@@ -46,13 +47,13 @@ public class TestGCModelLoaderController {
     }
 
     @Test
-    public void openStringFail() throws Exception {
+    void openStringFail() {
         controller.open(new GcResourceFile("does_not_exist"));
         assertThat("number of gcdocuments", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(1));
     }
 
     @Test
-    public void openString() throws Exception {
+    void openString() throws Exception {
         assertThat("number of gcdocuments before", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(0));
         controller.open(new GcResourceFile(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt")));
         assertThat("number of gcdocuments after", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(1));
@@ -60,7 +61,7 @@ public class TestGCModelLoaderController {
     }
 
     @Test
-    public void openAsSeries() throws Exception {
+    void openAsSeries() throws Exception {
         assertThat("number of gcdocuments before", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(0));
         ArrayList<GCResource> gcResourceList = getGcResourcesForSeries();
 
@@ -81,7 +82,7 @@ public class TestGCModelLoaderController {
      * Test drag and drop action on GCViewerGui.
      */
     @Test
-    public void dropOnDesktopPane() throws Exception {
+    void dropOnDesktopPane() throws Exception {
         // TODO SWINGWORKER: test drag and drop on GCDocument
         assertThat("number of gcdocuments before", controller.getGCViewerGui().getDesktopPane().getAllFrames().length, is(0));
 
@@ -102,7 +103,7 @@ public class TestGCModelLoaderController {
     }
 
     @Test
-    public void open_File() throws Exception {
+    void open_File() throws Exception {
         File[] files = new File[1];
         File file = new File(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt"));
         files[0] = file;
@@ -111,14 +112,14 @@ public class TestGCModelLoaderController {
     }
 
     @Test
-    public void open_GcResourceFile() throws Exception {
+    void open_GcResourceFile() throws Exception {
         GCResource resource = new GcResourceFile(UnittestHelper.getResourceAsString(FOLDER.OPENJDK, "SampleSun1_6_0CMS.txt"));
         controller.open(resource);
         assertThat(getOpenResources(), contains(resource));
     }
 
     @Test
-    public void open_GcResourceSeries() throws Exception {
+    void open_GcResourceSeries() throws Exception {
         List<GCResource> resources = getGcResourcesForSeries();
         GCResource series = new GcResourceSeries(resources);
         controller.open(series);

@@ -1,16 +1,16 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unified java logging ZGC algorithm in OpenJDK 11
@@ -32,20 +32,20 @@ public class TestDataReaderUJLZGC {
         return UnittestHelper.getGCModelFromLogFile(fileName, UnittestHelper.FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         gcAllModel = getGCModelFromLogFile("sample-ujl-zgc-gc-all.txt");
         gcDefaultModel = getGCModelFromLogFile("sample-ujl-zgc-gc-default.txt");
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         gcAllModel = null;
         gcDefaultModel = null;
     }
 
     @Test
-    public void testGcAll() {
+    void testGcAll() {
         assertThat("size", gcAllModel.size(), is(8));
         assertThat("amount of gc event types", gcAllModel.getGcEventPauses().size(), is(1));
         assertThat("amount of gc events", gcAllModel.getGCPause().getN(), is(1));
@@ -56,7 +56,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllGarbageCollection() {
+    void testGcAllGarbageCollection() {
         AbstractGCEvent<?> garbageCollectionEvent = gcAllModel.get(gcAllModel.size()-1);
         UnittestHelper.testMemoryPauseEvent(garbageCollectionEvent,
                 "Garbage Collection",
@@ -68,7 +68,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllPauseMarkStart() {
+    void testGcAllPauseMarkStart() {
         AbstractGCEvent<?> pauseMarkStartEvent = gcAllModel.getGCEvents().next().getPhases().get(0);
         UnittestHelper.testMemoryPauseEvent(pauseMarkStartEvent,
                 "Pause Mark Start",
@@ -80,7 +80,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllConcurrentMark() {
+    void testGcAllConcurrentMark() {
         AbstractGCEvent<?> concurrentMarkEvent = gcAllModel.get(CONCURRENT_MARK_INDEX);
         UnittestHelper.testMemoryPauseEvent(concurrentMarkEvent,
                 "Concurrent Mark",
@@ -92,7 +92,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllPauseMarkEnd() {
+    void testGcAllPauseMarkEnd() {
         AbstractGCEvent<?> pauseMarkEndEvent = gcAllModel.getGCEvents().next().getPhases().get(1);
         UnittestHelper.testMemoryPauseEvent(pauseMarkEndEvent,
                 "Pause Mark End",
@@ -104,7 +104,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllConcurrentNonref() {
+    void testGcAllConcurrentNonref() {
         AbstractGCEvent<?> concurrentNonrefEvent = gcAllModel.get(CONCURRENT_PROCESS_REFERENCES_INDEX);
         UnittestHelper.testMemoryPauseEvent(concurrentNonrefEvent,
                 "Concurrent Process Non-Strong References",
@@ -116,7 +116,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllConcurrentResetRelocSet() {
+    void testGcAllConcurrentResetRelocSet() {
         AbstractGCEvent<?> concurrentResetRelocSetEvent = gcAllModel.get(CONCURRENT_RESET_RELOCATION_SET_INDEX);
         UnittestHelper.testMemoryPauseEvent(concurrentResetRelocSetEvent,
                 "Concurrent Reset Relocation Set",
@@ -128,7 +128,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllConcurrentDetachedPages() {
+    void testGcAllConcurrentDetachedPages() {
         AbstractGCEvent<?> concurrentDetachedPagesEvent = gcAllModel.get(CONCURRENT_DESTROY_DETACHED_PAGES_INDEX);
         UnittestHelper.testMemoryPauseEvent(concurrentDetachedPagesEvent,
                 "Concurrent Destroy Detached Pages",
@@ -140,7 +140,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllConcurrentSelectRelocSet() {
+    void testGcAllConcurrentSelectRelocSet() {
         AbstractGCEvent<?> concurrentSelectRelocSetEvent = gcAllModel.get(CONCURRENT_SELECT_RELOCATION_SET_INDEX);
         UnittestHelper.testMemoryPauseEvent(concurrentSelectRelocSetEvent,
                 "Concurrent Select Relocation Set",
@@ -152,7 +152,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllConcurrentPrepareRelocSet() {
+    void testGcAllConcurrentPrepareRelocSet() {
         AbstractGCEvent<?> concurrentPrepareRelocSetEvent = gcAllModel.get(CONCURRENT_PREPARE_RELOCATION_SET_INDEX);
         UnittestHelper.testMemoryPauseEvent(concurrentPrepareRelocSetEvent,
                 "Concurrent Prepare Relocation Set",
@@ -164,7 +164,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllPauseRelocateStart() {
+    void testGcAllPauseRelocateStart() {
         AbstractGCEvent<?> pauseRelocateStartEvent = gcAllModel.getGCEvents().next().getPhases().get(2);
         UnittestHelper.testMemoryPauseEvent(pauseRelocateStartEvent,
                 "Pause Relocate Start",
@@ -176,7 +176,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcAllConcurrentRelocate() {
+    void testGcAllConcurrentRelocate() {
         AbstractGCEvent<?> concurrentRelocateEvent = gcAllModel.get(CONCURRENT_RELOCATE_INDEX);
         UnittestHelper.testMemoryPauseEvent(concurrentRelocateEvent,
                 "Concurrent Relocate",
@@ -188,7 +188,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcDefault() {
+    void testGcDefault() {
         assertThat("size", gcDefaultModel.size(), is(5));
         assertThat("amount of STW GC pause types", gcDefaultModel.getGcEventPauses().size(), is(5));
         assertThat("amount of STW Full GC pause types", gcDefaultModel.getFullGcEventPauses().size(), is(0));
@@ -196,7 +196,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcDefaultMetadataGcThreshold() {
+    void testGcDefaultMetadataGcThreshold() {
         // Default gc log gives no pause time or total heap size
         AbstractGCEvent<?> metadataGcThresholdEvent = gcDefaultModel.get(0);
         UnittestHelper.testMemoryPauseEvent(metadataGcThresholdEvent,
@@ -209,7 +209,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcDefaultWarmup() {
+    void testGcDefaultWarmup() {
         AbstractGCEvent<?> warmupEvent = gcDefaultModel.get(1);
         UnittestHelper.testMemoryPauseEvent(warmupEvent,
                 "Warmup heap",
@@ -221,7 +221,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcDefaultProactive() {
+    void testGcDefaultProactive() {
         AbstractGCEvent<?> proactiveEvent = gcDefaultModel.get(2);
         UnittestHelper.testMemoryPauseEvent(proactiveEvent,
                 "Proactive heap",
@@ -233,7 +233,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testGcDefaultAllocationRate() {
+    void testGcDefaultAllocationRate() {
         AbstractGCEvent<?> allocationRateEvent = gcDefaultModel.get(3);
         UnittestHelper.testMemoryPauseEvent(allocationRateEvent,
                 "Allocation Rate heap",
@@ -245,7 +245,7 @@ public class TestDataReaderUJLZGC {
     }
 
     @Test
-    public void testDefaultGcSystemGc() {
+    void testDefaultGcSystemGc() {
         AbstractGCEvent<?> systemGcEvent = gcDefaultModel.get(4);
         UnittestHelper.testMemoryPauseEvent(systemGcEvent,
                 "System.gc() heap",

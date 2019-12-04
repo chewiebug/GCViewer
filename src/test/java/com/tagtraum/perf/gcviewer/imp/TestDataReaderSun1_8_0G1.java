@@ -1,15 +1,14 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
@@ -19,7 +18,7 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test logs generated specifically by JDK 1.8 G1 algorithm.
@@ -27,18 +26,18 @@ import org.junit.Test;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 22.07.2014</p>
  */
-public class TestDataReaderSun1_8_0G1 {
+class TestDataReaderSun1_8_0G1 {
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
     }
 
-    private DataReader getDataReader(GCResource gcResource) throws UnsupportedEncodingException, IOException {
+    private DataReader getDataReader(GCResource gcResource) throws IOException {
         return new DataReaderSun1_6_0G1(gcResource, getInputStream(gcResource.getResourceName()), GcLogType.SUN1_8G1);
     }
 
     @Test
-    public void fullConcurrentCycle() throws Exception {
+    void fullConcurrentCycle() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1_ConcurrentCycle.txt");
@@ -62,7 +61,7 @@ public class TestDataReaderSun1_8_0G1 {
      * sizes again. Test, that they are parsed correctly.
      */
     @Test
-    public void fullGcWithDetailedSizes() throws Exception {
+    void fullGcWithDetailedSizes() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -89,7 +88,7 @@ public class TestDataReaderSun1_8_0G1 {
     }
 
     @Test
-    public void printGCCauseTenuringDistribution() throws Exception {
+    void printGCCauseTenuringDistribution() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1PrintGCCausePrintTenuringDistribution.txt");
@@ -98,13 +97,13 @@ public class TestDataReaderSun1_8_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("gc pause sum", 16.7578613, model.getPause().getSum(), 0.000000001);
+        assertEquals(16.7578613, model.getPause().getSum(), 0.000000001, "gc pause sum");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void printHeapAtGC() throws Exception {
+    void printHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1PrintHeapAtGc.txt");
@@ -113,13 +112,13 @@ public class TestDataReaderSun1_8_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("gc pause sum", 0.0055924, model.getPause().getSum(), 0.000000001);
+        assertEquals(0.0055924, model.getPause().getSum(), 0.000000001, "gc pause sum");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void humongousMixed() throws Exception {
+    void humongousMixed() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1HumongousMixed.txt");
@@ -133,7 +132,7 @@ public class TestDataReaderSun1_8_0G1 {
     }
 
     @Test
-    public void extendedRemark() throws Exception {
+    void extendedRemark() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1extended-remark.txt");
@@ -148,7 +147,7 @@ public class TestDataReaderSun1_8_0G1 {
     }
 
     @Test
-    public void youngInitialMarkSystemGc() throws Exception {
+    void youngInitialMarkSystemGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1SystemGcYoung.txt");
@@ -164,7 +163,7 @@ public class TestDataReaderSun1_8_0G1 {
     }
 
     @Test
-    public void youngInitialMarkMetadataThreshold() throws Exception {
+    void youngInitialMarkMetadataThreshold() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1YoungMetadataGcThreshold.txt");
@@ -179,7 +178,7 @@ public class TestDataReaderSun1_8_0G1 {
     }
 
     @Test
-    public void doubleTimeStamp() throws Exception {
+    void doubleTimeStamp() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -199,7 +198,7 @@ public class TestDataReaderSun1_8_0G1 {
     }
 
     @Test
-    public void ignorePrintStringDeduplicationStatistics() throws Exception {
+    void ignorePrintStringDeduplicationStatistics() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1StringDeduplication.txt");

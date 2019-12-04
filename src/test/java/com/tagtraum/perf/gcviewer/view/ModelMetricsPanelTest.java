@@ -1,11 +1,10 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import org.junit.Test;
-
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test {@link ModelMetricsPanel}. The tests all just check that no Exception occurs. 
@@ -13,17 +12,17 @@ import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 25.01.2012</p>
  */
-public class ModelMetricsPanelTest {
+class ModelMetricsPanelTest {
     
     @Test
-    public void testEmptyModel() {
+    void testEmptyModel() {
         GCModel model = new GCModel();
         ModelMetricsPanel panel = new ModelMetricsPanel();
         panel.setModel(model);
     }
     
     @Test
-    public void testOneElementModel() {
+    void testOneElementModel() {
         GCEvent event = new GCEvent();
         event.setTimestamp(0.5);
         event.setType(Type.G1_YOUNG_INITIAL_MARK);
@@ -43,7 +42,7 @@ public class ModelMetricsPanelTest {
     }
 
     @Test
-    public void testVmOpModel() {
+    void testVmOpModel() {
         GCEvent event = new GCEvent();
         event.setTimestamp(0.5);
         event.setType(Type.G1_YOUNG_INITIAL_MARK);
@@ -69,7 +68,7 @@ public class ModelMetricsPanelTest {
     }
     
     @Test
-    public void testTwoElementsModel() {
+    void testTwoElementsModel() {
         GCModel model = new GCModel();
 
         GCEvent event = new GCEvent();

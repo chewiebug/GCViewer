@@ -1,11 +1,11 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test logs generated specifically by java 1.8.
@@ -27,7 +27,7 @@ import org.junit.Test;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 25.09.2013</p>
  */
-public class TestDataReaderSun1_8_0 {
+class TestDataReaderSun1_8_0 {
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
@@ -38,7 +38,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void parallelPrintHeapAtGC() throws Exception {
+    void parallelPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0ParallelPrintHeapAtGC.txt");
@@ -53,7 +53,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void scavengeBeforeRemarkPrintHeapAtGC_YGOccupancy() throws Exception {
+    void scavengeBeforeRemarkPrintHeapAtGC_YGOccupancy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0CMS_ScavengeBeforeRemark_HeapAtGc.txt");
@@ -66,11 +66,11 @@ public class TestDataReaderSun1_8_0 {
         assertThat("scavenge before remark event", model.get(0).getPause(), closeTo(0.0000778, 0.000000001));
         assertThat("remark event", model.get(1).getPause(), closeTo(0.0019970 - 0.0000778, 0.000000001));
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void scavengeBeforeRemark_HeapAtGC_PrintTenuringDistribution_PrintFLSStats() throws Exception {
+    void scavengeBeforeRemark_HeapAtGC_PrintTenuringDistribution_PrintFLSStats() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0CMS_ScavengeBR_HeapAtGC_TenuringDist_PrintFLS.txt");
@@ -83,11 +83,11 @@ public class TestDataReaderSun1_8_0 {
         assertThat("scavenge before remark event", model.get(0).getPause(), closeTo(0.1306264, 0.000000001));
         assertThat("remark event", model.get(1).getPause(), closeTo(0.1787717 - 0.1306264, 0.000000001));
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void parallelPrintTenuringGcCause() throws Exception {
+    void parallelPrintTenuringGcCause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0Parallel_Tenuring_PrintGCCause.txt");
@@ -100,11 +100,11 @@ public class TestDataReaderSun1_8_0 {
         assertThat("gc name", model.get(0).getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
         assertThat("pause", model.get(0).getPause(), closeTo(0.0199218, 0.000000001));
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void parallelApple() throws Exception {
+    void parallelApple() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0Parallel_Apple.txt");
@@ -115,11 +115,11 @@ public class TestDataReaderSun1_8_0 {
 
         assertThat("gc count", model.size(), is(6));
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void cmsPrintHeapBeforeFullGc() throws Exception {
+    void cmsPrintHeapBeforeFullGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_8_0CMS_HeadDumpBeforeFullGc.txt");
@@ -134,11 +134,11 @@ public class TestDataReaderSun1_8_0 {
         assertThat("gc name full gc", model.get(1).getTypeAsString(), equalTo("Full GC (GCLocker Initiated GC); CMS (concurrent mode failure); Metaspace"));
         assertThat("pause", model.get(1).getPause(), closeTo(218.6928810, 0.000000001));
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void shenandoahPauseMark() throws Exception {
+    void shenandoahPauseMark() throws Exception {
         // in its early implementation (jdk8u171), Shenandoah had memory information in the "Pause Final Mark" event, which was dropped later (jdk8u232)
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -176,7 +176,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shenandoahPauseUpdateRefs() throws Exception {
+    void shenandoahPauseUpdateRefs() throws Exception {
         // in its early implementation (jdk8u171), Shenandoah had memory information in the "Pause Final Update Refs" event, which was dropped later (jdk8u232)
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -208,7 +208,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shehandoahConcurrentEventsjsk8u171() throws Exception {
+    void shehandoahConcurrentEventsjsk8u171() throws Exception {
         // probably jdk8u171
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -238,7 +238,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shehandoahConcurrentEventsjsk8u232() throws Exception {
+    void shehandoahConcurrentEventsjsk8u232() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -286,7 +286,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shenandoahIgnoredLines() throws Exception {
+    void shenandoahIgnoredLines() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -305,7 +305,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shenandoaPauseInitMarkDetails() throws Exception {
+    void shenandoaPauseInitMarkDetails() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -329,7 +329,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shenandoahConcurrentCleanup() throws Exception {
+    void shenandoahConcurrentCleanup() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -360,7 +360,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shenandoahDetailsShutdown()  throws Exception {
+    void shenandoahDetailsShutdown()  throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.INFO);
         GCResource gcResource = new GcResourceFile("SampleOpenJdk1_8_0ShenandoahDetailsShutdown.txt");
@@ -379,7 +379,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shenandoah_171_Beginning()  throws Exception {
+    void shenandoah_171_Beginning()  throws Exception {
         // in its early implementation (jdk8u171), Shenandoah had memory information in the "Pause Final Mark" event, which was dropped later (jdk8u232)
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.INFO);
@@ -399,7 +399,7 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
-    public void shenandoah_232_Beginning()  throws Exception {
+    void shenandoah_232_Beginning()  throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.INFO);
         GCResource gcResource = new GcResourceFile("SampleOpenJdk1_8_0-232-ShenandoahBeginning.txt");

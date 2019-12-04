@@ -4,12 +4,12 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -17,10 +17,10 @@ import static org.junit.Assert.assertEquals;
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class TestDataReaderSun1_2_2 {
+class TestDataReaderSun1_2_2 {
 
     @Test
-    public void testParse1() throws Exception {
+    void testParse1() throws Exception {
         AbstractGCEvent<GCEvent> event1 = new GCEvent(0, 817, 187, 819, 0.008, AbstractGCEvent.Type.GC);
         event1.getGeneration();
         AbstractGCEvent<GCEvent> event2 = new GCEvent(0.02, 775, 188, 819, 0.005, AbstractGCEvent.Type.GC);

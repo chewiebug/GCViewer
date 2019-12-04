@@ -1,9 +1,9 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static com.tagtraum.perf.gcviewer.UnittestHelper.toKiloBytes;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.number.IsCloseTo.closeTo;
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +15,13 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="gcviewer@gmx.ch">Joerg Wuethrich</a>
  *         <p>created on 08.10.2014</p>
  */
-public class TestDataReaderIBM_J9_R27 {
+class TestDataReaderIBM_J9_R27 {
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.IBM, fileName);
@@ -32,7 +32,7 @@ public class TestDataReaderIBM_J9_R27 {
     }
 
     @Test
-    public void testFullHeaderWithAfGcs() throws Exception {
+    void testFullHeaderWithAfGcs() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleIBMJ9_R27_SR1_full_header.txt");
@@ -66,7 +66,7 @@ public class TestDataReaderIBM_J9_R27 {
     }
 
     @Test
-    public void testSystemGc() throws Exception {
+    void testSystemGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleIBMJ9_R27_SR1_global.txt");

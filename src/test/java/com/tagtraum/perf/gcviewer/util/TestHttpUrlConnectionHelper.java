@@ -1,9 +1,9 @@
 package com.tagtraum.perf.gcviewer.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,9 +25,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TestHttpUrlConnectionHelper {
+class TestHttpUrlConnectionHelper {
 
     private static final String SAMPLE_GCLOG_SUN1_6_0 = "SampleSun1_6_0PrintHeapAtGC.txt";
     private static final String SAMPLE_GCLOG_SUN1_6_0_GZ = SAMPLE_GCLOG_SUN1_6_0 + ".gz";  
@@ -49,9 +49,9 @@ public class TestHttpUrlConnectionHelper {
 
         return new ByteArrayInputStream(sb.toString().getBytes());
     }
-    
+
     @Test
-    public void openInputStream404GzipEncoding() throws Exception {
+    void openInputStream404GzipEncoding() throws Exception {
         String filename = SAMPLE_GCLOG_SUN1_6_0 + "xx";
         File file = new File(PARENT_PATH, filename);
         String contentType = null;
@@ -61,7 +61,7 @@ public class TestHttpUrlConnectionHelper {
     }
         
     @Test
-    public void openInputStream404NoEncoding() throws Exception {
+    void openInputStream404NoEncoding() throws Exception {
         String filename = SAMPLE_GCLOG_SUN1_6_0 + "xx";
         File file = new File(PARENT_PATH, filename);
         String contentEncoding = null;
@@ -71,7 +71,7 @@ public class TestHttpUrlConnectionHelper {
     }
 
     @Test
-    public void openInputStreamGZipOk() throws Exception {
+    void openInputStreamGZipOk() throws Exception {
         String filename = SAMPLE_GCLOG_SUN1_6_0_GZ;
         File file = new File(PARENT_PATH, filename);
         String contentEncoding = HttpUrlConnectionHelper.GZIP;
@@ -80,7 +80,7 @@ public class TestHttpUrlConnectionHelper {
     }
     
     @Test
-    public void openInputStreamOk() throws Exception {
+    void openInputStreamOk() throws Exception {
         String filename = SAMPLE_GCLOG_SUN1_6_0;
         File file = new File(PARENT_PATH, filename);
         String contentEncoding = null;
@@ -149,7 +149,7 @@ public class TestHttpUrlConnectionHelper {
             verify(conn, atLeastOnce()).connect();
 
             if (acceptEncoding == null) {
-                assertEquals("openInputStream(conn, null) returns non-encoded stream", fis, in);
+                assertEquals(fis, in, "openInputStream(conn, null) returns non-encoded stream");
             } 
             else {
                 assertInputStreamEqualToFile("openInputStream(conn," + acceptEncoding + ")", expectedFile, in);

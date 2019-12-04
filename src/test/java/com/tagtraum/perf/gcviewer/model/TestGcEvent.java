@@ -1,14 +1,14 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests for class {@link GCEvent}.
@@ -16,13 +16,13 @@ import org.junit.Test;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 04.02.2012</p>
  */
-public class TestGcEvent {
+class TestGcEvent {
 
     private GCEvent gcEvent;
     private GCEvent fullGcEvent;
     
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         // 87.707: [GC 87.707: [DefNew: 139904K->5655K(157376K), 0.0543079 secs] 194540K->60292K(506944K), 0.0544020 secs] [Times: user=0.03 sys=0.02, real=0.06 secs]
         gcEvent = new GCEvent(87.707, 194540, 60292, 506944, 0.0544020, Type.GC);
         GCEvent defNewEvent = new GCEvent(87.707, 139904, 5655, 157376, 0.0543079, Type.DEF_NEW);
@@ -37,57 +37,57 @@ public class TestGcEvent {
     }
     
     @Test
-    public void testAddGc() {
+    void testAddGc() {
         // when GC was parsed, only "young" information really is present; "tenured" must be inferred
-        assertEquals("number of details", 1, gcEvent.details.size());
+        assertEquals(1, gcEvent.details.size(), "number of details");
         
         GCEvent defNewEvent = gcEvent.details().next();
-        assertEquals("type", Type.DEF_NEW.getName(), defNewEvent.getExtendedType().getName());
-        assertEquals("getYoung", defNewEvent, gcEvent.getYoung());
+        assertEquals(Type.DEF_NEW.getName(), defNewEvent.getExtendedType().getName(), "type");
+        assertEquals(defNewEvent, gcEvent.getYoung(), "getYoung");
         
         GCEvent tenured = gcEvent.getTenured();
-        assertNotNull("tenured", tenured);
+        assertNotNull(tenured, "tenured");
     }
 
     @Test
-    public void testAddFullGc() {
+    void testAddFullGc() {
         // when Full GC was parsed, "young" information was deferred, other were parsed.
-        assertEquals("number of details", 2, fullGcEvent.details.size());
+        assertEquals(2, fullGcEvent.details.size(), "number of details");
         
         GCEvent tenured = fullGcEvent.details.get(0);
-        assertEquals("type", Type.TENURED.getName(), tenured.getExtendedType().getName());
-        assertEquals("getTenured", tenured, fullGcEvent.getTenured());
+        assertEquals(Type.TENURED.getName(), tenured.getExtendedType().getName(), "type");
+        assertEquals(tenured, fullGcEvent.getTenured(), "getTenured");
         
         GCEvent perm = fullGcEvent.details.get(1);
-        assertEquals("type", Type.PERM.getName(), perm.getExtendedType().getName());
-        assertEquals("getPerm", perm, fullGcEvent.getPerm());
+        assertEquals(Type.PERM.getName(), perm.getExtendedType().getName(), "type");
+        assertEquals(perm, fullGcEvent.getPerm(), "getPerm");
         
         GCEvent young = fullGcEvent.getYoung();
-        assertNotNull("young", young);
+        assertNotNull(young, "young");
     }
 
     @Test
-    public void testGetInferredYoungFullGcEvent() {
+    void testGetInferredYoungFullGcEvent() {
         GCEvent young = fullGcEvent.getYoung();
-        assertEquals("type", ExtendedType.UNDEFINED, young.getExtendedType());
-        assertEquals("preused", 141564 - 38156, young.getPreUsed());
-        assertEquals("postused", 54636 - 54636, young.getPostUsed());
-        assertEquals("total", 506944 - 349568, young.getTotal());
-        assertEquals("pause", 0.6013150, young.getPause(), 0.00000001);
+        assertEquals(ExtendedType.UNDEFINED, young.getExtendedType(), "type");
+        assertEquals(141564 - 38156, young.getPreUsed(), "preused");
+        assertEquals(54636 - 54636, young.getPostUsed(), "postused");
+        assertEquals(506944 - 349568, young.getTotal(), "total");
+        assertEquals(0.6013150, young.getPause(), 0.00000001, "pause");
     }
 
     @Test
-    public void testGetInferredTenuredGcEvent() {
+    void testGetInferredTenuredGcEvent() {
         GCEvent tenured = gcEvent.getTenured();
-        assertEquals("tenured type", ExtendedType.UNDEFINED, tenured.getExtendedType());
-        assertEquals("preused", 194540 - 139904, tenured.getPreUsed());
-        assertEquals("postused", 60292 - 5655, tenured.getPostUsed());
-        assertEquals("total tenured", 506944 - 157376, tenured.getTotal());
-        assertEquals("pause", 0.0543079, tenured.getPause(), 0.000001);
+        assertEquals(ExtendedType.UNDEFINED, tenured.getExtendedType(), "tenured type");
+        assertEquals(194540 - 139904, tenured.getPreUsed(), "preused");
+        assertEquals(60292 - 5655, tenured.getPostUsed(), "postused");
+        assertEquals(506944 - 157376, tenured.getTotal(), "total tenured");
+        assertEquals(0.0543079, tenured.getPause(), 0.000001, "pause");
     }
 
     @Test
-    public void testCloneAndMerge() throws Exception {
+    void testCloneAndMerge() {
         // 87.707: [GC 87.707: [DefNew: 139904K->5655K(157376K), 0.0543079 secs] 194540K->60292K(506944K), 0.0544020 secs] [Times: user=0.03 sys=0.02, real=0.06 secs]
         // 83.403: [Full GC 83.403: [Tenured: 38156K->54636K(349568K), 0.6013150 secs] 141564K->54636K(506944K), [Perm : 73727K->73727K(73728K)], 0.6014256 secs] [Times: user=0.58 sys=0.00, real=0.59 secs]
         GCEvent detailEvent1 = new GCEvent(0.01, 100, 90, 1000, 0.25, Type.G1_YOUNG);

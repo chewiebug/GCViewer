@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,18 +15,18 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unified java logging G1 algorithm in OpenJDK 11
  */
-public class TestDataReaderUJLG1JDK11 {
+class TestDataReaderUJLG1JDK11 {
     private GCModel getGCModelFromLogFile(String fileName) throws IOException {
         return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
-    public void testDefaultsPauseYoungNormal() throws Exception {
+    void testDefaultsPauseYoungNormal() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -44,7 +44,7 @@ public class TestDataReaderUJLG1JDK11 {
     }
 
     @Test
-    public void testNewUptimestamp() throws Exception {
+    void testNewUptimestamp() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -60,7 +60,7 @@ public class TestDataReaderUJLG1JDK11 {
     }
 
     @Test
-    public void testDefaultsPauseYoungConcurrentStart() throws Exception {
+    void testDefaultsPauseYoungConcurrentStart() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -78,7 +78,7 @@ public class TestDataReaderUJLG1JDK11 {
     }
 
     @Test
-    public void testDefaultsPauseYoungPrepareMixed() throws Exception {
+    void testDefaultsPauseYoungPrepareMixed() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -96,7 +96,7 @@ public class TestDataReaderUJLG1JDK11 {
     }
 
     @Test
-    public void testDefaultsPauseYoungMixed() throws Exception {
+    void testDefaultsPauseYoungMixed() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -114,7 +114,7 @@ public class TestDataReaderUJLG1JDK11 {
     }
 
     @Test
-    public void testFullGcWithPhases() throws Exception {
+    void testFullGcWithPhases() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -151,7 +151,7 @@ public class TestDataReaderUJLG1JDK11 {
     }
 
     @Test
-    public void testPauseYoungConcurrentStartMetadataGcThreshold() throws Exception {
+    void testPauseYoungConcurrentStartMetadataGcThreshold() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");

@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer.model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,20 +11,16 @@ import java.util.List;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class GcResourceSeriesTest {
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+class GcResourceSeriesTest {
 
     private GcResourceSeries resourceSeries;
     private List<GCResource> resourceList;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         resourceList = new ArrayList<>();
         resourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath()));
         resourceList.add(new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath()));
@@ -33,7 +30,7 @@ public class GcResourceSeriesTest {
     }
 
     @Test
-    public void hasUnderlyingResourceChanged() throws Exception {
+    void hasUnderlyingResourceChanged() throws Exception {
         for (GCResource resource : resourceList) {
             GCModel model = new GCModel();
             model.setURL(((GcResourceFile) resource).getResourceNameAsUrl());
@@ -52,18 +49,18 @@ public class GcResourceSeriesTest {
     }
 
     @Test
-    public void buildName() throws Exception {
+    void buildName() throws Exception {
         assertThat(GcResourceSeries.buildName(resourceList), is(
                 UnittestHelper.getResource(FOLDER.OPENJDK.getFolderName()).getPath() + "/" + "SampleSun1_8_0Series-Part1-3"));
     }
 
     @Test
-    public void buildName_ForRotatedFile() throws Exception {
+    void buildName_ForRotatedFile() {
         assertThat(GcResourceSeries.buildName("garbageCollection.log.0", "garbageCollection.log.6.current"), is("garbageCollection.log.0-6"));
     }
 
     @Test
-    public void buildName_WhenOnlyOneEntryExists() throws Exception {
+    void buildName_WhenOnlyOneEntryExists() throws Exception {
         resourceList = new ArrayList<>();
         GcResourceFile gcResourceFile =
                 new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
@@ -72,7 +69,7 @@ public class GcResourceSeriesTest {
     }
 
     @Test
-    public void buildName_WhenNoCommonPrefixExists() throws Exception {
+    void buildName_WhenNoCommonPrefixExists() {
         List<GCResource> resources = new ArrayList<>();
         GCResource resource1 = mock(GCResource.class);
         when(resource1.getResourceName()).thenReturn("abc.log");
@@ -85,8 +82,7 @@ public class GcResourceSeriesTest {
     }
 
     @Test
-    public void buildName_WhenListIsEmpty() throws Exception {
-        expectedException.expect(IllegalArgumentException.class);
-        GcResourceSeries.buildName(new ArrayList<>());
+    void buildName_WhenListIsEmpty() {
+        assertThrows(IllegalArgumentException.class, () -> GcResourceSeries.buildName(new ArrayList<>()));
     }
 }

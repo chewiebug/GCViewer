@@ -1,10 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static com.tagtraum.perf.gcviewer.UnittestHelper.toKiloBytes;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.number.IsCloseTo.closeTo;
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,14 +16,14 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="gcviewer@gmx.ch">Joerg Wuethrich</a>
  *         <p>created on 08.10.2014</p>
  */
-public class TestDataReaderIBM_J9_R28 {
+class TestDataReaderIBM_J9_R28 {
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.IBM, fileName);
@@ -34,7 +34,7 @@ public class TestDataReaderIBM_J9_R28 {
     }
 
     @Test
-    public void testAfScavenge() throws Exception {
+    void testAfScavenge() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleIBMJ9_R28_af_scavenge_full_header.txt");
@@ -69,7 +69,7 @@ public class TestDataReaderIBM_J9_R28 {
     }
 
     @Test
-    public void testAfGlobal() throws Exception {
+    void testAfGlobal() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleIBMJ9_R28_af_global.txt");
@@ -88,7 +88,7 @@ public class TestDataReaderIBM_J9_R28 {
     }
 
     @Test
-    public void testSysGlobal() throws Exception {
+    void testSysGlobal() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleIBMJ9_R28_sys_global.txt");
@@ -107,7 +107,7 @@ public class TestDataReaderIBM_J9_R28 {
     }
 
     @Test
-    public void testConcurrentMinimal() throws Exception {
+    void testConcurrentMinimal() throws Exception {
         // there are minimal concurrent blocks, that don't contain any information, that the parser can use (at least, at the moment)
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -121,8 +121,9 @@ public class TestDataReaderIBM_J9_R28 {
         assertThat("number of errors", handler.getCount(), is(0));
     }
 
-    @Test @Ignore
-    public void testConcurrentCollection() throws Exception {
+    @Test
+    @Disabled
+    void testConcurrentCollection() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleIBMJ9_R28_concurrent_collection.txt");
