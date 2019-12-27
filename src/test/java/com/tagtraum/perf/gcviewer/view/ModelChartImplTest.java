@@ -1,20 +1,18 @@
 package com.tagtraum.perf.gcviewer.view;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
+import java.util.stream.Stream;
 
-import org.junit.experimental.theories.DataPoint;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 
 import com.tagtraum.perf.gcviewer.math.DoubleData;
 import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.view.ModelChartImpl;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 /**
@@ -23,28 +21,20 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
  * @author <a href="maciej.kwiecien@gmail.com">xylu</a>
  * <p>created on: 21.02.2014</p>
  */
-@RunWith(Theories.class)
-public class ModelChartImplTest {
+class ModelChartImplTest {
 
-    @DataPoint
-    public static TestCase HAS_DATE_STAMP_DATE_STAMP_TURNED_ON_IN_PREF 
-        = new TestCase().withDateStamp(true).withShowDateStamp(true).withExpectedShowDateStamp(true);
-    
-    @DataPoint
-    public static TestCase HAS_DATE_STAMP_DATE_STAMP_TURNED_OFF_IN_PREF 
-        = new TestCase().withDateStamp(true).withShowDateStamp(false).withExpectedShowDateStamp(false);
-    
-    @DataPoint
-    public static TestCase NO_DATE_STAMP_DATE_STAMP_TURNED_ON_IN_PREF 
-        = new TestCase().withDateStamp(false).withShowDateStamp(true).withExpectedShowDateStamp(true);
-    
-    @DataPoint
-    public static TestCase NO_DATE_STAMP_DATE_STAMP_TURNED_OFF_IN_PREF 
-        = new TestCase().withDateStamp(false).withShowDateStamp(false).withExpectedShowDateStamp(false);
+    private static Stream<Arguments> getTestCases() {
+        return Stream.of(
+                Arguments.arguments(new TestCase().withDateStamp(true).withShowDateStamp(true).withExpectedShowDateStamp(true)),
+                Arguments.arguments(new TestCase().withDateStamp(true).withShowDateStamp(true).withExpectedShowDateStamp(true)),
+                Arguments.arguments(new TestCase().withDateStamp(false).withShowDateStamp(true).withExpectedShowDateStamp(true)),
+                Arguments.arguments(new TestCase().withDateStamp(false).withShowDateStamp(false).withExpectedShowDateStamp(false))
+        );
+    }
 
-
-    @Theory
-    public void shouldShowOrNotDateStampAccordingToModelAndSettings(TestCase testCase) throws Exception {
+    @ParameterizedTest
+    @MethodSource("getTestCases")
+    public void shouldShowOrNotDateStampAccordingToModelAndSettings(TestCase testCase) {
         //given
         ModelChartImpl modelChart = new ModelChartImpl();
         GCPreferences preferences = new GCPreferences();
@@ -59,7 +49,6 @@ public class ModelChartImplTest {
 
         //then
         assertThat(modelChart.isShowDateStamp(), equalTo(testCase.isExpectedShowDateStamp()));
-
     }
 
     private static class TestCase {

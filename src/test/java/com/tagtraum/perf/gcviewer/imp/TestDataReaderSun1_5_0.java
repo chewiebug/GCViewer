@@ -1,7 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +8,9 @@ import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests some cases for java 1.5 (using DataReaderSun1_6_0).
@@ -19,7 +19,7 @@ import org.junit.Test;
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class TestDataReaderSun1_5_0 {
+class TestDataReaderSun1_5_0 {
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
@@ -29,85 +29,85 @@ public class TestDataReaderSun1_5_0 {
      * Test output for -XX:+PrintAdaptiveSizePolicy 
      */
     @Test
-    public void testAdaptiveSizePolicy() throws Exception {
+    void testAdaptiveSizePolicy() throws Exception {
         String fileName = "SampleSun1_5_0AdaptiveSizePolicy.txt";
         final InputStream in = getInputStream(fileName);
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile(fileName), in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
-        assertEquals("number of events", 6, model.getPause().getN());
-        assertEquals("number of full gcs", 1, model.getFullGCPause().getN());
-        assertEquals("number of gcs", 5, model.getGCPause().getN());
-        assertEquals("total pause", 0.1024222, model.getPause().getSum(), 0.000001);
-        assertEquals("full gc pause", 0.0583435, model.getFullGCPause().getSum(), 0.000001);
-        assertEquals("gc pause", 0.0440787, model.getGCPause().getSum(), 0.000001);
+        assertEquals(6, model.getPause().getN(), "number of events");
+        assertEquals(1, model.getFullGCPause().getN(), "number of full gcs");
+        assertEquals(5, model.getGCPause().getN(), "number of gcs");
+        assertEquals(0.1024222, model.getPause().getSum(), 0.000001, "total pause");
+        assertEquals(0.0583435, model.getFullGCPause().getSum(), 0.000001, "full gc pause");
+        assertEquals(0.0440787, model.getGCPause().getSum(), 0.000001, "gc pause");
     }
     
     @Test
-    public void testCMSPrintGCDetails() throws Exception {
+    void testCMSPrintGCDetails() throws Exception {
         String fileName = "SampleSun1_5_0CMS_PrintGCDetails.txt";
         final InputStream in = getInputStream(fileName);
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile(fileName), in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
-        assertEquals("size", 515, model.size());
-        assertEquals("throughput", 88.2823289184, model.getThroughput(), 0.00000001);
-        assertEquals("sum of pauses", model.getPause().getSum(), model.getFullGCPause().getSum() + model.getGCPause().getSum(), 0.0000001);
-        assertEquals("total pause", 9.1337492, model.getPause().getSum(), 0.0000001);
-        assertEquals("full gc pause", 7.4672903, model.getFullGCPause().getSum(), 0.00000001);
+        assertEquals(515, model.size(), "size");
+        assertEquals(88.2823289184, model.getThroughput(), 0.00000001, "throughput");
+        assertEquals(model.getPause().getSum(), model.getFullGCPause().getSum() + model.getGCPause().getSum(), 0.0000001, "sum of pauses");
+        assertEquals(9.1337492, model.getPause().getSum(), 0.0000001, "total pause");
+        assertEquals(7.4672903, model.getFullGCPause().getSum(), 0.00000001, "full gc pause");
     }
 
     @Test
-    public void testParallelOldGC() throws Exception {
+    void testParallelOldGC() throws Exception {
         String fileName = "SampleSun1_5_0ParallelOldGC.txt";
         final InputStream in = getInputStream(fileName);
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile(fileName), in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
-        assertEquals("size", 1, model.size());
-        assertEquals("gc pause", 27.0696262, model.getFullGCPause().getMax(), 0.000001);
+        assertEquals(1, model.size(), "size");
+        assertEquals(27.0696262, model.getFullGCPause().getMax(), 0.000001, "gc pause");
     }
 
     @Test
-    public void testCMSIncrementalPacing() throws Exception {
+    void testCMSIncrementalPacing() throws Exception {
         String fileName = "SampleSun1_5_0CMS_IncrementalPacing.txt";
         final InputStream in = getInputStream(fileName);
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile(fileName), in, GcLogType.SUN1_5);
         GCModel model = reader.read();
 
-        assertEquals("size", 810, model.size());
-        assertEquals("throughput", 94.181240109114, model.getThroughput(), 0.00000001);
-        assertEquals("total gc pause", 2.3410947, model.getPause().getSum(), 0.000000001);
-        assertEquals("gc pause", 2.3410947, model.getGCPause().getSum(), 0.000000001);
-        assertEquals("full gc paus", 0.0, model.getFullGCPause().getSum(), 0.01);
+        assertEquals(810, model.size(), "size");
+        assertEquals(94.181240109114, model.getThroughput(), 0.00000001, "throughput");
+        assertEquals(2.3410947, model.getPause().getSum(), 0.000000001, "total gc pause");
+        assertEquals(2.3410947, model.getGCPause().getSum(), 0.000000001, "gc pause");
+        assertEquals(0.0, model.getFullGCPause().getSum(), 0.01, "full gc paus");
     }
 
     @Test
-    public void testPromotionFailure() throws Exception {
+    void testPromotionFailure() throws Exception {
         String fileName = "SampleSun1_5_0PromotionFailure.txt";
         final InputStream in = getInputStream(fileName);
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile(fileName), in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
-        assertEquals("size", 6, model.size());
-        assertEquals("throughput", 98.0937624615, model.getThroughput(), 0.00000001);
-        assertEquals("gc pause", 8.413616, model.getPause().getSum(), 0.000001);
+        assertEquals(6, model.size(), "size");
+        assertEquals(98.0937624615, model.getThroughput(), 0.00000001, "throughput");
+        assertEquals(8.413616, model.getPause().getSum(), 0.000001, "gc pause");
     }
 
     @Test
-    public void testCMSConcurrentModeFailure() throws Exception {
+    void testCMSConcurrentModeFailure() throws Exception {
         String fileName = "SampleSun1_5_0ConcurrentModeFailure.txt";
         final InputStream in = getInputStream(fileName);
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile(fileName), in, GcLogType.SUN1_5);
         GCModel model = reader.read();
         
-        assertEquals("size", 3417, model.size());
-        assertEquals("throughput", 78.558339113, model.getThroughput(), 0.00000001);
-        assertEquals("gc pause", 181.8116798, model.getPause().getSum(), 0.000000001);
+        assertEquals(3417, model.size(), "size");
+        assertEquals(78.558339113, model.getThroughput(), 0.00000001, "throughput");
+        assertEquals(181.8116798, model.getPause().getSum(), 0.000000001, "gc pause");
     }
     
     @Test
-    public void testCmsScavengeBeforeRemark() throws Exception {
+    void testCmsScavengeBeforeRemark() throws Exception {
         final ByteArrayInputStream in = new ByteArrayInputStream(
                 ("0.871: [GC[YG occupancy: 16241 K (16320 K)]0.871: [Scavenge-Before-Remark0.871: [Full GC 0.871: [ParNew: 16241K->0K(16320K), 0.0311294 secs] 374465K->374455K(524224K), 0.0312110 secs]" +
                  "\n, 0.0312323 secs]" +
@@ -117,9 +117,9 @@ public class TestDataReaderSun1_5_0 {
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_5);
         GCModel model = reader.read();
 
-        assertEquals("gc count", 2, model.size());
-        assertEquals("full gc pause", 0.0312110, model.getFullGCPause().getMax(), 0.000001);
-        assertEquals("remark pause", 0.0624207 - 0.0312110, model.getGCPause().getMax(), 0.000000001);
+        assertEquals(2, model.size(), "gc count");
+        assertEquals(0.0312110, model.getFullGCPause().getMax(), 0.000001, "full gc pause");
+        assertEquals(0.0624207 - 0.0312110, model.getGCPause().getMax(), 0.000000001, "remark pause");
     }
 
 }

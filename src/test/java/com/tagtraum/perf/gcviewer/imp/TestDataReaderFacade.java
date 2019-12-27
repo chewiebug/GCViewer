@@ -1,10 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,8 +19,9 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the implementation of {@link DataReaderFacade}.
@@ -28,7 +29,7 @@ import org.junit.Test;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 28.11.2012</p>
  */
-public class TestDataReaderFacade {
+class TestDataReaderFacade {
 
     private static final String SAMPLE_GCLOG_SUN1_6_0 = "SampleSun1_6_0PrintHeapAtGC.txt";
     
@@ -36,8 +37,8 @@ public class TestDataReaderFacade {
 
     private DataReaderFacade dataReaderFacade;
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() {
         dataReaderFacade = new DataReaderFacade();
     }
     
@@ -46,17 +47,17 @@ public class TestDataReaderFacade {
      * with filename that does exist.
      */
     @Test
-    public void loadModelStringFileExistsNoWarnings() throws Exception {
+    void loadModelStringFileExistsNoWarnings() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile(PARENT_PATH + SAMPLE_GCLOG_SUN1_6_0);
         gcResource.getLogger().addHandler(handler);
 
         final GCModel model = dataReaderFacade.loadModel(gcResource);
-        
-        assertEquals("has no errors", 0, handler.getCount());        
-        assertNotNull("Model returned", model);        
-        assertNotNull("Model returned contains URL", model.getURL());
+
+        assertEquals(0, handler.getCount(), "has no errors");
+        assertNotNull(model, "Model returned");
+        assertNotNull(model.getURL(), "Model returned contains URL");
     }
 
     /**
@@ -64,17 +65,15 @@ public class TestDataReaderFacade {
      * with a malformed url.
      */
     @Test
-    public void loadModelMalformedUrl() throws Exception {
-
-        try {
-            dataReaderFacade.loadModel(new GcResourceFile("httpblabla"));
-        }
-        catch (DataReaderException e) {
-            assertNotNull("cause", e.getCause());
-            assertEquals("expected exception in cause",
-                    MalformedURLException.class.getName(),
-                    e.getCause().getClass().getName());
-        }
+    void loadModelMalformedUrl() {
+        DataReaderException e = Assertions.assertThrows(DataReaderException.class,
+                () -> dataReaderFacade.loadModel(new GcResourceFile("httpblabla")));
+        assertAll(() -> {
+            assertNotNull(e.getCause(), "cause");
+            assertEquals(MalformedURLException.class.getName(),
+                    e.getCause().getClass().getName(),
+                    "expected exception in cause");
+        });
     }
 
     /**
@@ -82,17 +81,15 @@ public class TestDataReaderFacade {
      * with a malformed url.
      */
     @Test
-    public void loadModelIllegalArgument() throws Exception {
-
-        try {
-            dataReaderFacade.loadModel(new GcResourceFile("http://"));
-        }
-        catch (DataReaderException e) {
-            assertNotNull("cause", e.getCause());
-            assertEquals("expected exception in cause",
-                    IllegalArgumentException.class.getName(),
-                    e.getCause().getClass().getName());
-        }
+    void loadModelIllegalArgument() {
+        DataReaderException e = Assertions.assertThrows(DataReaderException.class,
+                () -> dataReaderFacade.loadModel(new GcResourceFile("http://")));
+        assertAll(() -> {
+            assertNotNull(e.getCause(), "cause");
+            assertEquals(IllegalArgumentException.class.getName(),
+                    e.getCause().getClass().getName(),
+                    "expected exception in cause");
+        });
     }
 
     /**
@@ -100,21 +97,19 @@ public class TestDataReaderFacade {
      * with filename that does not exist.
      */
     @Test
-    public void loadModelFileDoesntExists() throws Exception {
-        try {
-            dataReaderFacade.loadModel(new GcResourceFile("dummy.txt"));
-            fail("DataReaderException expected");
-        }
-        catch (DataReaderException e) {
-            assertNotNull("cause", e.getCause());
-            assertEquals("expected exception in cause", 
-                    FileNotFoundException.class.getName(), 
-                    e.getCause().getClass().getName());
-        }
+    void loadModelFileDoesntExists() {
+        DataReaderException e = Assertions.assertThrows(DataReaderException.class,
+                () -> dataReaderFacade.loadModel(new GcResourceFile("dummy.txt")));
+        assertAll(() -> {
+            assertNotNull(e.getCause(), "cause");
+            assertEquals(FileNotFoundException.class.getName(),
+                    e.getCause().getClass().getName(),
+                    "expected exception in cause");
+        });
     }
 
     @Test
-    public void testLoadModel_forSeries() throws IOException, DataReaderException {
+    void testLoadModel_forSeries() throws IOException, DataReaderException {
         GCResource file1 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
         GCResource file2 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
         GCResource file3 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());
@@ -140,7 +135,7 @@ public class TestDataReaderFacade {
     }
 
     @Test
-    public void testLoadModelFromSeries() throws IOException, DataReaderException {
+    void testLoadModelFromSeries() throws IOException, DataReaderException {
         GCResource file1 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part1.txt").getPath());
         GCResource file2 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part2.txt").getPath());
         GCResource file3 = new GcResourceFile(UnittestHelper.getResource(FOLDER.OPENJDK, "SampleSun1_8_0Series-Part3.txt").getPath());

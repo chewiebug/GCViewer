@@ -4,13 +4,16 @@ import com.tagtraum.perf.gcviewer.exp.DataWriterType;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the class {@link com.tagtraum.perf.gcviewer.GCViewerArgsParser} 
@@ -19,99 +22,94 @@ import static org.junit.Assert.*;
  * @author <a href="mailto:smendenh@redhat.com">Samuel Mendenhall</a>
  * <p>created on: 06.09.2014</p>
  */
-public class TestGCViewerArgsParser {
+class TestGCViewerArgsParser {
 
     @Test
-    public void noArguments() throws Exception {
+    void noArguments() throws Exception {
         String[] args = {};
         GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
         gcViewerArgsParser.parseArguments(args);
 
-        assertEquals(gcViewerArgsParser.getArgumentCount(), 0);
-        assertEquals(gcViewerArgsParser.getType(), DataWriterType.SUMMARY);
+        assertEquals(0, gcViewerArgsParser.getArgumentCount());
+        assertEquals(DataWriterType.SUMMARY, gcViewerArgsParser.getType());
     }
 
     @Test
-    public void onlyGCLog() throws Exception {
+    void onlyGCLog() throws Exception {
         String[] args = {"some_gc.log"};
         GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
         gcViewerArgsParser.parseArguments(args);
 
-        assertEquals(gcViewerArgsParser.getArgumentCount(), 1);
-        assertEquals(gcViewerArgsParser.getGcResource(), new GcResourceFile("some_gc.log"));
-        assertEquals(gcViewerArgsParser.getType(), DataWriterType.SUMMARY);
+        assertEquals(1, gcViewerArgsParser.getArgumentCount());
+        assertEquals(new GcResourceFile("some_gc.log"), gcViewerArgsParser.getGcResource());
+        assertEquals(DataWriterType.SUMMARY, gcViewerArgsParser.getType());
     }
 
     @Test
-    public void onlyGcLogSeries() throws Exception {
+    void onlyGcLogSeries() throws Exception {
         String[] args = {"some_gc.log.0;some_gc.log.1;some_gc.log.2"};
         GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
         gcViewerArgsParser.parseArguments(args);
 
-        assertEquals(gcViewerArgsParser.getArgumentCount(), 1);
+        assertEquals(1, gcViewerArgsParser.getArgumentCount());
         List<GCResource> resources = Arrays.asList(new GcResourceFile("some_gc.log.0"), new GcResourceFile("some_gc.log.1"), new GcResourceFile("some_gc.log.2"));
-        assertEquals(gcViewerArgsParser.getGcResource(), new GcResourceSeries(resources));
-        assertEquals(gcViewerArgsParser.getType(), DataWriterType.SUMMARY);
+        assertEquals(new GcResourceSeries(resources), gcViewerArgsParser.getGcResource());
+        assertEquals(DataWriterType.SUMMARY, gcViewerArgsParser.getType());
     }
 
     @Test
-    public void gcAndExportFile() throws Exception {
+    void gcAndExportFile() throws Exception {
         String[] args = {"some_gc.log", "export_to.csv"};
         GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
         gcViewerArgsParser.parseArguments(args);
 
-        assertEquals(gcViewerArgsParser.getArgumentCount(), 2);
-        assertEquals(gcViewerArgsParser.getGcResource(), new GcResourceFile("some_gc.log"));
-        assertEquals(gcViewerArgsParser.getSummaryFilePath(), "export_to.csv");
-        assertEquals(gcViewerArgsParser.getType(), DataWriterType.SUMMARY);
+        assertEquals(2, gcViewerArgsParser.getArgumentCount());
+        assertEquals(new GcResourceFile("some_gc.log"), gcViewerArgsParser.getGcResource());
+        assertEquals("export_to.csv", gcViewerArgsParser.getSummaryFilePath());
+        assertEquals(DataWriterType.SUMMARY, gcViewerArgsParser.getType());
     }
 
     @Test
-    public void gcSeriesAndExportFile() throws Exception {
+    void gcSeriesAndExportFile() throws Exception {
         String[] args = {"some_gc.log.0;some_gc.log.1;some_gc.log.2", "export_to.csv"};
         GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
         gcViewerArgsParser.parseArguments(args);
 
-        assertEquals(gcViewerArgsParser.getArgumentCount(), 2);
+        assertEquals(2, gcViewerArgsParser.getArgumentCount());
         List<GCResource> resources = Arrays.asList(new GcResourceFile("some_gc.log.0"), new GcResourceFile("some_gc.log.1"), new GcResourceFile("some_gc.log.2"));
-        assertEquals(gcViewerArgsParser.getGcResource(), new GcResourceSeries(resources));
-        assertEquals(gcViewerArgsParser.getSummaryFilePath(), "export_to.csv");
-        assertEquals(gcViewerArgsParser.getType(), DataWriterType.SUMMARY);
+        assertEquals(new GcResourceSeries(resources), gcViewerArgsParser.getGcResource());
+        assertEquals("export_to.csv", gcViewerArgsParser.getSummaryFilePath());
+        assertEquals(DataWriterType.SUMMARY, gcViewerArgsParser.getType());
     }
 
     @Test
-    public void onlyType() throws Exception {
+    void onlyType() throws Exception {
         String[] args = {"-t", "CSV_TS"};
         GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
         gcViewerArgsParser.parseArguments(args);
 
-        assertEquals(gcViewerArgsParser.getArgumentCount(), 0);
-        assertEquals(gcViewerArgsParser.getType(), DataWriterType.CSV_TS);
+        assertEquals(0, gcViewerArgsParser.getArgumentCount());
+        assertEquals(DataWriterType.CSV_TS, gcViewerArgsParser.getType());
     }
 
     @Test
-    public void allInitialArgsWithType() throws Exception {
+    void allInitialArgsWithType() throws Exception {
         String[] args = {"some_gc.log", "export_to.csv", "the_chart.png", "-t", "CSV"};
         GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
         gcViewerArgsParser.parseArguments(args);
 
-        assertEquals(gcViewerArgsParser.getArgumentCount(), 3);
-        assertEquals(gcViewerArgsParser.getGcResource(), new GcResourceFile("some_gc.log"));
-        assertEquals(gcViewerArgsParser.getSummaryFilePath(), "export_to.csv");
-        assertEquals(gcViewerArgsParser.getChartFilePath(), "the_chart.png");
-        assertEquals(gcViewerArgsParser.getType(), DataWriterType.CSV);
+        assertEquals(3, gcViewerArgsParser.getArgumentCount());
+        assertEquals(new GcResourceFile("some_gc.log"), gcViewerArgsParser.getGcResource());
+        assertEquals("export_to.csv", gcViewerArgsParser.getSummaryFilePath());
+        assertEquals("the_chart.png", gcViewerArgsParser.getChartFilePath());
+        assertEquals(DataWriterType.CSV, gcViewerArgsParser.getType());
     }
-    
+
     @Test
-    public void illegalType() {
+    void illegalType() {
         String[] args = {"some_gc.log", "export_to.csv", "the_chart.png", "-t", "ILLEGAL"};
-        try {
-            GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
-            gcViewerArgsParser.parseArguments(args);
-            fail("GCVIewerArgsParserException expected");
-        }
-        catch (GCViewerArgsParserException e) {
-            assertThat("exception message", e.getMessage(), startsWith("Illegal type 'ILLEGAL'"));
-        }
+        GCViewerArgsParser gcViewerArgsParser = new GCViewerArgsParser();
+        GCViewerArgsParserException e = assertThrows(GCViewerArgsParserException.class, () -> gcViewerArgsParser.parseArguments(args));
+        assertThat("exception message", e.getMessage(), startsWith("Illegal type 'ILLEGAL'"));
     }
 }

@@ -1,52 +1,51 @@
 package com.tagtraum.perf.gcviewer.model;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestGCEventUJL {
+class TestGCEventUJL {
     private GCEventUJL parentGCEvent;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         parentGCEvent = createGcEventUJL(87.11, 120390, 67880, 194540, 0, Type.UJL_ZGC_GARBAGE_COLLECTION);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         parentGCEvent = null;
     }
 
     @Test
-    public void addPhaseSerial() {
+    void addPhaseSerial() {
         GCEvent gcEventSerial = createGcEventUJL(101.53, 0, 0, 0, 0.0053923, Type.UJL_ZGC_PAUSE_MARK_START);
         parentGCEvent.addPhase(gcEventSerial);
 
-        assertEquals("size of phases list", 1, parentGCEvent.getPhases().size());
-        assertEquals("phase event", gcEventSerial, parentGCEvent.getPhases().get(0));
+        assertEquals(1, parentGCEvent.getPhases().size(), "size of phases list");
+        assertEquals(gcEventSerial, parentGCEvent.getPhases().get(0), "phase event");
 
         assertThat("total phases pause time", 0.0053923, closeTo(parentGCEvent.getPause(), 0.00001));
     }
 
     @Test
-    public void addPhaseNonSerial() {
+    void addPhaseNonSerial() {
         ConcurrentGCEvent gcEventConcurrent = createConcurrentGcEvent(101.53, 0, 0, 0, 0.0053923, Type.UJL_ZGC_CONCURRENT_MARK);
         parentGCEvent.addPhase(gcEventConcurrent);
 
-        assertEquals("size of phases list", 1, parentGCEvent.getPhases().size());
-        assertEquals("phase event", gcEventConcurrent, parentGCEvent.getPhases().get(0));
+        assertEquals(1, parentGCEvent.getPhases().size(), "size of phases list");
+        assertEquals(gcEventConcurrent, parentGCEvent.getPhases().get(0), "phase event");
 
         assertThat("total phases pause time", 0d, closeTo(parentGCEvent.getPause(), 0.00001));
     }
 
     @Test
-    public void addMultiplePhases() {
+    void addMultiplePhases() {
         GCEvent gcEventSerialMarkStart = createGcEventUJL(101.53, 0, 0, 0, 0.0053923, Type.UJL_ZGC_PAUSE_MARK_START);
         GCEvent gcEventSerialMarkEnd = createGcEventUJL(107.67, 0, 0, 0, 0.0037829, Type.UJL_ZGC_PAUSE_MARK_END);
         GCEvent gcEventSerialRelocateStart = createGcEventUJL(108.17, 0, 0, 0, 0.0061948, Type.UJL_ZGC_PAUSE_RELOCATE_START);
@@ -59,12 +58,12 @@ public class TestGCEventUJL {
         parentGCEvent.addPhase(gcEventConcurrentMark);
         parentGCEvent.addPhase(gcEventConcurrentRelocate);
 
-        assertEquals("size of phases list", 5, parentGCEvent.getPhases().size());
-        assertEquals("phase event 1", gcEventSerialMarkStart, parentGCEvent.getPhases().get(0));
-        assertEquals("phase event 2", gcEventSerialMarkEnd, parentGCEvent.getPhases().get(1));
-        assertEquals("phase event 3", gcEventSerialRelocateStart, parentGCEvent.getPhases().get(2));
-        assertEquals("phase event 4", gcEventConcurrentMark, parentGCEvent.getPhases().get(3));
-        assertEquals("phase event 5", gcEventConcurrentRelocate, parentGCEvent.getPhases().get(4));
+        assertEquals(5, parentGCEvent.getPhases().size(), "size of phases list");
+        assertEquals(gcEventSerialMarkStart, parentGCEvent.getPhases().get(0), "phase event 1");
+        assertEquals(gcEventSerialMarkEnd, parentGCEvent.getPhases().get(1), "phase event 2");
+        assertEquals(gcEventSerialRelocateStart, parentGCEvent.getPhases().get(2), "phase event 3");
+        assertEquals(gcEventConcurrentMark, parentGCEvent.getPhases().get(3), "phase event 4");
+        assertEquals(gcEventConcurrentRelocate, parentGCEvent.getPhases().get(4), "phase event 5");
 
         assertThat("total phases pause time", 0.01537, closeTo(parentGCEvent.getPause(), 0.00001));
     }

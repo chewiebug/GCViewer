@@ -1,66 +1,67 @@
 package com.tagtraum.perf.gcviewer.util;
 
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test methods of {@link NumberParser}.
  */
-public class TestNumberParser {
+class TestNumberParser {
 
     @Test
-    public void testParseIntString() throws Exception {
+    void testParseIntString() {
         int result = NumberParser.parseInt("1442450944");
-        Assert.assertThat("string int", result, Matchers.is(1442450944));
+        assertThat("string int", result, Matchers.is(1442450944));
     }
 
     @Test
-    public void testParseIntStringNegative() throws Exception {
+    void testParseIntStringNegative() {
         int result = NumberParser.parseInt("-1442450944");
-        Assert.assertThat("string negative int", result, Matchers.is(-1442450944));
+        assertThat("string negative int", result, Matchers.is(-1442450944));
     }
 
     @Test
-    public void testParseIntChar() throws Exception {
+    void testParseIntChar() {
         int result = NumberParser.parseInt(new char[] {'1', '4', '4', '2', '4', '5', '0', '9', '4', '4'}, 0, 10);
-        Assert.assertThat("char int", result, Matchers.is(1442450944));
+        assertThat("char int", result, Matchers.is(1442450944));
     }
 
     @Test
-    public void testParseIntCharNegative() throws Exception {
+    void testParseIntCharNegative() {
         int result = NumberParser.parseInt(new char[] {'-', '1', '4', '4', '2', '4', '5', '0', '9', '4', '4'}, 0, 11);
-        Assert.assertThat("char negative int", result, Matchers.is(-1442450944));
-    }
-
-    @Test(expected = NumberFormatException.class)
-    public void testParseIntTooLarge() throws Exception {
-        NumberParser.parseInt("6442450944");
+        assertThat("char negative int", result, Matchers.is(-1442450944));
     }
 
     @Test
-    public void testParseLongString() throws Exception {
+    void testParseIntTooLarge() {
+        assertThrows(NumberFormatException.class, () -> NumberParser.parseInt("6442450944"));
+    }
+
+    @Test
+    void testParseLongString() {
         long result = NumberParser.parseLong("6442450944");
-        Assert.assertThat("string long", result, Matchers.is(6442450944L));
+        assertThat("string long", result, Matchers.is(6442450944L));
     }
 
     @Test
-    public void testParseLongStringNegative() throws Exception {
+    void testParseLongStringNegative() {
         long result = NumberParser.parseLong("-6442450944");
-        Assert.assertThat("string negative long", result, Matchers.is(-6442450944L));
-
+        assertThat("string negative long", result, Matchers.is(-6442450944L));
     }
 
     @Test
-    public void testParseLongChar() throws Exception {
+    void testParseLongChar() {
         long result = NumberParser.parseLong(new char[] {'6', '4', '4', '2', '4', '5', '0', '9', '4', '4'}, 0, 10);
-        Assert.assertThat("char long", result, Matchers.is(6442450944L));
+        assertThat("char long", result, Matchers.is(6442450944L));
     }
 
     @Test
-    public void testParseLongCharNegative() throws Exception {
+    void testParseLongCharNegative() throws Exception {
         long result = NumberParser.parseLong(new char[] {'-', '6', '4', '4', '2', '4', '5', '0', '9', '4', '4'}, 0, 11);
-        Assert.assertThat("char negative long", result, Matchers.is(-6442450944L));
+        assertThat("char negative long", result, Matchers.is(-6442450944L));
     }
 
 }

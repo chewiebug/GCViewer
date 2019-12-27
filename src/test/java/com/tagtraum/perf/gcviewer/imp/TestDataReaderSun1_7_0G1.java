@@ -1,11 +1,11 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,9 +21,9 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TestDataReaderSun1_7_0G1 {
+class TestDataReaderSun1_7_0G1 {
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.OPENJDK, fileName);
@@ -38,7 +38,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void youngPause_u1() throws Exception {
+    void youngPause_u1() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0-01_G1_young.txt");
@@ -47,16 +47,16 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("gc pause", 0.00631825, model.getPause().getMax(), 0.000000001);
-        assertEquals("heap", 64*1024, model.getHeapAllocatedSizes().getMax());
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0.00631825, model.getPause().getMax(), 0.000000001, "gc pause");
+        assertEquals(64*1024, model.getHeapAllocatedSizes().getMax(), "heap");
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     /**
      * Parse memory format of java 1.7.0_u2.
      */
     @Test
-    public void youngPause_u2() throws Exception {
+    void youngPause_u2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0-02_G1_young.txt");
@@ -65,29 +65,29 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("gc pause", 0.14482200, model.getPause().getMax(), 0.000000001);
+        assertEquals(0.14482200, model.getPause().getMax(), 0.000000001, "gc pause");
         GCEvent heap = (GCEvent) model.getEvents().next();
-        assertEquals("heap before", 1105*1024, heap.getPreUsed());
-        assertEquals("heap after", 380*1024, heap.getPostUsed());
-        assertEquals("heap", 2*1024*1024, heap.getTotal());
+        assertEquals(1105*1024, heap.getPreUsed(), "heap before");
+        assertEquals(380*1024, heap.getPostUsed(), "heap after");
+        assertEquals(2*1024*1024, heap.getTotal(), "heap");
 
         GCEvent young = model.getGCEvents().next().getYoung();
-        assertNotNull("young", young);
-        assertEquals("young before", 1024*1024, young.getPreUsed());
-        assertEquals("young after", 128*1024, young.getPostUsed());
-        assertEquals("young total", (896+128)*1024, young.getTotal());
+        assertNotNull(young, "young");
+        assertEquals(1024*1024, young.getPreUsed(), "young before");
+        assertEquals(128*1024, young.getPostUsed(), "young after");
+        assertEquals((896+128)*1024, young.getTotal(), "young total");
 
         GCEvent tenured = model.getGCEvents().next().getTenured();
-        assertNotNull("tenured", tenured);
-        assertEquals("tenured before", (1105-1024)*1024, tenured.getPreUsed());
-        assertEquals("tenured after", (380-128)*1024, tenured.getPostUsed());
-        assertEquals("tenured total", 1024*1024, tenured.getTotal());
+        assertNotNull(tenured, "tenured");
+        assertEquals((1105-1024)*1024, tenured.getPreUsed(), "tenured before");
+        assertEquals((380-128)*1024, tenured.getPostUsed(), "tenured after");
+        assertEquals(1024*1024, tenured.getTotal(), "tenured total");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void youngPauseDateStamp_u2() throws Exception {
+    void youngPauseDateStamp_u2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_02_G1_young_datestamp.txt");
@@ -96,20 +96,20 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("gc pause", 0.14482200, model.getPause().getMax(), 0.000000001);
+        assertEquals(0.14482200, model.getPause().getMax(), 0.000000001, "gc pause");
         GCEvent heap = (GCEvent) model.getEvents().next();
-        assertEquals("heap", 1105*1024, heap.getPreUsed());
-        assertEquals("heap", 380*1024, heap.getPostUsed());
-        assertEquals("heap", 2048*1024, heap.getTotal());
+        assertEquals(1105*1024, heap.getPreUsed(), "heap");
+        assertEquals(380*1024, heap.getPostUsed(), "heap");
+        assertEquals(2048*1024, heap.getTotal(), "heap");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     /**
      * Test parsing GC logs that have PrintAdaptiveSizePolicy turned on
      */
     @Test
-    public void printAdaptiveSizePolicy() throws Exception {
+    void printAdaptiveSizePolicy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_12PrintAdaptiveSizePolicy.txt");
@@ -118,14 +118,14 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("gc pause", 0.158757, model.getPause().getMax(), 0.000000001);
+        assertEquals(0.158757, model.getPause().getMax(), 0.000000001, "gc pause");
         GCEvent heap = (GCEvent) model.getEvents().next();
-        assertEquals("heap", 65*1024*1024, heap.getPreUsed());
+        assertEquals(65*1024*1024, heap.getPreUsed(), "heap");
         // test parsing of decimal values
-        assertEquals("heap", 64.3*1024*1024, heap.getPostUsed(), 1e2);
-        assertEquals("heap", 92.0*1024*1024, heap.getTotal(), 1e2);
+        assertEquals(64.3*1024*1024, heap.getPostUsed(), 1e2, "heap");
+        assertEquals(92.0*1024*1024, heap.getTotal(), 1e2, "heap");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
 
@@ -133,7 +133,7 @@ public class TestDataReaderSun1_7_0G1 {
      * Test parsing GC logs that have PrintGCCause turned on
      */
     @Test
-    public void printGCCause() throws Exception {
+    void printGCCause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_40PrintGCCause.txt");
@@ -142,21 +142,21 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("gc pause", 0.077938, model.getPause().getMax(), 0.000000001);
+        assertEquals(0.077938, model.getPause().getMax(), 0.000000001, "gc pause");
         GCEvent heap = (GCEvent) model.getEvents().next();
-        assertEquals("heap", 32*1024, heap.getPreUsed());
+        assertEquals(32*1024, heap.getPreUsed(), "heap");
         // test parsing of decimal values
-        assertEquals("heap", 7136, (double)heap.getPostUsed(), 1e2);
-        assertEquals("heap", 88.0*1024*1024, (double)heap.getTotal(), 1e2);
+        assertEquals(7136, heap.getPostUsed(), 1e2, "heap");
+        assertEquals(88.0*1024*1024, heap.getTotal(), 1e2, "heap");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     /**
      * Test parsing GC logs that have PrintGCCause turned on
      */
     @Test
-    public void printGCCause2() throws Exception {
+    void printGCCause2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_40PrintGCCause2.txt");
@@ -165,28 +165,28 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
+        assertEquals(1, model.size(), "count");
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("type name", "GC pause (G1 Evacuation Pause) (young) (to-space exhausted)", event.getTypeAsString());
-        assertEquals("gc pause", 0.0398848, model.getPause().getMax(), 0.000000001);
+        assertEquals("GC pause (G1 Evacuation Pause) (young) (to-space exhausted)", event.getTypeAsString(), "type name");
+        assertEquals(0.0398848, model.getPause().getMax(), 0.000000001, "gc pause");
     }
 
     @Test
-    public void testDetailedCollectionDatestampMixed1() throws Exception {
+    void testDetailedCollectionDatestampMixed1() throws Exception {
         // parse one detailed event with a mixed line (concurrent event starts in the middle of an stw collection)
         // 2012-02-24T03:49:09.100-0800: 312.402: [GC pause (young)2012-02-24T03:49:09.378-0800: 312.680: [GC concurrent-mark-start]
         //  (initial-mark), 0.28645100 secs]
         final DataReader reader = getDataReader("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine1.txt");
         GCModel model = reader.read();
 
-        assertEquals("nummber of events", 2, model.size());
-        assertEquals("number of pauses", 1, model.getPause().getN());
-        assertEquals("gc pause sum", 0.28645100, model.getPause().getSum(), 0.000000001);
-        assertEquals("gc memory", 17786*1024 - 17147*1024, model.getFreedMemoryByGC().getMax());
+        assertEquals(2, model.size(), "number of events");
+        assertEquals(1, model.getPause().getN(), "number of pauses");
+        assertEquals(0.28645100, model.getPause().getSum(), 0.000000001, "gc pause sum");
+        assertEquals(17786*1024 - 17147*1024, model.getFreedMemoryByGC().getMax(), "gc memory");
     }
 
     @Test
-    public void testDetailedCollectionDatestampMixed2() throws Exception {
+    void testDetailedCollectionDatestampMixed2() throws Exception {
         // parse one detailed event with a mixed line (concurrent event starts in the middle of an stw collection)
         // 2012-02-24T03:50:08.274-0800: 371.576: [GC pause (young)2012-02-24T03:50:08.554-0800:  (initial-mark), 0.28031200 secs]
         // 371.856:    [Parallel Time: 268.0 ms]
@@ -200,31 +200,31 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("number of events", 3, model.size());
-        assertEquals("number of warnings", 0, handler.getCount());
-        assertEquals("concurrent event type", Type.G1_CONCURRENT_MARK_START.toString(), model.getConcurrentGCEvents().next().getTypeAsString());
-        assertEquals("number of pauses", 2, model.getPause().getN());
-        assertEquals("gc pause max", 0.28031200, model.getPause().getMax(), 0.000000001);
-        assertEquals("gc memory", 20701*1024 - 20017*1024, model.getFreedMemoryByGC().getMax());
+        assertEquals(3, model.size(), "number of events");
+        assertEquals(0, handler.getCount(), "number of warnings");
+        assertEquals(Type.G1_CONCURRENT_MARK_START.toString(), model.getConcurrentGCEvents().next().getTypeAsString(), "concurrent event type");
+        assertEquals(2, model.getPause().getN(), "number of pauses");
+        assertEquals(0.28031200, model.getPause().getMax(), 0.000000001, "gc pause max");
+        assertEquals(20701*1024 - 20017*1024, model.getFreedMemoryByGC().getMax(), "gc memory");
     }
 
     @Test
-    public void testDetailedCollectionDatestampMixed3() throws Exception {
+    void testDetailedCollectionDatestampMixed3() throws Exception {
         // parse one detailed event with a mixed line
         // -> concurrent event occurs somewhere in the detail lines below the stw event
 
         DataReader reader = getDataReader("SampleSun1_7_0G1_DateStamp_Detailed-mixedLine3.txt");
         GCModel model = reader.read();
 
-        assertEquals("nummber of events", 2, model.size());
-        assertEquals("concurrent event type", Type.G1_CONCURRENT_MARK_START.toString(), model.getConcurrentGCEvents().next().getTypeAsString());
-        assertEquals("number of pauses", 1, model.getPause().getN());
-        assertEquals("gc pause sum", 0.08894900, model.getPause().getSum(), 0.000000001);
-        assertEquals("gc memory", 29672*1024 - 28733*1024, model.getFreedMemoryByGC().getMax());
+        assertEquals(2, model.size(), "number of events");
+        assertEquals(Type.G1_CONCURRENT_MARK_START.toString(), model.getConcurrentGCEvents().next().getTypeAsString(), "concurrent event type");
+        assertEquals(1, model.getPause().getN(), "number of pauses");
+        assertEquals(0.08894900, model.getPause().getSum(), 0.000000001, "gc pause sum");
+        assertEquals(29672*1024 - 28733*1024, model.getFreedMemoryByGC().getMax(), "gc memory");
     }
 
     @Test
-    public void applicationStoppedMixedLine() throws Exception {
+    void applicationStoppedMixedLine() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -247,7 +247,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void applicationTimeMixed() throws Exception {
+    void applicationTimeMixed() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -262,7 +262,7 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
-        assertEquals("count", 2, model.size());
+        assertEquals(2, model.size(), "count");
 
         assertThat("gc type (0)", "GC concurrent-root-region-scan-end", equalTo(model.get(0).getTypeAsString()));
         assertThat("gc timestamp (0)", model.get(0).getTimestamp(), closeTo(3.1, 0.01));
@@ -274,7 +274,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void eventNoMemory() throws Exception {
+    void eventNoMemory() throws Exception {
         // there are (rarely) events, where the memory information could not be parsed,
         // because the line with the memory information was mixed with another event
         // looks like this:    [251.448:  213M->174M(256M)[GC concurrent-mark-start]
@@ -290,11 +290,11 @@ public class TestDataReaderSun1_7_0G1 {
         model.add(event);
 
         DoubleData initiatingOccupancyFraction = model.getCmsInitiatingOccupancyFraction();
-        assertEquals("fraction", 0, initiatingOccupancyFraction.getSum(), 0.1);
+        assertEquals(0, initiatingOccupancyFraction.getSum(), 0.1, "fraction");
     }
 
     @Test
-    public void gcRemark() throws Exception {
+    void gcRemark() throws Exception {
         final InputStream in = new ByteArrayInputStream(
                 ("0.197: [GC remark 0.197: [GC ref-proc, 0.0000070 secs], 0.0005297 secs]" +
                         "\n [Times: user=0.00 sys=0.00, real=0.00 secs]")
@@ -303,12 +303,12 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
-        assertEquals("gc pause", 0.0005297, model.getGCPause().getMax(), 0.000001);
+        assertEquals(1, model.size(), "count");
+        assertEquals(0.0005297, model.getGCPause().getMax(), 0.000001, "gc pause");
     }
 
     @Test
-    public void gcRemarkWithDateTimeStamp() throws Exception {
+    void gcRemarkWithDateTimeStamp() throws Exception {
         final InputStream in = new ByteArrayInputStream(
                 ("2013-09-08T22:11:22.639+0000: 52131.385: [GC remark 2013-09-08T22:11:22.640+0000: 52131.386: [GC ref-proc, 0.0120750 secs], 0.0347170 secs]\n" +
                         " [Times: user=0.43 sys=0.00, real=0.03 secs] \n")
@@ -317,12 +317,12 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("byteArray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
-        assertEquals("gc pause", 0.0347170, model.getGCPause().getMax(), 0.000001);
+        assertEquals(1, model.size(), "count");
+        assertEquals(0.0347170, model.getGCPause().getMax(), 0.000001, "gc pause");
     }
 
     @Test
-    public void printTenuringDistribution() throws Exception {
+    void printTenuringDistribution() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1TenuringDistribution.txt");
@@ -331,14 +331,14 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("number of events", 11, model.size());
-        assertEquals("number of concurrent events", 4, model.getConcurrentEventPauses().size());
+        assertEquals(11, model.size(), "number of events");
+        assertEquals(4, model.getConcurrentEventPauses().size(), "number of concurrent events");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void printApplicationTimePrintTenuringDistribution() throws Exception {
+    void printApplicationTimePrintTenuringDistribution() throws Exception {
         // test parsing when the following options are set:
         // -XX:+PrintTenuringDistribution (output ignored)
         // -XX:+PrintGCApplicationStoppedTime (output ignored)
@@ -351,25 +351,25 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("number of events", 9, model.size());
-        assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
+        assertEquals(9, model.size(), "number of events");
+        assertEquals(2, model.getConcurrentEventPauses().size(), "number of concurrent events");
 
         GCEvent youngEvent = (GCEvent) model.get(0);
-        assertEquals("gc pause (young)", 0.00784501, youngEvent.getPause(), 0.000000001);
-        assertEquals("heap (young)", 20 * 1024, youngEvent.getTotal());
+        assertEquals(0.00784501, youngEvent.getPause(), 0.000000001, "gc pause (young)");
+        assertEquals(20 * 1024, youngEvent.getTotal(), "heap (young)");
 
         GCEvent partialEvent = (GCEvent) model.get(7);
-        assertEquals("gc pause (partial)", 0.02648319, partialEvent.getPause(), 0.000000001);
-        assertEquals("heap (partial)", 128 * 1024, partialEvent.getTotal());
+        assertEquals(0.02648319, partialEvent.getPause(), 0.000000001, "gc pause (partial)");
+        assertEquals(128 * 1024, partialEvent.getTotal(), "heap (partial)");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     /**
      * Usually "cleanup" events have memory information; if it doesn't the parser should just continue
      */
     @Test
-    public void simpleLogCleanUpNoMemory() throws Exception {
+    void simpleLogCleanUpNoMemory() throws Exception {
         final InputStream in = new ByteArrayInputStream(
                 ("2013-06-22T18:58:45.955+0200: 1.433: [Full GC 128M->63M(128M), 0.0385026 secs]"
                         + "\n2013-06-22T18:58:45.986+0200: 1.472: [GC cleanup, 0.0000004 secs]"
@@ -380,15 +380,15 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("bytearray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
-        assertEquals("count", 4, model.size());
+        assertEquals(4, model.size(), "count");
 
         // the order of the events is in fact wrong; but for the sake of simplicity in the parser I accept it
-        assertEquals("cleanup event", "GC cleanup", model.get(2).getTypeAsString());
-        assertEquals("concurrent-mark-abort event", "GC concurrent-mark-abort", model.get(1).getTypeAsString());
+        assertEquals("GC cleanup", model.get(2).getTypeAsString(), "cleanup event");
+        assertEquals("GC concurrent-mark-abort", model.get(1).getTypeAsString(), "concurrent-mark-abort event");
     }
 
     @Test
-    public void printHeapAtGcWithConcurrentEvents() throws Exception {
+    void printHeapAtGcWithConcurrentEvents() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_PrintHeapAtGC_withConcurrent.txt");
@@ -397,23 +397,23 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("number of events", 3, model.size());
-        assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
+        assertEquals(3, model.size(), "number of events");
+        assertEquals(2, model.getConcurrentEventPauses().size(), "number of concurrent events");
 
         ConcurrentGCEvent concurrentEvent = (ConcurrentGCEvent) model.get(0);
-        assertEquals("GC concurrent-root-region-scan-end expected", "GC concurrent-root-region-scan-end", concurrentEvent.getTypeAsString());
+        assertEquals("GC concurrent-root-region-scan-end", concurrentEvent.getTypeAsString(), "GC concurrent-root-region-scan-end expected");
 
         concurrentEvent = (ConcurrentGCEvent) model.get(1);
-        assertEquals("GC concurrent-mark-start expected", "GC concurrent-mark-start", concurrentEvent.getTypeAsString());
+        assertEquals("GC concurrent-mark-start", concurrentEvent.getTypeAsString(), "GC concurrent-mark-start expected");
 
         GCEvent fullGcEvent = (GCEvent) model.get(2);
-        assertEquals("full gc", "Full GC", fullGcEvent.getTypeAsString());
+        assertEquals("Full GC", fullGcEvent.getTypeAsString(), "full gc");
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void printPrintHeapAtGC() throws Exception {
+    void printPrintHeapAtGC() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_40PrintHeapAtGC.txt");
@@ -422,15 +422,15 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
+        assertEquals(1, model.size(), "count");
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("type name", "GC pause (G1 Evacuation Pause) (young)", event.getTypeAsString());
-        assertEquals("gc pause", 0.0147015, model.getPause().getMax(), 0.000000001);
-        assertEquals("error count", 0, handler.getCount());
+        assertEquals("GC pause (G1 Evacuation Pause) (young)", event.getTypeAsString(), "type name");
+        assertEquals(0.0147015, model.getPause().getMax(), 0.000000001, "gc pause");
+        assertEquals(0, handler.getCount(), "error count");
     }
 
     @Test
-    public void printAdaptiveSizePolicyPrintReferencePolicy() throws Exception {
+    void printAdaptiveSizePolicyPrintReferencePolicy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1AdaptiveSize_Reference.txt");
@@ -456,7 +456,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void printReferencePolicy() throws Exception {
+    void printReferencePolicy() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1PrintReferencePolicy.txt");
@@ -473,7 +473,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void printDetailsWithoutTimestamp() throws Exception {
+    void printDetailsWithoutTimestamp() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_DetailsWoTimestamp.txt");
@@ -490,7 +490,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void printSimpleToSpaceOverflow() throws Exception {
+    void printSimpleToSpaceOverflow() throws Exception {
         InputStream in = new ByteArrayInputStream(
                 ("2013-12-21T15:48:44.062+0100: 0.441: [GC pause (G1 Evacuation Pause) (young)-- 90M->94M(128M), 0.0245257 secs]")
                 .getBytes());
@@ -498,13 +498,12 @@ public class TestDataReaderSun1_7_0G1 {
         DataReader reader = new DataReaderSun1_6_0G1(new GcResourceFile("bytearray"), in, GcLogType.SUN1_7G1);
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
-        assertEquals("gc pause", 0.0245257, model.getGCPause().getMax(), 0.000001);
-
+        assertEquals(1, model.size(), "count");
+        assertEquals(0.0245257, model.getGCPause().getMax(), 0.000001, "gc pause");
     }
 
     @Test
-    public void pauseWithComma() throws Exception {
+    void pauseWithComma() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_PauseWithComma.txt");
@@ -543,21 +542,21 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void testYoungToSpaceOverflowInitialMarkOriginalOrder() throws Exception {
+    void testYoungToSpaceOverflowInitialMarkOriginalOrder() throws Exception {
     	verifyYoungToSpaceOverflowInitialMarkMixedOrder(
     	        "SampleSun1_7_0_G1_young_initial_mark_to_space_exhausted_original_order.txt",
     	        Type.G1_YOUNG_TO_SPACE_EXHAUSTED_INITIAL_MARK);
     }
 
     @Test
-    public void testYoungToSpaceOverflowInitialMarkReverseOrder() throws Exception {
+    void testYoungToSpaceOverflowInitialMarkReverseOrder() throws Exception {
     	verifyYoungToSpaceOverflowInitialMarkMixedOrder(
     	        "SampleSun1_7_0_G1_young_initial_mark_to_space_exhausted_reverse_order.txt",
     	        Type.G1_YOUNG_INITIAL_MARK_TO_SPACE_EXHAUSTED);
     }
 
     @Test
-    public void printGCApplicationStoppedTimeTenuringDist() throws Exception {
+    void printGCApplicationStoppedTimeTenuringDist() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_51_G1_PrintApplicationTimeTenuringDistribution.txt");
@@ -587,7 +586,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void printGCApplicationStoppedTimeTenuringDistErgonomicsComma() throws Exception {
+    void printGCApplicationStoppedTimeTenuringDistErgonomicsComma() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0G1_AppStopped_TenuringDist_Ergonomics_comma.txt");
@@ -616,7 +615,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void printGCApplicationStoppedMixed() throws Exception {
+    void printGCApplicationStoppedMixed() throws Exception {
         // TODO relax G1 parser: don't warn, when 2 timestamps are in the beginning of a line
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -637,7 +636,7 @@ public class TestDataReaderSun1_7_0G1 {
     }
 
     @Test
-    public void printAdaptiveSizePolicyFullGc() throws Exception {
+    void printAdaptiveSizePolicyFullGc() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");

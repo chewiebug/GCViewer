@@ -1,10 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,18 +20,18 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.util.DateHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Mart on 10/05/2017.
  */
-public class TestDataReaderUJLShenandoah {
+class TestDataReaderUJLShenandoah {
     private GCModel getGCModelFromLogFile(String fileName) throws IOException {
         return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
-    public void parseAllocationFailure() throws Exception {
+    void parseAllocationFailure() throws Exception {
         GCModel model = getGCModelFromLogFile("SampleShenandoahAllocationFailure.txt");
         assertThat("size", model.size(), is(1));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(0));
@@ -51,7 +51,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void parsePassiveHeuristics() throws Exception {
+    void parsePassiveHeuristics() throws Exception {
         GCModel model = getGCModelFromLogFile("SampleShenandoahPassiveHeuristics.txt");
         assertThat("size", model.size(), is(0));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(0));
@@ -61,7 +61,7 @@ public class TestDataReaderUJLShenandoah {
 
 
     @Test
-    public void parseSingleSystemGCEvent() throws Exception {
+    void parseSingleSystemGCEvent() throws Exception {
         // this kind of system.gc event logging might have been removed in jdk1.8_232
         GCModel model = getGCModelFromLogFile("SampleShenandoahSingleSystemGC.txt");
         assertThat("size", model.size(), is(1));
@@ -80,7 +80,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void parseSeveralSystemGCEvents() throws Exception {
+    void parseSeveralSystemGCEvents() throws Exception {
         GCModel model = getGCModelFromLogFile("SampleShenandoahSeveralSystemGC.txt");
         assertThat("size", model.size(), is(438));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(0));
@@ -98,14 +98,14 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void parseJdk11Beginning() throws Exception {
+    void parseJdk11Beginning() throws Exception {
         // the main purpose if this test is to make sure, that no warnings are printed, when parsing the beginning of a shenandoah gc log file
         GCModel model = getGCModelFromLogFile("Sample-ujl-shenandoah-jdk11-beginning.txt");
         assertThat("size", model.size(), is(1));
     }
 
     @Test
-    public void testConcurrentReset() throws Exception {
+    void testConcurrentReset() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -131,7 +131,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testPauseInitMark() throws Exception {
+    void testPauseInitMark() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -161,7 +161,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testConcurrentMark() throws Exception {
+    void testConcurrentMark() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -185,7 +185,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testConcurrentPrecleaning() throws Exception {
+    void testConcurrentPrecleaning() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -209,7 +209,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testPauseFinalMark() throws Exception {
+    void testPauseFinalMark() throws Exception {
         // in its early implementation (2017), Shenandoah had memory information in this event, which was dropped later (2019)
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -240,7 +240,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testConcurrentCleanup() throws Exception {
+    void testConcurrentCleanup() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -263,7 +263,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testConcurrentEvacuation() throws Exception {
+    void testConcurrentEvacuation() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -290,7 +290,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testPauseInitUpdateRefs() throws Exception {
+    void testPauseInitUpdateRefs() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -315,7 +315,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testConcurrentUpdateRefs() throws Exception {
+    void testConcurrentUpdateRefs() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -338,7 +338,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testPauseFinalUpdateRefs() throws Exception {
+    void testPauseFinalUpdateRefs() throws Exception {
         // in its early implementation (2017), Shenandoah had memory information in this event, which was dropped later (2019)
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -364,7 +364,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testConcurrentUncommit() throws Exception {
+    void testConcurrentUncommit() throws Exception {
         // in the sequence of gc events, there seem to be two "concurrent cleanup" events - one somewhere in the middle, the other the last
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -389,7 +389,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testPauseDegeneratedGc() throws Exception {
+    void testPauseDegeneratedGc() throws Exception {
         GCModel model = getGCModelFromLogFile("Sample-ujl-shenandoah-jdk11-PauseDegeneratedGc.txt");
 
         assertThat("number of events", model.size(), is(1));
@@ -401,7 +401,7 @@ public class TestDataReaderUJLShenandoah {
     }
 
     @Test
-    public void testParseFullGcWithPhases() throws Exception {
+    void testParseFullGcWithPhases() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");

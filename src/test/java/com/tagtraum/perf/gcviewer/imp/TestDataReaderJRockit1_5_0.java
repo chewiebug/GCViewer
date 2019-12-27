@@ -6,8 +6,6 @@
  */
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +23,9 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Test DataReaderJRockit1_5_0 implementation.</p>
@@ -34,7 +34,7 @@ import org.junit.Test;
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class TestDataReaderJRockit1_5_0 {
+class TestDataReaderJRockit1_5_0 {
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.JROCKIT, fileName);
@@ -49,7 +49,7 @@ public class TestDataReaderJRockit1_5_0 {
     }
     
     @Test
-    public void testGcPrioPausetime() throws Exception {
+    void testGcPrioPausetime() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleJRockit1_5_12_gcpriopausetime.txt");
@@ -58,49 +58,49 @@ public class TestDataReaderJRockit1_5_0 {
         DataReader reader = getDataReader1_5(gcResource);
         GCModel model = reader.read();
         
-        assertEquals("count", 10, model.size());
+        assertEquals(10, model.size(), "count");
         
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("timestamp", 6.290, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
-        assertEquals("before", 3128161, event.getPreUsed());
-        assertEquals("after", 296406, event.getPostUsed());
-        assertEquals("total", 3145728, event.getTotal());
-        assertEquals("pause", 0.059084, event.getPause(), 0.0000001);
+        assertEquals(6.290, event.getTimestamp(), 0.000001, "timestamp");
+        assertEquals(Type.JROCKIT_GC.getName(), event.getExtendedType().getName(), "name");
+        assertEquals(3128161, event.getPreUsed(), "before");
+        assertEquals(296406, event.getPostUsed(), "after");
+        assertEquals(3145728, event.getTotal(), "total");
+        assertEquals(0.059084, event.getPause(), 0.0000001, "pause");
 
-        assertEquals("number of warnings", 6, handler.getCount());
+        assertEquals(6, handler.getCount(), "number of warnings");
     }
     
     @Test
-    public void testGcPrioThroughput() throws Exception {
+    void testGcPrioThroughput() throws Exception {
         DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12_gcpriothroughput.txt"));
         GCModel model = reader.read();
         
-        assertEquals("count", 8, model.size());
+        assertEquals(8, model.size(), "count");
         
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("timestamp", 4.817, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
-        assertEquals("before", 1641728, event.getPreUsed());
-        assertEquals("after", 148365, event.getPostUsed());
-        assertEquals("total", 3145728, event.getTotal());
-        assertEquals("pause", 0.039959, event.getPause(), 0.0000001);
+        assertEquals(4.817, event.getTimestamp(), 0.000001, "timestamp");
+        assertEquals(Type.JROCKIT_GC.getName(), event.getExtendedType().getName(), "name");
+        assertEquals(1641728, event.getPreUsed(), "before");
+        assertEquals(148365, event.getPostUsed(), "after");
+        assertEquals(3145728, event.getTotal(), "total");
+        assertEquals(0.039959, event.getPause(), 0.0000001, "pause");
     }
     
     @Test
-    public void testGenCon() throws Exception {
+    void testGenCon() throws Exception {
         DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12_gencon.txt"));
         GCModel model = reader.read();
         
-        assertEquals("count", 8, model.size());
+        assertEquals(8, model.size(), "count");
         
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("timestamp", 6.038, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
-        assertEquals("before", 3089328, event.getPreUsed());
-        assertEquals("after", 352551, event.getPostUsed());
-        assertEquals("total", 3145728, event.getTotal());
-        assertEquals("pause", 0.1186, event.getPause(), 0.0000001);
+        assertEquals(6.038, event.getTimestamp(), 0.000001, "timestamp");
+        assertEquals(Type.JROCKIT_GC.getName(), event.getExtendedType().getName(), "name");
+        assertEquals(3089328, event.getPreUsed(), "before");
+        assertEquals(352551, event.getPostUsed(), "after");
+        assertEquals(3145728, event.getTotal(), "total");
+        assertEquals(0.1186, event.getPause(), 0.0000001, "pause");
     }
     
     /**
@@ -109,33 +109,33 @@ public class TestDataReaderJRockit1_5_0 {
      * it can parse.
      */
     @Test
-    public void testGenConMemstats() throws Exception {
-        // allthough this log file was written with JRockit 1.5 VM, it has the same structure
+    void testGenConMemstats() throws Exception {
+        // although this log file was written with JRockit 1.5 VM, it has the same structure
         // as a JRockit 1.6 gc log file.
         // TODO refactor JRockit DataReader
         DataReader reader = getDataReader1_6(new GcResourceFile("SampleJRockit1_5_20_memstats2.txt"));
         GCModel model = reader.read();
         
-        assertEquals("count", 11, model.size());
+        assertEquals(11, model.size(), "count");
     }
     
     @Test
-    public void testGenPar() throws Exception {
+    void testGenPar() throws Exception {
         DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12_genpar.txt"));
         GCModel model = reader.read();
         
-        assertEquals("count", 17, model.size());
+        assertEquals(17, model.size(), "count");
 
         // 2 types of events excpected: "GC" and "parallel nursery GC"
         Map<String, DoubleData> gcEventPauses = model.getGcEventPauses();
-        assertEquals("2 types of events found", 2, gcEventPauses.entrySet().size());
+        assertEquals(2, gcEventPauses.entrySet().size(), "2 types of events found");
     }
     
     /**
      * Test parsing of a malformed type. The test just expects an INFO to be logged - nothing else.
      */
     @Test
-    public void testMalformedType() throws Exception {
+    void testMalformedType() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.INFO);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -152,27 +152,26 @@ public class TestDataReaderJRockit1_5_0 {
         // Reading JRockit ... format
         // Failed to determine type ...
         // Reading done.
-        assertEquals("number of infos", 3, handler.getCount());
+        assertEquals(3, handler.getCount(), "number of infos");
         
         List<LogRecord> logRecords = handler.getLogRecords();
-        assertEquals("should start with 'Failed to determine type'", 0, logRecords.get(1).getMessage().indexOf("Failed to determine type"));
+        assertEquals(0, logRecords.get(1).getMessage().indexOf("Failed to determine type"), "should start with 'Failed to determine type'");
     }
     
     @Test
-    public void testSimpleOpts() throws Exception {
+    void testSimpleOpts() throws Exception {
         DataReader reader = getDataReader1_5(new GcResourceFile("SampleJRockit1_5_12-gcreport-simpleopts-singlecon.txt"));
         GCModel model = reader.read();
         
-        assertEquals("count", 5, model.size());
+        assertEquals(5, model.size(), "count");
         
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("timestamp", 6.771, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.JROCKIT_GC.getName(), event.getExtendedType().getName());
-        assertEquals("before", 3145728, event.getPreUsed());
-        assertEquals("after", 296406, event.getPostUsed());
-        assertEquals("total", 3145728, event.getTotal());
-        assertEquals("pause", 0.066, event.getPause(), 0.0000001);
-        
+        assertEquals(6.771, event.getTimestamp(), 0.000001, "timestamp");
+        assertEquals(Type.JROCKIT_GC.getName(), event.getExtendedType().getName(), "name");
+        assertEquals(3145728, event.getPreUsed(), "before");
+        assertEquals(296406, event.getPostUsed(), "after");
+        assertEquals(3145728, event.getTotal(), "total");
+        assertEquals(0.066, event.getPause(), 0.0000001, "pause");
     }
     
 }

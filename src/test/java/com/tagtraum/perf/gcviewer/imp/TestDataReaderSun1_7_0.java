@@ -1,10 +1,10 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.util.DateHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for logs generated specifically by jdk 1.7.0.
@@ -29,7 +29,7 @@ import org.junit.Test;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 13.09.2013</p>
  */
-public class TestDataReaderSun1_7_0 {
+class TestDataReaderSun1_7_0 {
 
     private final DateTimeFormatter dateTimeFormatter = DateHelper.DATE_TIME_FORMATTER;
 
@@ -42,21 +42,21 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void testPrintGCCause() throws Exception {
+    void testPrintGCCause() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "111.080: [GC (Allocation Failure)111.080: [ParNew: 140365K->605K(157248K), 0.0034070 secs] 190158K->50399K(506816K), 0.0035370 secs] [Times: user=0.02 sys=0.00, real=0.00 secs]"
                        .getBytes());
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
-        assertEquals("GC count", 1, model.size());
-        assertEquals("GC pause", 0.0035370, model.getGCPause().getMax(), 0.0000001);
-        assertEquals("GC timestamp", 111.080, model.get(0).getTimestamp(), 0.000001);
-        assertEquals("GC (Allocation Failure); ParNew", model.get(0).getTypeAsString());
+        assertEquals(1, model.size(), "GC count");
+        assertEquals(0.0035370, model.getGCPause().getMax(), 0.0000001, "GC pause");
+        assertEquals(111.080, model.get(0).getTimestamp(), 0.000001, "GC timestamp");
+        assertEquals(model.get(0).getTypeAsString(), "GC (Allocation Failure); ParNew");
     }
 
     @Test
-    public void testAdaptiveSizePolicyPrintGCCause() throws Exception {
+    void testAdaptiveSizePolicyPrintGCCause() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 ("2013-05-25T17:02:46.238+0200: 0.194: [GC (Allocation Failure) AdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2720928  promoted: 13416848  overflow: trueAdaptiveSizeStart: 0.205 collection: 1"
                 + "\nPSAdaptiveSizePolicy::compute_eden_space_size: costs minor_time: 0.054157 major_cost: 0.000000 mutator_cost: 0.945843 throughput_goal: 0.990000 live_space: 271156384 free_space: 33685504 old_eden_size: 16842752 desired_eden_size: 33685504"
@@ -67,14 +67,14 @@ public class TestDataReaderSun1_7_0 {
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
                 GCModel model = reader.read();
 
-        assertEquals("GC count", 1, model.size());
-        assertEquals("GC pause", 0.0109373, model.getGCPause().getMax(), 0.0000001);
-        assertEquals("GC timestamp", 0.194, model.get(0).getTimestamp(), 0.000001);
-        assertEquals("GC (Allocation Failure); PSYoungGen", model.get(0).getTypeAsString());
+        assertEquals(1, model.size(), "GC count");
+        assertEquals(0.0109373, model.getGCPause().getMax(), 0.0000001, "GC pause");
+        assertEquals(0.194, model.get(0).getTimestamp(), 0.000001, "GC timestamp");
+        assertEquals(model.get(0).getTypeAsString(), "GC (Allocation Failure); PSYoungGen");
     }
 
     @Test
-    public void testPrintWithoutUseAdaptiveSizePolicy() throws Exception {
+    void testPrintWithoutUseAdaptiveSizePolicy() throws Exception {
         // -XX:+PrintAdaptiveSizePolicy
         // -XX:-UseAdaptiveSizePolicy
         // -XX:+PrintGCCause
@@ -86,12 +86,12 @@ public class TestDataReaderSun1_7_0 {
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
-        assertEquals("GC count", 1, model.size());
-        assertEquals("GC pause", 0.0115757, model.getGCPause().getMax(), 0.00000001);
+        assertEquals(1, model.size(), "GC count");
+        assertEquals(0.0115757, model.getGCPause().getMax(), 0.00000001, "GC pause");
     }
 
     @Test
-    public void testPrintWithoutUseAdaptiveSizePolicyFullGc() throws Exception {
+    void testPrintWithoutUseAdaptiveSizePolicyFullGc() throws Exception {
         // -XX:+PrintAdaptiveSizePolicy
         // -XX:-UseAdaptiveSizePolicy
         // -XX:+PrintGCCause
@@ -103,12 +103,12 @@ public class TestDataReaderSun1_7_0 {
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
-        assertEquals("GC count", 1, model.size());
-        assertEquals("GC pause", 0.0087315, model.getFullGCPause().getMax(), 0.00000001);
+        assertEquals(1, model.size(), "GC count");
+        assertEquals(0.0087315, model.getFullGCPause().getMax(), 0.00000001, "GC pause");
     }
 
     @Test
-    public void cmsRemarkWithTimestamps() throws Exception {
+    void cmsRemarkWithTimestamps() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-09-11T23:03:44.987+0200: 1518.733: [GC[YG occupancy: 3247177 K (4718592 K)]2013-09-11T23:03:45.231+0200: 1518.977: [Rescan (parallel) , 0.0941360 secs]2013-09-11T23:03:45.325+0200: 1519.071: [weak refs processing, 0.0006010 secs]2013-09-11T23:03:45.325+0200: 1519.071: [scrub string table, 0.0028480 secs] [1 CMS-remark: 4246484K(8388608K)] 4557930K(13107200K), 0.3410220 secs] [Times: user=2.48 sys=0.01, real=0.34 secs]"
                         .getBytes());
@@ -116,13 +116,13 @@ public class TestDataReaderSun1_7_0 {
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
-        assertEquals("GC count", 1, model.size());
-        assertEquals("type name", "GC; CMS-remark", model.get(0).getTypeAsString());
-        assertEquals("GC pause", 0.3410220, model.getPause().getMax(), 0.00000001);
+        assertEquals(1, model.size(), "GC count");
+        assertEquals("GC; CMS-remark", model.get(0).getTypeAsString(), "type name");
+        assertEquals(0.3410220, model.getPause().getMax(), 0.00000001, "GC pause");
     }
 
     @Test
-    public void cmsWithoutTimestamps() throws Exception {
+    void cmsWithoutTimestamps() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-12-19T17:52:49.323+0100: [GC2013-12-19T17:52:49.323+0100: [ParNew: 4872K->480K(4928K), 0.0031563 secs] 102791K->102785K(140892K), 0.0032042 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]"
                         .getBytes());
@@ -130,38 +130,39 @@ public class TestDataReaderSun1_7_0 {
         final DataReader reader = new DataReaderSun1_6_0(new GcResourceFile("byteArray"), in, GcLogType.SUN1_6);
         GCModel model = reader.read();
 
-        assertEquals("GC count", 1, model.size());
-        assertEquals("type name", "GC; ParNew", model.get(0).getTypeAsString());
-        assertEquals("GC pause", 0.0032042, model.getPause().getMax(), 0.00000001);
+        assertEquals(1, model.size(), "GC count");
+        assertEquals("GC; ParNew", model.get(0).getTypeAsString(), "type name");
+        assertEquals(0.0032042, model.getPause().getMax(), 0.00000001, "GC pause");
     }
 
     /**
      * Test output of -XX:+PrintAdaptiveSizePolicy -XX:+UseAdaptiveSizePolicy -XX:+PrintReferenceGC
      */
     @Test
-    public void parallelPrintUseAdaptiveSizeReference() throws Exception {
+    void parallelPrintUseAdaptiveSizeReference() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0ParallelAdaptiveSizeReference.txt");
         gcResource.getLogger().addHandler(handler);
 
-        final InputStream in = getInputStream(gcResource.getResourceName());
-        final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
+        try (final InputStream in = getInputStream(gcResource.getResourceName())) {
+            final DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_7);
 
-        GCModel model = reader.read();
+            GCModel model = reader.read();
 
-        assertThat("count", model.size(), is(1));
-        GCEvent event = (GCEvent) model.get(0);
-        assertThat("type name", event.getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
-        assertThat("gc pause", event.getPause(), closeTo(0.0134562, 0.00000001));
-        assertThat("error count", handler.getCount(), is(0));
+            assertThat("count", model.size(), is(1));
+            GCEvent event = (GCEvent) model.get(0);
+            assertThat("type name", event.getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
+            assertThat("gc pause", event.getPause(), closeTo(0.0134562, 0.00000001));
+            assertThat("error count", handler.getCount(), is(0));
+        }
     }
 
     /**
      * Test output of -XX:+PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy -XX:+PrintReferenceGC
      */
     @Test
-    public void parallelAdaptiveReference() throws Exception {
+    void parallelAdaptiveReference() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-10-13T09:54:00.664+0200: 0.180: [GC (Allocation Failure)2013-10-13T09:54:00.680+0200: 0.191: [SoftReference, 0 refs, 0.0001032 secs]2013-10-13T09:54:00.680+0200: 0.192: [WeakReference, 5 refs, 0.0000311 secs]2013-10-13T09:54:00.680+0200: 0.192: [FinalReference, 10 refs, 0.0000389 secs]2013-10-13T09:54:00.680+0200: 0.192: [PhantomReference, 0 refs, 0.0000283 secs]2013-10-13T09:54:00.680+0200: 0.192: [JNI Weak Reference, 0.0000340 secs]AdaptiveSizePolicy::compute_survivor_space_size_and_thresh:  survived: 2589792  promoted: 13949568  overflow: true [PSYoungGen: 16865K->2529K(19456K)] 16865K->16151K(62976K), 0.0117505 secs] [Times: user=0.00 sys=0.06, real=0.02 secs]"
                         .getBytes());
@@ -178,7 +179,7 @@ public class TestDataReaderSun1_7_0 {
      * Test output of -XX:-PrintAdaptiveSizePolicy -XX:-UseAdaptiveSizePolicy -XX:+PrintReferenceGC
      */
     @Test
-    public void parallelReference() throws Exception {
+    void parallelReference() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-10-13T10:32:07.669+0200: 0.182: [GC (Allocation Failure)2013-10-13T10:32:07.685+0200: 0.195: [SoftReference, 0 refs, 0.0001086 secs]2013-10-13T10:32:07.685+0200: 0.195: [WeakReference, 5 refs, 0.0000311 secs]2013-10-13T10:32:07.685+0200: 0.195: [FinalReference, 10 refs, 0.0000377 secs]2013-10-13T10:32:07.685+0200: 0.195: [PhantomReference, 0 refs, 0.0000283 secs]2013-10-13T10:32:07.685+0200: 0.195: [JNI Weak Reference, 0.0000328 secs] [PSYoungGen: 16865K->2529K(19456K)] 16865K->16151K(62976K), 0.0137921 secs] [Times: user=0.03 sys=0.02, real=0.02 secs]"
                         .getBytes());
@@ -192,7 +193,7 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void serialPrintReferenceGC() throws Exception {
+    void serialPrintReferenceGC() throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "2013-10-13T09:52:30.164+0200: 0.189: [GC (Allocation Failure)2013-10-13T09:52:30.164+0200: 0.189: [DefNew2013-10-13T09:52:30.180+0200: 0.205: [SoftReference, 0 refs, 0.0001004 secs]2013-10-13T09:52:30.180+0200: 0.205: [WeakReference, 0 refs, 0.0000287 secs]2013-10-13T09:52:30.180+0200: 0.205: [FinalReference, 0 refs, 0.0000283 secs]2013-10-13T09:52:30.180+0200: 0.205: [PhantomReference, 0 refs, 0.0000279 secs]2013-10-13T09:52:30.180+0200: 0.205: [JNI Weak Reference, 0.0000332 secs]: 17472K->2176K(19648K), 0.0159181 secs] 17472K->16957K(63360K), 0.0161033 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]"
                         .getBytes());
@@ -208,7 +209,7 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void printCMSInitiationStatistics() throws Exception {
+    void printCMSInitiationStatistics() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -244,7 +245,7 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void printTenuringDistributionCMSInitiationStatistics() throws Exception {
+    void printTenuringDistributionCMSInitiationStatistics() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0CMSTenuringDistributionInitiationStatistics.txt");
@@ -261,7 +262,7 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void parallelPrintGCApplicationStoppedTime() throws Exception {
+    void parallelPrintGCApplicationStoppedTime() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -289,12 +290,12 @@ public class TestDataReaderSun1_7_0 {
         assertThat("number of parse problems", handler.getCount(), is(0));
     }
 
-    @Test
     /**
      * The only difference, between this test and {@link TestDataReaderSun1_8_0#parallelPrintTenuringGcCause()}
      * is the missing space character in the end of the line before the TenuringDistribution information.
      */
-    public void parallelPrintTenuringGcCause() throws Exception {
+    @Test
+    void parallelPrintTenuringGcCause() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0Parallel_Tenuring_PrintGCCause.txt");
@@ -307,11 +308,11 @@ public class TestDataReaderSun1_7_0 {
         assertThat("gc name", model.get(0).getTypeAsString(), equalTo("GC (Allocation Failure); PSYoungGen"));
         assertThat("pause", model.get(0).getPause(), closeTo(0.0278950, 0.000000001));
 
-        assertEquals("number of errors", 0, handler.getCount());
+        assertEquals(0, handler.getCount(), "number of errors");
     }
 
     @Test
-    public void cmsPrintGCApplicationStopped() throws Exception {
+    void cmsPrintGCApplicationStopped() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_51_CMS_PrintApplStoppedTime.txt");
@@ -335,7 +336,7 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void cmsPrintGCApplicationStoppedTimeTenuringDist() throws Exception {
+    void cmsPrintGCApplicationStoppedTimeTenuringDist() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0_51_CMS_PrintApplStoppedTime_TenuringDist.txt");
@@ -367,7 +368,7 @@ public class TestDataReaderSun1_7_0 {
      * Test here, that they are still added to the {@link GCModel}.
      */
     @Test
-    public void cmsPrintGCApplicationStoppedTimeWithoutTimestampsTenuringDist() throws Exception {
+    void cmsPrintGCApplicationStoppedTimeWithoutTimestampsTenuringDist() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");
@@ -398,7 +399,7 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void cmsPrintFlsStatistics1() throws Exception {
+    void cmsPrintFlsStatistics1() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0CmsPrintFlsStats1.txt");
@@ -413,11 +414,10 @@ public class TestDataReaderSun1_7_0 {
         assertThat("event 3 is full", model.get(2).isFull(), is(true));
         assertThat("event 3 pause", model.get(2).getPause(), closeTo(0.0339164, 0.00000001));
         assertThat("number of parse problems", handler.getCount(), is(0));
-
     }
 
     @Test
-    public void cmsPrintFlsStatistics2() throws Exception {
+    void cmsPrintFlsStatistics2() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0CmsPrintFlsStats2.txt");
@@ -435,11 +435,10 @@ public class TestDataReaderSun1_7_0 {
         assertThat("event 5 is full", model.get(4).isFull(), is(true));
         assertThat("event 5 pause", model.get(4).getPause(), closeTo(0.0264843, 0.00000001));
         assertThat("number of parse problems", handler.getCount(), is(0));
-
     }
 
     @Test
-    public void cmsPrintFlsStatistics3() throws Exception {
+    void cmsPrintFlsStatistics3() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0CmsPrintFlsStats3.txt");
@@ -452,11 +451,10 @@ public class TestDataReaderSun1_7_0 {
         assertThat("event 1 pause", model.get(1).getPause(), closeTo(0.0252550, 0.00000001));
         assertThat("event 1 name", model.get(1).getTypeAsString(), equalTo("GC; ParNew"));
         assertThat("number of parse problems", handler.getCount(), is(0));
-
     }
 
     @Test
-    public void cmsPrintPromotionFailureTenuringDistribution() throws Exception {
+    void cmsPrintPromotionFailureTenuringDistribution() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0CMS_PrintTenuringDistributionPromotionFailure.txt");
@@ -471,7 +469,7 @@ public class TestDataReaderSun1_7_0 {
     }
 
     @Test
-    public void psAdaptiveSizePolicyTenuringDistributionApplicationStopped() throws Exception {
+    void psAdaptiveSizePolicyTenuringDistributionApplicationStopped() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("SampleSun1_7_0PS_Adaptive_Tenuring_AppStopped.txt");

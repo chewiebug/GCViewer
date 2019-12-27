@@ -13,15 +13,15 @@ import com.tagtraum.perf.gcviewer.ctrl.impl.GCViewerGuiController;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author martin.geldmacher
  */
-public class GCViewerTest {
+class GCViewerTest {
 
     @Test
-    public void singleArgumentOpensGui() throws Exception {
+    void singleArgumentOpensGui() throws Exception {
         GCViewerGuiController controller = mock(GCViewerGuiController.class);
         GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
 
@@ -32,7 +32,7 @@ public class GCViewerTest {
     }
 
     @Test
-    public void singleArgumentWithSeriesOpensGui() throws Exception {
+    void singleArgumentWithSeriesOpensGui() throws Exception {
         GCViewerGuiController controller = mock(GCViewerGuiController.class);
         GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
 
@@ -43,7 +43,7 @@ public class GCViewerTest {
     }
 
     @Test
-    public void moreThan3ArgumentsPrintsUsage() throws Exception {
+    void moreThan3ArgumentsPrintsUsage() throws Exception {
         GCViewerGuiController controller = mock(GCViewerGuiController.class);
         GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
 
@@ -54,7 +54,7 @@ public class GCViewerTest {
     }
 
     @Test
-    public void export() throws Exception {
+    void export() throws Exception {
         GCViewerGuiController controller = mock(GCViewerGuiController.class);
         GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
 
@@ -65,7 +65,7 @@ public class GCViewerTest {
     }
 
     @Test
-    public void exportFileNotFound() throws Exception {
+    void exportFileNotFound() throws Exception {
         GCViewerGuiController controller = mock(GCViewerGuiController.class);
         GCViewer gcViewer = new GCViewer(controller, new GCViewerArgsParser());
 
@@ -76,7 +76,7 @@ public class GCViewerTest {
     }
 
     @Test
-    public void illegalExportFormat() throws Exception {
+    void illegalExportFormat() throws Exception {
         GCViewer gcViewer = new GCViewer();
 
         String[] args = {"-t", "INVALID"};

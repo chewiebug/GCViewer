@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests unified jvm logging parser for cms gc events.
@@ -28,7 +28,7 @@ public class TestDataReaderUJLCMS {
     }
 
     @Test
-    public void parseGcDefaults() throws Exception {
+    void parseGcDefaults() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-cms-gc-defaults.txt");
         assertThat("size", model.size(), is(16));
         assertThat("amount of gc event types", model.getGcEventPauses().size(), is(3));
@@ -89,7 +89,7 @@ public class TestDataReaderUJLCMS {
     }
 
     @Test
-    public void parseGcAllSafepointOsCpu() throws Exception {
+    void parseGcAllSafepointOsCpu() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-cms-gc-all,safepoint,os+cpu.txt");
         assertThat("size", model.size(), is(26));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(3));
@@ -145,7 +145,7 @@ public class TestDataReaderUJLCMS {
     }
 
     @Test
-    public void testParseFullGcWithPhases() throws Exception  {
+    void testParseFullGcWithPhases() throws Exception  {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");

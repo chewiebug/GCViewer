@@ -1,9 +1,9 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,18 +20,18 @@ import com.tagtraum.perf.gcviewer.model.GCEventUJL;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests unified jvm logging parser for cms gc events.
  */
-public class TestDataReaderUJLG1 {
+class TestDataReaderUJLG1 {
     private GCModel getGCModelFromLogFile(String fileName) throws IOException {
         return UnittestHelper.getGCModelFromLogFile(fileName, FOLDER.OPENJDK_UJL, DataReaderUnifiedJvmLogging.class);
     }
 
     @Test
-    public void parseGcDefaults() throws Exception {
+    void parseGcDefaults() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-g1-gc-defaults.txt");
         assertThat("size", model.size(), is(15));
         assertThat("amount of gc event types", model.getGcEventPauses().size(), is(6));
@@ -106,7 +106,7 @@ public class TestDataReaderUJLG1 {
     }
 
     @Test
-    public void parseGcAllSafepointOsCpu() throws Exception {
+    void parseGcAllSafepointOsCpu() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-g1-gc-all,safepoint,os+cpu.txt");
         assertThat("size", model.size(), is(15));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(4));
@@ -168,7 +168,7 @@ public class TestDataReaderUJLG1 {
     }
 
     @Test
-    public void parseGcAllSafepointOsCpuWithToSpaceExhausted() throws Exception {
+    void parseGcAllSafepointOsCpuWithToSpaceExhausted() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-g1-gc-all,safepoint,os+cpu-to-space-exhausted.txt");
         assertThat("size", model.size(), is(1));
         AbstractGCEvent<?> youngEvent = model.get(0);
@@ -196,7 +196,7 @@ public class TestDataReaderUJLG1 {
     }
 
     @Test
-    public void testParseGcWithPhases() throws Exception  {
+    void testParseGcWithPhases() throws Exception  {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");

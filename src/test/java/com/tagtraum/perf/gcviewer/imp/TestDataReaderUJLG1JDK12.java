@@ -1,9 +1,9 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -12,14 +12,15 @@ import java.util.logging.Level;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unified java logging G1 algorithm in OpenJDK 12
  */
-public class TestDataReaderUJLG1JDK12 {
+class TestDataReaderUJLG1JDK12 {
+
     @Test
-    public void testG1ArchiveRegions() throws Exception {
+    void testG1ArchiveRegions() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("byteArray");

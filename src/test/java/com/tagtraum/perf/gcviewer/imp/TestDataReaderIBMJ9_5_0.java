@@ -1,7 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -12,7 +10,9 @@ import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the implementation of {@link TestDataReaderIBMJ9_5_0} and {@link IBMJ9SAXHandler}. 
@@ -20,7 +20,7 @@ import org.junit.Test;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 18.02.2013</p>
  */
-public class TestDataReaderIBMJ9_5_0 {
+class TestDataReaderIBMJ9_5_0 {
 
     private InputStream getInputStream(String filename) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.IBM, filename);
@@ -31,36 +31,36 @@ public class TestDataReaderIBMJ9_5_0 {
     }
     
     @Test
-    public void afTenuredGlobal() throws Exception {
+    void afTenuredGlobal() throws Exception {
         final DataReader reader = getDataReader("SampleIBMJ9_5_0af-global-200811_07.txt");
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
+        assertEquals(1, model.size(), "count");
         
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("pause", 0.035912, event.getPause(), 0.0000001);
+        assertEquals(0.035912, event.getPause(), 0.0000001, "pause");
 
-        assertEquals("timestamp", 0, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.FULL_GC.getName(), event.getExtendedType().getName());
-        assertEquals("before", (52428800 - 2621440) / 1024, event.getPreUsed());
-        assertEquals("after", (52428800 - 40481192) / 1024, event.getPostUsed());
-        assertEquals("total", 52428800 / 1024, event.getTotal());
+        assertEquals(0, event.getTimestamp(), 0.000001, "timestamp");
+        assertEquals(Type.FULL_GC.getName(), event.getExtendedType().getName(), "name");
+        assertEquals((52428800 - 2621440) / 1024, event.getPreUsed(), "before");
+        assertEquals((52428800 - 40481192) / 1024, event.getPostUsed(), "after");
+        assertEquals(52428800 / 1024, event.getTotal(), "total");
     }
     
     @Test
-    public void afTenuredGlobal_20090417_AA() throws Exception {
+    void afTenuredGlobal_20090417_AA() throws Exception {
         final DataReader reader = getDataReader("SampleIBMJ9_5_0af-global-20090417_AA.txt");
         GCModel model = reader.read();
 
-        assertEquals("count", 1, model.size());
+        assertEquals(1, model.size(), "count");
         
         GCEvent event = (GCEvent) model.get(0);
-        assertEquals("pause", 0.837024, event.getPause(), 0.0000001);
+        assertEquals(0.837024, event.getPause(), 0.0000001, "pause");
 
-        assertEquals("timestamp", 0, event.getTimestamp(), 0.000001);
-        assertEquals("name", Type.FULL_GC.getName(), event.getExtendedType().getName());
-        assertEquals("before", (12884901888L - 4626919608L) / 1024, event.getPreUsed());
-        assertEquals("after", (12884901888L - 10933557088L) / 1024, event.getPostUsed());
-        assertEquals("total", 12884901888L / 1024, event.getTotal());
+        assertEquals(0, event.getTimestamp(), 0.000001, "timestamp");
+        assertEquals(Type.FULL_GC.getName(), event.getExtendedType().getName(), "name");
+        assertEquals((12884901888L - 4626919608L) / 1024, event.getPreUsed(), "before");
+        assertEquals((12884901888L - 10933557088L) / 1024, event.getPostUsed(), "after");
+        assertEquals(12884901888L / 1024, event.getTotal(), "total");
     }
 }

@@ -1,18 +1,17 @@
 package com.tagtraum.perf.gcviewer.exp;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayOutputStream;
 import java.util.Locale;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import com.tagtraum.perf.gcviewer.exp.impl.SimpleGcWriter;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the export format of {@link SimpleGcWriter}.
@@ -20,10 +19,10 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 08.12.2012</p>
  */
-public class SimpleGcWriterTest {
+class SimpleGcWriterTest {
     private GCModel gcModel;
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 //      0.677: [GC 0.677: [ParNew: 118010K->13046K(118016K), 0.0299506 secs] 175499K->104936K(249088K), 0.0300629 secs] [Times: user=0.06 sys=0.06, real=0.03 secs] 
 //      0.708: [GC [1 CMS-initial-mark: 91890K(131072K)] 109176K(249088K), 0.0004006 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
@@ -55,7 +54,7 @@ public class SimpleGcWriterTest {
     }
     
     @Test
-    public void exportLocaleDe() throws Exception {
+    void exportLocaleDe() throws Exception {
         Locale.setDefault(new Locale("de", "ch"));
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 SimpleGcWriter writer = new SimpleGcWriter(outputStream)) {
@@ -63,22 +62,22 @@ public class SimpleGcWriterTest {
             writer.write(gcModel);
             
             String[] lines = outputStream.toString().split(System.getProperty("line.separator"));
-            assertEquals("line count", 2, lines.length);
+            assertEquals(2, lines.length, "line count");
             
             String[] firstLine = lines[0].split(" ");
-            assertEquals("number of parts in line 1", 3, firstLine.length);
-            assertEquals("name of event", "YoungGC", firstLine[0]);
-            assertEquals("timestamp", "0.677000", firstLine[1]);
-            assertEquals("duration", "0.030063", firstLine[2]);
+            assertEquals(3, firstLine.length, "number of parts in line 1");
+            assertEquals("YoungGC", firstLine[0], "name of event");
+            assertEquals("0.677000", firstLine[1], "timestamp");
+            assertEquals("0.030063", firstLine[2], "duration");
             
             String[] secondLine = lines[1].split(" ");
-            assertEquals("number of parts in line 2", 3, secondLine.length);
-            assertEquals("name of event 2", "InitialMarkGC", secondLine[0]);
+            assertEquals(3, secondLine.length, "number of parts in line 2");
+            assertEquals("InitialMarkGC", secondLine[0], "name of event 2");
         }
     }
 
     @Test
-    public void exportLocaleSv() throws Exception {
+    void exportLocaleSv() throws Exception {
         Locale.setDefault(new Locale("sv", "se"));
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 SimpleGcWriter writer = new SimpleGcWriter(outputStream)) {
@@ -86,11 +85,11 @@ public class SimpleGcWriterTest {
             writer.write(gcModel);
             
             String[] lines = outputStream.toString().split(System.getProperty("line.separator"));
-            assertEquals("line count", 2, lines.length);
+            assertEquals(2, lines.length, "line count");
             
             String[] firstLine = lines[0].split(" ");
-            assertEquals("number of parts in line 1", 3, firstLine.length);
-            assertEquals("timestamp", "0.677000", firstLine[1]);
+            assertEquals(3, firstLine.length, "number of parts in line 1");
+            assertEquals("0.677000", firstLine[1], "timestamp");
         }
     }
 }

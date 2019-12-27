@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.math;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -10,25 +10,26 @@ import org.junit.Test;
  * Time: 5:53:55 PM
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class TestIntData {
+class TestIntData {
 
     @Test
-    public void testSimpleAverage() throws Exception {
+    void testSimpleAverage() {
         IntData intData = new IntData();
         intData.add(1);
         intData.add(2);
         
-        assertEquals("Simple average", 1.5, intData.average(), 0.0);
+        assertEquals(1.5, intData.average(), 0.0, "Simple average");
     }
 
-    public void testSimpleStandardDeviation() throws Exception {
+    @Test
+    void testSimpleStandardDeviation() {
         IntData intData = new IntData();
         intData.add(1);
         intData.add(1);
         intData.add(-1);
         intData.add(-1);
         
-        assertEquals("Simple std deviation", 1.1547005383792515, intData.standardDeviation(), 0.0000001);
+        assertEquals(1.1547005383792515, intData.standardDeviation(), 0.0000001, "Simple std deviation");
     }
 
 }

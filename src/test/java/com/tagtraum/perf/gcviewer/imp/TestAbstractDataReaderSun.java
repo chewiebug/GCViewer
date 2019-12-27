@@ -1,8 +1,8 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,14 +17,14 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.util.ParseInformation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestAbstractDataReaderSun {
+class TestAbstractDataReaderSun {
 
     private AbstractDataReaderSunSub dataReader;
     
-    @Before
+    @BeforeEach
     public void setUp() throws UnsupportedEncodingException {
         dataReader = new AbstractDataReaderSunSub(new GcResourceFile("empty"), new ByteArrayInputStream(new byte[0]), GcLogType.SUN1_6);
     }
@@ -33,7 +33,7 @@ public class TestAbstractDataReaderSun {
      * Tests parsing of memory information like 8192K(16M)->7895K(16M)
      */
     @Test
-    public void setMemorySimplePreUsed_heap_postUsed_heap() throws ParseException {
+    void setMemorySimplePreUsed_heap_postUsed_heap() throws ParseException {
         String line = "   [Eden: 1000K(2000K)->0B(3000K) Survivors: 1024B->4000K Heap: 5000K(16M)->6000K(16M)]";
         
         ParseInformation pos = new ParseInformation(0);
@@ -42,16 +42,16 @@ public class TestAbstractDataReaderSun {
         GCEvent event = new GCEvent();
         dataReader.setMemoryExtended(event, line, pos);
         
-        assertEquals("heap before", 5000, event.getPreUsed());
-        assertEquals("heap after", 6000, event.getPostUsed());
-        assertEquals("heap total", 16*1024, event.getTotal());
+        assertEquals(5000, event.getPreUsed(), "heap before");
+        assertEquals(6000, event.getPostUsed(), "heap after");
+        assertEquals(16 * 1024, event.getTotal(), "heap total");
     }
     
     /**
      * Tests parsing of memory information like 8192K->7895K(16M)
      */
     @Test
-    public void setMemorySimplePreUsed_postUsed_heap() throws ParseException {
+    void setMemorySimplePreUsed_postUsed_heap() throws ParseException {
         String line = "   [ 8192K->8128K(64M)]";
         
         ParseInformation pos = new ParseInformation(0);
@@ -60,16 +60,16 @@ public class TestAbstractDataReaderSun {
         GCEvent event = new GCEvent();
         dataReader.setMemoryExtended(event, line, pos);
         
-        assertEquals("heap before", 8192, event.getPreUsed());
-        assertEquals("heap after", 8128, event.getPostUsed());
-        assertEquals("heap total", 64*1024, event.getTotal());
+        assertEquals(8192, event.getPreUsed(), "heap before");
+        assertEquals(8128, event.getPostUsed(), "heap after");
+        assertEquals(64 * 1024, event.getTotal(), "heap total");
     }
     
     /**
      * Tests parsing of memory information like 8192K->7895K (usually found in G1 Survivors block)
      */
     @Test
-    public void setMemorySimplePreHeap_postHeap() throws ParseException {
+    void setMemorySimplePreHeap_postHeap() throws ParseException {
         String line = "   [Eden: 1000K(2000K)->0B(3000K) Survivors: 1024B->4000K Heap: 5000K(16M)->6000K(16M)]";
         
         ParseInformation pos = new ParseInformation(0);
@@ -78,15 +78,15 @@ public class TestAbstractDataReaderSun {
         GCEvent event = new GCEvent();
         dataReader.setMemoryExtended(event, line, pos);
         
-        assertEquals("heap before", 1, event.getPreUsed());
-        assertEquals("heap after", 4000, event.getPostUsed());
+        assertEquals(1, event.getPreUsed(), "heap before");
+        assertEquals(4000, event.getPostUsed(), "heap after");
     }
     
     /**
      * Tests parsing of memory information like "118.5M(118.0M)->128.4K(112.0M)" (notice the dots).
      */
     @Test
-    public void setExtendedMemoryFloatingPointPreEden_postEden() throws ParseException {
+    void setExtendedMemoryFloatingPointPreEden_postEden() throws ParseException {
         String line = "   [Eden: 118.5M(118.0M)->128.4K(112.0M) Survivors: 10.0M->16.0M Heap: 548.6M(640.0M)->440.6M(640.0M)]";
         
         ParseInformation pos = new ParseInformation(0);
@@ -95,12 +95,12 @@ public class TestAbstractDataReaderSun {
         GCEvent event = new GCEvent();
         dataReader.setMemoryExtended(event, line, pos);
         
-        assertEquals("heap before", 121344, event.getPreUsed());
-        assertEquals("heap after", 128, event.getPostUsed());
+        assertEquals(121344, event.getPreUsed(), "heap before");
+        assertEquals(128, event.getPostUsed(), "heap after");
     }
 
     @Test
-    public void contains() {
+    void contains() {
         String line = "0.233: [Concurrent reset, start]\n";
         List<String> containsStrings = Arrays.asList(", start", "blabla");
         assertThat("should detect string", dataReader.contains(line, containsStrings, false), is(true));
