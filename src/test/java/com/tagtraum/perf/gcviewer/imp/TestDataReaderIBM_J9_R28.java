@@ -16,7 +16,6 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,7 +41,7 @@ public class TestDataReaderIBM_J9_R28 {
 
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
-        
+
         assertThat("model size", model.size(), is(2));
 
         GCEvent event = (GCEvent) model.get(0);
@@ -121,7 +120,7 @@ public class TestDataReaderIBM_J9_R28 {
         assertThat("number of errors", handler.getCount(), is(0));
     }
 
-    @Test @Ignore
+    @Test
     public void testConcurrentCollection() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);

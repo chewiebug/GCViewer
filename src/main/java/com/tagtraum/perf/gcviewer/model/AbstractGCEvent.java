@@ -46,7 +46,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public void add(T detail) {
         // most events have only one detail event
         if (details == null) {
-        	details = new ArrayList<T>(2);
+            details = new ArrayList<T>(2);
         }
         details.add(detail);
         typeAsString += "; " + detail.getExtendedType().getName();
@@ -80,7 +80,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        AbstractGCEvent<T> clonedEvent = (AbstractGCEvent<T>)super.clone();
+        AbstractGCEvent<T> clonedEvent = (AbstractGCEvent<T>) super.clone();
         if (getDatestamp() != null) {
             clonedEvent.setDateStamp(ZonedDateTime.from(this.getDatestamp()));
         }
@@ -90,7 +90,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         if (details != null) {
             List<T> detailClones = new ArrayList<>();
             for (T t : details) {
-                detailClones.add((T)t.clone());
+                detailClones.add((T) t.clone());
             }
             clonedEvent.details = detailClones;
         }
@@ -102,7 +102,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     public AbstractGCEvent<T> cloneAndMerge(AbstractGCEvent<T> otherEvent) {
         try {
-            AbstractGCEvent<T> clonedEvent = (AbstractGCEvent<T>)otherEvent.clone();
+            AbstractGCEvent<T> clonedEvent = (AbstractGCEvent<T>) otherEvent.clone();
             clonedEvent.setExtendedType(new ExtendedType(getExtendedType().getType(), getExtendedType().fullName + "+" + clonedEvent.getExtendedType().fullName));
             clonedEvent.setPreUsed(clonedEvent.getPreUsed() + getPreUsed());
             clonedEvent.setPostUsed(clonedEvent.getPostUsed() + getPostUsed());
@@ -115,7 +115,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     public void setDateStamp(ZonedDateTime datestamp) {
-    	this.datestamp = datestamp;
+        this.datestamp = datestamp;
     }
 
     public void setNumber(int number) {
@@ -158,7 +158,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     public String getTypeAsString() {
-    	return typeAsString;
+        return typeAsString;
     }
 
     public boolean isStopTheWorld() {
@@ -176,6 +176,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
 
     /**
      * Returns the generation of the event including generation of detail events if present.
+     *
      * @return generation of event including generation of detail events
      */
     public Generation getGeneration() {
@@ -194,7 +195,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                     generation = Generation.ALL;
                 }
                 else if (generationSet.size() == 1) {
-                    generation  = generationSet.iterator().next();
+                    generation = generationSet.iterator().next();
                 }
                 else {
                     // default
@@ -247,7 +248,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     public abstract void toStringBuffer(StringBuffer sb);
 
     @Override
-	public String toString() {
+    public String toString() {
         StringBuffer sb = new StringBuffer(128);
         toStringBuffer(sb);
         return sb.toString();
@@ -441,7 +442,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public String toString() {
             return fullName;
         }
-	}
+    }
 
     /**
      * Representation of an event type
@@ -460,7 +461,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         }
 
         private Type(String name, Generation generation, Concurrency concurrency) {
-        	this(name, generation, concurrency, GcPattern.GC_MEMORY_PAUSE);
+            this(name, generation, concurrency, GcPattern.GC_MEMORY_PAUSE);
         }
 
         private Type(String name, Generation generation, Concurrency concurrency, GcPattern pattern) {
@@ -494,7 +495,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         }
 
         public GcPattern getPattern() {
-        	return pattern;
+            return pattern;
         }
 
         public CollectionType getCollectionType() {
@@ -544,11 +545,11 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type CMS_PERM = new Type("CMS Perm", Generation.PERM, Concurrency.SERIAL, GcPattern.GC_MEMORY);
 
         // Parnew (promotion failed)
-         public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
+        public static final Type PAR_NEW_PROMOTION_FAILED = new Type("ParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
 
         // CMS (concurrent mode failure / interrupted)
-         public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
-         public static final Type CMS_CMI = new Type("CMS (concurrent mode interrupted)", Generation.TENURED, Concurrency.SERIAL);
+        public static final Type CMS_CMF = new Type("CMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
+        public static final Type CMS_CMI = new Type("CMS (concurrent mode interrupted)", Generation.TENURED, Concurrency.SERIAL);
 
         // CMS (Concurrent Mark Sweep) Event Types
         public static final Type CMS_CONCURRENT_MARK_START = new Type("CMS-concurrent-mark-start", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC);
@@ -569,7 +570,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type ASCMS = new Type("ASCMS", Generation.TENURED);
 
         // Parnew (promotion failed) AdaptiveSizePolicy
-         public static final Type ASPAR_NEW_PROMOTION_FAILED = new Type("ASParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
+        public static final Type ASPAR_NEW_PROMOTION_FAILED = new Type("ASParNew (promotion failed)", Generation.YOUNG, Concurrency.SERIAL);
 
         // CMS (concurrent mode failure / interrupted) AdaptiveSizePolicy
         public static final Type ASCMS_CMF = new Type("ASCMS (concurrent mode failure)", Generation.TENURED, Concurrency.SERIAL);
@@ -720,7 +721,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type IBM_NURSERY = new Type("nursery", Generation.YOUNG);
         public static final Type IBM_TENURE = new Type("tenure", Generation.TENURED);
 
-        public static final Type IBM_CONCURRENT_COLLECTION_START = new Type("concurrent-collection-start", Generation.ALL, Concurrency.CONCURRENT);
+        public static final Type IBM_CONCURRENT_COLLECTION_START = new Type("concurrent-collection-start global", Generation.ALL, Concurrency.CONCURRENT);
 
     }
 

@@ -82,6 +82,10 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                                 assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
                                 eventNameStart = handleAfStart(eventReader, startElement);
                                 break;
+                            case CONCURRENT_COLLECTION_START:
+                                assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
+                                eventNameStart = handleConcurrentCollectionStart(eventReader, startElement);
+                                break;
                             case GC_START:
                                 handleGcStart(eventReader, startElement, currentGcEvent, eventNameStart);
                                 break;
@@ -179,7 +183,8 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
         return "af ";
     }
 
-    private void handleConcurrentCollectionStart(XMLEventReader eventReader, StartElement startElement) {
+    private String handleConcurrentCollectionStart(XMLEventReader eventReader, StartElement startElement) {
+        return "concurrent-collection-start ";
     }
 
     private void handleGcStart(XMLEventReader eventReader, StartElement startElement, GCEvent event, String eventNameStart) throws
@@ -195,7 +200,7 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
 
         String currentElementName = "";
         while (eventReader.hasNext() && !currentElementName.equals(GC_START)) {
-            
+
             XMLEvent xmlEvent = eventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
                 StartElement startEl = xmlEvent.asStartElement();
@@ -230,7 +235,6 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
     private void handleGcEnd(XMLEventReader eventReader, GCEvent event) throws XMLStreamException {
         String currentElementName = "";
         while (eventReader.hasNext() && !currentElementName.equals(GC_END)) {
-
             XMLEvent xmlEvent = eventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
                 StartElement startEl = xmlEvent.asStartElement();
@@ -273,11 +277,11 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
         if (attr != null) {
             value = attr.getValue();
         }
-        
+
         return value;
     }
 
     private int toKiloBytes(long bytes) {
-        return (int)Math.rint(bytes / (double)1024);
+        return (int) Math.rint(bytes / (double) 1024);
     }
 }
