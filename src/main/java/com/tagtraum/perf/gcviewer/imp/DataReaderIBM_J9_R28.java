@@ -216,10 +216,13 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                             event.add(young);
                             break;
                         case "tenure":
-                            GCEvent tenured = new GCEvent();
-                            tenured.setType(Type.lookup("tenure"));
-                            setTotalAndPreUsed(tenured, startEl);
-                            event.add(tenured);
+                            // scavenge prints tenure space but does not change it as it is young only
+                            if(!typeName.contains("scavenge")) {
+                                GCEvent tenured = new GCEvent();
+                                tenured.setType(Type.lookup("tenure"));
+                                setTotalAndPreUsed(tenured, startEl);
+                                event.add(tenured);
+                            }
                             break;
                         // all other are ignored
                     }
@@ -247,7 +250,10 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                             setPostUsed(event.getYoung(), startEl);
                             break;
                         case "tenure":
-                            setPostUsed(event.getTenured(), startEl);
+                            // scavenge prints tenure space but does not change it as it is young only
+                            if(!event.getTypeAsString().contains("scavenge")) {
+                                setPostUsed(event.getTenured(), startEl);
+                            }
                             break;
                         // all other are ignored
                     }

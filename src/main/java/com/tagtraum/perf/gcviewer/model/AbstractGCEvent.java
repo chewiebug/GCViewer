@@ -709,9 +709,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_ZGC_HEAP_CAPACITY = new Type("Capacity", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_HEAP_MEMORY_PERCENTAGE);
 
         // IBM Types
-        // TODO: are scavenge always young only??
-        public static final Type IBM_AF = new Type("af", Generation.YOUNG);
         public static final Type IBM_SYS = new Type("sys explicit", Generation.ALL);
+        public static final Type IBM_AF = new Type("af", Generation.YOUNG);
+        // scavenge is young only
+        // see  https://www.ibm.com/support/knowledgecenter/SSYKE2_8.0.0/com.ibm.java.vm.80.doc/docs/mm_gc_pd_verbose_increment.html
         public static final Type IBM_AF_SCAVENGE = new Type("af scavenge", Generation.YOUNG);
         public static final Type IBM_AF_GLOBAL = new Type("af global", Generation.TENURED);
         public static final Type IBM_SYS_GLOBAL = new Type("sys global", Generation.ALL);

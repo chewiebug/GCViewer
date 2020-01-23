@@ -12,10 +12,7 @@ import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.*;
 import org.junit.Test;
 
 /**
@@ -62,8 +59,9 @@ public class TestDataReaderIBM_J9_R28 {
         assertThat("timestamp 1", event.getTimestamp(), closeTo(0.0, 0.0001));
         assertThat("timestamp 2", model.get(1).getTimestamp(), closeTo(1.272, 0.0001));
 
-        assertThat("type", event.getTypeAsString(), equalTo("af scavenge; nursery; tenure"));
-
+        assertThat("type", event.getTypeAsString(), equalTo("af scavenge; nursery"));
+        assertThat("generation", event.getExtendedType().getGeneration(), is(AbstractGCEvent.Generation.YOUNG));
+        assertThat("full", event.isFull(), is(false));
         assertThat("number of errors", handler.getCount(), is(0));
     }
 
@@ -130,9 +128,13 @@ public class TestDataReaderIBM_J9_R28 {
         DataReader reader = getDataReader(gcResource);
         GCModel model = reader.read();
 
+        AbstractGCEvent<?> event = model.get(0);
         assertThat("model size", model.size(), is(1));
-        assertThat("duration", model.get(0).getPause(), closeTo(1.182375, 0.00000001));
+        assertThat("duration", event.getPause(), closeTo(1.182375, 0.00000001));
         assertThat("number of errors", handler.getCount(), is(0));
+
+        assertThat("", event.getExtendedType().getConcurrency(), is(AbstractGCEvent.Concurrency.CONCURRENT));
+        assertThat("", event.getExtendedType().getGeneration(), is(AbstractGCEvent.Generation.ALL));
     }
 
 }
