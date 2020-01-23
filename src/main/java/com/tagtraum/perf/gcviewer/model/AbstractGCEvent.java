@@ -277,7 +277,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
     }
 
     public boolean isInc() {
-        return getExtendedType().getType() == GCEvent.Type.INC_GC;
+        Type type = getExtendedType().getType();
+        return type == GCEvent.Type.INC_GC || type == Type.IBM_AF_SCAVENGE;
     }
 
     public boolean isConcurrent() {

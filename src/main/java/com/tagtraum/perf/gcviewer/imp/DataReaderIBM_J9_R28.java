@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -158,9 +159,10 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
     private GCEvent handleExclusiveStart(StartElement startElement) {
         GCEvent event = new GCEvent();
         try {
-            event.setDateStamp(ZonedDateTime.of(
-                    LocalDateTime.parse(getAttributeValue(startElement, "timestamp"), dateTimeFormatter),
-                    ZoneId.systemDefault()));
+            String timestamp = getAttributeValue(startElement, "timestamp");
+            LocalDateTime local = LocalDateTime.parse(timestamp, dateTimeFormatter);
+            event.setDateStamp(ZonedDateTime.of(local, ZoneId.systemDefault()));
+            event.setTimestamp(Timestamp.valueOf(local).getTime() / 1000);
         }
         catch (DateTimeParseException e) {
             if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("line " + in.getLineNumber() + ": " + e.toString());
@@ -211,6 +213,7 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                     switch (getAttributeValue(startEl, "type")) {
                         case "nursery":
                             GCEvent young = new GCEvent();
+                            young.setTimestamp(event.getTimestamp());
                             young.setType(Type.lookup("nursery"));
                             setTotalAndPreUsed(young, startEl);
                             event.add(young);
@@ -219,6 +222,7 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                             // scavenge prints tenure space but does not change it as it is young only
                             if(!typeName.contains("scavenge")) {
                                 GCEvent tenured = new GCEvent();
+                                tenured.setTimestamp(event.getTimestamp());
                                 tenured.setType(Type.lookup("tenure"));
                                 setTotalAndPreUsed(tenured, startEl);
                                 event.add(tenured);

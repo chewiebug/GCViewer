@@ -8,6 +8,9 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
@@ -56,12 +59,16 @@ public class TestDataReaderIBM_J9_R28 {
         assertThat("tenured before", event.getTenured().getPreUsed(), is(toKiloBytes(402653184 - 401882552)));
         assertThat("tenured after", event.getTenured().getPostUsed(), is(toKiloBytes(402653184 - 401882552)));
 
-        assertThat("timestamp 1", event.getTimestamp(), closeTo(0.0, 0.0001));
-        assertThat("timestamp 2", model.get(1).getTimestamp(), closeTo(1.272, 0.0001));
 
         assertThat("type", event.getTypeAsString(), equalTo("af scavenge; nursery"));
         assertThat("generation", event.getExtendedType().getGeneration(), is(AbstractGCEvent.Generation.YOUNG));
         assertThat("full", event.isFull(), is(false));
+        assertThat("full", event.isInc(), is(true));
+
+        verifyTimestamp("first pause timestamp", model.getFirstPauseTimeStamp(), "2015-12-31T15:22:46.957");
+        verifyTimestamp("event timestamp", event.getTimestamp(), "2015-12-31T15:22:46.957");
+        verifyTimestamp("event timestamp 2", model.get(1).getTimestamp(), "2015-12-31T15:22:48.229");
+
         assertThat("number of errors", handler.getCount(), is(0));
     }
 
@@ -81,6 +88,9 @@ public class TestDataReaderIBM_J9_R28 {
         assertThat("pause", event.getPause(), closeTo(1.255648, 0.0000001));
         assertThat("type", event.getTypeAsString(), equalTo("af global; tenure"));
 
+        verifyTimestamp("event timestamp", event.getTimestamp(), "2016-08-09T14:58:58.343");
+        verifyTimestamp("first pause timestamp", model.getFirstPauseTimeStamp(), "2016-08-09T14:58:58.343");
+
         assertThat("number of errors", handler.getCount(), is(0));
     }
 
@@ -99,6 +109,9 @@ public class TestDataReaderIBM_J9_R28 {
         GCEvent event = (GCEvent) model.get(0);
         assertThat("pause", event.getPause(), closeTo(0.097756, 0.0000001));
         assertThat("type", event.getTypeAsString(), equalTo("sys explicit global; nursery; tenure"));
+
+        verifyTimestamp("event timestamp", event.getTimestamp(), "2015-12-31T15:23:00.646");
+        verifyTimestamp("first pause timestamp", model.getFirstPauseTimeStamp(), "2015-12-31T15:23:00.646");
 
         assertThat("number of errors", handler.getCount(), is(0));
     }
@@ -131,10 +144,22 @@ public class TestDataReaderIBM_J9_R28 {
         AbstractGCEvent<?> event = model.get(0);
         assertThat("model size", model.size(), is(1));
         assertThat("duration", event.getPause(), closeTo(1.182375, 0.00000001));
-        assertThat("number of errors", handler.getCount(), is(0));
 
-        assertThat("", event.getExtendedType().getConcurrency(), is(AbstractGCEvent.Concurrency.CONCURRENT));
-        assertThat("", event.getExtendedType().getGeneration(), is(AbstractGCEvent.Generation.ALL));
+        assertThat("concurrency", event.getExtendedType().getConcurrency(), is(AbstractGCEvent.Concurrency.CONCURRENT));
+        assertThat("generation", event.getExtendedType().getGeneration(), is(AbstractGCEvent.Generation.ALL));
+        assertThat("full", event.isFull(), is(true));
+        assertThat("full", event.isInc(), is(false));
+
+        verifyTimestamp("event timestamp", event.getTimestamp(), "2016-08-09T15:14:56.110");
+        verifyTimestamp("first pause timestamp", model.getFirstPauseTimeStamp(), "2016-08-09T15:14:56.110");
+
+        assertThat("number of errors", handler.getCount(), is(0));
     }
 
+    public static void verifyTimestamp(String reason, double actual, String dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, formatter);
+        double expected = Long.valueOf(Timestamp.valueOf(localDateTime).getTime()/1000).doubleValue();
+        assertThat(reason, actual, is(expected));
+    }
 }
