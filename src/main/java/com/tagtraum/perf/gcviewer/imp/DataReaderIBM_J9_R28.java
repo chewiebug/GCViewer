@@ -77,15 +77,15 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                                 break;
                             case SYS_START:
                                 assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
-                                eventNameStart = handleSysStart(eventReader, startElement);
+                                eventNameStart = handleSysStart(startElement);
                                 break;
                             case AF_START:
                                 assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
-                                eventNameStart = handleAfStart(eventReader, startElement);
+                                eventNameStart = handleAfStart();
                                 break;
                             case CONCURRENT_COLLECTION_START:
                                 assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
-                                eventNameStart = handleConcurrentCollectionStart(eventReader, startElement);
+                                eventNameStart = handleConcurrentCollectionStart();
                                 break;
                             case GC_START:
                                 handleGcStart(eventReader, startElement, currentGcEvent, eventNameStart);
@@ -176,16 +176,16 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
         event.setPause(NumberParser.parseDouble(getAttributeValue(startElement, "durationms")) / 1000);
     }
 
-    private String handleSysStart(XMLEventReader eventReader, StartElement startElement) throws XMLStreamException {
+    private String handleSysStart(StartElement startElement) {
         String reason = getAttributeValue(startElement, "reason");
         return "sys " + (reason != null ? reason + " " : "");
     }
 
-    private String handleAfStart(XMLEventReader eventReader, StartElement startElement) throws XMLStreamException {
+    private String handleAfStart() {
         return "af ";
     }
 
-    private String handleConcurrentCollectionStart(XMLEventReader eventReader, StartElement startElement) {
+    private String handleConcurrentCollectionStart() {
         return "concurrent-collection-start ";
     }
 

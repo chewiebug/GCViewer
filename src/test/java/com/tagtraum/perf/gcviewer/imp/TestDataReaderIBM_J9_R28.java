@@ -15,7 +15,12 @@ import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
-import com.tagtraum.perf.gcviewer.model.*;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GCResource;
+
 import org.junit.Test;
 
 /**

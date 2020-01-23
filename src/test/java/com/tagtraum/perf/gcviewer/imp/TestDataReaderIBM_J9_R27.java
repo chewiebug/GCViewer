@@ -1,7 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static com.tagtraum.perf.gcviewer.UnittestHelper.toKiloBytes;
-import static com.tagtraum.perf.gcviewer.imp.TestDataReaderIBM_J9_R28.*;
+import static com.tagtraum.perf.gcviewer.imp.TestDataReaderIBM_J9_R28.verifyTimestamp;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.number.IsCloseTo.closeTo;
