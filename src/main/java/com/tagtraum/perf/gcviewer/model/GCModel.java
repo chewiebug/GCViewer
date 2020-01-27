@@ -31,7 +31,7 @@ import com.tagtraum.perf.gcviewer.math.RegressionLine;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
-import static com.tagtraum.perf.gcviewer.model.AbstractGCEvent.*;
+import static com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 
 /**
  * Collection of GCEvents.
