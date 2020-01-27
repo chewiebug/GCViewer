@@ -180,4 +180,39 @@ public class TestDataReaderUJLG1JDK11 {
         assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
         assertThat("total heap", model.get(0).getTotal(), is(256 * 1024));
     }
+
+    @Test
+    public void calculatePromotion() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[0.011s][info][gc,heap] Heap region size: 1M\n" +
+                        "[0.023s][info][gc     ] Using G1\n" +
+                        "[0.023s][info][gc,heap,coops] Heap address: 0x0000000700000000, size: 4096 MB, Compressed Oops mode: Zero based, Oop shift amount: 3\n" +
+                        "[18.700s][info][gc,start      ] GC(12) Pause Young (Normal) (G1 Evacuation Pause)\n" +
+                        "[18.700s][info][gc,task       ] GC(12) Using 8 workers of 8 for evacuation\n" +
+                        "[18.709s][info][gc,phases     ] GC(12)   Pre Evacuate Collection Set: 0.0ms\n" +
+                        "[18.709s][info][gc,phases     ] GC(12)   Evacuate Collection Set: 7.8ms\n" +
+                        "[18.709s][info][gc,phases     ] GC(12)   Post Evacuate Collection Set: 0.9ms\n" +
+                        "[18.709s][info][gc,phases     ] GC(12)   Other: 0.2ms\n" +
+                        "[18.709s][info][gc,heap       ] GC(12) Eden regions: 137->0(140)\n" +
+                        "[18.709s][info][gc,heap       ] GC(12) Survivor regions: 16->13(20)\n" +
+                        "[18.709s][info][gc,heap       ] GC(12) Old regions: 8->13\n" +
+                        "[18.709s][info][gc,heap       ] GC(12) Humongous regions: 18->8\n" +
+                        "[18.709s][info][gc,metaspace  ] GC(12) Metaspace: 48235K->48235K(1093632K)\n" +
+                        "[18.709s][info][gc            ] GC(12) Pause Young (Normal) (G1 Evacuation Pause) 177M->32M(256M) 9.073ms\n" +
+                        "[18.709s][info][gc,cpu        ] GC(12) User=0.00s Sys=0.00s Real=0.01s")
+                        .getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
+        assertThat("total heap", model.get(0).getTotal(), is(256 * 1024));
+        assertThat("promotion", model.getPromotion().getSum(), is(new Long(5 * 1024)));
+    }
 }
