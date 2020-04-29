@@ -92,7 +92,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         versionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         versionPanel.setLayout(new GridBagLayout());
 
-        JLabel copyright = new JLabel("\u00A9" + " 2011-2019: Joerg Wuethrich and contributors", JLabel.CENTER);
+        JLabel copyright = new JLabel("\u00A9" + " 2011-2020: Joerg Wuethrich and contributors", JLabel.CENTER);
 
         JLabel contributorsLabel = new JLabel("contributors (alphabetically ordered):", JLabel.CENTER);
         contributorsLabel.setForeground(Color.GRAY);
