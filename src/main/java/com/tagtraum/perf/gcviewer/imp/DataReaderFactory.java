@@ -157,12 +157,18 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Oracle / OpenJDK unified jvm logging");
             return new DataReaderUnifiedJvmLogging(gcResource, in);
         }
-        else if (s.contains(" (young)") || s.contains("G1Ergonomics") || s.contains(" (mixed)")) {
+        else if (s.contains(" (young)") || s.contains("G1Ergonomics") || s.contains(" (mixed)") || s.contains("-XX:+UseG1GC")) {
             // G1 logger usually starts with "<timestamp>: [GC pause (young)...]"
             // but can start with  <timestamp>: [G1Ergonomics (Heap Sizing) expand the heap...
             // with certain logging flaggs.
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x .. 1.8.x G1 collector");
             return new DataReaderSun1_6_0G1(gcResource, in, GcLogType.SUN1_6G1);
+        }
+        else if (s.contains("-XX:+UseSerialGC") || s.contains("-XX:+UseParallelGC") || s.contains("-XX:+UseConcMarkSweepGC")
+                || s.contains("-XX:+UseShenandoahGC")) {
+
+            if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Sun 1.6.x .. 1.8.x");
+            return new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_6);
         }
         else if (s.contains("[Times:") || s.contains("[Pause Init Mark") /* Shenandoah, -XX:-PrintGCDetails */) {
             // all 1.6 lines end with a block like this "[Times: user=1.13 sys=0.08, real=0.95 secs]"
