@@ -8,10 +8,12 @@ jdk:
   - oraclejdk11
   - oraclejdk12
   - oraclejdk13
+  - oraclejdk14
   - openjdk8
   - openjdk11
   - openjdk12
   - openjdk13
+  - openjdk14
 
 # enable cache to stop downloading all maven plugins every time
 cache:
