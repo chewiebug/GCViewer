@@ -39,7 +39,8 @@ public class Exit extends AbstractAction {
     }
 
     // Used by OS X adaptations
-    public void quit() {
+    public boolean quit() {
         actionPerformed(null);
+        return true;
     }
 }

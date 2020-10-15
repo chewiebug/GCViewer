@@ -112,7 +112,7 @@ public class OSXSupport {
 
             Class<?> handlerClass = Class.forName(handlerClassName);
             if (action != null) {
-                Object aboutHandlerProxy =
+                Object handlerProxy =
                     Proxy.newProxyInstance(OSXSupport.class.getClassLoader(),
                                            new Class[]{handlerClass},
                                            new InvocationHandler() {
@@ -121,10 +121,14 @@ public class OSXSupport {
                                                    if (method.getName().equals(handlerMethodName)) {
                                                        action.actionPerformed(null);
                                                    }
+                                                   if (method.getName().equals("handleQuitRequestWith")) {
+                                                       Object quitResponse = args[1];
+                                                       Class.forName("com.apple.eawt.QuitResponse").getDeclaredMethod("performQuit").invoke(quitResponse);
+                                                   }
                                                    return null;
                                                }
                                            });
-                application.getClass().getMethod(handlerSetterMethodName, handlerClass).invoke(application, aboutHandlerProxy);
+                application.getClass().getMethod(handlerSetterMethodName, handlerClass).invoke(application, handlerProxy);
             } else {
                 application.getClass().getMethod(handlerSetterMethodName, handlerClass).invoke(application, (Object) null);
             }
