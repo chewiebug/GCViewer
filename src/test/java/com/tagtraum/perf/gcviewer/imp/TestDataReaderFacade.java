@@ -90,7 +90,8 @@ public class TestDataReaderFacade {
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
             Class expectedClass;
-            if (System.getProperty("java.version").startsWith("14")) {
+            String javaVersion = System.getProperty("java.version");
+            if (javaVersion.startsWith("14") || javaVersion.startsWith("15")) {
                 expectedClass = IOException.class;
             } else {
                 expectedClass = IllegalArgumentException.class;
