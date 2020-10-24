@@ -1,9 +1,5 @@
 package com.tagtraum.perf.gcviewer.view.util;
 
-import javax.swing.Action;
-
-import com.tagtraum.perf.gcviewer.util.LoggerHelper;
-
 import java.awt.Image;
 import java.awt.Window;
 import java.lang.reflect.InvocationHandler;
@@ -11,6 +7,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Action;
+
+import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 
 /**
  * Handles Mac OS X specific stuff.
@@ -112,7 +111,7 @@ public class OSXSupport {
 
             Class<?> handlerClass = Class.forName(handlerClassName);
             if (action != null) {
-                Object aboutHandlerProxy =
+                Object handlerProxy =
                     Proxy.newProxyInstance(OSXSupport.class.getClassLoader(),
                                            new Class[]{handlerClass},
                                            new InvocationHandler() {
@@ -121,10 +120,15 @@ public class OSXSupport {
                                                    if (method.getName().equals(handlerMethodName)) {
                                                        action.actionPerformed(null);
                                                    }
+                                                   if (method.getName().equals("handleQuitRequestWith")) {
+                                                       // https://www.coderanch.com/how-to/javadoc/appledoc/api/com/apple/eawt/QuitHandler.html
+                                                       Object quitResponse = args[1];
+                                                       Class.forName("com.apple.eawt.QuitResponse").getDeclaredMethod("performQuit").invoke(quitResponse);
+                                                   }
                                                    return null;
                                                }
                                            });
-                application.getClass().getMethod(handlerSetterMethodName, handlerClass).invoke(application, aboutHandlerProxy);
+                application.getClass().getMethod(handlerSetterMethodName, handlerClass).invoke(application, handlerProxy);
             } else {
                 application.getClass().getMethod(handlerSetterMethodName, handlerClass).invoke(application, (Object) null);
             }
