@@ -192,7 +192,7 @@ public class GCDocument extends JInternalFrame {
             constraints.gridx = 1;
             constraints.weightx = 0;
             constraints.weighty = 0;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.fill = GridBagConstraints.BOTH;
             constraints.anchor = GridBagConstraints.SOUTH;
             getContentPane().add(modelMetricsPanel, constraints);
             modelMetricsPanel.setVisible(showModelMetricsPanel && (!chartPanelView.isMinimized()));
