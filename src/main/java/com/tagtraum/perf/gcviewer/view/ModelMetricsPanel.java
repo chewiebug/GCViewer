@@ -179,7 +179,13 @@ public class ModelMetricsPanel extends JTabbedPane {
             
             labelMap.put(name, new TwoLabelsContainer(nameLabel, valueLabel));
     	}
-    	
+
+    	public void fixGroupsHeight() {
+    	    for (Component component : getComponents()) {
+    	        component.setMaximumSize(new Dimension(component.getMaximumSize().width, component.getPreferredSize().height));
+            }
+        }
+
     	public void removeEntry(String name) {
     	    TwoLabelsContainer labelContainer = labelMap.get(name);
     	    assert labelContainer != null : "labelContainer for '" + name + "' is null -> was it registered?";
@@ -233,8 +239,10 @@ public class ModelMetricsPanel extends JTabbedPane {
             
             addEntry(LocalisationHelper.getString("data_panel_memory_promotion_avg"));
             addEntry(LocalisationHelper.getString("data_panel_memory_promotion_total"));
-       }
-        
+
+            fixGroupsHeight();
+        }
+
         public void setModel(GCModel model) {
             boolean fullGcDataAvailable = model.getFootprintAfterFullGC().getN() != 0;
             boolean fullGcSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
@@ -377,8 +385,10 @@ public class ModelMetricsPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_count_gc_pauses"));
             addEntry(LocalisationHelper.getString("data_panel_avg_gcpause"));
             addEntry(LocalisationHelper.getString("data_panel_min_max_gc_pause"));
+
+            fixGroupsHeight();
         }
-        
+
         public void setModel(GCModel model) {
             boolean pauseDataAvailable = model.getPause().getN() > 0;
             boolean gcDataAvailable = model.getGCPause().getN() > 0;
@@ -469,8 +479,10 @@ public class ModelMetricsPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_performance_fullgc"));
             addEntry(LocalisationHelper.getString("data_panel_count_gc_pauses"));
             addEntry(LocalisationHelper.getString("data_panel_performance_gc"));
+
+            fixGroupsHeight();
         }
-        
+
         public void setModel(GCModel model) {
             boolean fullGcDataAvailable = model.getFootprintAfterFullGC().getN() > 0;
             boolean postConcurrentUsedSizeAvailable = model.getPostConcurrentCycleHeapUsedSizes().getN() > 0;
