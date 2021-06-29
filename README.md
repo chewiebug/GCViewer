@@ -64,7 +64,7 @@ GCViewer shows a number of lines etc. in a chart (first tab). These are:
   - Green line that shows the length of all GCs
 - GC Times Rectangles:
   - black rectangle at every Full GC
-  - blue rectangle at every inital mark event
+  - blue rectangle at every initial mark event
   - orange rectangle at every remark event
   - red rectangle at every vm operation event ("application stopped...")
   - Grey rectangle at every 'normal' GC
