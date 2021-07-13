@@ -1,7 +1,7 @@
 GCViewer 1.36
 =============
 
-[![Build Status](https://travis-ci.com/chewiebug/GCViewer.svg?branch=develop)](https://travis-ci.com/chewiebug/GCViewer)
+[![Build Status](https://app.travis-ci.com/chewiebug/GCViewer.svg?branch=develop)](https://app.travis-ci.com/chewiebug/GCViewer)
 [![codecov.io](https://codecov.io/github/chewiebug/GCViewer/coverage.svg?branch=develop)](https://codecov.io/github/chewiebug/GCViewer?branch=develop)
 
 GCViewer is a little tool that visualizes verbose GC output

@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -89,9 +90,9 @@ public class TestDataReaderFacade {
         }
         catch (DataReaderException e) {
             assertNotNull("cause", e.getCause());
-            Class expectedClass;
-            String javaVersion = System.getProperty("java.version");
-            if (javaVersion.startsWith("14") || javaVersion.startsWith("15")) {
+            Class<?> expectedClass;
+            int javaMajorVersion = getJavaMajorVersion();
+            if (javaMajorVersion > 13) {
                 expectedClass = IOException.class;
             } else {
                 expectedClass = IllegalArgumentException.class;
@@ -171,4 +172,12 @@ public class TestDataReaderFacade {
         GCModel result = dataReaderFacade.loadModel(series);
         assertThat(result.toString(), is(expectedModel.toString()));
     }
+
+    private int getJavaMajorVersion() {
+        String javaVersion = System.getProperty("java.version");
+        String[] javaVersionParts = javaVersion.split("\\.");
+        assertThat("java version format", javaVersionParts.length, greaterThanOrEqualTo(1));
+        return Integer.parseInt(javaVersionParts[0]);
+    }
+
 }

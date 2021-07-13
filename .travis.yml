@@ -1,13 +1,10 @@
 # more details for build customization see http://docs.travis-ci.com/user/customizing-the-build/
 language: java
 
-# use the container based infrastructure on travis
-sudo: false
-
 jdk:
   - openjdk8
   - openjdk11
-  - openjdk15
+  - openjdk17
 
 # enable cache to stop downloading all maven plugins every time
 cache:
