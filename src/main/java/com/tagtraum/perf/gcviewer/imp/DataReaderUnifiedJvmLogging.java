@@ -324,6 +324,8 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             parentEvent.setTotal(returnEvent.getTotal());
             context.partialEventsMap.put(event.getNumber() + "", parentEvent);
             returnEvent = null;
+        } else if(event.getExtendedType().getType().equals(Type.UJL_G1_OLD) && parentEvent != null) {
+            returnEvent = parseTail(context, event, tail);
         }
         return returnEvent;
     }

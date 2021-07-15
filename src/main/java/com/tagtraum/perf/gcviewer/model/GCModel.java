@@ -31,6 +31,8 @@ import com.tagtraum.perf.gcviewer.math.RegressionLine;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
+import static com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+
 /**
  * Collection of GCEvents.
  *
@@ -642,19 +644,26 @@ public class GCModel implements Serializable {
     private void updatePromotion(GCEvent event) {
         if (event.getGeneration().equals(Generation.YOUNG) && event.hasDetails() && !event.isFull()) {
 
-            GCEvent youngEvent = null;
             for (Iterator<GCEvent> i = event.details(); i.hasNext(); ) {
                 GCEvent ev = i.next();
-                if (ev.getGeneration().equals(Generation.YOUNG)) {
-                    youngEvent = ev;
-                    break;
+                if (ev.getGeneration().equals(Generation.TENURED) && ev.getTypeAsString().contains(Type.UJL_G1_OLD.getName())) {
+                    int promoted = ev.getPostUsed() - ev.getPreUsed();
+                    if(promoted > 0) {
+                        this.promotion.add(promoted);
+                    }
+                    return;
                 }
             }
 
-            if (youngEvent != null) {
-                promotion.add((youngEvent.getPreUsed() - youngEvent.getPostUsed())
-                        - (event.getPreUsed() - event.getPostUsed())
-                );
+            // naive implementationa as fallback
+            for (Iterator<GCEvent> i = event.details(); i.hasNext(); ) {
+                GCEvent ev = i.next();
+                if (ev.getGeneration().equals(Generation.YOUNG)) {
+                    promotion.add((ev.getPreUsed() - ev.getPostUsed())
+                            - (event.getPreUsed() - event.getPostUsed())
+                    );
+                    return;
+                }
             }
         }
     }
