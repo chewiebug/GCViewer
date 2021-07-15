@@ -57,7 +57,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     private UsedTenuredRenderer usedTenuredRenderer;
     private UsedYoungRenderer usedYoungRenderer;
     private InitialMarkLevelRenderer initialMarkLevelRenderer;
-    private ConcurrentGcBegionEndRenderer concurrentGcLineRenderer;
+    private ConcurrentGcBeginEndRenderer concurrentGcLineRenderer;
     private boolean antiAlias;
     private TimeOffsetPanel timeOffsetPanel;
     private int lastViewPortWidth = 0;
@@ -91,7 +91,7 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         chart.add(gcRectanglesRenderer, gridBagConstraints);
         incLineRenderer = new IncLineRenderer(this);
         chart.add(incLineRenderer, gridBagConstraints);
-        concurrentGcLineRenderer = new ConcurrentGcBegionEndRenderer(this);
+        concurrentGcLineRenderer = new ConcurrentGcBeginEndRenderer(this);
         chart.add(concurrentGcLineRenderer, gridBagConstraints);
         gcTimesRenderer = new GCTimesRenderer(this);
         chart.add(gcTimesRenderer, gridBagConstraints);

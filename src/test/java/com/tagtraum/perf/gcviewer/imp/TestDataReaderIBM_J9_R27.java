@@ -1,7 +1,9 @@
 package com.tagtraum.perf.gcviewer.imp;
 
 import static com.tagtraum.perf.gcviewer.UnittestHelper.toKiloBytes;
+import static com.tagtraum.perf.gcviewer.imp.TestDataReaderIBM_J9_R28.verifyTimestamp;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
 
@@ -22,6 +24,8 @@ import org.junit.Test;
  *         <p>created on 08.10.2014</p>
  */
 public class TestDataReaderIBM_J9_R27 {
+
+    public static final String EXPECTED_ERROR_MESSAGE = "line 233: javax.xml.stream.XMLStreamException: ParseError at [row,col]:[234,1]";
 
     private InputStream getInputStream(String fileName) throws IOException {
         return UnittestHelper.getResourceAsStream(FOLDER.IBM, fileName);
@@ -58,11 +62,13 @@ public class TestDataReaderIBM_J9_R27 {
         assertThat("tenured before", event.getTenured().getPreUsed(), is(toKiloBytes(805306368 - 804158480)));
         assertThat("tenured after", event.getTenured().getPostUsed(), is(toKiloBytes(805306368 - 804158480)));
 
-        assertThat("timestamp 1", event.getTimestamp(), closeTo(0.0, 0.0001));
-        assertThat("timestamp 2", model.get(1).getTimestamp(), closeTo(1.927, 0.0001));
-        assertThat("timestamp 3", model.get(2).getTimestamp(), closeTo(3.982, 0.0001));
+        verifyTimestamp("timestamp 1", event.getTimestamp(), "2014-09-24T15:57:32.116");
+        verifyTimestamp("timestamp 2", model.get(1).getTimestamp(), "2014-09-24T15:57:34.043");
+        verifyTimestamp("timestamp 3", model.get(2).getTimestamp(), "2014-09-24T15:57:36.098");
 
         assertThat("number of errors", handler.getCount(), is(1));
+        String message = handler.getLogRecords().get(0).getMessage();
+        assertThat("missing close tag </verbosegc>", message, startsWith(EXPECTED_ERROR_MESSAGE));
     }
 
     @Test
