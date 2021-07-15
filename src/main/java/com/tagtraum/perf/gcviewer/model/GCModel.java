@@ -652,9 +652,10 @@ public class GCModel implements Serializable {
             }
 
             if (youngEvent != null) {
-                promotion.add((youngEvent.getPreUsed() - youngEvent.getPostUsed())
-                        - (event.getPreUsed() - event.getPostUsed())
-                );
+                int promo = (youngEvent.getPreUsed() - youngEvent.getPostUsed()) - (event.getPreUsed() - event.getPostUsed());
+                if (promo >= 0) {
+                    promotion.add(promo);
+                }
             }
         }
     }

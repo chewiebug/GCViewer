@@ -180,4 +180,32 @@ public class TestDataReaderUJLG1JDK11 {
         assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
         assertThat("total heap", model.get(0).getTotal(), is(256 * 1024));
     }
+
+    @Test
+    public void testPauseNoPromotion() throws IOException {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[12.029s][info][gc,start      ] GC(9) Pause Young (Normal) (G1 Evacuation Pause)\n" +
+                        "[12.029s][info][gc,task       ] GC(9) Using 8 workers of 8 for evacuation\n" +
+                        "[12.034s][info][gc,phases     ] GC(9)   Pre Evacuate Collection Set: 0.0ms\n" +
+                        "[12.034s][info][gc,phases     ] GC(9)   Evacuate Collection Set: 4.4ms\n" +
+                        "[12.034s][info][gc,phases     ] GC(9)   Post Evacuate Collection Set: 0.5ms\n" +
+                        "[12.034s][info][gc,phases     ] GC(9)   Other: 0.2ms\n" +
+                        "[12.034s][info][gc,heap       ] GC(9) Eden regions: 143->0(142)\n" +
+                        "[12.034s][info][gc,heap       ] GC(9) Survivor regions: 10->11(20)\n" +
+                        "[12.034s][info][gc,heap       ] GC(9) Old regions: 8->8\n" +
+                        "[12.034s][info][gc,heap       ] GC(9) Humongous regions: 2->2\n" +
+                        "[12.034s][info][gc,metaspace  ] GC(9) Metaspace: 40737K->40737K(1085440K)\n" +
+                        "[12.034s][info][gc            ] GC(9) Pause Young (Normal) (G1 Evacuation Pause) 162M->19M(256M) 5.351ms\n" +
+                        "[12.034s][info][gc,cpu        ] GC(9) User=0.00s Sys=0.00s Real=0.01s")
+                        .getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("promotion", model.getPromotion().getSum(), is(0L));
+    }
 }
