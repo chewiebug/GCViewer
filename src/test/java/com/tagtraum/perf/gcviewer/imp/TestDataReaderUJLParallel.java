@@ -59,7 +59,7 @@ public class TestDataReaderUJLParallel {
     @Test
     public void parseGcAllSafepointOsCpu() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-parallel-gc-all,safepoint,os+cpu.txt");
-        assertThat("size", model.size(), is(8));
+        assertThat("size", model.size(), is(14));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(1));
         assertThat("amount of gc events", model.getGCPause().getN(), is(4));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(1));
@@ -68,7 +68,7 @@ public class TestDataReaderUJLParallel {
         assertThat("amount of events for phase 1 types", model.getGcEventPhases().get(Type.UJL_PARALLEL_PHASE_MARKING.getName()).getN(), is(4));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
-        AbstractGCEvent<?> event1 = model.get(0);
+        AbstractGCEvent<?> event1 = model.get(1);
         UnittestHelper.testMemoryPauseEvent(event1,
                 "pause young",
             Type.UJL_PAUSE_YOUNG,
@@ -78,7 +78,7 @@ public class TestDataReaderUJLParallel {
             false);
 
         // GC(6) Pause Full (Ergonomics)
-        AbstractGCEvent<?> event2 = model.get(6);
+        AbstractGCEvent<?> event2 = model.get(11);
         UnittestHelper.testMemoryPauseEvent(event2,
                 "pause full",
                 Type.UJL_PAUSE_FULL,
@@ -88,7 +88,7 @@ public class TestDataReaderUJLParallel {
                 true);
 
         // GC(7) Pause Young (Allocation Failure)
-        AbstractGCEvent<?> event3 = model.get(7);
+        AbstractGCEvent<?> event3 = model.get(13);
         UnittestHelper.testMemoryPauseEvent(event3,
                 "pause young 2",
                 Type.UJL_PAUSE_YOUNG,

@@ -65,14 +65,15 @@ public class TestDataReaderUJLSerial {
     @Test
     public void parseGcAllSafepointOsCpu() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-serial-gc-all,safepoint,os+cpu.txt");
-        assertThat("size", model.size(), is(4));
+        assertThat("size", model.size(), is(8));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(1));
         assertThat("amount of STW GC pauses", model.getGCPause().getN(), is(3));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(1));
         assertThat("amount of STW Full GC pauses", model.getFullGCPause().getN(), is(1));
+        assertThat("amount of vm operation events", model.getVmOperationPause().getN(), is(4));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
-        AbstractGCEvent<?> event1 = model.get(0);
+        AbstractGCEvent<?> event1 = model.get(1);
         assertThat("event1 type", event1.getTypeAsString(), startsWith(Type.UJL_PAUSE_YOUNG.getName()));
         assertThat("event1 pause", event1.getPause(), closeTo(0.009814, 0.00001));
         assertThat("event1 heap before", event1.getPreUsed(), is(1024 * 25));
@@ -81,16 +82,16 @@ public class TestDataReaderUJLSerial {
 
         // TODO fix timestamps or renderers (seeing the ujl logs, I realise, that the timestamps usually are the end of the event, not the beginning, as I kept thinking)
         // GC(3) Pause Full (Allocation Failure)
-        AbstractGCEvent<?> event2 = model.get(2);
-        assertThat("event2 type", event2.getTypeAsString(), startsWith(Type.UJL_PAUSE_FULL.getName()));
-        assertThat("event2 pause", event2.getPause(), closeTo(0.006987, 0.00001));
-        assertThat("event2 time", event2.getTimestamp(), closeTo(0.290, 0.0001));
+        AbstractGCEvent<?> event5 = model.get(5);
+        assertThat("event5 type", event5.getTypeAsString(), startsWith(Type.UJL_PAUSE_FULL.getName()));
+        assertThat("event5 pause", event5.getPause(), closeTo(0.006987, 0.00001));
+        assertThat("event5 time", event5.getTimestamp(), closeTo(0.290, 0.0001));
 
         // GC(2) Pause Young (Allocation Failure)
-        AbstractGCEvent<?> event3 = model.get(3);
-        assertThat("event3 type", event3.getTypeAsString(), startsWith(Type.UJL_PAUSE_YOUNG.getName()));
-        assertThat("event3 pause", event3.getPause(), closeTo(0.007118, 0.00001));
-        assertThat("event3 time", event3.getTimestamp(), closeTo(0.290, 0.0001));
+        AbstractGCEvent<?> event6 = model.get(6);
+        assertThat("event6 type", event6.getTypeAsString(), startsWith(Type.UJL_PAUSE_YOUNG.getName()));
+        assertThat("event6 pause", event6.getPause(), closeTo(0.007118, 0.00001));
+        assertThat("event6 time", event6.getTimestamp(), closeTo(0.290, 0.0001));
     }
 
     @Test

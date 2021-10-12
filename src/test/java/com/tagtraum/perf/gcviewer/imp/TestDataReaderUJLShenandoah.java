@@ -53,8 +53,9 @@ public class TestDataReaderUJLShenandoah {
     @Test
     public void parsePassiveHeuristics() throws Exception {
         GCModel model = getGCModelFromLogFile("SampleShenandoahPassiveHeuristics.txt");
-        assertThat("size", model.size(), is(0));
+        assertThat("size", model.size(), is(3));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(0));
+        assertThat("amount of VM operation pause types", model.getVmOperationPause().getN(), is(3));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(0));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
     }
@@ -64,8 +65,9 @@ public class TestDataReaderUJLShenandoah {
     public void parseSingleSystemGCEvent() throws Exception {
         // this kind of system.gc event logging might have been removed in jdk1.8_232
         GCModel model = getGCModelFromLogFile("SampleShenandoahSingleSystemGC.txt");
-        assertThat("size", model.size(), is(1));
+        assertThat("size", model.size(), is(2));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(0));
+        assertThat("amount of VM operation pause types", model.getVmOperationPause().getN(), is(1));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(1));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
@@ -82,12 +84,12 @@ public class TestDataReaderUJLShenandoah {
     @Test
     public void parseSeveralSystemGCEvents() throws Exception {
         GCModel model = getGCModelFromLogFile("SampleShenandoahSeveralSystemGC.txt");
-        assertThat("size", model.size(), is(438));
+        assertThat("size", model.size(), is(878));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(0));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(1));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(0));
 
-        GCEvent event = (GCEvent) model.get(0);
+        GCEvent event = (GCEvent) model.get(1);
         assertThat("type", event.getTypeAsString(), equalTo(Type.UJL_PAUSE_FULL + " (System.gc())"));
         assertThat("is system gc", event.isSystem(), is(true));
         assertThat("preUsed heap size", event.getPreUsed(), is(10 * 1024));
@@ -101,7 +103,7 @@ public class TestDataReaderUJLShenandoah {
     public void parseJdk11Beginning() throws Exception {
         // the main purpose if this test is to make sure, that no warnings are printed, when parsing the beginning of a shenandoah gc log file
         GCModel model = getGCModelFromLogFile("Sample-ujl-shenandoah-jdk11-beginning.txt");
-        assertThat("size", model.size(), is(1));
+        assertThat("size", model.size(), is(6));
     }
 
     @Test
@@ -151,7 +153,7 @@ public class TestDataReaderUJLShenandoah {
         GCModel model = reader.read();
 
         assertThat("number of warnings", handler.getCount(), is(0));
-        assertThat("number of events", model.size(), is(1));
+        assertThat("number of events", model.size(), is(2));
         assertThat("event type as string", model.get(0).getTypeAsString(), is("Pause Init Mark (process weakrefs)"));
         assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_SHEN_INIT_MARK));
         assertThat("event pause", model.get(0).getPause(), closeTo(0.001275, 0.0000001));
@@ -232,7 +234,7 @@ public class TestDataReaderUJLShenandoah {
         GCModel model = reader.read();
 
         assertThat("number of warnings", handler.getCount(), is(0));
-        assertThat("number of events", model.size(), is(1));
+        assertThat("number of events", model.size(), is(2));
         assertThat("event type", model.get(0).getTypeAsString(), is("Pause Final Mark (process weakrefs)"));
         assertThat("event pause", model.get(0).getPause(), closeTo(0.001404, 0.0000001));
         assertThat("event preUsed", model.get(0).getPreUsed(), is(0));
@@ -308,7 +310,7 @@ public class TestDataReaderUJLShenandoah {
         GCModel model = reader.read();
 
         assertThat("number of warnings", handler.getCount(), is(0));
-        assertThat("number of events", model.size(), is(1));
+        assertThat("number of events", model.size(), is(2));
         assertThat("event type", model.get(0).getTypeAsString(), is("Pause Init Update Refs"));
         assertThat("event pause", model.get(0).getPause(), closeTo(0.000027, 0.0000001));
         assertThat("event preUsed", model.get(0).getPreUsed(), is(0));
@@ -357,7 +359,7 @@ public class TestDataReaderUJLShenandoah {
         GCModel model = reader.read();
 
         assertThat("number of warnings", handler.getCount(), is(0));
-        assertThat("number of events", model.size(), is(1));
+        assertThat("number of events", model.size(), is(2));
         assertThat("event type", model.get(0).getTypeAsString(), is("Pause Final Update Refs"));
         assertThat("event pause", model.get(0).getPause(), closeTo(0.000203, 0.0000001));
         assertThat("event preUsed", model.get(0).getPreUsed(), is(0));
@@ -392,7 +394,7 @@ public class TestDataReaderUJLShenandoah {
     public void testPauseDegeneratedGc() throws Exception {
         GCModel model = getGCModelFromLogFile("Sample-ujl-shenandoah-jdk11-PauseDegeneratedGc.txt");
 
-        assertThat("number of events", model.size(), is(1));
+        assertThat("number of events", model.size(), is(2));
         assertThat("event type", model.get(0).getTypeAsString(), is("Pause Degenerated GC (Outside of Cycle)"));
         assertThat("event pause", model.get(0).getPause(), closeTo(0.011373, 0.0000001));
         assertThat("event preUsed", model.get(0).getPreUsed(), is(119 * 1024));

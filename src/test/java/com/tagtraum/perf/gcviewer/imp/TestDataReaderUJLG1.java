@@ -108,14 +108,15 @@ public class TestDataReaderUJLG1 {
     @Test
     public void parseGcAllSafepointOsCpu() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-g1-gc-all,safepoint,os+cpu.txt");
-        assertThat("size", model.size(), is(15));
+        assertThat("size", model.size(), is(29));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(4));
         assertThat("amount of STW GC pauses", model.getGCPause().getN(), is(13));
+        assertThat("amount of VM operation pauses", model.getVmOperationPause().getN(), is(14));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(0));
         assertThat("amount of STW Full GC pauses", model.getFullGCPause().getN(), is(0));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(1));
 
-        AbstractGCEvent<?> event1 = model.get(0);
+        AbstractGCEvent<?> event1 = model.get(1);
         UnittestHelper.testMemoryPauseEvent(event1,
                 "young",
                 Type.UJL_PAUSE_YOUNG,
@@ -125,8 +126,8 @@ public class TestDataReaderUJLG1 {
                 false);
         assertThat("young heap before", event1.details().next().getPreUsed(), is(1024 * 14));
 
-        // GC(3) Pause Initial Mark
-        AbstractGCEvent<?> event2 = model.get(5);
+        // GC(6) Pause Initial Mark
+        AbstractGCEvent<?> event2 = model.get(11);
         UnittestHelper.testMemoryPauseEvent(event2,
                 "initial mark",
                 Type.UJL_PAUSE_INITIAL_MARK,
@@ -136,8 +137,8 @@ public class TestDataReaderUJLG1 {
                 false);
         assertThat("isInitialMark", event2.isInitialMark(), is(true));
 
-        // GC(3) Pause Remark
-        AbstractGCEvent<?> remarkEvent = model.get(10);
+        // GC(6) Pause Remark
+        AbstractGCEvent<?> remarkEvent = model.get(20);
         UnittestHelper.testMemoryPauseEvent(remarkEvent,
                 "remark",
                 Type.UJL_PAUSE_REMARK,
@@ -147,7 +148,7 @@ public class TestDataReaderUJLG1 {
                 false);
         assertThat("isRemark", remarkEvent.isRemark(), is(true));
 
-        AbstractGCEvent<?> cleanupEvent = model.get(13);
+        AbstractGCEvent<?> cleanupEvent = model.get(26);
         UnittestHelper.testMemoryPauseEvent(cleanupEvent,
                 "cleanup",
                 Type.UJL_G1_PAUSE_CLEANUP,
@@ -156,12 +157,14 @@ public class TestDataReaderUJLG1 {
                 Generation.TENURED,
                 false);
 
-        AbstractGCEvent<?> concurrentCycleBeginEvent = model.get(6);
+        AbstractGCEvent<?> concurrentCycleBeginEvent = model.get(13);
+        assertThat("concurrent cycle", concurrentCycleBeginEvent.getTypeAsString(), is(Type.UJL_G1_CONCURRENT_CYCLE.getName()));
         assertThat("event is start of concurrent collection",
                 concurrentCycleBeginEvent.isConcurrentCollectionStart(),
                 is(true));
 
-        AbstractGCEvent<?> concurrentCycleEndEvent = model.get(14);
+        AbstractGCEvent<?> concurrentCycleEndEvent = model.get(28);
+        assertThat("concurrent cycle", concurrentCycleEndEvent.getTypeAsString(), is(Type.UJL_G1_CONCURRENT_CYCLE.getName()));
         assertThat("event is end of concurrent collection",
                 concurrentCycleEndEvent.isConcurrentCollectionEnd(),
                 is(true));
@@ -170,7 +173,7 @@ public class TestDataReaderUJLG1 {
     @Test
     public void parseGcAllSafepointOsCpuWithToSpaceExhausted() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-g1-gc-all,safepoint,os+cpu-to-space-exhausted.txt");
-        assertThat("size", model.size(), is(1));
+        assertThat("size", model.size(), is(2));
         AbstractGCEvent<?> youngEvent = model.get(0);
         UnittestHelper.testMemoryPauseEvent(youngEvent,
                 "young",

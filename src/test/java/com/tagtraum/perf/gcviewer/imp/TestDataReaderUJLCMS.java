@@ -91,12 +91,13 @@ public class TestDataReaderUJLCMS {
     @Test
     public void parseGcAllSafepointOsCpu() throws Exception {
         GCModel model = getGCModelFromLogFile("sample-ujl-cms-gc-all,safepoint,os+cpu.txt");
-        assertThat("size", model.size(), is(26));
+        assertThat("size", model.size(), is(37));
         assertThat("amount of STW GC pause types", model.getGcEventPauses().size(), is(3));
+        assertThat("amount of VM operation pause types", model.getVmOperationPause().getN(), is(11));
         assertThat("amount of STW Full GC pause types", model.getFullGcEventPauses().size(), is(1));
         assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(4));
 
-        AbstractGCEvent<?> event1 = model.get(0);
+        AbstractGCEvent<?> event1 = model.get(1);
         UnittestHelper.testMemoryPauseEvent(event1,
                 "young",
                 Type.UJL_PAUSE_YOUNG,
@@ -106,7 +107,7 @@ public class TestDataReaderUJLCMS {
                 false);
 
         // GC(3) Pause Initial Mark
-        AbstractGCEvent<?> event2 = model.get(3);
+        AbstractGCEvent<?> event2 = model.get(7);
         UnittestHelper.testMemoryPauseEvent(event2,
                 "initial mark",
                 Type.UJL_PAUSE_INITIAL_MARK,
@@ -117,7 +118,7 @@ public class TestDataReaderUJLCMS {
         assertThat("isInitialMark", event2.isInitialMark(), is(true));
 
         // GC(3) Pause Remark
-        AbstractGCEvent<?> remarkEvent = model.get(10);
+        AbstractGCEvent<?> remarkEvent = model.get(15);
         UnittestHelper.testMemoryPauseEvent(remarkEvent,
                 "remark",
                 Type.UJL_PAUSE_REMARK,
@@ -128,7 +129,7 @@ public class TestDataReaderUJLCMS {
         assertThat("isRemark", remarkEvent.isRemark(), is(true));
 
         // GC(5) Pause Full
-        AbstractGCEvent<?> fullGcEvent = model.get(13);
+        AbstractGCEvent<?> fullGcEvent = model.get(19);
         UnittestHelper.testMemoryPauseEvent(fullGcEvent,
                 "full gc ",
                 Type.UJL_PAUSE_FULL,
@@ -137,10 +138,10 @@ public class TestDataReaderUJLCMS {
                 Generation.ALL,
                 true);
 
-        AbstractGCEvent<?> concurrentMarkBeginEvent = model.get(4);
+        AbstractGCEvent<?> concurrentMarkBeginEvent = model.get(9);
         assertThat("event is not start of concurrent collection", concurrentMarkBeginEvent.isConcurrentCollectionStart(), is(false));
 
-        AbstractGCEvent<?> concurrentMarkWithPauseEvent = model.get(5);
+        AbstractGCEvent<?> concurrentMarkWithPauseEvent = model.get(10);
         assertThat("event is start of concurrent collection", concurrentMarkWithPauseEvent.isConcurrentCollectionStart(), is(true));
     }
 
