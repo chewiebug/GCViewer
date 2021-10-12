@@ -373,4 +373,12 @@ public class TestDataReaderFactory {
         assertDataReader(DataReaderSun1_6_0.class, dr.getClass());
     }
 
+    @Test
+    public void testOpenJdkJulRollover() throws IOException {
+        DataReaderFactory factory = new DataReaderFactory();
+        DataReader dr = factory.getDataReader(new GcResourceFile("byteArray"), new ByteArrayInputStream((
+                "[2019-09-17T20:20:29.824+0000][19.163s][info ][safepoint                   ] Total time for which application threads were stopped: 0.0047914 seconds, Stopping threads took: 0.0000103 seconds\n\n").getBytes()));
+        assertDataReader(DataReaderUnifiedJvmLogging.class, dr.getClass());
+    }
+
 }
