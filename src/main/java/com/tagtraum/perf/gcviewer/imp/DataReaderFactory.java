@@ -152,8 +152,9 @@ public class DataReaderFactory {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: IBM <1.3.0");
             return new DataReaderIBM1_3_0(gcResource, in);
         }
-        // ...][info][gc       ] Using Shenandoah <or any other gc algorithm in unified jvm logging format>
-        else if (s.contains("][gc")) {
+        // ...][info][gc        ]
+        // or ...][info][safepoint ] Using java unified jvm logging format
+        else if (s.contains("][gc") || s.contains("][safepoint")) {
             if (getLogger().isLoggable(Level.INFO)) getLogger().info("File format: Oracle / OpenJDK unified jvm logging");
             return new DataReaderUnifiedJvmLogging(gcResource, in);
         }
