@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
@@ -21,6 +22,7 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCEventUJL;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
 import com.tagtraum.perf.gcviewer.util.DateHelper;
 import com.tagtraum.perf.gcviewer.util.NumberParser;
 
@@ -157,9 +159,10 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String TAG_GC_HEAP = "gc,heap";
     private static final String TAG_GC_METASPACE = "gc,metaspace";
     private static final String TAG_GC_PHASES = "gc,phases";
+    private static final String TAG_SAFEPOINT = "safepoint";
     
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES);
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES, Type.APPLICATION_STOPPED_TIME.getName());
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC",
             "[debug",
@@ -228,6 +231,9 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private AbstractGCEvent<?> handleTail(ParseContext context, AbstractGCEvent<?> event, String tags, String tail) {
         AbstractGCEvent<?> returnEvent = event;
         switch (tags) {
+            case TAG_SAFEPOINT:
+                returnEvent = handleTagSafepoint(context, event, tail);
+                break;
             case TAG_GC_START:
                 returnEvent = handleTagGcStartTail(context, event);
                 break;
@@ -252,6 +258,11 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         }
 
         return returnEvent;
+    }
+
+    private AbstractGCEvent<?> handleTagSafepoint(ParseContext context, AbstractGCEvent<?> event, String tail) {
+        event.setPause(NumberParser.parseDouble(tail.split(" ")[0]));
+        return event;
     }
 
     private AbstractGCEvent<?> handleTagGcStartTail(ParseContext context, AbstractGCEvent<?> event) {
@@ -459,7 +470,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         if (decoratorsMatcher.find()) {
             AbstractGCEvent.ExtendedType type = getDataReaderTools().parseType(decoratorsMatcher.group(GROUP_DECORATORS_GC_TYPE));
 
-            AbstractGCEvent<?> event = type.getConcurrency().equals(Concurrency.CONCURRENT) ? new ConcurrentGCEvent() : new GCEventUJL();
+            AbstractGCEvent<?> event = createGcEvent(type);
             event.setExtendedType(type);
             if (decoratorsMatcher.group(GROUP_DECORATORS_GC_NUMBER) != null) {
                 event.setNumber(Integer.parseInt(decoratorsMatcher.group(GROUP_DECORATORS_GC_NUMBER)));
@@ -471,6 +482,18 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             getLogger().warning(String.format("Failed to parse line number %d (no match; line=\"%s\")", in.getLineNumber(), line));
             return null;
         }
+    }
+
+    private AbstractGCEvent<?> createGcEvent(ExtendedType type) {
+        AbstractGCEvent<?> event;
+        if (type.getConcurrency().equals(Concurrency.CONCURRENT)) {
+            event = new ConcurrentGCEvent();
+        } else if (type.getType().equals(Type.APPLICATION_STOPPED_TIME)) {
+            event = new VmOperationEvent();
+        } else {
+            event = new GCEventUJL();
+        }
+        return event;
     }
 
     private void setPause(AbstractGCEvent event, String pauseAsString) {

@@ -146,7 +146,7 @@ public class TestDataReaderUJLG1JDK11 {
         GCModel model = reader.read();
 
         assertThat("number of warnings", handler.getCount(), is(0));
-        assertThat("number of events", model.size(), is(1));
+        assertThat("number of events", model.size(), is(2));
         assertThat("total heap", model.get(0).getTotal(), is(128 * 1024));
     }
 
@@ -179,5 +179,24 @@ public class TestDataReaderUJLG1JDK11 {
         assertThat("number of events", model.size(), is(1));
         assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
         assertThat("total heap", model.get(0).getTotal(), is(256 * 1024));
+    }
+
+    @Test
+    public void testTotalTimeForWhichApplicationThreadsWereStopped() throws IOException {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[2019-09-17T20:20:29.824+0000][19.163s][info ][safepoint                   ] Total time for which application threads were stopped: 0.0047914 seconds, Stopping threads took: 0.0000103 seconds\n\n")
+                        .getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.APPLICATION_STOPPED_TIME));
+        assertThat("total heap", model.get(0).getPause(), closeTo(0.0047914, 0.0000001));
     }
 }
