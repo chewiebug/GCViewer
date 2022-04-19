@@ -450,8 +450,13 @@ public class GCModel implements Serializable {
     private void addConcurrentGcEvent(ConcurrentGCEvent concEvent) {
         concurrentGCEvents.add(concEvent);
 
-        DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
-        pauses.add(concEvent.getPause());
+        // With UJL concurrent events usually have a "start" and an "end" event with the same name.
+        // The "start" event does not have a pause, the end event does. For the statistic, ignore the start event;
+        // otherwise the concurrent events are counted twice and distort statistics.
+        if (concEvent.getPause() > 0.0000001) {
+            DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
+            pauses.add(concEvent.getPause());
+        }
 
         if (concEvent.hasMemoryInformation() && concEvent.isConcurrentCollectionEnd()) {
             // register postConcurrentCycleUsedSizes, if event contains memory information. Otherwise deduce it (see in handling of GCEvent)

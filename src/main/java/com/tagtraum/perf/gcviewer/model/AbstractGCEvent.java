@@ -293,6 +293,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || (getExtendedType().getName().equals(Type.UJL_CMS_CONCURRENT_MARK.getName()) && getPause() > 0.000001) // Universal jvm logging, CMS
                 || getExtendedType().getName().equals(Type.G1_CONCURRENT_MARK_START.getName()) // G1
                 || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_CYCLE.getName()) && getPause() < 0.00001) // Universal jvm logging, G1
+                || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_MARK_CYCLE.getName()) && getPause() < 0.00001) // Universal jvm logging, G1 since JDK 17
                 || getExtendedType().getName().equals(Type.UJL_SHEN_CONCURRENT_RESET.getName()); // Universal Jvm logging, Shenandoah
     }
 
@@ -302,6 +303,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || (getExtendedType().getName().equals(Type.UJL_CMS_CONCURRENT_RESET.getName()) && getPause() > 0.0000001) // Universal jvm logging, CMS
                 || getExtendedType().getName().equals(Type.G1_CONCURRENT_CLEANUP_END.getName()) // G1
                 || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_CYCLE.getName()) && getPause() > 0.0000001) // Universal jvm logging, G1
+                || (getExtendedType().getName().equals(Type.UJL_G1_CONCURRENT_MARK_CYCLE.getName()) && getPause() > 0.0000001) // Universal jvm logging, G1 since JDK 17
                 || getExtendedType().getName().equals(Type.UJL_SHEN_CONCURRENT_CLEANUP.getName()); // Universal jvm logging, Shenandoah
     }
 
@@ -663,6 +665,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_G1_PAUSE_MIXED = new Type("Pause Mixed", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
         public static final Type UJL_G1_TO_SPACE_EXHAUSTED = new Type("To-space exhausted", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC);
         public static final Type UJL_G1_CONCURRENT_CYCLE = new Type("Concurrent Cycle", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_CONCURRENT_MARK_CYCLE = new Type("Concurrent Mark Cycle", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_CONCURRENT_UNDO_CYCLE = new Type("Concurrent Undo Cycle", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type UJL_G1_PAUSE_CLEANUP = new Type("Pause Cleanup", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);
         public static final Type UJL_G1_EDEN = new Type("Eden regions", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_REGION);
         public static final Type UJL_G1_SURVIVOR = new Type("Survivor regions", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_REGION);
@@ -671,6 +675,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_G1_ARCHIVE = new Type("Archive regions", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_REGION);
 
         public static final Type UJL_G1_PHASE_PRE_EVACUATE_COLLECTION_SET = new Type("Pre Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_G1_PHASE_MERGE_HEAP_ROOTS = new Type("Merge Heap Roots", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_G1_PHASE_EVACUATE_COLLECTION_SET = new Type("Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_G1_PHASE_POST_EVACUATE_COLLECTION_SET = new Type("Post Evacuate Collection Set", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_G1_PHASE_OTHER = new Type("Other", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);

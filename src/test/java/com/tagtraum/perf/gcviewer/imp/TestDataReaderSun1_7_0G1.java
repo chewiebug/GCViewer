@@ -332,7 +332,7 @@ public class TestDataReaderSun1_7_0G1 {
         GCModel model = reader.read();
 
         assertEquals("number of events", 11, model.size());
-        assertEquals("number of concurrent events", 4, model.getConcurrentEventPauses().size());
+        assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
 
         assertEquals("number of errors", 0, handler.getCount());
     }
@@ -352,7 +352,7 @@ public class TestDataReaderSun1_7_0G1 {
         GCModel model = reader.read();
 
         assertEquals("number of events", 9, model.size());
-        assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
+        assertEquals("number of concurrent events", 1, model.getConcurrentEventPauses().size());
 
         GCEvent youngEvent = (GCEvent) model.get(0);
         assertEquals("gc pause (young)", 0.00784501, youngEvent.getPause(), 0.000000001);
@@ -398,7 +398,7 @@ public class TestDataReaderSun1_7_0G1 {
         GCModel model = reader.read();
 
         assertEquals("number of events", 3, model.size());
-        assertEquals("number of concurrent events", 2, model.getConcurrentEventPauses().size());
+        assertEquals("number of concurrent events", 1, model.getConcurrentEventPauses().size());
 
         ConcurrentGCEvent concurrentEvent = (ConcurrentGCEvent) model.get(0);
         assertEquals("GC concurrent-root-region-scan-end expected", "GC concurrent-root-region-scan-end", concurrentEvent.getTypeAsString());

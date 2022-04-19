@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
@@ -120,7 +121,8 @@ public class TestDataReaderUJLG1JDK11 {
         GCResource gcResource = new GcResourceFile("byteArray");
         gcResource.getLogger().addHandler(handler);
         InputStream in = new ByteArrayInputStream(
-                ("[1.204s][info][gc,task      ] GC(15) Using 3 workers of 4 for full compaction\n" +
+                ("[2021-05-24T13:51:48.779+0000][21ms][info][gc,heap] Heap region size: 1M\n" +
+                    "[1.204s][info][gc,task      ] GC(15) Using 3 workers of 4 for full compaction\n" +
                     "[1.204s][info][gc,start     ] GC(15) Pause Full (G1 Evacuation Pause)\n" +
                     "[1.204s][info][gc,phases,start] GC(15) Phase 1: Mark live objects\n" +
                     "[1.207s][info][gc,stringtable ] GC(15) Cleaned string and symbol table, strings: 7381 processed, 70 removed, symbols: 49128 processed, 10 removed\n" +
@@ -147,6 +149,9 @@ public class TestDataReaderUJLG1JDK11 {
 
         assertThat("number of warnings", handler.getCount(), is(0));
         assertThat("number of events", model.size(), is(2));
+        GCEvent tenuredEvent = ((GCEvent)model.get(0)).getTenured();
+        assertThat("tenured event pre", tenuredEvent.getPreUsed(), is(128 * 1024));
+        assertThat("tenured event post", tenuredEvent.getPostUsed(), is(62 * 1024));
         assertThat("total heap", model.get(0).getTotal(), is(128 * 1024));
     }
 
@@ -157,7 +162,8 @@ public class TestDataReaderUJLG1JDK11 {
         GCResource gcResource = new GcResourceFile("byteArray");
         gcResource.getLogger().addHandler(handler);
         InputStream in = new ByteArrayInputStream(
-                ("[1.459s][info][gc,start      ] GC(1) Pause Young (Concurrent Start) (Metadata GC Threshold)\n" +
+                ("[2021-05-24T13:51:48.779+0000][21ms][info][gc,heap] Heap region size: 1M\n" +
+                "[1.459s][info][gc,start      ] GC(1) Pause Young (Concurrent Start) (Metadata GC Threshold)\n" +
                 "[1.459s][info][gc,task       ] GC(1) Using 8 workers of 8 for evacuation\n" +
                 "[1.464s][info][gc,phases     ] GC(1)   Pre Evacuate Collection Set: 0.0ms\n" +
                 "[1.464s][info][gc,phases     ] GC(1)   Evacuate Collection Set: 4.1ms\n" +

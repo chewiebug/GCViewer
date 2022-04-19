@@ -72,11 +72,12 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String GROUP_DECORATORS_GC_TYPE = "type";
     private static final String GROUP_DECORATORS_TAIL = "tail";
 
-    private static final Pattern PATTERN_HEAP_REGION_SIZE = Pattern.compile("^Heap region size: ([0-9]+)M$");
+    private static final Pattern PATTERN_HEAP_REGION_SIZE = Pattern.compile("^Heap [Rr]egion [Ss]ize: ([0-9]+)M$");
     private static final int GROUP_HEAP_REGION_SIZE = 1;
 
     private static final String PATTERN_PAUSE_STRING = "([0-9]+[.,][0-9]+)ms";
-    private static final String PATTERN_MEMORY_STRING = "(([0-9]+)([BKMG])->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\))";
+    /** 257K(448K)->257K(448K) - first "(448K)" is optional */
+    private static final String PATTERN_MEMORY_STRING = "(([0-9]+)([BKMG])(?:\\([0-9]+[BKMG]\\))?->([0-9]+)([BKMG])\\(([0-9]+)([BKMG])\\))";
 
     private static final String PATTERN_HEAP_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])[ ](\\([0-9]+%\\)))";
     private static final String PATTERN_MEMORY_PERCENTAGE_STRING = "(([0-9]+)([BKMG])\\(([0-9]+)%\\)->([0-9]+)([BKMG])\\(([0-9]+)%\\))";
@@ -162,7 +163,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String TAG_SAFEPOINT = "safepoint";
     
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES, Type.APPLICATION_STOPPED_TIME.getName());
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES, Type.APPLICATION_STOPPED_TIME.getName(), "Heap Region Size");
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC",
             "[debug",
@@ -172,10 +173,15 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             "[gc,phases,start",
             "Trigger: ",
             "Failed to allocate",
-            "Cancelling GC");
+            "Cancelling GC",
+            "CDS archive(s) mapped at", // metaspace preamble since JDK 17
+            "Compressed class space mapped at", // metaspace preamble since JDK 17
+            "Narrow klass base" // metaspace preamble since JDK 17
+            );
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using",
-            "Heap region size",
+            "Heap region size", // jdk 11
+            "Heap Region Size", // jdk 17
             "Consider",
             "Heuristics ergonomically sets");
 
