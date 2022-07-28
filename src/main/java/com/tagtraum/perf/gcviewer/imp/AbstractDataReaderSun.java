@@ -306,21 +306,23 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
             return;
         int i = pos.getIndex();
         try {
-            // consume all leading spaces and #
+            // consume all leading spaces and '#'
             final int lineLength = line.length();
             final char[] lineChars = line.toCharArray();
             char c = lineChars[i];
             for (; i < lineLength; c = lineChars[++i]) {
-                if (c != ' ' && c != '#') break;
+                if (c != ' ' && c != '#')
+                    break;
             }
             if (i >= lineLength)
                 throw new ParseException("Unexpected end of line.", line);
-            // check whether the type name starts with a number
+            // check whether the Id starts with a number
             // -> skip number
             for (; Character.isDigit(c) && i < lineLength; c = lineChars[++i]);
-            // -> skip :
+            // -> skip ':'
             for (; i<lineLength; c = lineChars[++i]) {
-                if (c != ':') break;
+                if (c != ':')
+                    break;
             }
         }
         finally {
