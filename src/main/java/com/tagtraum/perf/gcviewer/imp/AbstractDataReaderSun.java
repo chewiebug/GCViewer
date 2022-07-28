@@ -326,6 +326,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
             }
         }
         finally {
+            i++;
             pos.setIndex(i);
         }
     }
