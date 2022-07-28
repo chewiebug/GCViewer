@@ -579,7 +579,8 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
                     parseDetailEventsIfExist(line, pos, event);
 
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
-                    setMemoryAndPauses(event, line, pos);
+                    if (!line.contains("#"))
+                        setMemoryAndPauses(event, line, pos);
                 }
                 else {
                     event.setPause(parsePause(line, pos));
