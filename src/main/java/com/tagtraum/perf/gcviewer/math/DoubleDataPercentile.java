@@ -44,4 +44,12 @@ public class DoubleDataPercentile extends DoubleData {
         }
         return doubleSet.get((int)position-1);
     }
+
+    /**
+     * return all double data.
+     * @return list of double data
+     */
+    public List<Double> getDoubleData() {
+        return this.doubleSet;
+    }
 }

@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 
 import com.tagtraum.perf.gcviewer.exp.impl.SummaryDataWriter;
 import com.tagtraum.perf.gcviewer.imp.DataReader;
+import com.tagtraum.perf.gcviewer.imp.DataReaderFactory;
 import com.tagtraum.perf.gcviewer.imp.DataReaderSun1_6_0;
 import com.tagtraum.perf.gcviewer.imp.GcLogType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
@@ -139,5 +140,41 @@ public class SummaryDataWriterTest {
         String csv = output.toString();
 
         assertThat("avgPromotion", csv, Matchers.containsString("avgPromotion; " + memoryFormatter.formatToFormatted(2925).getValue() + "; K"));
+    }
+
+    @Test
+    public void testWriteWithZGCPhases() throws IOException {
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("[2022-08-18T17:18:46.761+0800][0.053s][info][gc     ] Using The Z Garbage Collector\n" +
+                        "[2022-08-18T17:18:47.977+0800][1.269s][info][gc,start ] GC(0) Garbage Collection (Warmup)\n" +
+                        "[2022-08-18T17:18:47.978+0800][1.270s][info][gc,phases] GC(0) Pause Mark Start 0.385ms\n" +
+                        "[2022-08-18T17:18:47.985+0800][1.277s][info][gc,phases] GC(0) Concurrent Mark 7.383ms\n" +
+                        "[2022-08-18T17:18:47.985+0800][1.277s][info][gc,phases] GC(0) Pause Mark End 0.050ms\n" +
+                        "[2022-08-18T17:18:47.986+0800][1.277s][info][gc,phases] GC(0) Concurrent Process Non-Strong References 0.239ms\n" +
+                        "[2022-08-18T17:18:47.986+0800][1.277s][info][gc,phases] GC(0) Concurrent Reset Relocation Set 0.000ms\n" +
+                        "[2022-08-18T17:18:47.986+0800][1.278s][info][gc,phases] GC(0) Concurrent Destroy Detached Pages 0.174ms\n" +
+                        "[2022-08-18T17:18:47.989+0800][1.281s][info][gc,phases] GC(0) Concurrent Select Relocation Set 3.505ms\n" +
+                        "[2022-08-18T17:18:47.990+0800][1.282s][info][gc,phases] GC(0) Concurrent Prepare Relocation Set 0.760ms\n" +
+                        "[2022-08-18T17:18:47.991+0800][1.282s][info][gc,phases] GC(0) Pause Relocate Start 0.499ms\n" +
+                        "[2022-08-18T17:18:47.994+0800][1.286s][info][gc,phases] GC(0) Concurrent Relocate 3.545ms\n" +
+                        "[2022-08-18T17:18:47.994+0800][1.286s][info][gc          ] GC(0) Garbage Collection (Warmup) 434M(11%)->32M(1%)")
+                       .getBytes());
+        DataReader reader = new DataReaderFactory().getDataReader(new GcResourceFile("byteArray"), in);
+        GCModel model = reader.read();
+        model.setURL(new URL("file", "localhost", "test-file"));
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        SummaryDataWriter objectUnderTest = new SummaryDataWriter(output);
+
+        objectUnderTest.write(model);
+
+        String csv = output.toString();
+
+        assertThat("pausePercentile75th", csv, Matchers.containsString("pausePercentile75th; 0,000934; s"));
+        assertThat("gcPausePercentile95th", csv, Matchers.containsString("gcPausePercentile95th; 0,000934; s"));
+        assertThat("pauseCount", csv, Matchers.containsString("pauseCount; 1; -"));
+        assertThat("gcPhaseCount", csv, Matchers.containsString("gcPhaseCount; 3; -"));
+        assertThat("gcPhaseAverage", csv, Matchers.containsString("gcPhaseAverage; 0,000311; s"));
+        assertThat("gcPhasePercentile99th", csv, Matchers.containsString("gcPhasePercentile99th; 0,000499; s"));
     }
 }
