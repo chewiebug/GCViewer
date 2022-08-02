@@ -620,8 +620,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
             // pre-used->post-used, total, time
             ZonedDateTime datestamp = parseDatestamp(line, pos);
             double timestamp = getTimestamp(line, pos, datestamp);
-            // Support for PrintGCID
-            parseId(line, pos);
+            parseGcId(line, pos);
             ExtendedType type = parseType(line, pos);
             AbstractGCEvent<?> ae;
             if (type.getConcurrency() == Concurrency.CONCURRENT) {

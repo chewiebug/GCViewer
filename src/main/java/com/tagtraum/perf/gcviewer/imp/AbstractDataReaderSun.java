@@ -301,7 +301,8 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
     }
 
-    protected void parseId(String line, ParseInformation pos) throws ParseException {
+    // restriction PringGCID only for parallel scavenge collector
+    protected void parseGcId(String line, ParseInformation pos) throws ParseException {
         if (!line.contains("#"))
             return;
         int i = pos.getIndex();
