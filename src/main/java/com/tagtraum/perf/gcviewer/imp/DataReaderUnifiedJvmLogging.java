@@ -60,8 +60,9 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Group 6 / tail: Pause Init Mark 1.070ms
     // Regex: ^(?:\[(?<time>[0-9-T:.+]*)])?(?:\[(?<uptime>[^s]*)s])?\[(?<level>[^]]+)]\[(?:(?<tags>[^] ]+)[ ]*)][ ]GC\((?<gcnumber>[0-9]+)\)[ ](?<type>([-.a-zA-Z ()]+|[a-zA-Z1 ()]+))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)
     //   note for the <type> part: easiest would have been to use [^0-9]+, but the G1 events don't fit there, because of the number in their name
+    //   add sub regex "[a-zA-Z ]+\\(.+\\)" for Allocation Stall and Relocation Stall of ZGC
     private static final Pattern PATTERN_DECORATORS = Pattern.compile(
-            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^ms]*)(?<uptimeunit>m?s)])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ](GC\\((?<gcnumber>[0-9]+)\\)[ ])?(?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+)(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
+            "^(?:\\[(?<time>[0-9-T:.+]*)])?(?:\\[(?<uptime>[^ms]*)(?<uptimeunit>m?s)])?\\[(?<level>[^]]+)]\\[(?:(?<tags>[^] ]+)[ ]*)][ ](GC\\((?<gcnumber>[0-9]+)\\)[ ])?(?<type>(?:Phase [0-9]{1}: [a-zA-Z ]+)|[-.a-zA-Z: ()]+|[a-zA-Z1 ()]+|[a-zA-Z ]+\\(.+\\))(?:(?:[ ](?<tail>[0-9]{1}.*))|$)"
     );
     private static final String GROUP_DECORATORS_TIME = "time";
     private static final String GROUP_DECORATORS_UPTIME = "uptime";
@@ -176,7 +177,20 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             "Cancelling GC",
             "CDS archive(s) mapped at", // metaspace preamble since JDK 17
             "Compressed class space mapped at", // metaspace preamble since JDK 17
-            "Narrow klass base" // metaspace preamble since JDK 17
+            "Narrow klass base", // metaspace preamble since JDK 17
+            "  Mark Start  ", // heap preamble for ZGC since JDK 11
+            "Reserve:", // heap preamble for ZGC since JDK 11
+            "Free:", // heap preamble for ZGC since JDK 11
+            "Used:", // heap preamble for ZGC since JDK 11
+            "Live:", // heap preamble for ZGC since JDK 11
+            "Allocated:", // heap preamble for ZGC since JDK 11
+            "Garbage:", // heap preamble for ZGC since JDK 11
+            "Reclaimed:", // heap preamble for ZGC since JDK 11
+            "Page Cache Flushed:", // heap preamble for ZGC since JDK 11
+            "Min Capacity:", // heap preamble for ZGC since JDK 11
+            "Max Capacity:", // heap preamble for ZGC since JDK 11
+            "Soft Max Capacity:", // heap preamble for ZGC since JDK 11
+            "Uncommitted:" // heap preamble for ZGC since JDK 11
             );
     /** list of strings, that are gc log lines, but not a gc event -&gt; should be logged only */
     private static final List<String> LOG_ONLY_STRINGS = Arrays.asList("Using",
@@ -300,6 +314,19 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
 
     private AbstractGCEvent<?> handleTagGcMetaspaceTail(ParseContext context, AbstractGCEvent<?> event, String tail) {
         AbstractGCEvent<?> returnEvent = event;
+        // the event "Metaspace" in gc tag "[gc,metaspace]" for ZGC don't match the "PATTERN_MEMORY" rules; ignore it
+        // ZGC:
+        //  [1.182s][info][gc,metaspace] GC(0) Metaspace: 19M used, 19M capacity, 19M committed, 20M reserved
+        //  [1.182s][info][gc,metaspace] GC(0) Metaspace: 11M used, 12M committed, 1088M reserved
+        // G1:
+        //  [5.537s][info][gc,metaspace] GC(0) Metaspace: 118K(320K)->118K(320K) NonClass: 113K(192K)->113K(192K) Class: 4K(128K)->4K(128K)
+
+        if (returnEvent.getExtendedType().getType().equals(Type.METASPACE) && tail != null) {
+            if (tail.contains("used,") && tail.contains("committed,")) {
+                return null;
+            }
+        }
+
         returnEvent = parseTail(context, returnEvent, tail);
         // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now
         //   size after concurrent collection will be calculated by GCModel#add()
