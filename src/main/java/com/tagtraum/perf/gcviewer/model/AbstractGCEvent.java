@@ -318,7 +318,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || getTypeAsString().indexOf(Type.ASCMS_REMARK.getName()) >= 0
                 || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0
                 || getTypeAsString().indexOf(Type.UJL_PAUSE_REMARK.getName()) >= 0
-                || getTypeAsString().indexOf(Type.UJL_SHEN_FINAL_MARK.getName()) >= 0;
+                || getTypeAsString().indexOf(Type.UJL_SHEN_PAUSE_FINAL_MARK.getName()) >= 0;
     }
 
     public boolean hasPause() {
@@ -683,19 +683,30 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_G1_PHASE_COMPACT_HEAP = new Type("Phase 4: Compact heap", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
 
         // unified jvm logging shenandoah event types
-        public static final Type UJL_SHEN_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_SHEN_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_SHEN_INIT_UPDATE_REFS = new Type("Pause Init Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_SHEN_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
-        public static final Type UJL_SHEN_DEGENERATED_GC = new Type("Pause Degenerated GC", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
-        public static final Type UJL_SHEN_CONCURRENT_CONC_MARK = new Type("Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
-        public static final Type UJL_SHEN_CONCURRENT_CONC_EVAC = new Type("Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        // Only "Concurrent cleanup", "Concurrent uncommit", "Pause Degenerated GC", "Pause Full" event types have memory info
+        public static final Type UJL_SHEN_PAUSE_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_PAUSE_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_PAUSE_INIT_UPDATE_REFS = new Type("Pause Init Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_PAUSE_FINAL_UPDATE_REFS = new Type("Pause Final Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_PAUSE_FINAL_ROOTS = new Type("Pause Final Roots", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_PAUSE_DEGENERATED_GC = new Type("Pause Degenerated GC", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_RESET = new Type("Concurrent reset", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        // FIX ME! looks like the event "Concurrent reset bitmaps" doesn't exist anymore(not in jdk8u332, 11, 17 and 18)
+        public static final Type UJL_SHEN_CONCURRENT_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_MARKING_ROOTS = new Type("Concurrent marking roots", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_MARKING = new Type("Concurrent marking", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        // FIX ME! looks like the event "Cancel concurrent mark" doesn't exist anymore(not in jdk8u332, 11, 17 and 18)
         public static final Type UJL_SHEN_CONCURRENT_CANCEL_CONC_MARK = new Type("Cancel concurrent mark", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
-        public static final Type UJL_SHEN_CONCURRENT_RESET = new Type("Concurrent reset", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
-        public static final Type UJL_SHEN_CONCURRENT_CONC_RESET_BITMAPS = new Type("Concurrent reset bitmaps", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
-        public static final Type UJL_SHEN_CONCURRENT_CONC_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
-        public static final Type UJL_SHEN_CONCURRENT_CLEANUP = new Type("Concurrent cleanup", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
-        public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_PRECLEANING = new Type("Concurrent precleaning", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_THREAD_ROOTS = new Type("Concurrent thread roots", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_WEAK_REFERENCES = new Type("Concurrent weak references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_WEAK_ROOTS = new Type("Concurrent weak roots", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_CLEANUP = new Type("Concurrent cleanup", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);        
+        public static final Type UJL_SHEN_CONCURRENT_CLASS_UNLOADING = new Type("Concurrent class unloading", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_STRONG_ROOTS = new Type("Concurrent strong roots", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_EVACUATION = new Type("Concurrent evacuation", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_UPDATE_REFS = new Type("Concurrent update references", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
+        public static final Type UJL_SHEN_CONCURRENT_UPDATE_THREAD_ROOTS = new Type("Concurrent update thread roots", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_PAUSE);
         public static final Type UJL_SHEN_CONCURRENT_UNCOMMIT = new Type("Concurrent uncommit", Generation.TENURED, Concurrency.CONCURRENT, GcPattern.GC_MEMORY_PAUSE);
 
         // unified jvm logging ZGC event types

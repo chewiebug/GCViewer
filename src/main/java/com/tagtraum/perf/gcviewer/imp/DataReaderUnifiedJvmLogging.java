@@ -197,7 +197,9 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             "Heap region size", // jdk 11
             "Heap Region Size", // jdk 17
             "Consider",
-            "Heuristics ergonomically sets");
+            "Heuristics ergonomically sets",
+            "Soft Max Heap Size" // ShenandoahGC
+            );
 
     protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);
@@ -320,12 +322,16 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
         //  [1.182s][info][gc,metaspace] GC(0) Metaspace: 11M used, 12M committed, 1088M reserved
         // G1:
         //  [5.537s][info][gc,metaspace] GC(0) Metaspace: 118K(320K)->118K(320K) NonClass: 113K(192K)->113K(192K) Class: 4K(128K)->4K(128K)
-
         if (returnEvent.getExtendedType().getType().equals(Type.METASPACE) && tail != null) {
             if (tail.contains("used,") && tail.contains("committed,")) {
                 return null;
             }
         }
+        // the event "Metaspace" in gc tag "[gc,metaspace]" for Shenandoah don't have GC number; ignore it
+        // [5.063s][info][gc,metaspace] Metaspace: 13104K(13376K)->13192K(13440K) NonClass: 11345K(11456K)->11431K(11520K) Class: 1758K(1920K)->1761K(1920K)
+         if (returnEvent.getNumber() < 0) {
+             return null;
+         }
 
         returnEvent = parseTail(context, returnEvent, tail);
         // the UJL "Old" event occurs often after the next STW events have taken place; ignore it for now

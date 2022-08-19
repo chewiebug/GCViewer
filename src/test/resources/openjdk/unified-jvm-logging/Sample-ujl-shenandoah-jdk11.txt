@@ -1,0 +1,133 @@
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc,init] Regions: 3953 x 1024K
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc,init] Humongous object threshold: 1024K
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc,init] Max TLAB size: 1024K
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc,init] GC threads: 6 parallel, 3 concurrent
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc     ] Heuristics ergonomically sets -XX:+ExplicitGCInvokesConcurrent
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc     ] Heuristics ergonomically sets -XX:+ShenandoahImplicitGCInvokesConcurrent
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc,init] Shenandoah GC mode: Snapshot-At-The-Beginning (SATB)
+[2022-08-16T20:38:09.926+0800][0.021s][info][gc,init] Shenandoah heuristics: Adaptive
+[2022-08-16T20:38:09.927+0800][0.022s][info][gc,ergo] Pacer for Idle. Initial: 80957K, Alloc Tax Rate: 1.0x
+[2022-08-16T20:38:09.927+0800][0.022s][info][gc,init] Initialize Shenandoah heap: 248M initial, 7168K min, 3953M max
+[2022-08-16T20:38:09.927+0800][0.022s][info][gc,init] Safepointing mechanism: global-page poll
+[2022-08-16T20:38:09.927+0800][0.022s][info][gc     ] Using Shenandoah
+[2022-08-16T20:38:09.927+0800][0.022s][info][gc,heap,coops] Heap address: 0x0000000708f00000, size: 3953 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
+[2022-08-16T20:38:09.933+0800][0.029s][info][gc,init      ] Reference processing: parallel discovery, parallel processing
+[2022-08-16T20:38:09.943+0800][0.038s][info][gc           ] Soft Max Heap Size: 3953M -> 3952M
+[2022-08-16T20:38:11.258+0800][1.354s][info][gc           ] Trigger: Metadata GC Threshold
+[2022-08-16T20:38:11.259+0800][1.354s][info][gc,ergo      ] Free: 3255M, Max: 1024K regular, 3255M humongous, Frag: 0% external, 0% internal; Reserve: 198M, Max: 1024K
+[2022-08-16T20:38:11.259+0800][1.354s][info][gc,start     ] GC(0) Concurrent reset
+[2022-08-16T20:38:11.259+0800][1.354s][info][gc,task      ] GC(0) Using 3 of 6 workers for concurrent reset
+[2022-08-16T20:38:11.259+0800][1.354s][info][gc,ergo      ] GC(0) Pacer for Reset. Non-Taxable: 3953M
+[2022-08-16T20:38:11.259+0800][1.354s][info][gc           ] GC(0) Concurrent reset 0.432ms
+[2022-08-16T20:38:11.259+0800][1.354s][info][gc,start     ] GC(0) Pause Init Mark (process weakrefs) (unload classes)
+[2022-08-16T20:38:11.259+0800][1.355s][info][gc,task      ] GC(0) Using 6 of 6 workers for init marking
+[2022-08-16T20:38:11.260+0800][1.355s][info][gc,ergo      ] GC(0) Pacer for Mark. Expected Live: 395M, Free: 3254M, Non-Taxable: 325M, Alloc Tax Rate: 0.1x
+[2022-08-16T20:38:11.260+0800][1.355s][info][gc           ] GC(0) Pause Init Mark (process weakrefs) (unload classes) 0.755ms
+[2022-08-16T20:38:11.260+0800][1.355s][info][gc,start     ] GC(0) Concurrent marking (process weakrefs) (unload classes)
+[2022-08-16T20:38:11.260+0800][1.355s][info][gc,task      ] GC(0) Using 3 of 6 workers for concurrent marking
+[2022-08-16T20:38:11.263+0800][1.358s][info][gc           ] GC(0) Concurrent marking (process weakrefs) (unload classes) 3.064ms
+[2022-08-16T20:38:11.263+0800][1.358s][info][gc,start     ] GC(0) Concurrent precleaning
+[2022-08-16T20:38:11.263+0800][1.358s][info][gc,task      ] GC(0) Using 1 of 6 workers for concurrent preclean
+[2022-08-16T20:38:11.263+0800][1.358s][info][gc,ergo      ] GC(0) Pacer for Precleaning. Non-Taxable: 3953M
+[2022-08-16T20:38:11.263+0800][1.358s][info][gc           ] GC(0) Concurrent precleaning 0.148ms
+[2022-08-16T20:38:11.263+0800][1.358s][info][gc,start     ] GC(0) Pause Final Mark (process weakrefs) (unload classes)
+[2022-08-16T20:38:11.263+0800][1.358s][info][gc,task      ] GC(0) Using 6 of 6 workers for final marking
+[2022-08-16T20:38:11.265+0800][1.360s][info][gc,stringtable] GC(0) Cleaned string and symbol table, strings: 10199 processed, 0 removed, symbols: 68188 processed, 43 removed
+[2022-08-16T20:38:11.265+0800][1.360s][info][gc,ergo       ] GC(0) Adaptive CSet Selection. Target Free: 559M, Actual Free: 3765M, Max CSet: 164M, Min Garbage: 0B
+[2022-08-16T20:38:11.265+0800][1.360s][info][gc,ergo       ] GC(0) Collectable Garbage: 478M (100%), Immediate: 316M (66%), CSet: 161M (33%)
+[2022-08-16T20:38:11.266+0800][1.361s][info][gc,ergo       ] GC(0) Pacer for Evacuation. Used CSet: 167M, Free: 3568M, Non-Taxable: 356M, Alloc Tax Rate: 1.1x
+[2022-08-16T20:38:11.266+0800][1.361s][info][gc            ] GC(0) Pause Final Mark (process weakrefs) (unload classes) 2.171ms
+[2022-08-16T20:38:11.266+0800][1.361s][info][gc,start      ] GC(0) Concurrent cleanup
+[2022-08-16T20:38:11.266+0800][1.361s][info][gc            ] GC(0) Concurrent cleanup 504M->189M(506M) 0.211ms
+[2022-08-16T20:38:11.266+0800][1.361s][info][gc,ergo       ] GC(0) Free: 3566M, Max: 1024K regular, 3251M humongous, Frag: 9% external, 0% internal; Reserve: 196M, Max: 1024K
+[2022-08-16T20:38:11.266+0800][1.361s][info][gc,start      ] GC(0) Concurrent evacuation
+[2022-08-16T20:38:11.266+0800][1.361s][info][gc,task       ] GC(0) Using 3 of 6 workers for concurrent evacuation
+[2022-08-16T20:38:11.268+0800][1.363s][info][gc            ] GC(0) Concurrent evacuation 1.711ms
+[2022-08-16T20:38:11.268+0800][1.363s][info][gc,start      ] GC(0) Pause Init Update Refs
+[2022-08-16T20:38:11.268+0800][1.363s][info][gc,ergo       ] GC(0) Pacer for Update Refs. Used: 196M, Free: 3565M, Non-Taxable: 356M, Alloc Tax Rate: 1.1x
+[2022-08-16T20:38:11.268+0800][1.363s][info][gc            ] GC(0) Pause Init Update Refs 0.020ms
+[2022-08-16T20:38:11.268+0800][1.363s][info][gc,start      ] GC(0) Concurrent update references
+[2022-08-16T20:38:11.268+0800][1.363s][info][gc,task       ] GC(0) Using 3 of 6 workers for concurrent reference update
+[2022-08-16T20:38:11.270+0800][1.365s][info][gc            ] GC(0) Concurrent update references 2.384ms
+[2022-08-16T20:38:11.270+0800][1.365s][info][gc,start      ] GC(0) Pause Final Update Refs
+[2022-08-16T20:38:11.270+0800][1.365s][info][gc,task       ] GC(0) Using 6 of 6 workers for final reference update
+[2022-08-16T20:38:11.270+0800][1.365s][info][gc            ] GC(0) Pause Final Update Refs 0.191ms
+[2022-08-16T20:38:11.270+0800][1.365s][info][gc,start      ] GC(0) Concurrent cleanup
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc            ] GC(0) Concurrent cleanup 196M->29M(511M) 0.187ms
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,ergo       ] Free: 3725M, Max: 1024K regular, 3244M humongous, Frag: 13% external, 0% internal; Reserve: 198M, Max: 1024K
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] All times are wall-clock times, except per-root-class counters, that are sum over
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] all workers. Dividing the <total> over the root stage time estimates parallelism.
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Concurrent Reset                    425 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Init Mark (G)                 963 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Init Mark (N)                 742 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Accumulate Stats                    6 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Make Parsable                      10 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Update Region States               20 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Scan Roots                        404 us, parallelism: 4.92x
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: <total>                     1989 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: Thread Roots                1487 us, workers (us): 332,   1, 251, 277, 279, 348, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: Universe Roots                15 us, workers (us):  15, ---, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: JNI Handles Roots             34 us, workers (us): ---, ---, ---,  34, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: Synchronizer Roots             0 us, workers (us): ---,   0, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: Management Roots               8 us, workers (us): ---,   8, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: System Dict Roots             65 us, workers (us): ---, ---,  65, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: CLDG Roots                   378 us, workers (us):   2, 376, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     S: JVMTI Roots                    0 us, workers (us): ---, ---, ---,   0, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Resize TLABs                        3 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Concurrent Marking                 3054 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Concurrent Precleaning              139 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Final Mark (G)               2381 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Final Mark (N)               2158 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Finish Queues                      67 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Weak References                   144 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     Process                         142 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   System Purge                       32 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     Unload Classes                   67 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     Cleanup                        1185 us, parallelism: 5.77x
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       CU: <total>                  6840 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       CU: Code Cache Roots         1614 us, workers (us): 287, 269, 268, 275, 270, 245, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       CU: Code Cache Cleaning       353 us, workers (us):  51,  61,  60,  61,  60,  59, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       CU: String Table Roots       2014 us, workers (us): 325, 342, 341, 333, 338, 334, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       CU: Resolved Table Roots       10 us, workers (us):   9,   0,   0,   0,   0,   0, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       CU: CLDG Roots               2849 us, workers (us): 478, 470, 470, 479, 470, 480, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     Weak Roots                       32 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     CLDG                              0 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Update Region States               29 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Retire TLABs                        7 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Choose Collection Set              57 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Rebuild Free Set                   17 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Initial Evacuation                543 us, parallelism: 3.52x
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: <total>                     1910 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: Thread Roots                 485 us, workers (us): 236, 151,   1,  96,   1,   1, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: Code Cache Roots             818 us, workers (us):   0,   0, 335, 130, 352,   0, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: Universe Roots                21 us, workers (us):  21, ---, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: JNI Handles Roots             21 us, workers (us): ---,  21, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: Synchronizer Roots             0 us, workers (us): ---,   0, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: Management Roots               1 us, workers (us): ---,   1, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: System Dict Roots             22 us, workers (us): ---, ---,  22, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: CLDG Roots                   542 us, workers (us):  11, 214, ---, ---, ---, 317, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     E: JVMTI Roots                    0 us, workers (us): ---,   0, ---, ---, ---, ---, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Concurrent Cleanup                  196 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Concurrent Evacuation              1706 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Init  Update Refs (G)         126 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Init  Update Refs (N)          11 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Retire GCLABs                       3 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Concurrent Update Refs             2369 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Final Update Refs (G)         245 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Pause Final Update Refs (N)         179 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Update Roots                      117 us, parallelism: 2.75x
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     UR: <total>                     323 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]     UR: Thread Roots                323 us, workers (us):  97,  70,  40,  75,  22,  19, 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Update Region States               28 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Trash Collection Set                4 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]   Rebuild Free Set                   23 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Concurrent Cleanup                  175 us
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] Allocation pacing accrued:
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       0 of  1344 ms (  0.0%): <total>
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ]       0 of  1344 ms (  0.0%): <average total>
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,stats      ] 
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,metaspace  ] Metaspace: 20797K->20820K(1069056K)
+[2022-08-16T20:38:11.271+0800][1.366s][info][gc,ergo       ] Pacer for Idle. Initial: 80957K, Alloc Tax Rate: 1.0x
