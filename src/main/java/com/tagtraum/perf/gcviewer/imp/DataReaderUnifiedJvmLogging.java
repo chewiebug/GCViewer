@@ -90,22 +90,24 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final int GROUP_PAUSE = 1;
 
     // Input: 4848M->4855M(4998M)
-    // Group 1: 4848
-    // Group 2: M
-    // Group 3: 4855
-    // Group 4: M
-    // Group 5: 4998
-    // Group 6: M
+    // Group 1: 4848M->4855M(4998M)
+    // Group 2: 4848
+    // Group 3: M
+    // Group 4: 4855
+    // Group 5: M
+    // Group 6: 4998
+    // Group 7: M
     private static final Pattern PATTERN_MEMORY = Pattern.compile("^" + PATTERN_MEMORY_STRING);
 
     // Input: 4848M->4855M(4998M) 2.872ms
-    // Group 1: 4848
-    // Group 2: M
-    // Group 3: 4855
-    // Group 4: M
-    // Group 5: 4998
-    // Group 6: M
-    // Group 7: 2.872 (optional group)
+    // Group 1: 4848M->4855M(4998M)
+    // Group 2: 4848
+    // Group 3: M
+    // Group 4: 4855
+    // Group 5: M
+    // Group 6: 4998
+    // Group 7: M
+    // Group 8: 2.872 (optional group)
     private static final Pattern PATTERN_MEMORY_PAUSE = Pattern.compile("^" + PATTERN_MEMORY_STRING + "(?:(?:[ ]" + PATTERN_PAUSE_STRING + ")|$)");
 
     private static final int GROUP_MEMORY = 1;
@@ -161,10 +163,11 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     private static final String TAG_GC_HEAP = "gc,heap";
     private static final String TAG_GC_METASPACE = "gc,metaspace";
     private static final String TAG_GC_PHASES = "gc,phases";
+    private static final String TAG_GC_INIT = "gc,init";
     private static final String TAG_SAFEPOINT = "safepoint";
     
     /** list of strings, that must be part of the gc log line to be considered for parsing */
-    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES, Type.APPLICATION_STOPPED_TIME.getName(), "Heap Region Size");
+    private static final List<String> INCLUDE_STRINGS = Arrays.asList("[gc ", "[gc]", "[" + TAG_GC_START, "[" + TAG_GC_HEAP, "[" + TAG_GC_METASPACE, "[" + TAG_GC_PHASES, "[" + TAG_GC_INIT, Type.APPLICATION_STOPPED_TIME.getName());
     /** list of strings, that target gc log lines, that - although part of INCLUDE_STRINGS - are not considered a gc event */
     private static final List<String> EXCLUDE_STRINGS = Arrays.asList("Cancelling concurrent GC",
             "[debug",
@@ -198,7 +201,8 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             "Heap Region Size", // jdk 17
             "Consider",
             "Heuristics ergonomically sets",
-            "Soft Max Heap Size" // ShenandoahGC
+            "Soft Max Heap Size", // ShenandoahGC
+            "[gc,init"
             );
 
     protected DataReaderUnifiedJvmLogging(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
