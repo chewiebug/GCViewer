@@ -1,0 +1,1 @@
+docker build --tag ruby/travis travis-docker-image

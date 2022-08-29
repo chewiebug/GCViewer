@@ -209,7 +209,7 @@
         <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <maven.assembly.plugin.version>3.1.0</maven.assembly.plugin.version>
-        <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
+        <maven.antrun.plugin.version>3.1.0</maven.antrun.plugin.version>
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
