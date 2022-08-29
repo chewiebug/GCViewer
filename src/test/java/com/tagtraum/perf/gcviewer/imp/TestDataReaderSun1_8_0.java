@@ -417,4 +417,19 @@ public class TestDataReaderSun1_8_0 {
                 is(1L));
     }
 
+    @Test
+    public void parallelPrintGCID() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0ParallelPrintGCID.txt");
+        gcResource.getLogger().addHandler(handler);
+        
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(5));
+
+        assertEquals("number of errors", 0, handler.getCount());
+    }
+
 }

@@ -551,6 +551,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
             // pre-used->post-used, total, time
             ZonedDateTime datestamp = parseDatestamp(line, pos);
             double timestamp = getTimestamp(line, pos, datestamp);
+            parseGcId(line, pos);
             ExtendedType type = parseType(line, pos);
             // special provision for concurrent events
             if (type.getConcurrency() == Concurrency.CONCURRENT) {
@@ -579,8 +580,7 @@ public class DataReaderSun1_6_0G1 extends AbstractDataReaderSun {
 
                 if (event.getExtendedType().getPattern() == GcPattern.GC_MEMORY_PAUSE) {
                     setMemoryAndPauses(event, line, pos);
-                }
-                else {
+                } else {
                     event.setPause(parsePause(line, pos));
                 }
             }

@@ -301,6 +301,37 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
     }
 
+    // restriction PringGCID only for parallel scavenge collector
+    protected void parseGcId(String line, ParseInformation pos) throws ParseException {
+        if (!line.contains("#"))
+            return;
+        int i = pos.getIndex();
+        try {
+            // consume all leading spaces and '#'
+            final int lineLength = line.length();
+            final char[] lineChars = line.toCharArray();
+            char c = lineChars[i];
+            for (; i < lineLength; c = lineChars[++i]) {
+                if (c != ' ' && c != '#')
+                    break;
+            }
+            if (i >= lineLength)
+                throw new ParseException("Unexpected end of line.", line);
+            // check whether the Id starts with a number
+            // -> skip number
+            for (; Character.isDigit(c) && i < lineLength; c = lineChars[++i]);
+            // -> skip ':'
+            for (; i<lineLength; c = lineChars[++i]) {
+                if (c != ':')
+                    break;
+            }
+        }
+        finally {
+            i++;
+            pos.setIndex(i);
+        }
+    }
+
     protected ExtendedType parseType(String line, ParseInformation pos) throws ParseException {
         String typeString = parseTypeString(line, pos);
         return getDataReaderTools().parseType(typeString);
