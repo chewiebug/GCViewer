@@ -418,6 +418,30 @@ public class TestDataReaderSun1_8_0 {
     }
 
     @Test
+    public void serialPrintGCID() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(
+                ("2022-08-01T17:14:32.660+0000: 0.177: #1: [GC (Allocation Failure) 2022-08-01T17:14:32.661+0000: 0.178: #1: [DefNew: 9766K->1056K(9792K), 0.0057621 secs] 16728K->16694K(31680K), 0.0073601 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] \n" +
+                        "2022-08-01T17:14:32.671+0000: 0.188: #2: [GC (Allocation Failure) 2022-08-01T17:14:32.672+0000: 0.189: #2: [DefNew: 9746K->1056K(9792K), 0.0073505 secs]2022-08-01T17:14:32.680+0000: 0.197: #3: [Tenured: 24314K->24378K(24384K), 0.0036336 secs] 25384K->25370K(34176K), [Metaspace: 2712K->2712K(1056768K)], 0.0134215 secs] [Times: user=0.01 sys=0.00, real=0.02 secs] \n")
+                        .getBytes());
+
+        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(2));
+        assertThat("warnings", handler.getCount(), is(0));
+
+        AbstractGCEvent<?> secondEvent = model.get(1);
+        assertThat("name", secondEvent.getTypeAsString(), equalTo("GC (Allocation Failure); DefNew; Tenured; Metaspace"));
+        assertThat("duration", secondEvent.getPause(), closeTo(0.0134215, 0.0000001));
+        assertThat("before", secondEvent.getPreUsed(), is(25384));
+    }
+
+    @Test
     public void parallelPrintGCID() throws Exception {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
@@ -430,6 +454,26 @@ public class TestDataReaderSun1_8_0 {
         assertThat("gc count", model.size(), is(5));
 
         assertEquals("number of errors", 0, handler.getCount());
+    }
+
+    @Test
+    public void cmsPrintGCID() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0CmsPrintGcId.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("gc count", model.size(), is(18));
+        assertThat("warnings", handler.getCount(), is(0));
+
+        AbstractGCEvent<?> parnew = model.get(0);
+        assertThat("name", parnew.getTypeAsString(), equalTo("GC (Allocation Failure); ParNew"));
+        assertThat("duration", parnew.getPause(), closeTo(0.0106548, 0.0000001));
+        assertThat("before", parnew.getPreUsed(), is(8678));
+
     }
 
 }

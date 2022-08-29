@@ -2,6 +2,7 @@ package com.tagtraum.perf.gcviewer.imp;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -212,4 +214,26 @@ public class TestDataReaderSun1_8_0G1 {
         assertThat("size", model.size(), is(1));
         assertThat("type", model.get(0).getExtendedType().getType(), is(Type.G1_YOUNG));
     }
+
+    @Test
+    public void printGCID() throws Exception {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("SampleSun1_8_0G1PrintGCID.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        DataReader reader = getDataReader(gcResource);
+        GCModel model = reader.read();
+
+        assertThat("warnings", handler.getCount(), is(0));
+        assertThat("gc count", model.size(), is(11));
+
+        AbstractGCEvent<?> parnew = model.get(0);
+        assertThat("name", parnew.getTypeAsString(), equalTo("GC pause (G1 Evacuation Pause) (young)"));
+        assertThat("duration", parnew.getPause(), closeTo(0.0087570, 0.0000001));
+        assertThat("before", parnew.getPreUsed(), is(7168));
+
+    }
+
+
 }

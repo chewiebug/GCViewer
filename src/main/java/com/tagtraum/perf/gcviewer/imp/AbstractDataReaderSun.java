@@ -256,7 +256,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         int i = pos.getIndex();
         try {
             // consume all leading spaces and [
-            final int lineLength = line.length();
+            final int lineLength = line.length() - 1;
             final char[] lineChars = line.toCharArray();
             char c = lineChars[i];
             for (; i<lineLength; c = lineChars[++i]) {
@@ -301,14 +301,13 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
         }
     }
 
-    // restriction PringGCID only for parallel scavenge collector
     protected void parseGcId(String line, ParseInformation pos) throws ParseException {
-        if (!line.contains("#"))
+        if (!line.substring(pos.getIndex()).contains("#"))
             return;
         int i = pos.getIndex();
         try {
             // consume all leading spaces and '#'
-            final int lineLength = line.length();
+            final int lineLength = line.length() - 1;
             final char[] lineChars = line.toCharArray();
             char c = lineChars[i];
             for (; i < lineLength; c = lineChars[++i]) {
@@ -327,7 +326,6 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
             }
         }
         finally {
-            i++;
             pos.setIndex(i);
         }
     }
@@ -542,6 +540,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
                     detailEvent.setDateStamp(datestamp);
                     detailEvent.setTimestamp(getTimestamp(line, pos, datestamp));
                 }
+                parseGcId(line, pos);
                 detailEvent.setExtendedType(parseType(line, pos));
                 if (nextIsTimestamp(line, pos) || nextIsDatestamp(line, pos)) {
                     parseDetailEventsIfExist(line, pos, detailEvent);
@@ -686,7 +685,7 @@ public abstract class AbstractDataReaderSun extends AbstractDataReader {
 
     private int skipUntilNextDigit(String line, ParseInformation pos) throws ParseException {
         int begin = pos.getIndex();
-        while (!Character.isDigit(line.charAt(begin)) && begin < line.length()) {
+        while (!Character.isDigit(line.charAt(begin)) && begin+1 < line.length()) {
             ++begin;
         }
 

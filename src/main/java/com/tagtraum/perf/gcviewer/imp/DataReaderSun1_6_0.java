@@ -58,6 +58,7 @@ import com.tagtraum.perf.gcviewer.util.ParseInformation;
  * <li>-XX:+PrintReferenceGC (output ignored)</li>
  * <li>-XX:+PrintCMSInitiationStatistics (output ignored)</li>
  * <li>-XX:+PrintFLSStatistics (output ignored)</li>
+ * <li>-XX:+PrintGCID (output ignored)</li>
  * </ul>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>

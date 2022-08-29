@@ -62,7 +62,7 @@ public abstract class AbstractDataReader implements DataReader {
      */
     protected boolean shouldContinue() {
         if (getLogger().isLoggable(Level.FINE)) {
-            getLogger().fine(gcResource.getResourceName() + " read cancelled");
+            getLogger().fine(gcResource.getResourceName() + " read cancelled=" + gcResource.isReadCancelled());
         }
         return !gcResource.isReadCancelled();
     }

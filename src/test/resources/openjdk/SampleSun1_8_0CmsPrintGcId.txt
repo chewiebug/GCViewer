@@ -1,0 +1,21 @@
+OpenJDK 64-Bit Server VM (25.342-b07) for linux-amd64 JRE (1.8.0_342-b07), built on Jul 16 2022 09:19:19 by "openjdk" with gcc 4.4.7 20120313 (Red Hat 4.4.7-23)
+Memory: 4k page, physical 2097152k(2094644k free), swap 3145728k(3145728k free)
+CommandLine flags: -XX:InitialHeapSize=33554432 -XX:MaxHeapSize=536870912 -XX:MaxNewSize=174485504 -XX:MaxTenuringThreshold=6 -XX:OldPLABSize=16 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCID -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+UseParNewGC
+2022-08-01T17:16:33.170+0000: 0.169: #0: [GC (Allocation Failure) 2022-08-01T17:16:33.171+0000: 0.170: #0: [ParNew: 8678K->1081K(9792K), 0.0088699 secs] 8678K->8064K(31680K), 0.0106548 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]
+2022-08-01T17:16:33.185+0000: 0.185: #1: [GC (Allocation Failure) 2022-08-01T17:16:33.186+0000: 0.185: #1: [ParNew: 9760K->1056K(9792K), 0.0089566 secs] 16743K->16701K(31680K), 0.0103324 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]
+2022-08-01T17:16:33.198+0000: 0.197: #2: [GC (CMS Initial Mark) [1 CMS-initial-mark: 15645K(21888K)] 18533K(31680K), 0.0010369 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2022-08-01T17:16:33.200+0000: 0.199: #2: [CMS-concurrent-mark-start]
+2022-08-01T17:16:33.201+0000: 0.201: #3: [GC (Allocation Failure) 2022-08-01T17:16:33.202+0000: 0.201: #3: [ParNew: 9746K->1056K(9792K), 0.0062763 secs] 25391K->25378K(34560K), 0.0073592 secs] [Times: user=0.01 sys=0.01, real=0.01 secs]
+2022-08-01T17:16:33.213+0000: 0.212: #2: [CMS-concurrent-mark: 0.005/0.013 secs] [Times: user=0.01 sys=0.01, real=0.02 secs]
+2022-08-01T17:16:33.214+0000: 0.213: #4: [GC (Allocation Failure) 2022-08-01T17:16:33.214+0000: 0.213: #4: [ParNew: 9751K->1056K(9792K), 0.0056495 secs] 34072K->34054K(43200K), 0.0064721 secs] [Times: user=0.01 sys=0.00, real=0.00 secs]
+2022-08-01T17:16:33.221+0000: 0.220: #2: [CMS-concurrent-preclean-start]
+2022-08-01T17:16:33.222+0000: 0.221: #2: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2022-08-01T17:16:33.222+0000: 0.222: #5: [GC (Allocation Failure) 2022-08-01T17:16:33.223+0000: 0.222: #5: [ParNew: 9754K->1056K(9792K), 0.0051785 secs] 42752K->42730K(51840K), 0.0060566 secs] [Times: user=0.01 sys=0.00, real=0.00 secs]
+2022-08-01T17:16:33.230+0000: 0.229: #2: [GC (CMS Final Remark) [YG occupancy: 1868 K (9792 K)]2022-08-01T17:16:33.230+0000: 0.230: #2: [Rescan (parallel) , 0.0007821 secs]2022-08-01T17:16:33.231+0000: 0.231: #2: [weak refs processing, 0.0004025 secs]2022-08-01T17:16:33.232+0000: 0.231: #2: [class unloading, 0.0005587 secs]2022-08-01T17:16:33.233+0000: 0.232: #2: [scrub symbol table, 0.0003980 secs]2022-08-01T17:16:33.233+0000: 0.233: #2: [scrub string table, 0.0002950 secs][1 CMS-remark: 41674K(42048K)] 43542K(51840K), 0.0039463 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2022-08-01T17:16:33.235+0000: 0.234: #2: [CMS-concurrent-sweep-start]
+2022-08-01T17:16:33.235+0000: 0.234: #2: [CMS-concurrent-sweep: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2022-08-01T17:16:33.235+0000: 0.235: #2: [CMS-concurrent-reset-start]
+2022-08-01T17:16:33.236+0000: 0.236: #6: [GC (Allocation Failure) 2022-08-01T17:16:33.237+0000: 0.236: #6: [ParNew: 9744K->1056K(9792K), 0.0026933 secs] 51417K->51405K(79248K), 0.0034839 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2022-08-01T17:16:33.244+0000: 0.243: #7: [GC (Allocation Failure) 2022-08-01T17:16:33.244+0000: 0.243: #7: [ParNew: 9745K->1056K(9792K), 0.0028328 secs] 60094K->60082K(79248K), 0.0037992 secs] [Times: user=0.00 sys=0.01, real=0.00 secs]
+2022-08-01T17:16:33.250+0000: 0.250: #8: [GC (Allocation Failure) 2022-08-01T17:16:33.251+0000: 0.250: #8: [ParNew: 9757K->1036K(9792K), 0.0016622 secs] 68783K->61918K(79248K), 0.0025883 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2022-08-01T17:16:33.254+0000: 0.253: #2: [CMS-concurrent-reset: 0.006/0.018 secs] [Times: user=0.01 sys=0.01, real=0.02 secs]
