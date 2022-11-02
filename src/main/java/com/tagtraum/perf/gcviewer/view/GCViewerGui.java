@@ -4,6 +4,8 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +25,41 @@ public class GCViewerGui extends JFrame {
     private GCViewerGuiToolBar toolBar;
     private GCPreferences preferences;
 
+    private static boolean isShiftPressed;
+    private static boolean isControlPressed;
+    private static boolean isAltPressed;
+
+    public static boolean isShiftPressed() {
+        return isShiftPressed;
+    }
+
+    public static boolean isControlPressed() {
+        return isControlPressed;
+    }
+
+    public static boolean isAltPressed() {
+        return isAltPressed;
+    }
     private RecentGCResourcesMenu recentResourceNamesMenu;
 
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
-
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent e) {
+
+                if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_SHIFT) { isShiftPressed = true; }
+                else if (e.getID() == KeyEvent.KEY_RELEASED && e.getKeyCode() == KeyEvent.VK_SHIFT) { isShiftPressed = false; }
+                else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_CONTROL) { isControlPressed = true; }
+                else if (e.getID() == KeyEvent.KEY_RELEASED && e.getKeyCode() == KeyEvent.VK_CONTROL) { isControlPressed = false; }
+                else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ALT) { isAltPressed = true; }
+                else if (e.getID() == KeyEvent.KEY_RELEASED && e.getKeyCode() == KeyEvent.VK_ALT) { isAltPressed = false; }
+                return false;
+            }
+        });
     }
     
     public void addDocument(GCDocument gcDocument) {

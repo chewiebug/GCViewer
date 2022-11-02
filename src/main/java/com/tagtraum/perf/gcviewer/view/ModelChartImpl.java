@@ -11,10 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -61,6 +58,8 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     private boolean antiAlias;
     private TimeOffsetPanel timeOffsetPanel;
     private int lastViewPortWidth = 0;
+
+    private boolean shiftPressed = false;
 
     public ModelChartImpl() {
         super();
@@ -181,6 +180,24 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                     }
                     timestampRulerPopup.show(e.getComponent(), e.getX(),  e.getY());
                     timeOffsetPanel.requestFocus();
+                }
+            }
+        });
+
+
+        addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if(GCViewerGui.isShiftPressed()) {
+                    double pos = (double)(getHorizontalScrollBar().getValue())/chart.getWidth();
+                    if(e.getWheelRotation() > 0 && getScaleFactor() < 100) {
+                        setScaleFactor((getScaleFactor()*1.2));
+                    }
+                    if(e.getWheelRotation() < 0 && getScaleFactor() > 0.01) {
+                        setScaleFactor((getScaleFactor()/1.2));
+                    }
+                    getHorizontalScrollBar().setValue((int) (pos * chart.getWidth()));
+                    e.consume();
                 }
             }
         });
