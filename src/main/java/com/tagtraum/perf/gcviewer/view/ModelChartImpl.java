@@ -186,16 +186,16 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                if((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
-                    double pos = (double)(getHorizontalScrollBar().getValue())/(double)(chart.getWidth());
-                    if(e.getWheelRotation() > 0 && getScaleFactor() < 100) {
+                if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
+                    double pos = (double)(getHorizontalScrollBar().getValue()) / (double)(chart.getWidth());
+                    if (e.getWheelRotation() > 0 && getScaleFactor() < 100) {
                         setScaleFactor((getScaleFactor()*1.2));
                     }
-                    if(e.getWheelRotation() < 0 && getScaleFactor() > 0.01) {
+                    if (e.getWheelRotation() < 0 && getScaleFactor() > 0.01) {
                         setScaleFactor((getScaleFactor()/1.2));
                     }
-                    if(e.getWheelRotation() != 0) {
-                        getHorizontalScrollBar().setValue((int) (pos * (double) (chart.getWidth())));
+                    if (e.getWheelRotation() != 0) {
+                        getHorizontalScrollBar().setValue((int)(pos * (double)(chart.getWidth())));
                         e.consume();
                     }
                 }
