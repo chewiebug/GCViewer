@@ -59,8 +59,6 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     private TimeOffsetPanel timeOffsetPanel;
     private int lastViewPortWidth = 0;
 
-    private boolean shiftPressed = false;
-
     public ModelChartImpl() {
         super();
         this.model = new GCModel();
