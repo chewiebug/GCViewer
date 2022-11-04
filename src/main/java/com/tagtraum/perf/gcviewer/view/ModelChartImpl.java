@@ -194,8 +194,10 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                     if(e.getWheelRotation() < 0 && getScaleFactor() > 0.01) {
                         setScaleFactor((getScaleFactor()/1.2));
                     }
-                    getHorizontalScrollBar().setValue((int) (pos * (double)(chart.getWidth())));
-                    e.consume();
+                    if(e.getWheelRotation() != 0) {
+                        getHorizontalScrollBar().setValue((int) (pos * (double) (chart.getWidth())));
+                        e.consume();
+                    }
                 }
             }
         });
