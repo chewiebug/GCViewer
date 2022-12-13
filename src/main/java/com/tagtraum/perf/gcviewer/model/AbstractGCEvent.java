@@ -368,7 +368,7 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         static {
             WRAPPER_MAP.put(Type.UNDEFINED.getName(), new ExtendedType(Type.UNDEFINED));
         }
-        public static final ExtendedType UNDEFINED = WRAPPER_MAP.get(Type.UNDEFINED);
+        public static final ExtendedType UNDEFINED = WRAPPER_MAP.get(Type.UNDEFINED.getName());
 
         private String fullName;
         private Type type;
@@ -683,7 +683,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_G1_PHASE_COMPACT_HEAP = new Type("Phase 4: Compact heap", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
 
         // unified jvm logging shenandoah event types
-        // Only "Concurrent cleanup", "Concurrent uncommit", "Pause Degenerated GC", "Pause Full" event types have memory info
+        // shenandoah in the earlier jdk1.8 versions had more events with GC_MEMORY_PAUSE patterns. Those versions are not supported any more, breaking
+        // backwards compatibility of the parser. If that backwards compatibility should be needed, more flexibility will have to be built into it.
         public static final Type UJL_SHEN_PAUSE_INIT_MARK = new Type("Pause Init Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_SHEN_PAUSE_FINAL_MARK = new Type("Pause Final Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_SHEN_PAUSE_INIT_UPDATE_REFS = new Type("Pause Init Update Refs", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_PAUSE);

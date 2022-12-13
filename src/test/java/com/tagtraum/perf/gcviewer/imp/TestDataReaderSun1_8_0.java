@@ -16,10 +16,10 @@ import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.util.DateHelper;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
 import org.junit.Test;
 
 /**
@@ -221,86 +221,6 @@ public class TestDataReaderSun1_8_0 {
         assertThat("Pause Final Update Refs: duration", finalUpdateRefsEvent.getPause(), closeTo(0.000291, 0.00001));
     }
 
-// FIX ME!  Only "Concurrent cleanup", "Concurrent uncommit", "Pause Degenerated GC", "Pause Full" event types have memory info
-//    @Test
-//    public void shehandoahConcurrentEventsjsk8u171() throws Exception {
-//        // FIX ME! I think the test is overtime and need removed, alert the log string for build success.
-//        // probably jdk8u171
-//        TestLogHandler handler = new TestLogHandler();
-//        handler.setLevel(Level.WARNING);
-//        GCResource gcResource = new GcResourceFile("byteArray");
-//        gcResource.getLogger().addHandler(handler);
-//
-//        ByteArrayInputStream in = new ByteArrayInputStream(
-//                ("13.979: [Concurrent marking 1435M->1447M(2048M), 12.576 ms]" +
-//                        "\n13.994: [Concurrent evacuation 684M->712M(2048M), 6.041 ms]" +
-//                        "\n14.001: [Concurrent update references  713M->726M(2048M), 14.718 ms]" +
-//                        "\n14.017: [Concurrent reset bitmaps 60M->62M(2048M), 0.294 ms]" +
-//                        "\n626.259: [Cancel concurrent mark, 0.056 ms]\n")
-//                        .getBytes());
-//
-//        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
-//        GCModel model = reader.read();
-//
-//        assertThat("gc count", model.size(), is(5));
-//        assertThat("warnings", handler.getCount(), is(0));
-//
-//        AbstractGCEvent<?> concurrentMarking = model.get(0);
-//        assertThat("Concurrent Marking: name", concurrentMarking.getTypeAsString(), equalTo("Concurrent marking"));
-//        assertThat("Concurrent Marking: duration", concurrentMarking.getPause(), closeTo(0.012576, 0.0000001));
-//        assertThat("Concurrent Marking: before", concurrentMarking.getPreUsed(), is(1435 * 1024));
-//        assertThat("Concurrent Marking: after", concurrentMarking.getPostUsed(), is(1447 * 1024));
-//        assertThat("Concurrent Marking: total", concurrentMarking.getTotal(), is(2048 * 1024));
-//    }
-//
-//    @Test
-//    public void shehandoahConcurrentEventsjsk8u232() throws Exception {
-//        TestLogHandler handler = new TestLogHandler();
-//        handler.setLevel(Level.WARNING);
-//        GCResource gcResource = new GcResourceFile("byteArray");
-//        gcResource.getLogger().addHandler(handler);
-//
-//        ByteArrayInputStream in = new ByteArrayInputStream(
-//                ("0.233: [Concurrent reset, start]\n" +
-//                        "    Using 2 of 2 workers for concurrent reset\n" +
-//                        "0.234: [Concurrent reset 32854K->32983K(34816K), 0.401 ms]\n" +
-//                        "0.237: [Concurrent marking (process weakrefs), start]\n" +
-//                        "    Using 2 of 2 workers for concurrent marking\n" +
-//                        "0.238: [Concurrent marking (process weakrefs) 32983K->34327K(36864K), 1.159 ms]\n" +
-//                        "0.238: [Concurrent precleaning, start]\n" +
-//                        "    Using 1 of 2 workers for concurrent preclean\n" +
-//                        "0.238: [Concurrent precleaning 34359K->34423K(36864K), 0.053 ms]\n" +
-//                        "0.242: [Concurrent cleanup, start]\n" +
-//                        "0.242: [Concurrent cleanup 34807K->34840K(36864K), 0.019 ms]\n" +
-//                        "Free: 78M (56 regions), Max regular: 2048K, Max humongous: 61440K, External frag: 24%, Internal frag: 29%\n" +
-//                        "Evacuation Reserve: 7M (4 regions), Max regular: 2048K\n" +
-//                        "0.298: [Concurrent evacuation, start]\n" +
-//                        "    Using 2 of 2 workers for concurrent evacuation\n" +
-//                        "0.299: [Concurrent evacuation 42458K->46621K(112M), 0.538 ms]\n" +
-//                        "0.299: [Concurrent update references, start]\n" +
-//                        "    Using 2 of 2 workers for concurrent reference update\n" +
-//                        "0.299: [Concurrent update references 46813K->49951K(112M), 0.481 ms]\n" +
-//                        "Free: 118M (60 regions), Max regular: 2048K, Max humongous: 110592K, External frag: 9%, Internal frag: 1%\n" +
-//                        "Evacuation Reserve: 8M (4 regions), Max regular: 2048K\n" +
-//                        "Pacer for Idle. Initial: 2M, Alloc Tax Rate: 1.0x\n" +
-//                        "1.115: [Concurrent uncommit, start]\n" +
-//                        "1.129: [Concurrent uncommit 1986K->1986K(10240K), 13.524 ms]\n")
-//                        .getBytes());
-//
-//        DataReader reader = new DataReaderSun1_6_0(gcResource, in, GcLogType.SUN1_8);
-//        GCModel model = reader.read();
-//
-//        assertThat("gc count", model.size(), is(7));
-//        assertThat("warnings", handler.getCount(), is(0));
-//
-//        AbstractGCEvent<?> concurrentMarking = model.get(0);
-//        assertThat("Concurrent reset: name", concurrentMarking.getTypeAsString(), is("Concurrent reset"));
-//        assertThat("Concurrent reset: duration", concurrentMarking.getPause(), closeTo(0.000401, 0.0000001));
-//        assertThat("Concurrent reset: before", concurrentMarking.getPreUsed(), is(32854));
-//        assertThat("Concurrent reset: after", concurrentMarking.getPostUsed(), is(32983));
-//        assertThat("Concurrent reset: total", concurrentMarking.getTotal(), is(34816));
-//    }
-
     @Test
     public void shenandoahIgnoredLines() throws Exception {
         TestLogHandler handler = new TestLogHandler();
@@ -394,46 +314,6 @@ public class TestDataReaderSun1_8_0 {
                 is(1L));
     }
 
-// FIX ME!  Only "Concurrent cleanup", "Concurrent uncommit", "Pause Degenerated GC", "Pause Full" event types have memory info
-//    @Test
-//    public void shenandoah_171_Beginning()  throws Exception {
-//        // in its early implementation (jdk8u171), Shenandoah had memory information in the "Pause Final Mark" event, which was dropped later (jdk8u232)
-//        TestLogHandler handler = new TestLogHandler();
-//        handler.setLevel(Level.INFO);
-//        GCResource gcResource = new GcResourceFile("SampleOpenJdk1_8_0-171-ShenandoahBeginning.txt");
-//        gcResource.getLogger().addHandler(handler);
-//
-//        DataReader reader = getDataReader(gcResource);
-//        GCModel model = reader.read();
-//
-//        assertThat("gc count", model.size(), is(3));
-//        assertThat("number of errors",
-//                handler.getLogRecords().stream().filter(logRecord -> !logRecord.getLevel().equals(Level.INFO)).count(),
-//                is(2L));
-//        assertThat("contains 'Initialize Shenandoah heap'",
-//                handler.getLogRecords().stream().filter(logRecord -> logRecord.getMessage().startsWith("Initialize Shenandoah heap")).count(),
-//                is(1L));
-//    }
-//
-//    @Test
-//    public void shenandoah_232_Beginning()  throws Exception {
-//        TestLogHandler handler = new TestLogHandler();
-//        handler.setLevel(Level.INFO);
-//        GCResource gcResource = new GcResourceFile("SampleOpenJdk1_8_0-232-ShenandoahBeginning.txt");
-//        gcResource.getLogger().addHandler(handler);
-//
-//        DataReader reader = getDataReader(gcResource);
-//        GCModel model = reader.read();
-//
-//        assertThat("gc count", model.size(), is(0));
-//        assertThat("number of errors",
-//                handler.getLogRecords().stream().filter(logRecord -> !logRecord.getLevel().equals(Level.INFO)).count(),
-//                is(0L));
-//        assertThat("contains 'Shenandoah heuristics'",
-//                handler.getLogRecords().stream().filter(logRecord -> logRecord.getMessage().startsWith("Shenandoah heuristics")).count(),
-//                is(1L));
-//    }
- 
     @Test
     public void shenandoah_8u332()  throws Exception {
         TestLogHandler handler = new TestLogHandler();
