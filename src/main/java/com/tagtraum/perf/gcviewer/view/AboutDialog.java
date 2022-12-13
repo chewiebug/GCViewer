@@ -79,6 +79,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         "Jeffrey Swan",
         "Kamil Szymanski",
         "Pierre Viret",
+        "Cui Weiloong",
         "Yin Xunjun",
         "Leslie Zhai",
         "Eugene Zimichev"};
