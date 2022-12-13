@@ -8,12 +8,13 @@ import java.io.IOException;
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test unified java logging ZGC algorithm in OpenJDK 11
+ * Test unified java logging ZGC algorithm
  */
 public class TestDataReaderUJLZGC {
     private static final int CONCURRENT_MARK_INDEX = 0;
@@ -252,6 +253,63 @@ public class TestDataReaderUJLZGC {
                 AbstractGCEvent.Type.UJL_ZGC_GARBAGE_COLLECTION,
                 0,
                 1024 * 10124, 1024 * 5020, 5020 * 1024 / 5 * 100,
+                AbstractGCEvent.Generation.TENURED,
+                false);
+    }
+
+    /** Complement other gc type tests for ZGC */
+    @Test
+    public void testGcOther() throws Exception {
+        GCModel model = getGCModelFromLogFile("sample-ujl-zgc-gc-other.txt");
+
+        assertThat("size", model.size(), is(21));
+        assertThat("amount of gc event types", model.getGcEventPauses().size(), is(15));
+        assertThat("amount of gc events", model.getGCPause().getN(), is(15));
+        assertThat("amount of full gc event types", model.getFullGcEventPauses().size(), is(0));
+        assertThat("amount of gc phases event types", model.getGcEventPhases().size(), is(3));
+        assertThat("amount of full gc events", model.getFullGCPause().getN(), is(0));
+        assertThat("amount of concurrent pause types", model.getConcurrentEventPauses().size(), is(6));
+        assertThat("total heap size", model.getHeapAllocatedSizes().getMax(), is(3884 * 1024));
+    }
+
+    @Test
+    public void testAllocationStall() throws Exception {
+        GCModel model = getGCModelFromLogFile("sample-ujl-zgc-gc-other.txt");
+
+        AbstractGCEvent<?> allocationStallEvent = model.get(5);
+        UnittestHelper.testMemoryPauseEvent(allocationStallEvent,
+                "Allocation Stall",
+                AbstractGCEvent.Type.UJL_ZGC_ALLOCATION_STALL,
+                0.029092,
+                0, 0, 0,
+                AbstractGCEvent.Generation.TENURED,
+                false);
+    }
+
+    @Test
+    public void testRelocationStall() throws Exception {
+        GCModel model = getGCModelFromLogFile("sample-ujl-zgc-gc-other.txt");
+
+        AbstractGCEvent<?> RelocationStallEvent = model.get(12);
+        UnittestHelper.testMemoryPauseEvent(RelocationStallEvent,
+                "Relocation Stall",
+                AbstractGCEvent.Type.UJL_ZGC_RELOCATION_STALL,
+                0.000720,
+                0, 0, 0,
+                AbstractGCEvent.Generation.TENURED,
+                false);
+    }
+
+    @Test
+    public void testConcurrentMarkFree() throws Exception {
+        GCModel model = getGCModelFromLogFile("sample-ujl-zgc-gc-other.txt");
+
+        AbstractGCEvent<?> RelocationStallEvent = model.get(2);
+        UnittestHelper.testMemoryPauseEvent(RelocationStallEvent,
+                "Concurrent Mark Free",
+                AbstractGCEvent.Type.UJL_ZGC_CONCURRENT_MARK_FREE,
+                0.000001,
+                0, 0, 0,
                 AbstractGCEvent.Generation.TENURED,
                 false);
     }

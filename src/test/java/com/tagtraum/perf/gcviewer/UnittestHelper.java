@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -144,6 +145,29 @@ public class UnittestHelper {
             assertThat("number of errors", handler.getCount(), is(0));
             return model;
         }
+    }
+
+    /**
+     * Return GCModel from given log string.
+     *
+     * @param logString gc log string to be parsed
+     * @param expectedDataReaderClass expected DataReaderFactory class for the given fileName parameter
+     * @return GCModel model containing contents of parsed log string
+     * @throws IOException if resource could not be found
+     */
+    public static GCModel getGCModelFromLogString(String logString, Class expectedDataReaderClass) throws IOException {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(logString.getBytes());
+
+        DataReader reader = new DataReaderFactory().getDataReader(gcResource, in);
+        assertThat("reader from factory", reader.getClass().getName(), is(expectedDataReaderClass.getName()));
+
+        GCModel model = reader.read();
+        assertThat("number of errors", handler.getCount(), is(0));
+        return model;
     }
 
     /**

@@ -69,7 +69,7 @@ public class DataReaderTools {
     }
 
     /**
-     * Same as @{link {@link #parseType(String)}}, but returns <code>null</code> instead of exception, if no type could
+     * Same as {@link #parseType(String)}, but returns <code>null</code> instead of exception, if no type could
      * be found.
      *
      * @param typeName string representation of the gc event

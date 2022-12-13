@@ -201,8 +201,8 @@ public class GCModel implements Serializable {
         this.postFullGCUsedHeap = new IntData();
 
         this.postGCUsedMemory = new IntData();
-        this.totalPause = new DoubleData();
-        this.fullGCPause = new DoubleData();
+        this.totalPause = new DoubleDataPercentile();
+        this.fullGCPause = new DoubleDataPercentile();
         this.fullGcPauseInterval = new DoubleData();
         this.gcPause = new DoubleDataPercentile();
         this.vmOperationPause = new DoubleData();

@@ -118,6 +118,7 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS_LINE_START.add("/proc/meminfo"); // apple vms seem to print this out in the beginning of the logs
         EXCLUDE_STRINGS_LINE_START.add("Uncommitted"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("Cancelling concurrent GC"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("Cancelling GC"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("Capacity"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
         EXCLUDE_STRINGS_LINE_START.add("Periodic GC triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
         EXCLUDE_STRINGS_LINE_START.add("Immediate Garbage"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
@@ -126,7 +127,6 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS_LINE_START.add("Concurrent marking triggered"); // -XX:+UseShenandoahGC -XX:+PrintGCDetails
         EXCLUDE_STRINGS_LINE_START.add("Adjusting free threshold"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("Predicted cset threshold"); // -XX:+UseShenandoahGC
-        EXCLUDE_STRINGS_LINE_START.add("Trigger"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("Free"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("Evacuation Reserve"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("Pacer for "); // -XX:+UseShenandoahGC
@@ -135,6 +135,9 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         EXCLUDE_STRINGS_LINE_START.add("    Adaptive CSet Selection"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("    Collectable Garbage"); // -XX:+UseShenandoahGC
         EXCLUDE_STRINGS_LINE_START.add("    Immediate Garbage"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Good progress for"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Failed to"); // -XX:+UseShenandoahGC
+        EXCLUDE_STRINGS_LINE_START.add("    Cancelling GC"); // -XX:+UseShenandoahGC
 
         EXCLUDE_STRINGS_LINE_CONTAIN.add(LOGFILE_ROLLING_BEGIN);
         EXCLUDE_STRINGS_LINE_CONTAIN.add(LOGFILE_ROLLING_END);
@@ -155,6 +158,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         LOG_INFORMATION_STRINGS.add("Reference processing"); // -XX:+UseShenandoahGC
         LOG_INFORMATION_STRINGS.add("Heuristics ergonomically sets"); // -XX:+UseShenandoahGC
         LOG_INFORMATION_STRINGS.add("Initialize Shenandoah heap"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Shenandoah GC mode"); // -XX:+UseShenandoahGC
+        LOG_INFORMATION_STRINGS.add("Soft Max Heap Size"); // -XX:+UseShenandoahGC
     }
 
     private static final String EVENT_YG_OCCUPANCY = "YG occupancy";
@@ -253,6 +258,8 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
     private static final String SHENANDOAH_DETAILS_FINAL_MARK_SPLIT_START = "Total";
 
     private static final String SHENANDOAH_INTRODUCTION_TO_GC_STATISTICS = "Shenandoah Heap";
+    private static final String SHENANDOAH_GC_CYCLE_DETAILS_START = "All times are wall-clock times";
+    private static final String SHENANDOAH_GC_CYCLE_START = "Trigger: ";
 
     // -XX:+PrintReferenceGC
     private static final String PRINT_REFERENCE_GC_INDICATOR = "Reference";
@@ -309,9 +316,17 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
                         continue;
                     } else if (line.startsWith(SHENANDOAH_INTRODUCTION_TO_GC_STATISTICS)) {
                         // Assumption: As soon as the shenandoah gc statistics block starts, the vm is shutting down
-                        skipAndLogToEndOfFile(in);
+                        skipAndLogToEndOfFile(in, line);
+                        continue;
+                    } else if (line.startsWith(SHENANDOAH_GC_CYCLE_START)) {
+                        // skip the start string of the first gc cycle
+                        continue;
+                    } else if (line.startsWith(SHENANDOAH_GC_CYCLE_DETAILS_START)) {
+                        // ignore details of each gc cycle
+                        skipGcCycleDetails(in);
                         continue;
                     }
+
                     if (line.indexOf(CMS_ABORT_PRECLEAN) >= 0) {
                         // line contains like " CMS: abort preclean due to time "
                         // -> remove the text
@@ -485,10 +500,24 @@ public class DataReaderSun1_6_0 extends AbstractDataReaderSun {
         }
     }
 
-    private void skipAndLogToEndOfFile(LineNumberReader in) throws IOException {
-        String line;
+    private void skipAndLogToEndOfFile(LineNumberReader in, String line) throws IOException {
+        getLogger().info(line);
         while ((line = in.readLine()) != null) {
             getLogger().info(line);
+        }
+    }
+
+    private void skipGcCycleDetails(LineNumberReader in) throws IOException {
+        String line;
+        while ((line = in.readLine()) != null) {
+            // parse the events for the next GC cycle
+            if (line.startsWith(SHENANDOAH_GC_CYCLE_START)) {
+                break;
+            }
+            // the vm is shutting down
+            if (line.startsWith(SHENANDOAH_INTRODUCTION_TO_GC_STATISTICS)) {
+                skipAndLogToEndOfFile(in, line);
+            }
         }
     }
 

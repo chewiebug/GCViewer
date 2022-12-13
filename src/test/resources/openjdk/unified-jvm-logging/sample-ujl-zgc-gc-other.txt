@@ -1,0 +1,37 @@
+[200.343s][info][gc,start    ] GC(25) Garbage Collection (Allocation Rate)
+[200.344s][info][gc,phases   ] GC(25) Pause Mark Start 0.008ms
+[201.482s][info][gc          ] Allocation Stall (Group1.Backend.CompositeBackend{Tier1}.1) 0.706ms
+[201.507s][info][gc,phases   ] GC(25) Concurrent Mark 1163.494ms
+[201.507s][info][gc,phases   ] GC(25) Pause Mark End 0.011ms
+[201.507s][info][gc,phases   ] GC(25) Concurrent Mark Free 0.001ms
+[201.510s][info][gc,phases   ] GC(25) Concurrent Process Non-Strong References 3.045ms
+[201.510s][info][gc,phases   ] GC(25) Concurrent Reset Relocation Set 0.072ms
+[201.511s][info][gc          ] Allocation Stall (Group1.Backend.CompositeBackend{Tier1}.10) 29.092ms
+[201.511s][info][gc          ] Allocation Stall (Group1.Backend.CompositeBackend{Tier1}.7) 11.429ms
+[201.511s][info][gc          ] Allocation Stall (Group1.Backend.CompositeBackend{Tier1}.2) 11.428ms
+[201.511s][info][gc          ] Allocation Stall (Group1.Backend.CompositeBackend{Tier3}.8) 11.050ms
+[201.511s][info][gc          ] Allocation Stall (Group1.Backend.CompositeBackend{Tier1}.11) 10.880ms
+[201.511s][info][gc          ] Allocation Stall (Group1.Backend.CompositeBackend{Tier1}.4) 10.660ms
+[201.519s][info][gc,phases   ] GC(25) Concurrent Select Relocation Set 8.186ms
+[201.519s][info][gc,phases   ] GC(25) Pause Relocate Start 0.006ms
+[201.521s][info][gc          ] Relocation Stall (Group1.Backend.CompositeBackend{Tier1}.3) 0.720ms
+[201.521s][info][gc          ] Relocation Stall (Group1.Backend.CompositeBackend{Tier1}.4) 0.771ms
+[201.521s][info][gc          ] Relocation Stall (Group1.Backend.CompositeBackend{Tier1}.8) 0.725ms
+[201.521s][info][gc          ] Relocation Stall (Group1.Backend.CompositeBackend{Tier1}.5) 0.672ms
+[201.521s][info][gc          ] Relocation Stall (Group1.Backend.CompositeBackend{Tier1}.10) 0.777ms
+[201.521s][info][gc          ] Relocation Stall (Group1.Backend.CompositeBackend{Tier1}.2) 0.782ms
+[201.521s][info][gc          ] Relocation Stall (Group1.Backend.CompositeBackend{Tier1}.7) 0.799ms
+[201.657s][info][gc,phases   ] GC(25) Concurrent Relocate 138.752ms
+[201.658s][info][gc,metaspace] GC(25) Metaspace: 17M used, 17M committed, 1040M reserved
+[201.658s][info][gc,heap     ] GC(25) Min Capacity: 8M(0%)
+[201.658s][info][gc,heap     ] GC(25) Max Capacity: 3954M(100%)
+[201.658s][info][gc,heap     ] GC(25) Soft Max Capacity: 3954M(100%)
+[201.658s][info][gc,heap     ] GC(25)                Mark Start          Mark End        Relocate Start      Relocate End           High               Low
+[201.658s][info][gc,heap     ] GC(25)  Capacity:     3884M (98%)        3954M (100%)       3954M (100%)       3954M (100%)       3954M (100%)       3884M (98%)
+[201.658s][info][gc,heap     ] GC(25)      Free:      620M (16%)           0M (0%)           56M (1%)         1724M (44%)        1724M (44%)           0M (0%)
+[201.658s][info][gc,heap     ] GC(25)      Used:     3334M (84%)        3954M (100%)       3898M (99%)        2230M (56%)        3954M (100%)       2230M (56%)
+[201.658s][info][gc,heap     ] GC(25)      Live:         -              1359M (34%)        1359M (34%)        1359M (34%)            -                  -
+[201.658s][info][gc,heap     ] GC(25) Allocated:         -               620M (16%)         628M (16%)         691M (17%)            -                  -
+[201.658s][info][gc,heap     ] GC(25)   Garbage:         -              1974M (50%)        1910M (48%)         178M (5%)             -                  -
+[201.658s][info][gc,heap     ] GC(25) Reclaimed:         -                  -                64M (2%)         1795M (45%)            -                  -
+[201.658s][info][gc          ] GC(25) Garbage Collection (Allocation Rate) 3334M(84%)->2230M(56%)

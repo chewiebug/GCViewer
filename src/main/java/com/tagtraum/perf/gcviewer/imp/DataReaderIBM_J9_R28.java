@@ -20,6 +20,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
 import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
@@ -92,7 +93,7 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                                 break;
                             case EXCLUSIVE_END:
                                 handleExclusiveEnd(startElement, currentGcEvent);
-                                if (currentGcEvent.getExtendedType() == null) {
+                                if (currentGcEvent.getExtendedType() == null || currentGcEvent.getExtendedType() == ExtendedType.UNDEFINED) {
                                     if (getLogger().isLoggable(Level.FINE))
                                         getLogger().fine("event at " + in.getLineNumber() + " doesn't contain any information, the parser can handle");
                                 }
