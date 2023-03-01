@@ -4,6 +4,8 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,6 @@ public class GCViewerGui extends JFrame {
 
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
-
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
     
