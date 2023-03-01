@@ -23,7 +23,16 @@ public interface PropertyChangeEventConsts {
      * <p> newValue: dateStamp is shown now (boolean)
      */
     String MODELCHART_TIMESTAMP_RULER_FORMAT_CHANGED = "modelchartTimestampRulerFormatChanged";
-    
+
+    /**
+     * used to indicate that the scaleFactor of the modelchart was changed
+     *
+     * <p>Parameters:
+     * <p> oldValue: scaleFactor before
+     * <p> newValue: scaleFactor after
+     */
+    String MODELCHART_SCALEFACTOR_CHANGED = "modelchartScaleFactorChanged";
+
     /**
      * Used to indicate that the state of the date / checkbox in the
      * {@link com.tagtraum.perf.gcviewer.view.TimeOffsetPanel} has changed
@@ -33,4 +42,5 @@ public interface PropertyChangeEventConsts {
      * <p> newValue: checkbox state now
      */
     String TIMEOFFSETPANEL_STATE_CHANGED = "timeoffsetpanelStateChanged";
+
 }

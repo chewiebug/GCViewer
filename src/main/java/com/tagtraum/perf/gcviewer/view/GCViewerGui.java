@@ -1,15 +1,16 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.swing.Action;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 /**
  * This is the main window of GCViewer.

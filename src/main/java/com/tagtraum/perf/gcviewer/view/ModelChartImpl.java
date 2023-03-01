@@ -1,17 +1,19 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.util.TimeFormat;
-import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
-import com.tagtraum.perf.gcviewer.view.model.PropertyChangeEventConsts;
-import com.tagtraum.perf.gcviewer.view.renderer.*;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.SwingPropertyChangeSupport;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -20,6 +22,33 @@ import java.text.NumberFormat;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.logging.Logger;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.SwingPropertyChangeSupport;
+
+import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.util.TimeFormat;
+import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
+import com.tagtraum.perf.gcviewer.view.model.PropertyChangeEventConsts;
+import com.tagtraum.perf.gcviewer.view.renderer.ConcurrentGcBegionEndRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.FullGCLineRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.GCRectanglesRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.GCTimesRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.IncLineRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.InitialMarkLevelRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.PolygonChartRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.TotalHeapRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.TotalTenuredRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.TotalYoungRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.UsedHeapRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.UsedTenuredRenderer;
+import com.tagtraum.perf.gcviewer.view.renderer.UsedYoungRenderer;
+import com.tagtraum.perf.gcviewer.view.util.OSXSupport;
 
 /**
  * Graphical chart of the gc file. It contains the chart and all rulers surrounding it but not
@@ -183,21 +212,25 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         });
 
 
-        addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (((e.getModifiersEx() & InputEvent.META_DOWN_MASK) != 0 && System.getProperty("os.name").contains("Mac OS X"))||(e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0 && !System.getProperty("os.name").contains("Mac OS X")) {
-                    double pos = (double)(getHorizontalScrollBar().getValue()) / (double)(chart.getWidth());
-                    if (e.getWheelRotation() > 0 && getScaleFactor() < 100) {
-                        setScaleFactor((getScaleFactor()*1.2));
-                    }
-                    if (e.getWheelRotation() < 0 && getScaleFactor() > 0.01) {
-                        setScaleFactor((getScaleFactor()/1.2));
-                    }
-                    if (e.getWheelRotation() != 0) {
-                        getHorizontalScrollBar().setValue((int)(pos * (double)(chart.getWidth())));
-                        e.consume();
-                    }
+        addMouseWheelListener(mouseWheelEvent -> {
+            if ((!OSXSupport.isOSX() && (mouseWheelEvent.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)
+                    || (OSXSupport.isOSX() && (mouseWheelEvent.getModifiersEx() & InputEvent.META_DOWN_MASK) != 0)) {
+
+                double pos = (double)(getHorizontalScrollBar().getValue()) / (double)(chart.getWidth());
+                double oldScaleFactor = getScaleFactor();
+                if (mouseWheelEvent.getWheelRotation() > 0 && getScaleFactor() < 100) {
+                    setScaleFactor((getScaleFactor()*1.2));
+                }
+                if (mouseWheelEvent.getWheelRotation() < 0 && getScaleFactor() > 0.001) {
+                    setScaleFactor((getScaleFactor()/1.2));
+                }
+                if (mouseWheelEvent.getWheelRotation() != 0) {
+                    getHorizontalScrollBar().setValue((int)(pos * (double)(chart.getWidth())));
+                    mouseWheelEvent.consume();
+                }
+
+                if (Math.abs(getScaleFactor() - oldScaleFactor) > 0.000001) {
+                    fireScaleFactorChangedEvent(oldScaleFactor, getScaleFactor());
                 }
             }
         });
@@ -241,9 +274,10 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
         this.scaleFactor = scaleFactor;
         chart.setSize(chart.getPreferredSize());
         chart.resetPolygons();
-        memoryRuler.setSize((int)memoryRuler.getPreferredSize().getWidth(), getViewport().getHeight());
-        pauseRuler.setSize((int)pauseRuler.getPreferredSize().getWidth(), getViewport().getHeight());
-        timestampRuler.setSize((int)(getViewport().getWidth()*getScaleFactor()), (int)timestampRuler.getPreferredSize().getHeight());
+        memoryRuler.setSize((int) memoryRuler.getPreferredSize().getWidth(), getViewport().getHeight());
+        pauseRuler.setSize((int) pauseRuler.getPreferredSize().getWidth(), getViewport().getHeight());
+        timestampRuler.setSize((int) (getViewport().getWidth() * getScaleFactor()),
+                (int) timestampRuler.getPreferredSize().getHeight());
 
         repaint();
     }
@@ -783,6 +817,12 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
                     !dateStampShown,
                     dateStampShown);
         }
+    }
+
+    private void fireScaleFactorChangedEvent(double oldScaleFactor, double scaleFactor) {
+        firePropertyChange(PropertyChangeEventConsts.MODELCHART_SCALEFACTOR_CHANGED,
+                oldScaleFactor,
+                scaleFactor);
     }
 
 }

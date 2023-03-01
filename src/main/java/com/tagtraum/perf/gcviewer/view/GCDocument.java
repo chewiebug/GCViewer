@@ -4,13 +4,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JInternalFrame;
@@ -25,13 +25,14 @@ import javax.swing.event.ChangeListener;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import com.tagtraum.perf.gcviewer.view.model.GCResourceGroup;
+import com.tagtraum.perf.gcviewer.view.model.PropertyChangeEventConsts;
 
 /**
  * GCDocument.
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
-public class GCDocument extends JInternalFrame {
+public class GCDocument extends JInternalFrame implements PropertyChangeListener {
 
     private static final Logger LOGGER = Logger.getLogger(GCDocument.class.getName()); 
     
@@ -124,7 +125,7 @@ public class GCDocument extends JInternalFrame {
      */
     private int removeChartPanelView(ChartPanelView chartPanelView) {
         chartPanelViews.remove(chartPanelView);
-        
+
         final int nChartPanelViews = chartPanelViews.size();
         if (nChartPanelViews > 0) {        
         	relayout();
@@ -290,6 +291,13 @@ public class GCDocument extends JInternalFrame {
 
     public boolean isWatched() {
         return watched;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PropertyChangeEventConsts.MODELCHART_SCALEFACTOR_CHANGED)) {
+            modelChartListFacade.setScaleFactor((Double) evt.getNewValue());
+        }
     }
 
     private static class MasterViewPortChangeListener implements ChangeListener {

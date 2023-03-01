@@ -1,16 +1,17 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.logging.Logger;
+import javax.swing.SwingWorker;
+
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.log.TextAreaLogHandler;
 import com.tagtraum.perf.gcviewer.view.ChartPanelView;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCModelLoaderView;
+import com.tagtraum.perf.gcviewer.view.GCViewerGuiToolBar;
 import com.tagtraum.perf.gcviewer.view.ModelChartImpl;
-
-import javax.swing.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.logging.Logger;
 
 /**
  * Controller for {@link GCDocument}.
@@ -29,9 +30,11 @@ public class GCDocumentController implements PropertyChangeListener {
         gcDocument.addPropertyChangeListener(this);
     }
     
-    public void addGCResource(GCModelLoader loader, ViewMenuController viewMenuController) {
+    public void addGCResource(GCModelLoader loader, ViewMenuController viewMenuController, GCViewerGuiToolBar gcViewerGuiToolBar) {
         ChartPanelView chartPanelView = new ChartPanelView(gcDocument.getPreferences(), loader.getGcResource());
+        ((ModelChartImpl)chartPanelView.getModelChart()).addPropertyChangeListener(gcDocument);
         ((ModelChartImpl)chartPanelView.getModelChart()).addPropertyChangeListener(viewMenuController);
+        ((ModelChartImpl)chartPanelView.getModelChart()).addPropertyChangeListener(gcViewerGuiToolBar);
         ((ModelChartImpl)chartPanelView.getModelChart()).addTimeOffsetChangeListener(new TimeOffsetPanelController(gcDocument));
         gcDocument.addChartPanelView(chartPanelView);
         loader.addPropertyChangeListener(this);
