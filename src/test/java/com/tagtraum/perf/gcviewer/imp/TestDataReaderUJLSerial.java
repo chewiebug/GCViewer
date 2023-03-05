@@ -107,8 +107,10 @@ public class TestDataReaderUJLSerial {
         DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
         GCModel model = reader.read();
 
-        assertThat("number of warnings", handler.getCount(), is(1));
-        assertThat("warning message", handler.getLogRecords().get(0).getMessage(), startsWith("Expected memory and pause in the end of line number"));
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("memory before", model.get(0).getPreUsed(), is(124928));
+        assertThat("memory before", model.get(0).getPostUsed(), is(115712));
+        assertThat("memory before", model.get(0).getTotal(), is(131072));
     }
 
     @Test

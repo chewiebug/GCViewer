@@ -108,7 +108,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
     // Group 6: 4998
     // Group 7: M
     // Group 8: 2.872 (optional group)
-    private static final Pattern PATTERN_MEMORY_PAUSE = Pattern.compile("^" + PATTERN_MEMORY_STRING + "(?:(?:[ ]" + PATTERN_PAUSE_STRING + ")|$)");
+    private static final Pattern PATTERN_MEMORY_PAUSE = Pattern.compile("^" + PATTERN_MEMORY_STRING + "(?:(?:[ ]" + PATTERN_PAUSE_STRING + ")|$)?");
 
     private static final int GROUP_MEMORY = 1;
     private static final int GROUP_MEMORY_BEFORE = 2;
