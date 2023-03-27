@@ -21,6 +21,8 @@ import java.util.logging.Logger;
  * Main class of GCViewer. Parses command line parameters if there are any and either remains
  * in command line mode or starts the gui (depending on parameters). 
  */
+
+// Test comment. 
 public class GCViewer {
     private static final Logger LOGGER = Logger.getLogger(GCViewer.class.getName());
     private static final int EXIT_OK = 0;
