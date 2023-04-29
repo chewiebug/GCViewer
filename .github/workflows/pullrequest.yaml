@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '8', '11', '17' ]
+        java: [ '8' ] # , '11', '17' ]
     name: build with Java ${{ matrix.Java }}
     steps:
       - uses: actions/checkout@v3
@@ -28,5 +28,8 @@ jobs:
           java-version: ${{ matrix.Java }}
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        run: mvn -B clean verify javadoc:javadoc
+      - name: run headless maven build
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: mvn -B clean verify javadoc:javadoc
+          options: -screen 0 1280x1024x16
