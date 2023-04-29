@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -77,11 +78,15 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                                 break;
                             case SYS_START:
                                 assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
-                                eventNameStart = handleSysStart(eventReader, startElement);
+                                eventNameStart = handleSysStart(startElement);
                                 break;
                             case AF_START:
                                 assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
-                                eventNameStart = handleAfStart(eventReader, startElement);
+                                eventNameStart = handleAfStart();
+                                break;
+                            case CONCURRENT_COLLECTION_START:
+                                assert eventNameStart == null : "eventNameStart was expected to be null, but was " + eventNameStart;
+                                eventNameStart = handleConcurrentCollectionStart();
                                 break;
                             case GC_START:
                                 handleGcStart(eventReader, startElement, currentGcEvent, eventNameStart);
@@ -155,9 +160,10 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
     private GCEvent handleExclusiveStart(StartElement startElement) {
         GCEvent event = new GCEvent();
         try {
-            event.setDateStamp(ZonedDateTime.of(
-                    LocalDateTime.parse(getAttributeValue(startElement, "timestamp"), dateTimeFormatter),
-                    ZoneId.systemDefault()));
+            String timestamp = getAttributeValue(startElement, "timestamp");
+            LocalDateTime local = LocalDateTime.parse(timestamp, dateTimeFormatter);
+            event.setDateStamp(ZonedDateTime.of(local, ZoneId.systemDefault()));
+            event.setTimestamp(Timestamp.valueOf(local).getTime() / 1000);
         }
         catch (DateTimeParseException e) {
             if (getLogger().isLoggable(Level.WARNING)) getLogger().warning("line " + in.getLineNumber() + ": " + e.toString());
@@ -171,16 +177,17 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
         event.setPause(NumberParser.parseDouble(getAttributeValue(startElement, "durationms")) / 1000);
     }
 
-    private String handleSysStart(XMLEventReader eventReader, StartElement startElement) throws XMLStreamException {
+    private String handleSysStart(StartElement startElement) {
         String reason = getAttributeValue(startElement, "reason");
         return "sys " + (reason != null ? reason + " " : "");
     }
 
-    private String handleAfStart(XMLEventReader eventReader, StartElement startElement) throws XMLStreamException {
+    private String handleAfStart() {
         return "af ";
     }
 
-    private void handleConcurrentCollectionStart(XMLEventReader eventReader, StartElement startElement) {
+    private String handleConcurrentCollectionStart() {
+        return "concurrent-collection-start ";
     }
 
     private void handleGcStart(XMLEventReader eventReader, StartElement startElement, GCEvent event, String eventNameStart) throws
@@ -196,7 +203,7 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
 
         String currentElementName = "";
         while (eventReader.hasNext() && !currentElementName.equals(GC_START)) {
-            
+
             XMLEvent xmlEvent = eventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
                 StartElement startEl = xmlEvent.asStartElement();
@@ -207,15 +214,20 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                     switch (getAttributeValue(startEl, "type")) {
                         case "nursery":
                             GCEvent young = new GCEvent();
+                            young.setTimestamp(event.getTimestamp());
                             young.setType(Type.lookup("nursery"));
                             setTotalAndPreUsed(young, startEl);
                             event.add(young);
                             break;
                         case "tenure":
-                            GCEvent tenured = new GCEvent();
-                            tenured.setType(Type.lookup("tenure"));
-                            setTotalAndPreUsed(tenured, startEl);
-                            event.add(tenured);
+                            // scavenge prints tenure space but does not change it as it is young only
+                            if(!typeName.contains("scavenge")) {
+                                GCEvent tenured = new GCEvent();
+                                tenured.setTimestamp(event.getTimestamp());
+                                tenured.setType(Type.lookup("tenure"));
+                                setTotalAndPreUsed(tenured, startEl);
+                                event.add(tenured);
+                            }
                             break;
                         // all other are ignored
                     }
@@ -231,7 +243,6 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
     private void handleGcEnd(XMLEventReader eventReader, GCEvent event) throws XMLStreamException {
         String currentElementName = "";
         while (eventReader.hasNext() && !currentElementName.equals(GC_END)) {
-
             XMLEvent xmlEvent = eventReader.nextEvent();
             if (xmlEvent.isStartElement()) {
                 StartElement startEl = xmlEvent.asStartElement();
@@ -244,7 +255,10 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
                             setPostUsed(event.getYoung(), startEl);
                             break;
                         case "tenure":
-                            setPostUsed(event.getTenured(), startEl);
+                            // scavenge prints tenure space but does not change it as it is young only
+                            if(!event.getTypeAsString().contains("scavenge")) {
+                                setPostUsed(event.getTenured(), startEl);
+                            }
                             break;
                         // all other are ignored
                     }
@@ -274,11 +288,11 @@ public class DataReaderIBM_J9_R28 extends AbstractDataReader {
         if (attr != null) {
             value = attr.getValue();
         }
-        
+
         return value;
     }
 
     private int toKiloBytes(long bytes) {
-        return (int)Math.rint(bytes / (double)1024);
+        return (int) Math.rint(bytes / (double) 1024);
     }
 }
