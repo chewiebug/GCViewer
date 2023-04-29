@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import com.tagtraum.perf.gcviewer.exp.impl.SummaryDataWriter;
@@ -19,7 +20,6 @@ import com.tagtraum.perf.gcviewer.model.GCEvent;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.util.MemoryFormat;
-
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -170,11 +170,14 @@ public class SummaryDataWriterTest {
 
         String csv = output.toString();
 
-        assertThat("pausePercentile75th", csv, Matchers.containsString("pausePercentile75th; 0,000934; s"));
-        assertThat("gcPausePercentile95th", csv, Matchers.containsString("gcPausePercentile95th; 0,000934; s"));
+        // use locale specific decimalSeparator to check, if the right values are present
+        char decimalSeparator = new DecimalFormat().getDecimalFormatSymbols().getDecimalSeparator();
+
+        assertThat("pausePercentile75th", csv, Matchers.containsString("pausePercentile75th; 0" + decimalSeparator + "000934; s"));
+        assertThat("gcPausePercentile95th", csv, Matchers.containsString("gcPausePercentile95th; 0" + decimalSeparator + "000934; s"));
         assertThat("pauseCount", csv, Matchers.containsString("pauseCount; 1; -"));
         assertThat("gcPhaseCount", csv, Matchers.containsString("gcPhaseCount; 3; -"));
-        assertThat("gcPhaseAverage", csv, Matchers.containsString("gcPhaseAverage; 0,000311; s"));
-        assertThat("gcPhasePercentile99th", csv, Matchers.containsString("gcPhasePercentile99th; 0,000499; s"));
+        assertThat("gcPhaseAverage", csv, Matchers.containsString("gcPhaseAverage; 0" + decimalSeparator + "000311; s"));
+        assertThat("gcPhasePercentile99th", csv, Matchers.containsString("gcPhasePercentile99th; 0" + decimalSeparator + "000499; s"));
     }
 }

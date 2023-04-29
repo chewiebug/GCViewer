@@ -1,0 +1,35 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: pull request build
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '8' ] # , '11', '17' ]
+    name: build with Java ${{ matrix.Java }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.Java }}
+          distribution: 'temurin'
+          cache: maven
+      - name: run headless maven build
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: mvn -B clean verify javadoc:javadoc
+          options: -screen 0 1280x1024x16
