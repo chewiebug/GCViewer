@@ -205,6 +205,7 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             "[trace",
             "gc,heap,coops",
             "gc,heap,exit",
+            "gc,metaspace,freelist,oom",
             "[gc,phases,start",
             "Trigger: ",
             "Failed to allocate",
