@@ -38,8 +38,13 @@ public class GCViewerGuiController extends WindowAdapter {
                 // TODO necessary? state is set above; no GCDocument open at this moment
                 //viewMenuActionListener.actionPerformed(new ActionEvent(item, 0, item.getActionCommand()));
             }
+
+            int windowY = preferences.getWindowY();
+            int windowHeight = preferences.getWindowHeight();
+             windowY = windowY > windowHeight? 0 :windowY;
+
             gui.setBounds(preferences.getWindowX(),
-                    preferences.getWindowY(),
+                    windowY,
                     preferences.getWindowWidth(),
                     preferences.getWindowHeight());
             String lastfile = preferences.getLastFile();
@@ -85,10 +90,16 @@ public class GCViewerGuiController extends WindowAdapter {
             JCheckBoxMenuItem item = menuEntry.getValue();
             preferences.setGcLineProperty(item.getActionCommand(), item.getState());
         }
+
+
+        int windowY = preferences.getWindowY();
+        int windowHeight = preferences.getWindowHeight();
+        windowY = windowY > windowHeight? 0 :windowY;
+
         preferences.setWindowWidth(gui.getWidth());
         preferences.setWindowHeight(gui.getHeight());
         preferences.setWindowX(gui.getX());
-        preferences.setWindowY(gui.getY());
+        preferences.setWindowY(windowY);
         OpenFile openFileAction = (OpenFile)gui.getActionMap().get(ActionCommands.OPEN_FILE.toString());
         if (openFileAction.getLastSelectedFiles().length != 0) {
             preferences.setLastFile(openFileAction.getLastSelectedFiles()[0].getAbsolutePath());
