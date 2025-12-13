@@ -10,3 +10,8 @@
 /*.txt
 /*.iml
 /.idea/
+
+# Eclipse project file
+.settings/
+.classpath
+.project
