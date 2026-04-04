@@ -108,8 +108,13 @@ function perform_release() {
   else
     git push origin-github "$(git describe --tags --abbrev=0)"
   fi
-  merge_with_develop_branch
-  push_to_github develop
+  if [ "${DRY_RUN}" = "true" ]; then
+    echo "DRY_RUN: skip merging ${CI_BRANCH} into develop"
+    echo "DRY_RUN: skip pushing develop"
+  else
+    merge_with_develop_branch
+    push_to_github develop
+  fi
 }
 
 function perform_verify() {

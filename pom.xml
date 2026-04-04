@@ -219,7 +219,7 @@
         <mockito.version>4.3.1</mockito.version>
         <jdk.source.version>1.8</jdk.source.version>
         <jdk.target.version>1.8</jdk.target.version>
-        <tools.maven.plugin.version>1.4</tools.maven.plugin.version>
+        <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
         <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
@@ -296,6 +296,15 @@
                     <include>README</include>
                 </includes>
                 <targetPath>${project.build.directory}</targetPath>
+            </resource>
+            <resource>
+                <directory>${basedir}</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>README.md</include>
+                    <include>LICENSE.txt</include>
+                </includes>
+                <targetPath>${project.build.directory}/classes/META-INF</targetPath>
             </resource>
         </resources>
 
@@ -429,9 +438,9 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.geronimo.genesis.plugins</groupId>
-                    <artifactId>tools-maven-plugin</artifactId>
-                    <version>${tools.maven.plugin.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -474,28 +483,6 @@
                         <goals>
                             <goal>create</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.geronimo.genesis.plugins</groupId>
-                <artifactId>tools-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>install-legal-files</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-legal-files</goal>
-                        </goals>
-                        <configuration>
-                            <fileset>
-                                <basedir>${pom.basedir}</basedir>
-                                <includes>
-                                    <include>README.md</include>
-                                    <include>LICENSE.txt</include>
-                                </includes>
-                            </fileset>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
