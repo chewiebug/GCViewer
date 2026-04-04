@@ -10,3 +10,6 @@
 /*.txt
 /*.iml
 /.idea/
+
+# act local testing secrets (never commit real credentials)
+.github/act-secrets

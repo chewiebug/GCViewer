@@ -220,9 +220,9 @@
         <jdk.source.version>1.8</jdk.source.version>
         <jdk.target.version>1.8</jdk.target.version>
         <tools.maven.plugin.version>1.4</tools.maven.plugin.version>
-        <jacoco.maven.plugin.version>0.8.7</jacoco.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
-        <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+        <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <maven.assembly.plugin.version>3.1.0</maven.assembly.plugin.version>
         <maven.antrun.plugin.version>3.1.0</maven.antrun.plugin.version>
@@ -367,7 +367,7 @@
                             </manifestEntries>
                         </archive>
                         <links>
-                            <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                            <link>https://docs.oracle.com/javase/8/docs/api/</link>
                         </links>
                         <source>${jdk.source.version}</source>
                     </configuration>
@@ -568,6 +568,11 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+            </plugin>
         </plugins>
 
     </build>
@@ -576,7 +581,7 @@
         <profile>
             <id>jdk9plus-build</id>
             <activation>
-                <jdk>[9,17]</jdk>
+                <jdk>[9,)</jdk>
             </activation>
             <build>
                 <plugins>

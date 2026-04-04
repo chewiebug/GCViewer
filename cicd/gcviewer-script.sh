@@ -1,12 +1,37 @@
 #!/bin/bash
 # -e: exit on any non-true return value
 # -u: exit, if an unset variable is being used
-# https://ss64.com/bash/set.html
-set -eu
+# -o pipefail: fail a pipeline if any sub-command fails
+set -euo pipefail
 
-echo "TRAVIS_PULL_REQUEST = ${TRAVIS_PULL_REQUEST}"
-echo "TRAVIS_BRANCH = ${TRAVIS_BRANCH}"
-echo "TRAVIS_JDK_VERSION = ${TRAVIS_JDK_VERSION}"
+#####################
+# configuration / CI normalization (GitHub only)
+#####################
+
+# General toggles
+DRY_RUN="${DRY_RUN:-false}"              # when true, skip pushes/deploys and only log actions
+SNAPSHOT_BRANCH="${SNAPSHOT_BRANCH:-develop}"
+RELEASE_BRANCH="${RELEASE_BRANCH:-master}"  # change to "main" if your default branch is main
+RELEASE_JDK="${RELEASE_JDK:-openjdk8}"      # only run release logic on this JDK label
+
+# CI-provided values (GitHub Actions)
+CI_JDK_VERSION="${CI_JDK_VERSION:-}"       # expected to be set by workflow, e.g. "openjdk8"
+CI_COMMIT_MESSAGE="${CI_COMMIT_MESSAGE:-}" # set in workflow from head commit or PR title
+
+# Derive branch / PR info from GitHub vars
+if [ "${GITHUB_EVENT_NAME:-}" = "pull_request" ]; then
+  CI_IS_PR="true"
+  CI_BRANCH="${GITHUB_HEAD_REF:-}"   # source branch of the PR
+else
+  CI_IS_PR="false"
+  CI_BRANCH="${GITHUB_REF_NAME:-}"   # branch or tag name of the push
+fi
+
+echo "CI_IS_PR = ${CI_IS_PR}"
+echo "CI_BRANCH = ${CI_BRANCH}"
+echo "CI_JDK_VERSION = ${CI_JDK_VERSION}"
+echo "CI_COMMIT_MESSAGE = ${CI_COMMIT_MESSAGE}"
+echo "DRY_RUN = ${DRY_RUN}"
 
 #####################
 # functions
@@ -15,48 +40,74 @@ function perform_snapshot_release() {
   echo "----------------"
   echo build and deploy to sourceforge \(SNAPSHOT only\)
   echo "----------------"
-  mvn clean deploy javadoc:javadoc -P sourceforge-release --settings ./cicd/settings.xml
+  if [ "${DRY_RUN}" = "true" ]; then
+    echo "DRY_RUN: mvn clean deploy javadoc:javadoc -P sourceforge-release --settings ./cicd/settings.xml"
+    echo "DRY_RUN: (skipped)"
+    mvn clean verify javadoc:javadoc
+  else
+    mvn clean deploy javadoc:javadoc -P sourceforge-release --settings ./cicd/settings.xml
+  fi
 }
 
 function init_github() {
-  git config --global user.email "travis@travis-ci.org"
-  git config --global user.name "Travis CI"
-  git remote add origin-github https://${GH_TOKEN}@github.com/chewiebug/gcviewer.git > /dev/null 2>&1
+  local token="${GITHUB_TOKEN:-}"
+  if [ -z "$token" ]; then
+    echo "ERROR: GITHUB_TOKEN must be set for pushes" >&2
+    exit 1
+  fi
+  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+  git config --global user.name "github-actions[bot]"
+  # do not echo the token
+  git remote add origin-github "https://${token}@github.com/chewiebug/gcviewer.git" > /dev/null 2>&1 || true
 }
 
 function push_to_github() {
   # https://gist.github.com/willprice/e07efd73fb7f13f917ea
   echo "pushing $1 to github"
-  git status
-  git push --quiet --set-upstream origin-github $1
+  if [ "${DRY_RUN}" = "true" ]; then
+    echo "DRY_RUN: git push --quiet --set-upstream origin-github $1"
+  else
+    git status
+    git push --quiet --set-upstream origin-github "$1"
+  fi
 }
 
 function merge_with_develop_branch() {
-  # assumption: we are not on the develop branch and should merge TRAVIS_BRANCH into develop
-  echo "merging ${TRAVIS_BRANCH} into develop"
-  # since travis did a shallow clone (git clone --depth=50 ...), we need to fetch the develop branch first
-  git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-  git fetch --depth=10
+  # assumption: we are not on the develop branch and should merge CI_BRANCH into develop
+  echo "merging ${CI_BRANCH} into develop"
+  git fetch --prune --tags
   git checkout develop
-  git merge ${TRAVIS_BRANCH}
+  git merge "${CI_BRANCH}"
 }
 
 function perform_release() {
   echo "----------------"
   echo perform release
   echo "----------------"
-  # maven release needs a locally checked out branch, otherwise "git symbolic-ref HEAD" will fail
-  git checkout ${TRAVIS_BRANCH}
-  openssl version
-  openssl enc -d -aes-256-cbc -md sha1 -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc -out $GPG_DIR/pubring.gpg
-  openssl enc -d -aes-256-cbc -md sha1 -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc -out $GPG_DIR/secring.gpg
-  mvn --batch-mode release:clean release:prepare release:perform --settings ./cicd/settings.xml
-  # remove decrypted keyrings
-  rm $GPG_DIR/*.gpg
+
+  if [ "${DRY_RUN}" = "true" ]; then
+    echo "DRY_RUN: openssl enc -d ... (GPG key decrypt)"
+    echo "DRY_RUN: mvn --batch-mode release:clean release:prepare release:perform --settings ./cicd/settings.xml"
+    mvn clean verify javadoc:javadoc
+  else
+    # maven release needs a locally checked out branch, otherwise "git symbolic-ref HEAD" will fail
+    git checkout "${CI_BRANCH}"
+    openssl version
+    openssl enc -d -aes-256-cbc -md sha1 -pass pass:"$ENCRYPTION_PASSWORD" -in "$GPG_DIR/pubring.gpg.enc" -out "$GPG_DIR/pubring.gpg"
+    openssl enc -d -aes-256-cbc -md sha1 -pass pass:"$ENCRYPTION_PASSWORD" -in "$GPG_DIR/secring.gpg.enc" -out "$GPG_DIR/secring.gpg"
+    mvn --batch-mode release:clean release:prepare release:perform --settings ./cicd/settings.xml
+    # remove decrypted keyrings
+    rm "$GPG_DIR"/*.gpg
+  fi
+
   init_github
-  push_to_github ${TRAVIS_BRANCH}
+  push_to_github "${CI_BRANCH}"
   # push tag, which was just generated by maven-release-plugin
-  git push origin-github $(git describe --tags --abbrev=0)
+  if [ "${DRY_RUN}" = "true" ]; then
+    echo "DRY_RUN: git push origin-github \$(git describe --tags --abbrev=0)"
+  else
+    git push origin-github "$(git describe --tags --abbrev=0)"
+  fi
   merge_with_develop_branch
   push_to_github develop
 }
@@ -71,20 +122,14 @@ function perform_verify() {
 #####################
 # script
 #####################
-# Since the same script is run several times with different jdks by the build process,
-#   only under certain conditions, a (snapshot) release should be built.
-#   Among others, a build loop must be prevented after a "perform_release" build was executed.
-#   All other cases (like pull requests) only perform a "verify"
-if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [[ ! "${TRAVIS_COMMIT_MESSAGE}" = \[maven-release-plugin\]* ]] && [ "${TRAVIS_JDK_VERSION}" = "openjdk8" ]
-then
-  if [ "${TRAVIS_BRANCH}" = "develop" ]
-  then
+# Only release on non-PR, non-release-plugin commits, and the designated JDK
+if [ "${CI_IS_PR}" = "false" ] && [[ ! "${CI_COMMIT_MESSAGE}" = \[maven-release-plugin\]* ]] && [ "${CI_JDK_VERSION}" = "${RELEASE_JDK}" ]; then
+  if [ "${CI_BRANCH}" = "${SNAPSHOT_BRANCH}" ]; then
     perform_snapshot_release
-  elif [[ "${TRAVIS_BRANCH}" = "master" ]]
-  then
+  elif [ "${CI_BRANCH}" = "${RELEASE_BRANCH}" ]; then
     perform_release
   else
-    # will be done for all other branches pushed into this repository
+    # all other branches: verify only
     perform_verify
   fi
 else

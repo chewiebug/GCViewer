@@ -1,0 +1,102 @@
+name: Build and Deploy (GitHub-only)
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  contents: write  # needed for pushes/tags during release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [8]
+    name: build with Java ${{ matrix.java }}
+
+    env:
+      # GitHub-native env consumed by cicd/gcviewer-script.sh
+      CI_JDK_VERSION: openjdk${{ matrix.java }}
+      CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message || github.event.pull_request.title || '' }}
+      GPG_DIR: ${{ github.workspace }}/cicd/gpg
+      # Optional: override branches/JDK if defaults differ
+      # SNAPSHOT_BRANCH: develop
+      # RELEASE_BRANCH: master
+      # RELEASE_JDK: openjdk8
+      # DRY_RUN: "true"   # enable to skip deploy/push in this workflow
+
+      # Secrets
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}  # optional fallback for pushes
+      ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+      CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+      CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+
+    steps:
+      - name: Checkout (full history for releases)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up JDK ${{ matrix.java }} (Temurin)
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      - name: Prepare GUI display for tests (Xvfb)
+        uses: pyvista/setup-headless-display-action@v3
+        with:
+          xvfb: true
+          screen: 0
+          width: 1280
+          height: 1024
+          depth: 16
+
+      - name: Show environment
+        run: |
+          echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
+          echo "GITHUB_REF_NAME=${GITHUB_REF_NAME}"
+          echo "GITHUB_HEAD_REF=${GITHUB_HEAD_REF}"
+          echo "CI_JDK_VERSION=${CI_JDK_VERSION}"
+          echo "CI_COMMIT_MESSAGE=${CI_COMMIT_MESSAGE}"
+          echo "DRY_RUN=${DRY_RUN:-true}"
+
+      - name: Make build script executable
+        run: chmod +x ./cicd/gcviewer-script.sh
+
+      - name: Build/Verify/Release per branch logic
+        shell: bash
+        run: ./cicd/gcviewer-script.sh
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+          verbose: true
+          # Auto-detect coverage reports from Maven/Jacoco
+
+      - name: Archive build artifacts (snapshot)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcviewer-artifacts-java-${{ matrix.java }}
+          path: |
+            target/**/*.jar
+            target/**/*.zip
+            target/**/*.png
+            target/**/*.csv
+          if-no-files-found: ignore
+
