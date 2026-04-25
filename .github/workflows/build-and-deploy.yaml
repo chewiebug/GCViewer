@@ -1,14 +1,8 @@
 name: Build and Deploy (GitHub-only)
 
 on:
-  push:
-    branches:
-      - '**'
-    tags:
-      - '**'
   pull_request:
-    branches:
-      - '**'
+    branches: [ "develop" ]
 
 permissions:
   contents: write  # needed for pushes/tags during release
@@ -89,7 +83,7 @@ jobs:
           # Auto-detect coverage reports from Maven/Jacoco
 
       - name: Archive build artifacts (snapshot)
-        if: success()
+        if: success() && !env.ACT
         uses: actions/upload-artifact@v4
         with:
           name: gcviewer-artifacts-java-${{ matrix.java }}

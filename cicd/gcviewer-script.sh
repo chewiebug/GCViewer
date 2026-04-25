@@ -9,14 +9,14 @@ set -euo pipefail
 #####################
 
 # General toggles
-DRY_RUN="${DRY_RUN:-false}"              # when true, skip pushes/deploys and only log actions
+DRY_RUN="${DRY_RUN:-true}"                  # when true, skip pushes/deploys and only log actions
 SNAPSHOT_BRANCH="${SNAPSHOT_BRANCH:-develop}"
 RELEASE_BRANCH="${RELEASE_BRANCH:-master}"  # change to "main" if your default branch is main
 RELEASE_JDK="${RELEASE_JDK:-openjdk8}"      # only run release logic on this JDK label
 
 # CI-provided values (GitHub Actions)
-CI_JDK_VERSION="${CI_JDK_VERSION:-}"       # expected to be set by workflow, e.g. "openjdk8"
-CI_COMMIT_MESSAGE="${CI_COMMIT_MESSAGE:-}" # set in workflow from head commit or PR title
+CI_JDK_VERSION="${CI_JDK_VERSION:-}"        # expected to be set by workflow, e.g. "openjdk8"
+CI_COMMIT_MESSAGE="${CI_COMMIT_MESSAGE:-}"  # set in workflow from head commit or PR title
 
 # Derive branch / PR info from GitHub vars
 if [ "${GITHUB_EVENT_NAME:-}" = "pull_request" ]; then
