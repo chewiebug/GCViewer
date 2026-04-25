@@ -3,6 +3,8 @@ name: Build and Deploy (GitHub-only)
 on:
   pull_request:
     branches: [ "develop" ]
+  push:
+    branches: [ "develop" ]
 
 permissions:
   contents: write  # needed for pushes/tags during release
