@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [8]
+        java: [8, 17, 21]
     name: build with Java ${{ matrix.java }}
 
     env:
@@ -29,7 +29,6 @@ jobs:
 
       # Secrets
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}  # optional fallback for pushes
       ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
       CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
       CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}

@@ -1,5 +1,5 @@
 ---
-name: ci-build-dry-run
+name: ci-script-only-run
 description: Simulate GCViewer CI paths (pull request, develop snapshot, master release) with DRY_RUN and selectable OpenJDK 8/17/21/25.
 compatibility: opencode
 ---
