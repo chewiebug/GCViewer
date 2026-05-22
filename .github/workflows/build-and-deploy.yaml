@@ -34,6 +34,8 @@ jobs:
       ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
       CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
       CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+      SCP_USERNAME: ${{ secrets.SCP_USERNAME }}
+      SCP_PASSWORD: ${{ secrets.SCP_PASSWORD }}
 
     steps:
       - name: Checkout (full history for releases)
@@ -65,6 +67,10 @@ jobs:
           echo "GITHUB_HEAD_REF=${GITHUB_HEAD_REF}"
           echo "CI_JDK_VERSION=${CI_JDK_VERSION}"
           echo "CI_COMMIT_MESSAGE=${CI_COMMIT_MESSAGE}"
+          echo "CI_DEPLOY_USERNAME=${CI_DEPLOY_USERNAME}"
+          echo "CI_DEPLOY_PASSWORD=${CI_DEPLOY_PASSWORD}"
+          echo "SCP_USERNAME=${SCP_USERNAME}"
+          echo "SCP_PASSWORD=${SCP_PASSWORD}"
           echo "DRY_RUN=${DRY_RUN:-true}"
 
       - name: Make build script executable

@@ -1,2 +1,3 @@
 -P ubuntu-latest=catthehacker/ubuntu:full-latest
+--pull=false
 

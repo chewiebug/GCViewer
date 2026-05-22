@@ -13,3 +13,6 @@
 
 # act local testing secrets (never commit real credentials)
 .github/act-secrets
+
+# local secrets file for DRY_RUN=false runs (never commit)
+.env

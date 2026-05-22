@@ -17,7 +17,10 @@ compatibility: opencode
 ## Critical Constraints
 
 - **When `DRY_RUN=true`**: Do **NOT** pass `--secret GITHUB_TOKEN=...`. Providing this secret causes the run to fail. Leave it completely unset — do not include the flag at all.
-- **When `DRY_RUN=false`**: `GITHUB_TOKEN` **is required** by `push_to_github()` inside `gcviewer-script.sh`. Pass it as `--secret GITHUB_TOKEN=<real_token>`. Also ensure `CI_DEPLOY_USERNAME`, `CI_DEPLOY_PASSWORD`, and `ENCRYPTION_PASSWORD` are real values — not dummies.
+- **When `DRY_RUN=false`**:
+  - For **snapshot builds** (`perform_snapshot_release`): `GITHUB_TOKEN` and `ENCRYPTION_PASSWORD` are **not required** (no GitHub push, no GPG decrypt). Required secrets: `CI_DEPLOY_USERNAME`, `CI_DEPLOY_PASSWORD` (Sonatype OSSRH), `SCP_USERNAME`, `SCP_PASSWORD` (SourceForge SCP), `CODECOV_TOKEN`.
+  - For **release builds** (`perform_release`): all secrets are required: `GITHUB_TOKEN`, `ENCRYPTION_PASSWORD`, `CI_DEPLOY_USERNAME`, `CI_DEPLOY_PASSWORD`, `SCP_USERNAME`, `SCP_PASSWORD`, `CODECOV_TOKEN`.
+  - All secrets must be real, non-dummy values stored in a `.env` file at the project root. Pass them via `--secret-file .env`. The `.env` file must never be committed to git.
 
 ## When to use me
 - When you want to validate the full workflow pipeline (all Actions steps, not just the shell script).
@@ -66,6 +69,36 @@ If the user selects `DRY_RUN=false`:
   > **WARNING: DRY_RUN=false will perform real Maven deploys, GitHub pushes, and tag operations. This cannot be undone. Ensure all secrets are real values.**
 - Ask the user to explicitly confirm they want to continue (yes/no). If they do not confirm, stop.
 
+- **Instruct the user to prepare a `.env` file** in the project root (`<repo-root>/.env`) containing the following secrets. This file must **never** be committed to git (it is already listed in `.gitignore`).
+
+  Required variables and their meaning:
+
+  | Variable | Required for | Description |
+  |---|---|---|
+  | `GITHUB_TOKEN` | Release only | Personal Access Token with `repo` scope — used by `push_to_github()` for pushes and tags. **Not needed for snapshot builds.** |
+  | `ENCRYPTION_PASSWORD` | Release only | Maven/GPG encryption password for signing artifacts. **Not needed for snapshot builds.** |
+  | `CI_DEPLOY_USERNAME` | Snapshot & Release | Username for Sonatype OSSRH Maven deploy server |
+  | `CI_DEPLOY_PASSWORD` | Snapshot & Release | Password for Sonatype OSSRH Maven deploy server |
+  | `SCP_USERNAME` | Snapshot & Release | SCP username for SourceForge file upload (used by `sourceforge-release` Maven profile) |
+  | `SCP_PASSWORD` | Snapshot & Release | SCP password for SourceForge file upload |
+  | `CODECOV_TOKEN` | Snapshot & Release | Codecov upload token |
+
+  Required `.env` file format (one `KEY=value` pair per line, no quotes needed):
+  ```
+  CI_DEPLOY_USERNAME=your_sonatype_username
+  CI_DEPLOY_PASSWORD=your_sonatype_password
+  SCP_USERNAME=your_sourceforge_username
+  SCP_PASSWORD=your_sourceforge_password
+  CODECOV_TOKEN=your_codecov_token
+  ```
+
+  Remind the user:
+  - The file must be saved as `.env` at the **root of the repository** (same level as `pom.xml`).
+  - It must **never** be committed to git. Verify with `git check-ignore -v .env` — it should report `.gitignore` as the matching rule.
+  - All values must be real, non-dummy credentials.
+
+- **Ask the user to explicitly confirm** (yes/no): *"Have you created `.env` at the project root with all required values filled in?"*  If they do not confirm, stop.
+
 Record the chosen DRY_RUN value for use in step 6.
 
 ### 5) Ask whether to override the Java matrix version
@@ -86,7 +119,7 @@ If the user selects anything other than `all`, append `--matrix java:<version>` 
 Run the appropriate command from the repo root based on the choices made in steps 3, 4, and 5.
 
 > **REMINDER:** When `DRY_RUN=true`, do NOT include `--secret GITHUB_TOKEN=<anything>` — it causes the run to fail.
-> When `DRY_RUN=false`, include `--secret GITHUB_TOKEN=<real_token>` and use real credentials for all other secrets.
+> When `DRY_RUN=false`, secrets are read from `.env` via `--secret-file .env`. Ensure the file exists at the project root with all required values before running.
 
 #### pull_request + DRY_RUN=true (default, safe)
 ```bash
@@ -149,16 +182,14 @@ act push \
 ```
 
 #### develop snapshot + DRY_RUN=false
+Uses `--secret-file .env`. For snapshot builds, only `CI_DEPLOY_USERNAME`, `CI_DEPLOY_PASSWORD`, `SCP_USERNAME`, `SCP_PASSWORD`, and `CODECOV_TOKEN` are required. `GITHUB_TOKEN` and `ENCRYPTION_PASSWORD` are optional (only used by the release path).
 ```bash
 act push \
   -W .github/workflows/build-and-deploy.yaml \
+  --matrix java:8 \
   --env DRY_RUN=false \
   --env GITHUB_REF_NAME=develop \
-  --secret GITHUB_TOKEN=<real_token> \
-  --secret ENCRYPTION_PASSWORD=<real_password> \
-  --secret CI_DEPLOY_USERNAME=<real_username> \
-  --secret CI_DEPLOY_PASSWORD=<real_password> \
-  --secret CODECOV_TOKEN=<real_token>
+  --secret-file .env
 ```
 
 ### 7) Summarize results
@@ -177,7 +208,9 @@ Report:
   - **pull_request**: `CI_IS_PR=true` → `perform_verify()` (regardless of branch or DRY_RUN)
   - **develop snapshot**: `CI_IS_PR=false`, `CI_BRANCH=develop` → `perform_snapshot_release()`
     - With `DRY_RUN=true`: runs `mvn clean verify javadoc:javadoc` and logs what it would deploy.
-    - With `DRY_RUN=false`: runs `mvn clean deploy javadoc:javadoc -P sourceforge-release`.
+    - With `DRY_RUN=false`
+      - runs `mvn clean deploy javadoc:javadoc -P sourceforge-release`. for openjdk8 only
+      - runs `mvn clean verify javadoc:javadoc` for all other openjdk versions
 - Key proof lines from the output, e.g.:
   - `CI_IS_PR = true` or `CI_IS_PR = false`
   - `CI_BRANCH = develop` (for develop snapshot)

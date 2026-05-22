@@ -3,7 +3,24 @@ This directory contains a settings.xml + script file that can be used to
 deploy to the SonaType OSS repository from a Travis CI build.
 
 The full instructions are here:
-http://knowm.org/configure-travis-ci-to-deploy-snapshots/
+https://jausoft.com/blog/2025/09/07/publishing-on-sonatypes-central-maven-repo/
+
+# secrets
+For local tests, add them to the .env file.
+For github actions running on github, configure them here: https://github.com/chewiebug/GCViewer/settings/secrets/actions
+
+- GITHUB_TOKEN
+  - automatically injected by github actions runners
+  - needs manual creation for local runs
+  - https://github.com/settings/personal-access-tokens
+- CI_DEPLOY_USERNAME / CI_DEPLOY_PASSWORD
+  - needed to deploy to Sonatype maven central repository
+  - https://central.sonatype.com/usertoken
+- SCP_USERNAME / SCP_PASSWORD 
+  - needed to upload to frs.sourceforge.net
+- CODECOV_TOKEN
+  - needed to upload code coverage results
+  - https://app.codecov.io/gh/chewiebug/GCViewer/config/general
 
 # gpg
 ## documentation 
