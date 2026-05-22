@@ -2,12 +2,11 @@ name: Build and Deploy (GitHub-only)
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [ "develop" ]
+  workflow_dispatch:
   push:
     branches: [ "develop" ]
-
-permissions:
-  contents: write  # needed for pushes/tags during release
 
 jobs:
   build:
@@ -17,11 +16,13 @@ jobs:
       matrix:
         java: [8, 17, 21]
     name: build with Java ${{ matrix.java }}
+    permissions:
+      contents: write  # needed for pushes/tags during release
 
     env:
       # GitHub-native env consumed by cicd/gcviewer-script.sh
       CI_JDK_VERSION: openjdk${{ matrix.java }}
-      CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message || github.event.pull_request.title || '' }}
+      CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message || '' }}
       GPG_DIR: ${{ github.workspace }}/cicd/gpg
       # Optional: override branches/JDK if defaults differ
       # SNAPSHOT_BRANCH: develop
@@ -39,20 +40,20 @@ jobs:
 
     steps:
       - name: Checkout (full history for releases)
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Set up JDK ${{ matrix.java }} (Temurin)
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
           cache: maven
 
       - name: Prepare GUI display for tests (Xvfb)
-        uses: pyvista/setup-headless-display-action@v3
+        uses: pyvista/setup-headless-display-action@9c1c7435d9635423c90d2c37489588c81673274a # v3
         with:
           xvfb: true
           screen: 0
@@ -82,7 +83,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: always()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
@@ -91,7 +92,7 @@ jobs:
 
       - name: Archive build artifacts (snapshot)
         if: success() && !env.ACT
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: gcviewer-artifacts-java-${{ matrix.java }}
           path: |
