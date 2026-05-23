@@ -220,7 +220,7 @@
         <jdk.source.version>1.8</jdk.source.version>
         <jdk.target.version>1.8</jdk.target.version>
         <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
-        <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.14</jacoco.maven.plugin.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
@@ -375,9 +375,6 @@
                                 <Implementation-Revision>${revision}</Implementation-Revision>
                             </manifestEntries>
                         </archive>
-                        <links>
-                            <link>https://docs.oracle.com/javase/8/docs/api/</link>
-                        </links>
                         <source>${jdk.source.version}</source>
                     </configuration>
                 </plugin>

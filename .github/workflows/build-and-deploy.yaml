@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [8, 17, 21]
+        java: [8, 17, 21, 25]
     name: build with Java ${{ matrix.java }}
     permissions:
       contents: write  # needed for pushes/tags during release
