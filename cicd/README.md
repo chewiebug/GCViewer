@@ -1,6 +1,6 @@
 # cicd
 This directory contains a settings.xml + script file that can be used to 
-deploy to the SonaType OSS repository from a Travis CI build.
+deploy to the SonaType OSS repository from a Github actions build.
 
 The full instructions are here:
 https://jausoft.com/blog/2025/09/07/publishing-on-sonatypes-central-maven-repo/

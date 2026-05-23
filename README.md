@@ -1,7 +1,7 @@
 GCViewer 1.36
 =============
 
-[![Build Status](https://app.travis-ci.com/chewiebug/GCViewer.svg?branch=develop)](https://app.travis-ci.com/chewiebug/GCViewer)
+[![Build Status](https://github.com/chewiebug/GCViewer/actions/workflows/build-and-deploy.yaml/badge.svg?branch=develop)](https://github.com/chewiebug/GCViewer/actions/workflows/build-and-deploy.yaml?query=branch%3Adevelop)
 [![codecov.io](https://codecov.io/github/chewiebug/GCViewer/coverage.svg?branch=develop)](https://codecov.io/github/chewiebug/GCViewer?branch=develop)
 [![Download gcviewer](https://img.shields.io/sourceforge/dm/gcviewer.svg)](https://sourceforge.net/projects/gcviewer/files)
 
