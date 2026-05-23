@@ -10,7 +10,7 @@ compatibility: opencode
 - Supports two build paths selectable at runtime:
   - **pull_request** — simulates a PR build: `act pull_request` sets `CI_IS_PR=true` → script runs `perform_verify()`.
   - **develop snapshot** — simulates a push to the develop branch: `act push` with `GITHUB_REF_NAME=develop`, `CI_IS_PR=false`, `CI_BRANCH=develop` → script runs `perform_snapshot_release()`.
-- `DRY_RUN` is configurable (default `true`). With `DRY_RUN=true`, no actual deploys or pushes are made — safe for local testing.
+- `DRY_RUN` is configurable via the GitHub repository variable `DRY_RUN` (default `true`). With `DRY_RUN=true`, no actual deploys or pushes are made — safe for local testing.
 - The archive step is automatically skipped because the workflow guards it with `!env.ACT`.
 - Uses the Docker image already configured in `.actrc`: `catthehacker/ubuntu:full-latest`.
 
@@ -118,14 +118,15 @@ If the user selects anything other than `all`, append `--matrix java:<version>` 
 
 Run the appropriate command from the repo root based on the choices made in steps 3, 4, and 5.
 
-> **REMINDER:** When `DRY_RUN=true`, do NOT include `--secret GITHUB_TOKEN=<anything>` — it causes the run to fail.
+> **REMINDER:** Use `--var DRY_RUN=true/false` instead of `--env DRY_RUN=true/false`. The workflow reads DRY_RUN from the GitHub repository variable (`${{ vars.DRY_RUN }}`) via the `--var` flag in `act`. `--env` is overridden by the workflow's `env` block and has no effect.
+> When `DRY_RUN=true`, do NOT include `--secret GITHUB_TOKEN=<anything>` — it causes the run to fail.
 > When `DRY_RUN=false`, secrets are read from `.env` via `--secret-file .env`. Ensure the file exists at the project root with all required values before running.
 
 #### pull_request + DRY_RUN=true (default, safe)
 ```bash
 act pull_request \
   -W .github/workflows/build-and-deploy.yaml \
-  --env DRY_RUN=true \
+  --var DRY_RUN=true \
   --secret ENCRYPTION_PASSWORD=dummy \
   --secret CI_DEPLOY_USERNAME=dummy \
   --secret CI_DEPLOY_PASSWORD=dummy \
@@ -137,7 +138,7 @@ act pull_request \
 act pull_request \
   -W .github/workflows/build-and-deploy.yaml \
   --matrix java:17 \
-  --env DRY_RUN=true \
+  --var DRY_RUN=true \
   --secret ENCRYPTION_PASSWORD=dummy \
   --secret CI_DEPLOY_USERNAME=dummy \
   --secret CI_DEPLOY_PASSWORD=dummy \
@@ -148,7 +149,7 @@ act pull_request \
 ```bash
 act pull_request \
   -W .github/workflows/build-and-deploy.yaml \
-  --env DRY_RUN=false \
+  --var DRY_RUN=false \
   --secret GITHUB_TOKEN=<real_token> \
   --secret ENCRYPTION_PASSWORD=<real_password> \
   --secret CI_DEPLOY_USERNAME=<real_username> \
@@ -160,7 +161,7 @@ act pull_request \
 ```bash
 act push \
   -W .github/workflows/build-and-deploy.yaml \
-  --env DRY_RUN=true \
+  --var DRY_RUN=true \
   --env GITHUB_REF_NAME=develop \
   --secret ENCRYPTION_PASSWORD=dummy \
   --secret CI_DEPLOY_USERNAME=dummy \
@@ -173,7 +174,7 @@ act push \
 act push \
   -W .github/workflows/build-and-deploy.yaml \
   --matrix java:17 \
-  --env DRY_RUN=true \
+  --var DRY_RUN=true \
   --env GITHUB_REF_NAME=develop \
   --secret ENCRYPTION_PASSWORD=dummy \
   --secret CI_DEPLOY_USERNAME=dummy \
@@ -187,7 +188,7 @@ Uses `--secret-file .env`. For snapshot builds, only `CI_DEPLOY_USERNAME`, `CI_D
 act push \
   -W .github/workflows/build-and-deploy.yaml \
   --matrix java:8 \
-  --env DRY_RUN=false \
+  --var DRY_RUN=false \
   --env GITHUB_REF_NAME=develop \
   --secret-file .env
 ```

@@ -28,7 +28,7 @@ jobs:
       # SNAPSHOT_BRANCH: develop
       # RELEASE_BRANCH: master
       # RELEASE_JDK: openjdk8
-      # DRY_RUN: "true"   # enable to skip deploy/push in this workflow
+      DRY_RUN: ${{ vars.DRY_RUN || 'true' }} # default: skip deploy/push in this workflow
 
       # Secrets
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,7 +66,7 @@ jobs:
           echo "CI_DEPLOY_PASSWORD=${CI_DEPLOY_PASSWORD}"
           echo "SCP_USERNAME=${SCP_USERNAME}"
           echo "SCP_PASSWORD=${SCP_PASSWORD}"
-          echo "DRY_RUN=${DRY_RUN:-true}"
+          echo "DRY_RUN=${DRY_RUN}"
 
       - name: Make build script executable
         run: chmod +x ./cicd/gcviewer-script.sh
