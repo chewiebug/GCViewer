@@ -1,0 +1,12 @@
+coverage:
+  range:
+    60..85
+  status:
+    project:
+      default:
+        target: auto # auto compares coverage to the previous base commit
+        threshold: 0.3%
+    patch:
+      default:
+        target: 85%
+        threshold: 0%
