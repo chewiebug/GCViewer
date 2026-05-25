@@ -97,11 +97,18 @@ function perform_release() {
     git checkout "${CI_BRANCH}"
     gpg --version
     openssl version
-    openssl enc -d -aes-256-cbc -md sha1 -pass pass:"$ENCRYPTION_PASSWORD" -in "$GPG_DIR/pubring.gpg.enc" -out "$GPG_DIR/pubring.gpg"
-    openssl enc -d -aes-256-cbc -md sha1 -pass pass:"$ENCRYPTION_PASSWORD" -in "$GPG_DIR/secring.gpg.enc" -out "$GPG_DIR/secring.gpg"
+    # import GPG key into temporary home directory
+    export GNUPGHOME=$(mktemp -d)
+    echo "allow-loopback-pinentry" >> "$GNUPGHOME/gpg-agent.conf"
+    gpgconf --reload gpg-agent
+    echo "trying to decrypt keys"
+    openssl enc -d -a -aes-256-cbc -pbkdf2 -iter 500000 -pass env:ENCRYPTION_PASSWORD \
+      -in "$GPG_DIR/private-key.asc.enc" | gpg --batch --import
+    openssl enc -d -a -aes-256-cbc -pbkdf2 -iter 500000 -pass env:ENCRYPTION_PASSWORD \
+      -in "$GPG_DIR/public-key.asc.enc" | gpg --batch --import
     mvn --batch-mode release:clean release:prepare release:perform --settings ./cicd/settings.xml
-    # remove decrypted keyrings
-    rm "$GPG_DIR"/*.gpg
+    # remove temporary GPG home
+    rm -rf "$GNUPGHOME"
   fi
 
   # debug purpose only -> delete later

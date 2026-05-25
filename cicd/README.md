@@ -1,9 +1,6 @@
 # cicd
 This directory contains a settings.xml + script file that can be used to 
-deploy to the SonaType OSS repository from a Github actions build.
-
-The full instructions are here:
-https://jausoft.com/blog/2025/09/07/publishing-on-sonatypes-central-maven-repo/
+deploy to the Central Publisher Portal from a Github actions build.
 
 # secrets
 For local tests, add them to the .env file.
@@ -21,41 +18,40 @@ For github actions running on github, configure them here: https://github.com/ch
 - CODECOV_TOKEN
   - needed to upload code coverage results
   - https://app.codecov.io/gh/chewiebug/GCViewer/config/general
+- ENCRYPTION_PASSWORD
+  - the password used for openssl encryption (must not contain "$", otherwise usage in the bash script won't work)
 - GPG_KEYNAME / GPG_PASSPHRASE
-  - keyname + passphrase to use the private key for jar signing with the maven-gpg-plugin
-
+  - keyname (fingerprint or email) + passphrase to use the private key for jar signing with the maven-gpg-plugin
 # gpg
-## documentation 
-- https://stackoverflow.com/questions/38276762/travis-gpg-signing-failed-secret-key-not-available
-- https://github.com/making/travis-ci-maven-deploy-skelton
-- https://www.gnupg.org/gph/en/manual.html
 
-expiration date of current keys: 2021-11-28
+## steps to create / renew private-key.asc.enc + public-key.asc.enc
 
-## issues with outdated openssl version in travis-ci (30.11.2019)
--> docker ruby image (ruby 2.6.5p114) uses openssl 1.1.1d; travis-ci uses openssl 1.0.2g
--> preferred command would be "openssl enc -e -v -iter 3 -aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in ./xxx.gpg -out xxx.gpg.enc"
-two issues:
-- "-iter 3" is not known -> drop option
-- key derivation mechanism was changed between openssl 1.1.x and 1.0.x
--- https://stackoverflow.com/questions/39637388/encryption-decryption-doesnt-work-well-between-two-different-openssl-versions/39641378#39641378
--- -> use -md sha1 to enable decryption by openssl 1.0.x 
+expiration date of current keys: 2029-05-24
 
-## steps to create / renew pubring.gpg.enc + secring.gpg.enc
-### run docker image
-- docker run --rm -it --mount type=bind,src=D:\Users\joerg2\Daten\java\git\GCViewer\cicd\gpg,dst=/usr/gpg ruby/travis /bin/bash
-- cd /usr/gpg
+### generate a new keypair (RSA-4096 recommended)
+- gpg --full-generate-key
+  - algorithm: ECC (sign only)
+  - elliptic curve: Curve 25519
+  - expiry: 3y
+  - real name: Joerg Wuethrich
+  - email: jwu@gmx.ch (must match your Central Portal account)
+  - comment: sign for maven central
+  - store the revocation certificate safely
 
-### create private + public key
-- gpg --generate-key
--- jwu@gmx.ch
--- gpg zert für maven signierung
-- gpg --output pubring.gpg --export jwu@gmx.ch
-- gpg --armor --export jwu@gmx.ch > pubring.gpg.txt
--- upload to public key server (http://keyserver.ubuntu.com:11371)
-- gpg --export-secret-keys > secring.gpg
+### get the key ID
+- gpg --list-keys --keyid-format LONG jwu@gmx.ch
+  -> use the full fingerprint (e.g. CA925CD6C9E8D064FF05B4728190C4130ABA0F98) as GPG_KEYNAME
 
-### encrypt keys
-- export ENCRYPTION_PASSWORD=<encryption password>
-- openssl enc -e -v -aes-256-cbc -md sha1 -pass pass:$ENCRYPTION_PASSWORD -in ./pubring.gpg -out ./pubring.gpg.enc
-- openssl enc -e -v -aes-256-cbc -md sha1 -pass pass:$ENCRYPTION_PASSWORD -in ./secring.gpg -out ./secring.gpg.enc
+### publish public key to a keyserver
+- gpg --keyserver keyserver.ubuntu.com --send-keys <KEYID>
+
+### export the keys (armored format)
+- gpg --armor --export-secret-keys <KEYID> > private-key.asc
+- gpg --armor --export <KEYID> > public-key.asc
+
+### encrypt keys for CI
+- openssl enc -e -a -v -aes-256-cbc -salt -pbkdf2 -iter 500000 -in ./private-key.asc -out ./private-key.asc.enc
+- openssl enc -e -a -v -aes-256-cbc -salt -pbkdf2 -iter 500000 -in ./public-key.asc -out ./public-key.asc.enc
+
+### clean up unencrypted files
+- rm private-key.asc public-key.asc

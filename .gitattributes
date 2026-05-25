@@ -21,7 +21,8 @@
 *.jsp text
 *.jspf text
 *.properties text
-*.sh text eol=lf # act on Windows won't be able to execute with crlf line endings
+# act on Windows won't be able to execute shell scripts with crlf line endings
+*.sh text eol=lf
 *.sql text
 *.svg text
 *.tld text
