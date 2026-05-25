@@ -37,6 +37,8 @@ jobs:
       CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
       SCP_USERNAME: ${{ secrets.SCP_USERNAME }}
       SCP_PASSWORD: ${{ secrets.SCP_PASSWORD }}
+      GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }} # used by maven-gpg-plugin
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }} # used by maven-gpg-plugin
 
     steps:
       - name: Checkout (full history for releases)
@@ -61,12 +63,15 @@ jobs:
           echo "GITHUB_REF_NAME=${GITHUB_REF_NAME}"
           echo "GITHUB_HEAD_REF=${GITHUB_HEAD_REF}"
           echo "CI_JDK_VERSION=${CI_JDK_VERSION}"
-          echo "CI_COMMIT_MESSAGE=${CI_COMMIT_MESSAGE}"
+          echo "DRY_RUN=${DRY_RUN}"
           echo "CI_DEPLOY_USERNAME=${CI_DEPLOY_USERNAME}"
           echo "CI_DEPLOY_PASSWORD=${CI_DEPLOY_PASSWORD}"
           echo "SCP_USERNAME=${SCP_USERNAME}"
           echo "SCP_PASSWORD=${SCP_PASSWORD}"
-          echo "DRY_RUN=${DRY_RUN}"
+          echo "CI_COMMIT_MESSAGE=${CI_COMMIT_MESSAGE}"
+          echo "GPG_DIR=${GPG_DIR}"
+          echo "GPG_KEYNAME=${GPG_KEYNAME}"
+          echo "GPG_PASSPHRASE=${GPG_PASSPHRASE}"
 
       - name: Make build script executable
         run: chmod +x ./cicd/gcviewer-script.sh

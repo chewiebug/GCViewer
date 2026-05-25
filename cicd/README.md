@@ -21,6 +21,8 @@ For github actions running on github, configure them here: https://github.com/ch
 - CODECOV_TOKEN
   - needed to upload code coverage results
   - https://app.codecov.io/gh/chewiebug/GCViewer/config/general
+- GPG_KEYNAME / GPG_PASSPHRASE
+  - keyname + passphrase to use the private key for jar signing with the maven-gpg-plugin
 
 # gpg
 ## documentation 

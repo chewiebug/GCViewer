@@ -20,7 +20,7 @@ compatibility: opencode
 - **When `DRY_RUN=false`**:
   - For **snapshot builds** (`perform_snapshot_release`): `GITHUB_TOKEN` and `ENCRYPTION_PASSWORD` are **not required** (no GitHub push, no GPG decrypt). Required secrets: `CI_DEPLOY_USERNAME`, `CI_DEPLOY_PASSWORD` (Sonatype OSSRH), `SCP_USERNAME`, `SCP_PASSWORD` (SourceForge SCP), `CODECOV_TOKEN`.
   - For **release builds** (`perform_release`): all secrets are required: `GITHUB_TOKEN`, `ENCRYPTION_PASSWORD`, `CI_DEPLOY_USERNAME`, `CI_DEPLOY_PASSWORD`, `SCP_USERNAME`, `SCP_PASSWORD`, `CODECOV_TOKEN`.
-  - All secrets must be real, non-dummy values stored in a `.env` file at the project root. Pass them via `--secret-file .env`. The `.env` file must never be committed to git.
+  - All secrets must be real, non-dummy values stored in a `.env` file at the project root. Pass them via `--secret-file .env`. The `.env` file must never be committed to git and never be read by the agent.
 
 ## When to use me
 - When you want to validate the full workflow pipeline (all Actions steps, not just the shell script).
@@ -69,8 +69,6 @@ If the user selects `DRY_RUN=false`:
   > **WARNING: DRY_RUN=false will perform real Maven deploys, GitHub pushes, and tag operations. This cannot be undone. Ensure all secrets are real values.**
 - Ask the user to explicitly confirm they want to continue (yes/no). If they do not confirm, stop.
 
-- **Instruct the user to prepare a `.env` file** in the project root (`<repo-root>/.env`) containing the following secrets. This file must **never** be committed to git (it is already listed in `.gitignore`).
-
   Required variables and their meaning:
 
   | Variable | Required for | Description |
@@ -91,13 +89,6 @@ If the user selects `DRY_RUN=false`:
   SCP_PASSWORD=your_sourceforge_password
   CODECOV_TOKEN=your_codecov_token
   ```
-
-  Remind the user:
-  - The file must be saved as `.env` at the **root of the repository** (same level as `pom.xml`).
-  - It must **never** be committed to git. Verify with `git check-ignore -v .env` — it should report `.gitignore` as the matching rule.
-  - All values must be real, non-dummy credentials.
-
-- **Ask the user to explicitly confirm** (yes/no): *"Have you created `.env` at the project root with all required values filled in?"*  If they do not confirm, stop.
 
 Record the chosen DRY_RUN value for use in step 6.
 
@@ -120,7 +111,7 @@ Run the appropriate command from the repo root based on the choices made in step
 
 > **REMINDER:** Use `--var DRY_RUN=true/false` instead of `--env DRY_RUN=true/false`. The workflow reads DRY_RUN from the GitHub repository variable (`${{ vars.DRY_RUN }}`) via the `--var` flag in `act`. `--env` is overridden by the workflow's `env` block and has no effect.
 > When `DRY_RUN=true`, do NOT include `--secret GITHUB_TOKEN=<anything>` — it causes the run to fail.
-> When `DRY_RUN=false`, secrets are read from `.env` via `--secret-file .env`. Ensure the file exists at the project root with all required values before running.
+> When `DRY_RUN=false`, secrets are read from `.env` via `--secret-file .env`.
 
 #### pull_request + DRY_RUN=true (default, safe)
 ```bash
