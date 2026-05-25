@@ -95,6 +95,7 @@ function perform_release() {
   else
     # maven release needs a locally checked out branch, otherwise "git symbolic-ref HEAD" will fail
     git checkout "${CI_BRANCH}"
+    gpg --version
     openssl version
     openssl enc -d -aes-256-cbc -md sha1 -pass pass:"$ENCRYPTION_PASSWORD" -in "$GPG_DIR/pubring.gpg.enc" -out "$GPG_DIR/pubring.gpg"
     openssl enc -d -aes-256-cbc -md sha1 -pass pass:"$ENCRYPTION_PASSWORD" -in "$GPG_DIR/secring.gpg.enc" -out "$GPG_DIR/secring.gpg"
