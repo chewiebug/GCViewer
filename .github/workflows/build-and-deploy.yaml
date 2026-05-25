@@ -1,10 +1,24 @@
 name: Build and Deploy
 
+run-name: >-
+  ${{
+    github.event_name == 'pull_request' && 'pull request build' ||
+    github.event_name == 'push' && 'snapshot build' ||
+    github.event_name == 'workflow_dispatch' && inputs.RELEASE_BUILD == 'true' && 'release build' ||
+    'snapshot build'
+  }}
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [ "develop" ]
   workflow_dispatch:
+    inputs:
+      RELEASE_BUILD:
+        description: 'Trigger a full Maven release (deploy, tag, push)'
+        required: false
+        default: false
+        type: boolean
   push:
     branches: [ "develop" ]
 
@@ -23,6 +37,7 @@ jobs:
       # GitHub-native env consumed by cicd/gcviewer-script.sh
       CI_JDK_VERSION: openjdk${{ matrix.java }}
       CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message || '' }}
+      CI_RELEASE_BUILD: ${{ github.event.inputs.RELEASE_BUILD || '' }}
       GPG_DIR: ${{ github.workspace }}/cicd/gpg
       # Optional: override branches/JDK if defaults differ
       # SNAPSHOT_BRANCH: develop

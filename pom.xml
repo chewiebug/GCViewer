@@ -642,9 +642,9 @@
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
-                            <autoPublish>false</autoPublish>
+                            <autoPublish>true</autoPublish>
                             <checksums>all</checksums>
-                            <waitUntil>validated</waitUntil>
+                            <waitUntil>published</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
