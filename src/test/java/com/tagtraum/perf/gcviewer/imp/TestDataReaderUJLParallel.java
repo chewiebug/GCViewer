@@ -1,14 +1,5 @@
 package com.tagtraum.perf.gcviewer.imp;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-
 import com.tagtraum.perf.gcviewer.UnittestHelper;
 import com.tagtraum.perf.gcviewer.UnittestHelper.FOLDER;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
@@ -18,6 +9,15 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests unified jvm logging parser for parallel gc events.
@@ -135,5 +135,78 @@ public class TestDataReaderUJLParallel {
         assertThat("phase 1", model.getGcEventPhases().get(Type.UJL_PARALLEL_PHASE_MARKING.getName()).getSum(), closeTo(0.00437, 0.0000001));
     }
 
+    @Test
+    public void testParseFullGcWithPhasesAndForwardAdjustPointersJdk25() throws Exception  {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[1.499s][info][gc,start     ] GC(4) Pause Full (Ergonomics)\n" +
+                "[1.499s][info][gc,phases,start] GC(4) Marking Phase\n" +
+                "[1.504s][info][gc,phases      ] GC(4) Marking Phase 4.370ms\n" +
+                "[1.504s][info][gc,phases,start] GC(4) Summary Phase\n" +
+                "[1.504s][info][gc,phases      ] GC(4) Summary Phase 0.039ms\n" +
+                "[1.504s][info][gc,phases,start] GC(4) Forward\n" +
+                "[1.507s][info][gc,phases      ] GC(4) Forward 2.500ms\n" +
+                "[1.507s][info][gc,phases,start] GC(4) Adjust Pointers\n" +
+                "[1.510s][info][gc,phases      ] GC(4) Adjust Pointers 3.000ms\n" +
+                "[1.510s][info][gc,phases,start] GC(4) Compaction Phase\n" +
+                "[1.522s][info][gc,phases      ] GC(4) Compaction Phase 12.000ms\n" +
+                "[1.522s][info][gc,phases,start] GC(4) Post Compact\n" +
+                "[1.524s][info][gc,phases      ] GC(4) Post Compact 2.222ms\n" +
+                "[1.524s][info][gc,heap        ] GC(4) PSYoungGen: 5105K->0K(38400K)\n" +
+                "[1.524s][info][gc,heap        ] GC(4) ParOldGen: 79662K->45521K(87552K)\n" +
+                "[1.524s][info][gc,metaspace   ] GC(4) Metaspace: 15031K->15031K(1062912K)\n" +
+                "[1.525s][info][gc             ] GC(4) Pause Full (Ergonomics) 82M->44M(123M) 24.131ms\n" +
+                "[1.525s][info][gc,cpu         ] GC(4) User=0.05s Sys=0.00s Real=0.03s\n"
+                ).getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_FULL));
+        assertThat("event pause", model.get(0).getPause(), closeTo(0.024131, 0.0000001));
+
+        assertThat("phases", model.getGcEventPhases().size(), is(6));
+        assertThat("phase Marking Phase", model.getGcEventPhases().get("Marking Phase").getSum(), closeTo(0.00437, 0.0000001));
+        assertThat("phase Summary Phase", model.getGcEventPhases().get("Summary Phase").getSum(), closeTo(0.000039, 0.0000001));
+        assertThat("phase Forward", model.getGcEventPhases().get("Forward").getSum(), closeTo(0.0025, 0.0000001));
+        assertThat("phase Adjust Pointers", model.getGcEventPhases().get("Adjust Pointers").getSum(), closeTo(0.003, 0.0000001));
+        assertThat("phase Compaction Phase", model.getGcEventPhases().get("Compaction Phase").getSum(), closeTo(0.0012, 0.0000001));
+        assertThat("phase Post Compact", model.getGcEventPhases().get("Post Compact").getSum(), closeTo(0.002222, 0.0000001));
+    }
+
+    @Test
+    public void testParseYoungGcWithMetaspacePreambleLinesJdk25() throws Exception  {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("byteArray");
+        gcResource.getLogger().addHandler(handler);
+        InputStream in = new ByteArrayInputStream(
+                ("[0.031s][info][gc,metaspace] UseCompressedClassPointers 1, UseCompactObjectHeaders 0\n" +
+                "[0.031s][info][gc,metaspace] Narrow klass pointer bits 32, Max shift 3\n" +
+                "[0.031s][info][gc,metaspace] Encoding Range: [0x0000000031000000 - 0x0000000131000000), (4294967296 bytes)\n" +
+                "[0.031s][info][gc,metaspace] Klass Range:    [0x0000000031001000 - 0x0000000072000000), (1090514944 bytes)\n" +
+                "[0.031s][info][gc,metaspace] Klass ID Range:  [4096 - 1090519033) (1090514937)\n" +
+                "[0.031s][info][gc,metaspace] Protection zone: [0x0000000031000000 - 0x0000000031001000), (4096 bytes)\n" +
+                "[0.203s][info][gc,start     ] GC(0) Pause Young (Allocation Failure)\n" +
+                "[0.205s][info][gc,heap      ] GC(0) PSYoungGen: 33275K->5090K(38400K)\n" +
+                "[0.205s][info][gc,heap      ] GC(0) ParOldGen: 0K->25596K(87552K)\n" +
+                "[0.205s][info][gc,metaspace ] GC(0) Metaspace: 3643K->3643K(1056768K)\n" +
+                "[0.210s][info][gc           ] GC(0) Pause Young (Allocation Failure) 32M->29M(123M) 6.868ms\n" +
+                "[0.210s][info][gc,cpu       ] GC(0) User=0.03s Sys=0.00s Real=0.01s\n"
+                ).getBytes());
+
+        DataReader reader = new DataReaderUnifiedJvmLogging(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("number of warnings", handler.getCount(), is(0));
+        assertThat("number of events", model.size(), is(1));
+        assertThat("event type", model.get(0).getExtendedType().getType(), is(Type.UJL_PAUSE_YOUNG));
+        assertThat("event pause", model.get(0).getPause(), closeTo(0.006868, 0.0000001));
+    }
 
 }
