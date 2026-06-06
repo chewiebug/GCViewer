@@ -1,5 +1,13 @@
 package com.tagtraum.perf.gcviewer.imp;
 
+import com.tagtraum.perf.gcviewer.model.*;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
+import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
+import com.tagtraum.perf.gcviewer.util.DateHelper;
+import com.tagtraum.perf.gcviewer.util.NumberParser;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -14,20 +22,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Concurrency;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.ExtendedType;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.GcPattern;
-import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Type;
-import com.tagtraum.perf.gcviewer.model.ConcurrentGCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEvent;
-import com.tagtraum.perf.gcviewer.model.GCEventUJL;
-import com.tagtraum.perf.gcviewer.model.GCModel;
-import com.tagtraum.perf.gcviewer.model.GCResource;
-import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
-import com.tagtraum.perf.gcviewer.util.DateHelper;
-import com.tagtraum.perf.gcviewer.util.NumberParser;
 
 /**
  * DataReaderUnifiedJvmLogging can parse all gc events of unified jvm logs with default decorations.
@@ -213,6 +207,12 @@ public class DataReaderUnifiedJvmLogging extends AbstractDataReader {
             "CDS archive(s) mapped at", // metaspace preamble since JDK 17
             "Compressed class space mapped at", // metaspace preamble since JDK 17
             "Narrow klass base", // metaspace preamble since JDK 17
+            "UseCompressedClassPointers", // metaspace preamble since JDK 25
+            "Narrow klass pointer bits", // metaspace preamble since JDK 25
+            "Encoding Range:", // metaspace preamble since JDK 25
+            "Klass Range:", // metaspace preamble since JDK 25
+            "Klass ID Range:", // metaspace preamble since JDK 25
+            "Protection zone:", // metaspace preamble since JDK 25
             "  Mark Start  ", // heap preamble for ZGC since JDK 11
             "Reserve:", // heap preamble for ZGC since JDK 11
             "Free:", // heap preamble for ZGC since JDK 11

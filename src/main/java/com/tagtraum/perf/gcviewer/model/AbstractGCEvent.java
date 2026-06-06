@@ -2,15 +2,7 @@ package com.tagtraum.perf.gcviewer.model;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * The abstract gc event is the base class for all types of events. All sorts of general
@@ -648,6 +640,8 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
         public static final Type UJL_PARALLEL_PHASE_ADJUST_ROOTS = new Type("Adjust Roots", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_PARALLEL_PHASE_COMPACTION = new Type("Compaction Phase", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
         public static final Type UJL_PARALLEL_PHASE_POST_COMPACT = new Type("Post Compact", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_FORWARD = new Type("Forward", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
+        public static final Type UJL_PARALLEL_PHASE_ADJUST_POINTERS = new Type("Adjust Pointers", Generation.YOUNG, Concurrency.SERIAL, GcPattern.GC_PAUSE);
 
         // unified jvm logging cms / g1 event types
         public static final Type UJL_PAUSE_INITIAL_MARK = new Type("Pause Initial Mark", Generation.TENURED, Concurrency.SERIAL, GcPattern.GC_MEMORY_PAUSE, CollectionType.CONCURRENCY_HELPER);

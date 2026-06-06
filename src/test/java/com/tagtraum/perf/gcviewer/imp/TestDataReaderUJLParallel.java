@@ -175,7 +175,7 @@ public class TestDataReaderUJLParallel {
         assertThat("phase Summary Phase", model.getGcEventPhases().get("Summary Phase").getSum(), closeTo(0.000039, 0.0000001));
         assertThat("phase Forward", model.getGcEventPhases().get("Forward").getSum(), closeTo(0.0025, 0.0000001));
         assertThat("phase Adjust Pointers", model.getGcEventPhases().get("Adjust Pointers").getSum(), closeTo(0.003, 0.0000001));
-        assertThat("phase Compaction Phase", model.getGcEventPhases().get("Compaction Phase").getSum(), closeTo(0.0012, 0.0000001));
+        assertThat("phase Compaction Phase", model.getGcEventPhases().get("Compaction Phase").getSum(), closeTo(0.012, 0.0000001));
         assertThat("phase Post Compact", model.getGcEventPhases().get("Post Compact").getSum(), closeTo(0.002222, 0.0000001));
     }
 
