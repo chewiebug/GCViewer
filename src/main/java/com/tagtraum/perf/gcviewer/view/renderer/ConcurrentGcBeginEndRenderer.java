@@ -17,11 +17,11 @@ import com.tagtraum.perf.gcviewer.view.ModelChartImpl;
  * @author <a href="mailto:jwu@gmx.ch">Joerg Wuethrich</a>
  * <p>created on: 30.10.2011</p>
  */
-public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
+public class ConcurrentGcBeginEndRenderer extends ChartRenderer {
     public static final Paint CONCURRENT_COLLECTION_BEGIN = Color.CYAN;
     public static final Paint CONCURRENT_COLLECTION_END = Color.PINK;
     
-    public ConcurrentGcBegionEndRenderer(ModelChartImpl modelChart) {
+    public ConcurrentGcBeginEndRenderer(ModelChartImpl modelChart) {
         super(modelChart);
         setLinePaint(CONCURRENT_COLLECTION_BEGIN);
     }

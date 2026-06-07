@@ -232,7 +232,7 @@ public class GCViewerGuiBuilder {
         StayOpenCheckBoxMenuItem menuItemConcurrentGcBeginEnd = new StayOpenCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_concurrent_collection_begin_end"), true);
         menuItemConcurrentGcBeginEnd.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_concurrent_collection_begin_end").charAt(0));
         menuItemConcurrentGcBeginEnd.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_concurrent_collection_begin_end"));
-        menuItemConcurrentGcBeginEnd.setIcon(ImageHelper.createMonoColoredImageIcon(ConcurrentGcBegionEndRenderer.CONCURRENT_COLLECTION_BEGIN, 20, 20));
+        menuItemConcurrentGcBeginEnd.setIcon(ImageHelper.createMonoColoredImageIcon(ConcurrentGcBeginEndRenderer.CONCURRENT_COLLECTION_BEGIN, 20, 20));
         menuItemConcurrentGcBeginEnd.setActionCommand(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END);
         menuItemConcurrentGcBeginEnd.addActionListener(viewMenuController);
         menuBar.addToViewMenu(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END, menuItemConcurrentGcBeginEnd);
