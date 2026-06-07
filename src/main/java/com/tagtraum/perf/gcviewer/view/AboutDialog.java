@@ -1,28 +1,17 @@
 package com.tagtraum.perf.gcviewer.view;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.plaf.basic.BasicHTML;
-import javax.swing.text.View;
-
 import com.tagtraum.perf.gcviewer.util.BuildInfoReader;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 import com.tagtraum.perf.gcviewer.view.util.UrlDisplayHelper;
+
+import javax.swing.*;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.plaf.basic.BasicHTML;
+import javax.swing.text.View;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * About dialog showing version and contributors information.
@@ -135,7 +124,7 @@ public class AboutDialog extends ScreenCenteredDialog implements ActionListener 
         Panel buttonPanel = new Panel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         if (UrlDisplayHelper.displayUrlIsSupported()) {
-            JButton homePageButton = new JButton("Homepage");
+            JButton homePageButton = new JButton(LocalisationHelper.getString("button_homepage"));
             homePageButton.setActionCommand(ACTION_HOMEPAGE);
             homePageButton.addActionListener(this);
             buttonPanel.add(homePageButton);
