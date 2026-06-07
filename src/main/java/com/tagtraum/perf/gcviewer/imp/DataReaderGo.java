@@ -38,7 +38,14 @@ public class DataReaderGo extends AbstractDataReader {
             + "(\\d+)->"
             + "(\\d+) MB, "
             + "(\\d+) MB goal, "
-            + "(\\d+) P");
+            // Go 1.19
+            + "(?:"
+            + "(\\d+) MB stacks, "
+            + "(\\d+) MB globals, "
+            + ")?"
+            + "(\\d+) P"
+            // Go 1.19
+            + "(?: \\(forced\\))?");
 
     public DataReaderGo(GCResource gcResource, InputStream in) throws UnsupportedEncodingException {
         super(gcResource, in);

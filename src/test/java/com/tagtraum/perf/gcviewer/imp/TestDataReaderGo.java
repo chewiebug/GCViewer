@@ -29,25 +29,29 @@ public class TestDataReaderGo {
                 + "gc starting...\n" // Such a line is not produced by the Go GC; it is just for testing
                 + "gc 1 @0.058s 0%: 0+1.9+0 ms clock, 0+0.94/1.9/2.9+0 ms cpu, 4->5->1 MB, 5 MB goal, 4 P\n"
                 + "a line unrelated to GC logging\n"
+                // Number too large.
                 + "gc 2 @0.073s 3%: 68+0.36+0.51 ms clock, 205+0/16/89+1.5 ms cpu, 11111111111111111111111111111111111->84->42 MB, 86 MB goal, 3 P\n"
-                + "gc 58 @17.837s 0%: 0.48+17+0 ms clock, 1.9+9.3/7.9/15+0 ms cpu, 30->30->15 MB, 31 MB goal, 4 P\n";
+                + "gc 58 @17.837s 0%: 0.48+17+0 ms clock, 1.9+9.3/7.9/15+0 ms cpu, 30->30->15 MB, 31 MB goal, 4 P\n"
+                // Go 1.19
+                + "gc 19 @5.294s 0%: 0+11+0 ms clock, 0+11/13/1.5+0 ms cpu, 18->19->11 MB, 19 MB goal, 0 MB stacks, 0 MB globals, 8 P\n"
+                + "gc 38 @661.724s 3%: 0+0+0 ms clock, 0+0/0/0+0 ms cpu, 48->48->0 MB, 97 MB goal, 0 MB stacks, 0 MB globals, 8 P (forced)\n";
         ByteArrayInputStream in = new ByteArrayInputStream(gcLog.getBytes("US-ASCII"));
         DataReader reader = new DataReaderGo(gcResource, in);
         GCModel model = reader.read();
 
         assertThat("gc 2 -> warning", handler.getCount(), is(1));
-        assertThat("size", model.size(), is(2));
+        assertThat("size", model.size(), is(4));
 
         AbstractGCEvent<?> event1 = model.get(0);
-        assertThat("timestamp", event1.getTimestamp(), closeTo(0.058, 0.0001));
-        assertThat("pause", event1.getPause(), closeTo(0 + 0, 0.1));
+        assertThat("timestamp", event1.getTimestamp(), closeTo(0.058, 0.0));
+        assertThat("pause", event1.getPause(), closeTo(0.0, 0.0));
         assertThat("preused", event1.getPreUsed(), is(4096));
         assertThat("postused", event1.getPostUsed(), is(1024));
         assertThat("heap", event1.getTotal(), is(5120));
     }
 
     @Test
-    public void exampleLog() throws IOException {
+    public void exampleLogGo19() throws IOException {
         TestLogHandler handler = new TestLogHandler();
         handler.setLevel(Level.WARNING);
         GCResource gcResource = new GcResourceFile("go1.9.txt");
@@ -59,5 +63,20 @@ public class TestDataReaderGo {
 
         assertThat("warnings", handler.getCount(), is(0));
         assertThat("size", model.size(), is(635));
+    }
+
+    @Test
+    public void exampleLogGo119() throws IOException {
+        TestLogHandler handler = new TestLogHandler();
+        handler.setLevel(Level.WARNING);
+        GCResource gcResource = new GcResourceFile("go1.19.txt");
+        gcResource.getLogger().addHandler(handler);
+
+        InputStream in = UnittestHelper.getResourceAsStream(UnittestHelper.FOLDER.GO, gcResource.getResourceName());
+        DataReader reader = new DataReaderGo(gcResource, in);
+        GCModel model = reader.read();
+
+        assertThat("warnings", handler.getCount(), is(0));
+        assertThat("size", model.size(), is(38));
     }
 }
